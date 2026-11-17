@@ -5,9 +5,9 @@
 
 ## Product
 
-Prop trading platform + broker-app voor de EU-markt. Talen: **NL (standaard)**, EN, ES, uitbreidbaar (taalprefix in URL, bv. `/en/…`, `/es/…`).
+Prop trading platform + broker-app voor de EU-markt. Talen: **EN (standaard)**, NL, ES (taalprefix in URL, bv. `/en/…`, `/es/…`).
 
-1. **Challenge / Funded** — trader betaalt een fee, doorloopt een evaluatie (Instant, 1-step, 2-step) op een **gesimuleerd** account, krijgt daarna een funded account (ook gesimuleerd) met winstdeling. De UI zegt overal duidelijk dat accounts gesimuleerd zijn, tenzij er ooit echte kapitaalallocatie wordt ingebouwd.
+1. **Instant funding** — trader betaalt een fee en krijgt direct een **gesimuleerd** funded account met winstdeling (accountvaluta USD, fee in EUR). Alleen Instant wordt aangeboden; 1-step/2-step blijven technisch mogelijk in engine/datamodel maar zijn niet actief. De UI zegt overal duidelijk dat accounts gesimuleerd zijn, tenzij er ooit echte kapitaalallocatie wordt ingebouwd.
 2. **Eigen geld (broker-track)** — handelen met eigen geld via een gelicentieerde broker/LP. **Wij houden nooit klantgeld vast.** Voorlopig alleen een `BrokerAdapter`-interface + mock.
 
 ## Stack
@@ -37,7 +37,7 @@ Prop trading platform + broker-app voor de EU-markt. Talen: **NL (standaard)**, 
 - **Social proof**: notificaties als "uitbetaling ontvangen" alleen uit echte, geanonimiseerde data (`/public/payouts-feed`) of zichtbaar gelabeld als "Voorbeeld".
 - **Geen claims over gegarandeerde winst.** Risk disclaimers zichtbaar in footer, checkout en terminal.
 - **Toegankelijkheid**: WCAG 2.2 AA contrast, volledige toetsenbordbediening, zichtbare focus, `prefers-reduced-motion` gerespecteerd. Mobile-first.
-- Partners-strook: alleen echte partners; anders duidelijke placeholders.
+- Partners-strook: alleen echte partners; verborgen zolang er geen zijn.
 - Marktdata: Binance USDⓈ-M futures. Daily reset 00:00 Europe/Amsterdam. Netting-posities.
 - Landenrestricties: configureerbare blocklist (EU-sancties + FATF), gecontroleerd bij registratie, checkout en uitbetaling.
 - KYC pas bij promotie naar funded en bij uitbetaling.
@@ -71,7 +71,7 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 
 ## Code-afspraken
 
-- Code, identifiers en commentaar in het **Engels**; documentatie en UI-teksten NL (+ EN-vertaling). Geen hardcoded UI-strings: alles via i18n.
+- Code, identifiers en commentaar in het **Engels**; documentatie NL; UI-teksten EN (standaard) + NL + ES. Geen hardcoded UI-strings: alles via i18n.
 - Formatting via `Intl` met locale (`nl-NL`: `€ 1.234,56`).
 - ESLint + Prettier, Conventional Commits.
 - API: REST onder `/api/v1`, fouten als RFC 9457 `application/problem+json` met stabiele `code` (vertaald in de client). Cursor-paginatie.

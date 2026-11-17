@@ -175,7 +175,7 @@ Configuratie per **RuleSet** (onveranderlijk, geversioneerd) per fase van een pr
 - **Optimistische orders**: order verschijnt direct als `PENDING` met `clientOrderId`; server-bevestiging via REST-response en `order.update` op WS; rollback + toast bij weigering.
 - **Reconnect**: exponential backoff (1s → 30s, jitter), banner "Verbinding verbroken — opnieuw verbinden…", na reconnect `resync` met laatst bekende `seq` → server stuurt snapshot.
 - Routes: `/` (landing), `/login`, `/register`, `/2fa`, `/app/dashboard`, `/app/terminal`, `/app/challenge`, `/app/accounts`, `/app/payouts`, `/app/billing`, `/app/profile`, `/app/security`, `/admin/*`. Code-splitting per route.
-- i18n: `nl` standaard, `en` beschikbaar, taal in URL-prefix (`/nl`, `/en`, `/es`, …), `hreflang`-tags, lazy-geladen vertalingen.
+- i18n: `nl` standaard, `en` beschikbaar, taal in URL-prefix (`/en` standaard, `/nl`, `/es`), `hreflang`-tags, lazy-geladen vertalingen.
 
 ## 8. Lokaal draaien & CI
 

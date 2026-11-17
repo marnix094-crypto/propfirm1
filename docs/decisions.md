@@ -18,6 +18,7 @@
 | D14 | KYC pas bij promotie naar funded en bij uitbetaling | besloten (Q9) |
 | D15 | Custom account = configurator met server-side berekende prijs (`POST /products/quote`) | besloten (Q12) |
 | D16 | Partners-strook: alleen echte partners (logo's/namen aan te leveren) | besloten (Q14) |
-| D17 | i18n met taalprefix in URL, meerdere talen (NL standaard, EN, ES, uitbreidbaar) | besloten (Q15), talenlijst open |
-| D18 | Accountvaluta | open — zie vraag A |
-| D19 | Producttypes in pricing | open — zie vraag B |
+| D17 | i18n met taalprefix in URL; talen **EN (standaard)**, NL, ES | besloten (Q15, C) |
+| D18 | Accountvaluta **USD** (USDT = USD 1:1 in simulatie); challenge-fee in EUR | besloten (A) |
+| D19 | Alleen **Instant funding** in aanbod en pricing (geen 1-step/2-step tabs). Engine en datamodel blijven generiek (ONE_STEP/TWO_STEP enum blijft bestaan, niet actief). Accountgroottes/prijzen: gelabelde voorbeeldwaarden tot aangeleverd | besloten (B) |
+| D20 | Partners later aanleveren; strook verborgen tot er echte partners zijn | besloten (D) |

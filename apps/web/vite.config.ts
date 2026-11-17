@@ -33,7 +33,15 @@ export default defineConfig({
   },
   server: {
     port: Number(process.env.WEB_PORT ?? 5173),
-    proxy: { '/api': process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:3000' },
+    proxy: {
+      '/api': { target: process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:3000', ws: true },
+    },
+    // Host check stays on by default. For remote previews set VITE_ALLOWED_HOSTS
+    // to a comma-separated list, or "all" (dev only — never on a public machine).
+    allowedHosts:
+      process.env.VITE_ALLOWED_HOSTS === 'all'
+        ? true
+        : process.env.VITE_ALLOWED_HOSTS?.split(',').map((h) => h.trim()),
   },
   test: {
     environment: 'jsdom',

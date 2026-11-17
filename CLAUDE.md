@@ -74,6 +74,9 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 
 - `pnpm install` · `pnpm dev` · `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm build` · `pnpm e2e`
 - Docker: `cp .env.example .env` → `docker compose up` (postgres, redis, mailpit :8025, api :3000, web :5173)
+- App: `/{lang}/app/portfolio|trade/:symbol|more`, auth: `/{lang}/login|register`. Access token alleen in geheugen; refresh via httpOnly-cookie (`stores/session.ts`).
+- Frontend-API: gegenereerde types (`@brand/shared/api`, `pnpm --filter @brand/shared generate:api`) + `openapi-fetch` via `lib/api-client.ts` (`call()` ververst de sessie bij 401). Realtime: `lib/realtime.ts` (Socket.IO, resync via `seq`).
+- E2E draait tegen de echte API (Playwright start API + preview); vereist Postgres + Redis.
 - Landing: `/{en|nl|es}` · design-preview: `/{en|nl|es}/design` · placeholders: `/login`, `/register`, `/legal/:doc`
 - API lokaal: Postgres 16 + Redis 7, `apps/api/.env` (zie `.env.example`), `pnpm --filter './packages/*' build`, `pnpm --filter @brand/api db:migrate`, `pnpm --filter @brand/api dev`. Docs: `/api/docs`, spec: `/api/v1/openapi.json`.
 - OpenAPI-export: `pnpm --filter @brand/api build && pnpm --filter @brand/api openapi:export` → `packages/shared/openapi.json` (CI faalt bij drift).
@@ -104,8 +107,8 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - [x] Fase 0 — Plan
 - [x] Fase 1 — Monorepo, Docker, CI, tokens + componentbibliotheek
 - [x] Fase 2 — Landingspagina
-- [x] Fase 3 — Backend-slice: DB, auth (zonder 2FA), marktdata (Binance + simulated), engine, trading-API, WebSockets, OpenAPI (wacht op akkoord)
-- [ ] Fase 4 — Platform-UI op de echte API: app-shell (mobiel bottom-nav), portfolio/dashboard, trading terminal, login/registratie, account-wissel
+- [x] Fase 3 — Backend-slice: DB, auth (zonder 2FA), marktdata (Binance + simulated), engine, trading-API, WebSockets, OpenAPI
+- [x] Fase 4 — Platform-UI op de echte API: app-shell (mobiel bottom-nav), portfolio/dashboard, trading terminal, login/registratie, account-wissel (wacht op akkoord)
 - [ ] Fase 5 — 2FA, e-mailverificatie, gegenereerde API-client, regelengine (daily loss/drawdown, pass/fail) + realtime equity-controle
 - [ ] Fase 6 — Funded-accounts (instant funding) + challenge-voortgang
 - [ ] Fase 7 — Pricing-checkout (betaalprovider), facturen

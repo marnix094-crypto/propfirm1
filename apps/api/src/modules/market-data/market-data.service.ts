@@ -173,6 +173,32 @@ export class MarketDataService implements OnModuleInit, OnApplicationShutdown {
     return { source: this.adapter.source, status: this.feedStatus };
   }
 
+  async tickers(): Promise<Ticker[]> {
+    return Promise.all(
+      this.instruments().map(async (inst) => {
+        const q = this.peekQuote(inst.symbol);
+        const last = q ? (q.bid + q.ask) / 2n : null;
+        try {
+          const rows = await this.candles(inst.symbol, '1h', 24);
+          if (rows.length === 0)
+            return { symbol: inst.symbol, last, open24h: null, high24h: null, low24h: null };
+          const p = (v: string) => parseDecimalRounded(v, inst.priceDecimals);
+          const highs = rows.map((r) => p(r.h));
+          const lows = rows.map((r) => p(r.l));
+          return {
+            symbol: inst.symbol,
+            last: last ?? p(rows.at(-1)!.c),
+            open24h: p(rows[0]!.o),
+            high24h: highs.reduce((a, b) => (a > b ? a : b)),
+            low24h: lows.reduce((a, b) => (a < b ? a : b)),
+          };
+        } catch {
+          return { symbol: inst.symbol, last, open24h: null, high24h: null, low24h: null };
+        }
+      }),
+    );
+  }
+
   async candles(symbol: string, tf: Timeframe, limit: number): Promise<RawCandle[]> {
     const inst = this.instrumentBySymbol(symbol);
     const key = `candles:${this.adapter.source}:${inst.symbol}:${tf}:${limit}`;
@@ -182,6 +208,15 @@ export class MarketDataService implements OnModuleInit, OnApplicationShutdown {
     await this.redis.client.set(key, JSON.stringify(rows), 'EX', 5).catch(() => undefined);
     return rows;
   }
+}
+
+/** 24h stats from 1h candles; cached briefly. */
+export interface Ticker {
+  symbol: string;
+  last: bigint | null;
+  open24h: bigint | null;
+  high24h: bigint | null;
+  low24h: bigint | null;
 }
 
 export function createAdapter(config: AppConfig): MarketDataAdapter {

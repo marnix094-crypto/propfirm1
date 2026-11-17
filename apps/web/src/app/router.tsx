@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router';
 import { LangLayout } from './lang-layout';
 import { RootRedirect } from './root-redirect';
 
-const placeholder = (kind: 'login' | 'register' | 'legal') => () =>
+const placeholder = (kind: 'legal') => () =>
   import('@/features/placeholder/placeholder-page').then((m) => ({
     Component: () => <m.PlaceholderPage kind={kind} />,
   }));
@@ -23,9 +23,50 @@ export const router = createBrowserRouter([
         lazy: () =>
           import('@/features/design/design-page').then((m) => ({ Component: m.DesignPage })),
       },
-      { path: 'login', lazy: placeholder('login') },
-      { path: 'register', lazy: placeholder('register') },
+      {
+        path: 'login',
+        lazy: () => import('@/features/auth/login-page').then((m) => ({ Component: m.LoginPage })),
+      },
+      {
+        path: 'register',
+        lazy: () =>
+          import('@/features/auth/register-page').then((m) => ({ Component: m.RegisterPage })),
+      },
       { path: 'legal/:doc', lazy: placeholder('legal') },
+      {
+        path: 'app',
+        lazy: () =>
+          Promise.all([
+            import('@/features/app/app-layout'),
+            import('@/features/auth/require-auth'),
+          ]).then(([layout, guard]) => ({
+            Component: () => (
+              <guard.RequireAuth>
+                <layout.AppLayout />
+              </guard.RequireAuth>
+            ),
+          })),
+        children: [
+          { index: true, element: <Navigate to="portfolio" replace /> },
+          {
+            path: 'portfolio',
+            lazy: () =>
+              import('@/features/portfolio/portfolio-page').then((m) => ({
+                Component: m.PortfolioPage,
+              })),
+          },
+          {
+            path: 'trade/:symbol?',
+            lazy: () =>
+              import('@/features/trade/trade-page').then((m) => ({ Component: m.TradePage })),
+          },
+          {
+            path: 'more',
+            lazy: () =>
+              import('@/features/more/more-page').then((m) => ({ Component: m.MorePage })),
+          },
+        ],
+      },
       { path: '*', element: <Navigate to="." replace /> },
     ],
   },

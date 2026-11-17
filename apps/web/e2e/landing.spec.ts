@@ -44,7 +44,9 @@ test.describe('landing page', () => {
     await card.getByRole('button', { name: 'More accounts' }).click();
     await card.getByRole('link', { name: 'Get this account' }).click();
     await expect(page).toHaveURL(/\/en\/register\?product=instant-25k&qty=2$/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Create account' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Create your account' }),
+    ).toBeVisible();
   });
 
   test('custom account configurator returns a server-calculated price', async ({ page }) => {
@@ -52,7 +54,7 @@ test.describe('landing page', () => {
     await page.getByRole('button', { name: /Build a custom account/ }).click();
     const dialog = page.getByRole('dialog');
     await expect(dialog.getByTestId('custom-price')).toHaveText('€209.00');
-    await dialog.getByRole('tab', { name: '8%' }).click();
+    await dialog.getByRole('radio', { name: '8%' }).click();
     await expect(dialog.getByTestId('custom-price')).not.toHaveText('€209.00');
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();

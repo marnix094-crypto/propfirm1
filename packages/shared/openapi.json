@@ -106,7 +106,7 @@
               "minimum": 1,
               "maximum": 1000,
               "default": 300,
-              "type": "object"
+              "type": "number"
             }
           }
         ],
@@ -119,6 +119,30 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/CandleDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "market"
+        ]
+      }
+    },
+    "/api/v1/market/tickers": {
+      "get": {
+        "operationId": "MarketDataController_tickers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TickerDto"
                   }
                 }
               }
@@ -736,6 +760,56 @@
           "accounts"
         ]
       }
+    },
+    "/api/v1/me/watchlist": {
+      "get": {
+        "operationId": "WatchlistController_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WatchlistDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "me"
+        ]
+      },
+      "put": {
+        "operationId": "WatchlistController_put",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WatchlistDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WatchlistDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "me"
+        ]
+      }
     }
   },
   "info": {
@@ -824,12 +898,12 @@
             "description": "Decimal string"
           },
           "markPrice": {
-            "type": "object",
+            "type": "string",
             "description": "Decimal string",
             "nullable": true
           },
           "fundingRate": {
-            "type": "object",
+            "type": "string",
             "description": "Funding rate, decimal string",
             "nullable": true
           },
@@ -879,6 +953,45 @@
           "c",
           "v",
           "closed"
+        ]
+      },
+      "TickerDto": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "last": {
+            "type": "string",
+            "description": "Last mid price, decimal string",
+            "nullable": true
+          },
+          "open24h": {
+            "type": "string",
+            "description": "Price 24h ago (open of the 24h window), decimal string",
+            "nullable": true
+          },
+          "changeBps": {
+            "type": "number",
+            "description": "24h change in basis points",
+            "nullable": true
+          },
+          "high24h": {
+            "type": "string",
+            "nullable": true
+          },
+          "low24h": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "symbol",
+          "last",
+          "open24h",
+          "changeBps",
+          "high24h",
+          "low24h"
         ]
       },
       "FeedStatusDto": {
@@ -1050,7 +1163,7 @@
             "type": "string"
           },
           "marginLevelBps": {
-            "type": "object",
+            "type": "string",
             "nullable": true
           },
           "dailyPnlMinor": {
@@ -1106,7 +1219,7 @@
             "type": "string"
           },
           "markPrice": {
-            "type": "object",
+            "type": "string",
             "nullable": true,
             "description": "Price the position would close at now"
           },
@@ -1117,7 +1230,7 @@
             "type": "string"
           },
           "unrealizedPnlMinor": {
-            "type": "object",
+            "type": "string",
             "nullable": true
           },
           "realizedPnlMinor": {
@@ -1127,11 +1240,11 @@
             "type": "string"
           },
           "slPrice": {
-            "type": "object",
+            "type": "string",
             "nullable": true
           },
           "tpPrice": {
-            "type": "object",
+            "type": "string",
             "nullable": true
           },
           "openedAt": {
@@ -1186,19 +1299,19 @@
             "type": "string"
           },
           "limitPrice": {
-            "type": "object",
+            "type": "string",
             "nullable": true
           },
           "stopPrice": {
-            "type": "object",
+            "type": "string",
             "nullable": true
           },
           "slPrice": {
-            "type": "object",
+            "type": "string",
             "nullable": true
           },
           "tpPrice": {
-            "type": "object",
+            "type": "string",
             "nullable": true
           },
           "leverage": {
@@ -1221,11 +1334,11 @@
             "type": "string"
           },
           "avgFillPrice": {
-            "type": "object",
+            "type": "string",
             "nullable": true
           },
           "rejectCode": {
-            "type": "object",
+            "type": "string",
             "nullable": true
           },
           "source": {
@@ -1418,12 +1531,12 @@
         "type": "object",
         "properties": {
           "slPrice": {
-            "type": "object",
+            "type": "string",
             "nullable": true,
             "description": "Decimal string, or null to remove"
           },
           "tpPrice": {
-            "type": "object",
+            "type": "string",
             "nullable": true,
             "description": "Decimal string, or null to remove"
           }
@@ -1437,6 +1550,24 @@
             "description": "Partial close quantity (decimal string); omit to close fully"
           }
         }
+      },
+      "WatchlistDto": {
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "example": [
+              "BTCUSDT",
+              "ETHUSDT"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "symbols"
+        ]
       }
     }
   },

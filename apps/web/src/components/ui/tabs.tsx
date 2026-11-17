@@ -27,6 +27,44 @@ export function Tabs({
   listWrapperClassName,
 }: TabsProps) {
   const layoutId = useId();
+  // Without panels this is a segmented control (radiogroup), not a tablist.
+  if (children === undefined) {
+    return (
+      <div className={className}>
+        <div className={listWrapperClassName}>
+          {header}
+          <div
+            role="radiogroup"
+            aria-label={label}
+            className="inline-flex gap-1 rounded-btn border border-border bg-card p-1 shadow-card"
+          >
+            {items.map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                role="radio"
+                aria-checked={value === item.value}
+                onClick={() => onValueChange(item.value)}
+                className={cn(
+                  'relative rounded-[10px] px-4 py-2 text-sm font-semibold text-muted transition-colors hover:text-fg',
+                  value === item.value && 'text-fg',
+                )}
+              >
+                {value === item.value && (
+                  <motion.span
+                    layoutId={layoutId}
+                    className="absolute inset-0 rounded-[10px] bg-primary-tint/60"
+                    transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
+                  />
+                )}
+                <span className="relative">{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <TabsPrimitive.Root value={value} onValueChange={onValueChange} className={className}>
       <div className={listWrapperClassName}>

@@ -5,14 +5,17 @@ import { MotionConfig } from 'motion/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@fontsource-variable/inter';
 import './styles/globals.css';
-import './lib/i18n';
 import { router } from './app/router';
 import { isMockData } from './lib/api';
 import { MockDataIndicator } from './components/layout/mock-data-indicator';
+import { Toaster } from './components/ui/toaster';
+import { realtime } from './lib/realtime';
+import i18n from './lib/i18n';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 2 } },
 });
+realtime.init(queryClient);
 
 async function enableMocks() {
   // MSW only runs in development and in test builds (VITE_ENABLE_MSW=true). Never in production.
@@ -29,6 +32,7 @@ void enableMocks().then(() => {
       <QueryClientProvider client={queryClient}>
         <MotionConfig reducedMotion="user">
           <RouterProvider router={router} />
+          <Toaster closeLabel={i18n.t('common.close')} />
           {isMockData() && <MockDataIndicator />}
         </MotionConfig>
       </QueryClientProvider>

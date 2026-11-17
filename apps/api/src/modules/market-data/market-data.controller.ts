@@ -3,7 +3,14 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { toDecimalString } from '@brand/engine';
 import { Public } from '../auth/public.decorator.js';
 import { MarketDataService } from './market-data.service.js';
-import { CandleDto, CandlesQuery, FeedStatusDto, InstrumentDto, QuoteDto } from './dto.js';
+import {
+  CandleDto,
+  CandlesQuery,
+  FeedStatusDto,
+  InstrumentDto,
+  QuoteDto,
+  TickerDto,
+} from './dto.js';
 
 @ApiTags('market')
 @Public()
@@ -58,6 +65,28 @@ export class MarketDataController {
       v: c.v,
       closed: c.closed,
     }));
+  }
+
+  @Get('market/tickers')
+  @ApiOkResponse({ type: [TickerDto] })
+  async tickers(): Promise<TickerDto[]> {
+    const rows = await this.md.tickers();
+    return rows.map((t) => {
+      const d = this.md.instrumentBySymbol(t.symbol).priceDecimals;
+      const fmt = (v: bigint | null) => (v === null ? null : toDecimalString(v, d));
+      const changeBps =
+        t.last !== null && t.open24h !== null && t.open24h > 0n
+          ? Number(((t.last - t.open24h) * 10_000n) / t.open24h)
+          : null;
+      return {
+        symbol: t.symbol,
+        last: fmt(t.last),
+        open24h: fmt(t.open24h),
+        changeBps,
+        high24h: fmt(t.high24h),
+        low24h: fmt(t.low24h),
+      };
+    });
   }
 
   @Get('market/status')

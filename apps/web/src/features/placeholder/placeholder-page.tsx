@@ -9,13 +9,11 @@ import { Button } from '@/components/ui/button';
 import { IconTile } from '@/components/ui/icon-tile';
 
 /** Pages that arrive in later phases (auth, legal documents). */
-export function PlaceholderPage({ kind }: { kind: 'login' | 'register' | 'legal' }) {
+export function PlaceholderPage({ kind }: { kind: 'legal' }) {
   const { t } = useTranslation();
   const { lang, doc } = useParams();
-  const title =
-    kind === 'legal'
-      ? t(`legal.${doc}`, { defaultValue: t('placeholder.legalTitle') })
-      : t(`placeholder.${kind}`);
+  void kind;
+  const title = t(`legal.${doc ?? 'terms'}`, { defaultValue: t('placeholder.legalTitle') });
   return (
     <>
       <title>{title}</title>

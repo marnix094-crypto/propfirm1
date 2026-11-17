@@ -75,13 +75,21 @@ export class PlaceOrderDto {
 }
 
 export class UpdatePositionDto {
-  @ApiPropertyOptional({ nullable: true, description: 'Decimal string, or null to remove' })
+  @ApiPropertyOptional({
+    type: String,
+    nullable: true,
+    description: 'Decimal string, or null to remove',
+  })
   @IsOptional()
   @ValidateIf((_o, v) => v !== null)
   @Matches(DECIMAL)
   slPrice?: string | null;
 
-  @ApiPropertyOptional({ nullable: true, description: 'Decimal string, or null to remove' })
+  @ApiPropertyOptional({
+    type: String,
+    nullable: true,
+    description: 'Decimal string, or null to remove',
+  })
   @IsOptional()
   @ValidateIf((_o, v) => v !== null)
   @Matches(DECIMAL)
@@ -104,16 +112,16 @@ export class OrderDto {
   @ApiProperty({ enum: ['BUY', 'SELL'] }) side!: string;
   @ApiProperty({ enum: ['MARKET', 'LIMIT', 'STOP'] }) type!: string;
   @ApiProperty() qty!: string;
-  @ApiProperty({ nullable: true }) limitPrice!: string | null;
-  @ApiProperty({ nullable: true }) stopPrice!: string | null;
-  @ApiProperty({ nullable: true }) slPrice!: string | null;
-  @ApiProperty({ nullable: true }) tpPrice!: string | null;
+  @ApiProperty({ type: String, nullable: true }) limitPrice!: string | null;
+  @ApiProperty({ type: String, nullable: true }) stopPrice!: string | null;
+  @ApiProperty({ type: String, nullable: true }) slPrice!: string | null;
+  @ApiProperty({ type: String, nullable: true }) tpPrice!: string | null;
   @ApiProperty() leverage!: number;
   @ApiProperty() reduceOnly!: boolean;
   @ApiProperty({ enum: ['PENDING', 'OPEN', 'FILLED', 'CANCELLED', 'REJECTED'] }) status!: string;
   @ApiProperty() filledQty!: string;
-  @ApiProperty({ nullable: true }) avgFillPrice!: string | null;
-  @ApiProperty({ nullable: true }) rejectCode!: string | null;
+  @ApiProperty({ type: String, nullable: true }) avgFillPrice!: string | null;
+  @ApiProperty({ type: String, nullable: true }) rejectCode!: string | null;
   @ApiProperty() source!: string;
   @ApiProperty() createdAt!: string;
   @ApiProperty() updatedAt!: string;
@@ -125,15 +133,19 @@ export class PositionDto {
   @ApiProperty({ enum: ['LONG', 'SHORT'] }) side!: string;
   @ApiProperty() qty!: string;
   @ApiProperty() avgEntryPrice!: string;
-  @ApiProperty({ nullable: true, description: 'Price the position would close at now' })
+  @ApiProperty({
+    type: String,
+    nullable: true,
+    description: 'Price the position would close at now',
+  })
   markPrice!: string | null;
   @ApiProperty() leverage!: number;
   @ApiProperty() usedMarginMinor!: string;
-  @ApiProperty({ nullable: true }) unrealizedPnlMinor!: string | null;
+  @ApiProperty({ type: String, nullable: true }) unrealizedPnlMinor!: string | null;
   @ApiProperty() realizedPnlMinor!: string;
   @ApiProperty() fundingAccruedMinor!: string;
-  @ApiProperty({ nullable: true }) slPrice!: string | null;
-  @ApiProperty({ nullable: true }) tpPrice!: string | null;
+  @ApiProperty({ type: String, nullable: true }) slPrice!: string | null;
+  @ApiProperty({ type: String, nullable: true }) tpPrice!: string | null;
   @ApiProperty() openedAt!: string;
 }
 
@@ -162,7 +174,7 @@ export class AccountDto {
   @ApiProperty() unrealizedPnlMinor!: string;
   @ApiProperty() usedMarginMinor!: string;
   @ApiProperty() freeMarginMinor!: string;
-  @ApiProperty({ nullable: true }) marginLevelBps!: string | null;
+  @ApiProperty({ type: String, nullable: true }) marginLevelBps!: string | null;
   @ApiProperty({ description: 'Equity change since 00:00 Europe/Amsterdam' })
   dailyPnlMinor!: string;
   @ApiProperty() maxLeverage!: number;

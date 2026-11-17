@@ -43,6 +43,12 @@ export default defineConfig({
         ? true
         : process.env.VITE_ALLOWED_HOSTS?.split(',').map((h) => h.trim()),
   },
+  // `vite preview` (e2e) proxies the API like the dev server.
+  preview: {
+    proxy: {
+      '/api': { target: process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:3000', ws: true },
+    },
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],

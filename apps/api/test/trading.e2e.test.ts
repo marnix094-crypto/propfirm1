@@ -337,3 +337,28 @@ describe('websocket', () => {
     s.close();
   });
 });
+
+describe('market tickers and watchlist', () => {
+  it('returns 24h tickers for all instruments', async () => {
+    const res = await t.http().get('/api/v1/market/tickers');
+    expect(res.status).toBe(200);
+    expect(res.body.map((x: { symbol: string }) => x.symbol)).toContain('BTCUSDT');
+    const btcRow = res.body.find((x: { symbol: string }) => x.symbol === 'BTCUSDT');
+    expect(btcRow.last).toBe('60000.0'); // mid of 60000.0/60000.1, half-even
+  });
+
+  it('stores a per-user watchlist and drops unknown symbols', async () => {
+    const def = await t.http().get('/api/v1/me/watchlist').set(auth());
+    expect(def.body.symbols).toEqual(['BTCUSDT', 'ETHUSDT', 'SOLUSDT']);
+    const put = await t
+      .http()
+      .put('/api/v1/me/watchlist')
+      .set(auth())
+      .send({ symbols: ['ETHUSDT', 'NOPEUSDT', 'ETHUSDT', 'BTCUSDT'] });
+    expect(put.body.symbols).toEqual(['ETHUSDT', 'BTCUSDT']);
+    expect((await t.http().get('/api/v1/me/watchlist').set(auth())).body.symbols).toEqual([
+      'ETHUSDT',
+      'BTCUSDT',
+    ]);
+  });
+});

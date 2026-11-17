@@ -49,6 +49,8 @@ const TEXT_PAIRS: Pair[] = [
   ['text-muted', 'bg', 4.5],
   ['btn-primary-fg', 'btn-primary-from', 4.5],
   ['btn-primary-fg', 'btn-primary-to', 4.5],
+  ['on-trade-action', 'buy-bg', 4.5],
+  ['on-trade-action', 'sell-bg', 4.5],
   ['focus-ring', 'bg', 3],
   ['meter-safe', 'card', 3],
   ['meter-breach', 'card', 3],

@@ -8,7 +8,7 @@ export class CandlesQuery {
   @IsIn(TIMEFRAMES)
   tf: Timeframe = '1m';
 
-  @ApiProperty({ minimum: 1, maximum: 1000, default: 300, required: false })
+  @ApiProperty({ type: Number, minimum: 1, maximum: 1000, default: 300, required: false })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
@@ -35,9 +35,10 @@ export class QuoteDto {
   @ApiProperty() symbol!: string;
   @ApiProperty({ description: 'Decimal string' }) bid!: string;
   @ApiProperty({ description: 'Decimal string' }) ask!: string;
-  @ApiProperty({ description: 'Decimal string', nullable: true }) markPrice!: string | null;
-  @ApiProperty({ description: 'Funding rate, decimal string', nullable: true }) fundingRate!:
+  @ApiProperty({ type: String, description: 'Decimal string', nullable: true }) markPrice!:
     string | null;
+  @ApiProperty({ type: String, description: 'Funding rate, decimal string', nullable: true })
+  fundingRate!: string | null;
   @ApiProperty() ts!: number;
 }
 
@@ -54,4 +55,20 @@ export class CandleDto {
 export class FeedStatusDto {
   @ApiProperty() source!: string;
   @ApiProperty({ enum: ['connecting', 'connected', 'down'] }) status!: string;
+}
+
+export class TickerDto {
+  @ApiProperty() symbol!: string;
+  @ApiProperty({ type: String, description: 'Last mid price, decimal string', nullable: true })
+  last!: string | null;
+  @ApiProperty({
+    type: String,
+    description: 'Price 24h ago (open of the 24h window), decimal string',
+    nullable: true,
+  })
+  open24h!: string | null;
+  @ApiProperty({ type: Number, description: '24h change in basis points', nullable: true })
+  changeBps!: number | null;
+  @ApiProperty({ type: String, nullable: true }) high24h!: string | null;
+  @ApiProperty({ type: String, nullable: true }) low24h!: string | null;
 }

@@ -45,6 +45,11 @@
   --loss: #dc2626;
   --loss-text: #dc2626;
 
+  /* Buy / sell actions (white text, AA in both themes) */
+  --buy-bg: #15803d;
+  --sell-bg: #dc2626;
+  --on-trade-action: #ffffff;
+
   /* Status badges: text on a 14% tint of the status colour (AA) */
   --badge-success-fg: #166534;
   --badge-warn-fg: #854d0e;

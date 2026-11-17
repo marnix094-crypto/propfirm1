@@ -40,3 +40,9 @@
 | D36 | Executie: market/stop op touch + ½ spread-markup + size-afhankelijke slippage, adverse tick-afronding; limit op limiet of beter zonder slippage; margin opnieuw gecheckt bij fill | besloten |
 | D37 | Funding: echte rate uit de feed, afgerekend per interval, idempotent per (positie, tijdstip) + Redis-lock | besloten |
 | D38 | Rate limiting voorlopig in-memory per instance; Redis-storage bij horizontaal schalen | besloten |
+| D39 | Frontend-API-client = gegenereerde types uit OpenAPI + `openapi-fetch`; CI faalt bij drift van spec of types | besloten (fase 4) |
+| D40 | Access token alleen in geheugen, stille refresh via httpOnly-cookie bij boot en 60 s vóór verloop; `?next=` alleen naar `/{lang}/app…` (open-redirect-bescherming) | besloten |
+| D41 | App-structuur geïnspireerd op de aangeleverde screenshots (bottom-nav Portfolio/Trade/Meer, account-wisselaar, marktenlijst met favorieten, order-sheet) in eigen design — geen kopie van andermans merk/teksten | besloten |
+| D42 | Geen "Book/Trades"-tab: we hebben geen echte orderboek-/tradedata; i.p.v. nep-data een Info-tab met contractspecificaties en funding | besloten |
+| D43 | Koop/verkoop-knoppen eigen tokens (`--buy-bg`, `--sell-bg`) voor AA in beide thema's | besloten |
+| D44 | Favorieten server-side (`/me/watchlist`); actieve account-keuze per apparaat (localStorage, alleen gemak) | besloten |

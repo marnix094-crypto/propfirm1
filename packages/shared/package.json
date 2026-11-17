@@ -9,14 +9,21 @@
       "types": "./src/index.ts",
       "source": "./src/index.ts",
       "default": "./dist/index.js"
+    },
+    "./api": {
+      "types": "./src/api/schema.ts",
+      "source": "./src/api/schema.ts",
+      "default": "./dist/api/schema.js"
     }
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "generate:api": "openapi-typescript openapi.json -o src/api/schema.ts && prettier --write src/api/schema.ts --log-level warn"
   },
   "devDependencies": {
+    "openapi-typescript": "^7.13.0",
     "typescript": "~6.0.3",
     "vitest": "^5.1.0"
   }

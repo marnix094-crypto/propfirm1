@@ -9,6 +9,7 @@ import { HealthController } from './modules/health/health.controller.js';
 import { MarketDataModule } from './modules/market-data/market-data.module.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
 import { TradingModule } from './modules/trading/trading.module.js';
+import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TradingModule } from './modules/trading/trading.module.js';
     AuthModule,
     TradingModule,
     RealtimeModule,
+    UsersModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

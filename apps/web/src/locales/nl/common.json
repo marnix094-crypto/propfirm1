@@ -1,0 +1,143 @@
+{
+  "a11y": { "skipToContent": "Naar inhoud" },
+  "common": {
+    "simulated": "Gesimuleerd account",
+    "example": "Voorbeeld",
+    "examplePrice": "Voorbeeldprijs",
+    "exampleData": "Voorbeelddata",
+    "close": "Sluiten"
+  },
+  "nav": {
+    "main": "Hoofdnavigatie",
+    "home": "Home",
+    "howItWorks": "Hoe het werkt",
+    "features": "Features",
+    "pricing": "Prijzen",
+    "faq": "FAQ",
+    "toPlatform": "Naar platform",
+    "openMenu": "Menu openen",
+    "closeMenu": "Menu sluiten"
+  },
+  "theme": {
+    "toggle": "Donkere modus",
+    "light": "Naar lichte modus",
+    "dark": "Naar donkere modus"
+  },
+  "language": { "label": "Taal" },
+  "range": { "1W": "1W", "1M": "1M", "3M": "3M", "6M": "6M", "1Y": "1J" },
+  "meter": { "safe": "Veilig", "warn": "Bijna limiet", "breach": "Overschreden" },
+  "risk": {
+    "short": "Handelen in producten met hefboom brengt een hoog risico met zich mee en is niet voor iedereen geschikt. Instant-funded accounts zijn gesimuleerd: er wordt geen echt kapitaal verhandeld en resultaten uit het verleden bieden geen garantie voor de toekomst. Niets op deze pagina is beleggingsadvies."
+  },
+  "design": {
+    "badge": "Design system · Fase 1",
+    "title": "Componenten & tokens",
+    "subtitle": "Alle kleuren staan in één tokens-bestand. Deze pagina toont elke bouwsteen in light en dark mode voordat we de landingspagina bouwen.",
+    "ctaPrimary": "Start met handelen",
+    "ctaSecondary": "Bekijk prijzen",
+    "equity": "Equity",
+    "notification": { "title": "Uitbetaling ontvangen", "body": "$1.240,00 · 2 min geleden" },
+    "sections": {
+      "colors": {
+        "title": "Kleuren",
+        "description": "Stalen rechtstreeks uit tokens.css — wissel het thema om het donkere palet te zien."
+      },
+      "typography": { "title": "Typografie" },
+      "buttons": {
+        "title": "Knoppen",
+        "description": "Primair met gradient en glow bij hover, wit secundair met blauwe rand, en een ghost-stijl."
+      },
+      "cards": {
+        "title": "Kaarten & icoontegels",
+        "description": "Radius 28px, zachte blauwe schaduw, glass-variant en hover-lift."
+      },
+      "badges": { "title": "Badges" },
+      "slider": { "title": "Slider & modal" },
+      "stepper": { "title": "Hoeveelheid-stepper" },
+      "meters": {
+        "title": "Meters",
+        "description": "Blauw = veilig, geel = bijna limiet, rood = overschreden. De status staat er ook als icoon en tekst bij."
+      },
+      "tabs": { "title": "Tabs & zelftekenende grafiek" },
+      "accordion": { "title": "Accordion" }
+    },
+    "typo": {
+      "display": "Handel met overzicht",
+      "heading": "Sectiekop",
+      "body": "Broodtekst in Inter. Helder, rustig en leesbaar op elk scherm.",
+      "muted": "Secundaire tekst voor ondersteunende informatie en labels."
+    },
+    "buttons": {
+      "small": "Klein",
+      "primary": "Primair",
+      "large": "Groot",
+      "secondary": "Secundair",
+      "ghost": "Ghost",
+      "disabled": "Uitgeschakeld"
+    },
+    "contrast": {
+      "title": "Besluit nodig: contrast primaire knop",
+      "body": "Witte tekst op de opgegeven lichtblauwe gradient haalt WCAG AA (4,5:1) niet. Kies een van deze opties.",
+      "spec": "Volgens spec",
+      "navy": "Marineblauwe tekst",
+      "deep": "Diepere gradient",
+      "ratio": "Contrast"
+    },
+    "cards": {
+      "payout": {
+        "title": "Snelle uitbetaling",
+        "body": "Vraag een uitbetaling aan zodra je aan de voorwaarden voldoet."
+      },
+      "leverage": {
+        "title": "Flexibele hefboom",
+        "body": "Kies per positie je hefboom binnen de accountlimieten."
+      },
+      "margin": { "title": "Cross margin", "body": "Margin wordt gedeeld over je open posities." },
+      "markets": {
+        "title": "24/7 markten",
+        "body": "Cryptomarkten sluiten nooit — het platform ook niet."
+      }
+    },
+    "badges": {
+      "recommended": "Aanbevolen",
+      "primary": "Nieuw",
+      "success": "Gehaald",
+      "warning": "Bijna limiet",
+      "danger": "Niet gehaald"
+    },
+    "slider": {
+      "label": "Hefboom",
+      "openModal": "Aanpassen in modal",
+      "modalTitle": "Hefboom instellen",
+      "modalDescription": "Een hogere hefboom vergroot zowel mogelijke winst als verlies.",
+      "risk": "Hefboom vergroot het risico. Een kleine koersbeweging kan een groot verlies opleveren ten opzichte van je margin."
+    },
+    "stepper": {
+      "label": "Aantal",
+      "decrement": "Aantal verlagen",
+      "increment": "Aantal verhogen",
+      "total": "Totaal"
+    },
+    "meters": {
+      "daily": "Dagelijks verlies",
+      "drawdown": "Max drawdown",
+      "breached": "Dagelijks verlies (voorbeeld overschreden)",
+      "health": "Account health"
+    },
+    "tabs": { "label": "Periode", "chartLabel": "Voorbeeld equity-curve" },
+    "faq": {
+      "q1": {
+        "q": "Gaat het om echt geld?",
+        "a": "Nee. Instant-funded accounts zijn gesimuleerd. Dat maken we overal in de app duidelijk."
+      },
+      "q2": {
+        "q": "Kan ik van thema wisselen?",
+        "a": "Ja — gebruik de knop in de header. Je keuze wordt op dit apparaat onthouden."
+      },
+      "q3": {
+        "q": "Welke talen worden ondersteund?",
+        "a": "Engels, Nederlands en Spaans. Meer talen kunnen later worden toegevoegd."
+      }
+    }
+  }
+}

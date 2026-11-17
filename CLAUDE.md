@@ -69,6 +69,14 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - Thema-toggle in de header, zachte crossfade bij wissel; light = standaard.
 - Animaties: scroll-reveal (fade + slide-up, stagger), count-up getallen, zelftekenende grafieklijnen, hover-lift, zwevende notificatiekaart, vloeiende accordion/slider. Alleen `transform`/`opacity` animeren (60fps, geen layout shift). `prefers-reduced-motion` → animaties uit.
 
+## Commando's
+
+- `pnpm install` · `pnpm dev` · `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm build` · `pnpm e2e`
+- Docker: `cp .env.example .env` → `docker compose up` (postgres, redis, mailpit :8025, api :3000, web :5173)
+- Design-preview: `/{en|nl|es}/design`
+- Workspace-pakketten worden als TS-bron geconsumeerd via de `source` export-conditie.
+- Contrast wordt bewaakt door `apps/web/src/styles/tokens.test.ts` en axe in Playwright.
+
 ## Code-afspraken
 
 - Code, identifiers en commentaar in het **Engels**; documentatie NL; UI-teksten EN (standaard) + NL + ES. Geen hardcoded UI-strings: alles via i18n.
@@ -86,8 +94,8 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 
 ## Status
 
-- [x] Fase 0 — Plan (wacht op akkoord)
-- [ ] Fase 1 — Monorepo, Docker, CI, tokens + componentbibliotheek
+- [x] Fase 0 — Plan
+- [x] Fase 1 — Monorepo, Docker, CI, tokens + componentbibliotheek (wacht op akkoord)
 - [ ] Fase 2 — Landingspagina
 - [ ] Fase 3 — Backend-kern (DB, auth+2FA, Binance, simulatie-engine)
 - [ ] Fase 4 — Challenge-regelengine + realtime equity-controle

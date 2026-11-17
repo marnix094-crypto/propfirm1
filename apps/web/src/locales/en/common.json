@@ -1,0 +1,143 @@
+{
+  "a11y": { "skipToContent": "Skip to content" },
+  "common": {
+    "simulated": "Simulated account",
+    "example": "Example",
+    "examplePrice": "Example price",
+    "exampleData": "Example data",
+    "close": "Close"
+  },
+  "nav": {
+    "main": "Main navigation",
+    "home": "Home",
+    "howItWorks": "How it works",
+    "features": "Features",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "toPlatform": "Go to platform",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "theme": {
+    "toggle": "Dark mode",
+    "light": "Switch to light mode",
+    "dark": "Switch to dark mode"
+  },
+  "language": { "label": "Language" },
+  "range": { "1W": "1W", "1M": "1M", "3M": "3M", "6M": "6M", "1Y": "1Y" },
+  "meter": { "safe": "Safe", "warn": "Near limit", "breach": "Breached" },
+  "risk": {
+    "short": "Trading leveraged products carries a high level of risk and may not be suitable for everyone. Instant-funded accounts are simulated: no real capital is traded and past performance is no guarantee of future results. Nothing on this page is investment advice."
+  },
+  "design": {
+    "badge": "Design system · Phase 1",
+    "title": "Components & tokens",
+    "subtitle": "Every colour lives in one tokens file. This page shows each building block in light and dark mode before we assemble the landing page.",
+    "ctaPrimary": "Start trading",
+    "ctaSecondary": "View pricing",
+    "equity": "Equity",
+    "notification": { "title": "Payout received", "body": "$1,240.00 · 2 min ago" },
+    "sections": {
+      "colors": {
+        "title": "Colours",
+        "description": "Swatches read straight from tokens.css — switch the theme to see the dark palette."
+      },
+      "typography": { "title": "Typography" },
+      "buttons": {
+        "title": "Buttons",
+        "description": "Gradient primary with glow on hover, white secondary with a blue border, and a ghost style."
+      },
+      "cards": {
+        "title": "Cards & icon tiles",
+        "description": "28px radius, soft blue shadow, glass variant and hover-lift."
+      },
+      "badges": { "title": "Badges" },
+      "slider": { "title": "Slider & modal" },
+      "stepper": { "title": "Quantity stepper" },
+      "meters": {
+        "title": "Meters",
+        "description": "Blue = safe, yellow = near limit, red = breached. State is shown with an icon and text too."
+      },
+      "tabs": { "title": "Tabs & self-drawing chart" },
+      "accordion": { "title": "Accordion" }
+    },
+    "typo": {
+      "display": "Trade with clarity",
+      "heading": "Section heading",
+      "body": "Body text in Inter. Clear, calm and readable on every screen size.",
+      "muted": "Secondary text for supporting information and labels."
+    },
+    "buttons": {
+      "small": "Small",
+      "primary": "Primary",
+      "large": "Large",
+      "secondary": "Secondary",
+      "ghost": "Ghost",
+      "disabled": "Disabled"
+    },
+    "contrast": {
+      "title": "Decision needed: primary button contrast",
+      "body": "White text on the specified light-blue gradient does not meet WCAG AA (4.5:1). Pick one of these options.",
+      "spec": "As specified",
+      "navy": "Navy text",
+      "deep": "Deeper gradient",
+      "ratio": "Contrast"
+    },
+    "cards": {
+      "payout": {
+        "title": "Fast payouts",
+        "body": "Request a payout once you meet the payout conditions."
+      },
+      "leverage": {
+        "title": "Flexible leverage",
+        "body": "Choose leverage per position within the account limits."
+      },
+      "margin": { "title": "Cross margin", "body": "Margin is shared across your open positions." },
+      "markets": {
+        "title": "24/7 markets",
+        "body": "Crypto markets never close — neither does the platform."
+      }
+    },
+    "badges": {
+      "recommended": "Recommended",
+      "primary": "New",
+      "success": "Passed",
+      "warning": "Near limit",
+      "danger": "Failed"
+    },
+    "slider": {
+      "label": "Leverage",
+      "openModal": "Adjust in modal",
+      "modalTitle": "Set leverage",
+      "modalDescription": "Higher leverage increases both potential gains and losses.",
+      "risk": "Leverage amplifies risk. A small price move can cause a large loss relative to your margin."
+    },
+    "stepper": {
+      "label": "Quantity",
+      "decrement": "Decrease quantity",
+      "increment": "Increase quantity",
+      "total": "Total"
+    },
+    "meters": {
+      "daily": "Daily loss",
+      "drawdown": "Max drawdown",
+      "breached": "Daily loss (breached example)",
+      "health": "Account health"
+    },
+    "tabs": { "label": "Time range", "chartLabel": "Example equity curve" },
+    "faq": {
+      "q1": {
+        "q": "Are the accounts real money?",
+        "a": "No. Instant-funded accounts are simulated. We are transparent about this everywhere in the app."
+      },
+      "q2": {
+        "q": "Can I switch themes?",
+        "a": "Yes — use the toggle in the header. Your choice is remembered on this device."
+      },
+      "q3": {
+        "q": "Which languages are supported?",
+        "a": "English, Dutch and Spanish. More can be added later."
+      }
+    }
+  }
+}

@@ -45,7 +45,7 @@
 └─ packages/
    ├─ shared/                  # enums, foutcodes, WS-eventtypes, generated/openapi.d.ts, client.ts
    ├─ engine/                  # pure domeinlogica (zie §3) — voorstel, zie vraag Q1
-   └─ config/                  # gedeelde eslint/prettier/tsconfig presets
+   (eslint/prettier/tsconfig-config staat in de root; docker/dev.Dockerfile voor compose)
 ```
 
 ## 2. Systeemoverzicht

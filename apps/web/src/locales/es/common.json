@@ -1,0 +1,146 @@
+{
+  "a11y": { "skipToContent": "Ir al contenido" },
+  "common": {
+    "simulated": "Cuenta simulada",
+    "example": "Ejemplo",
+    "examplePrice": "Precio de ejemplo",
+    "exampleData": "Datos de ejemplo",
+    "close": "Cerrar"
+  },
+  "nav": {
+    "main": "Navegación principal",
+    "home": "Inicio",
+    "howItWorks": "Cómo funciona",
+    "features": "Funciones",
+    "pricing": "Precios",
+    "faq": "Preguntas",
+    "toPlatform": "Ir a la plataforma",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "theme": {
+    "toggle": "Modo oscuro",
+    "light": "Cambiar a modo claro",
+    "dark": "Cambiar a modo oscuro"
+  },
+  "language": { "label": "Idioma" },
+  "range": { "1W": "1S", "1M": "1M", "3M": "3M", "6M": "6M", "1Y": "1A" },
+  "meter": { "safe": "Seguro", "warn": "Cerca del límite", "breach": "Superado" },
+  "risk": {
+    "short": "Operar con productos apalancados conlleva un alto nivel de riesgo y puede no ser adecuado para todos. Las cuentas con financiación instantánea son simuladas: no se opera con capital real y los resultados pasados no garantizan resultados futuros. Nada en esta página constituye asesoramiento de inversión."
+  },
+  "design": {
+    "badge": "Sistema de diseño · Fase 1",
+    "title": "Componentes y tokens",
+    "subtitle": "Todos los colores están en un único archivo de tokens. Esta página muestra cada componente en modo claro y oscuro antes de montar la página de inicio.",
+    "ctaPrimary": "Empieza a operar",
+    "ctaSecondary": "Ver precios",
+    "equity": "Equity",
+    "notification": { "title": "Pago recibido", "body": "1.240,00 US$ · hace 2 min" },
+    "sections": {
+      "colors": {
+        "title": "Colores",
+        "description": "Muestras leídas directamente de tokens.css — cambia el tema para ver la paleta oscura."
+      },
+      "typography": { "title": "Tipografía" },
+      "buttons": {
+        "title": "Botones",
+        "description": "Primario con degradado y brillo al pasar el ratón, secundario blanco con borde azul y estilo ghost."
+      },
+      "cards": {
+        "title": "Tarjetas e iconos",
+        "description": "Radio de 28px, sombra azul suave, variante glass y elevación al pasar el ratón."
+      },
+      "badges": { "title": "Insignias" },
+      "slider": { "title": "Slider y modal" },
+      "stepper": { "title": "Selector de cantidad" },
+      "meters": {
+        "title": "Medidores",
+        "description": "Azul = seguro, amarillo = cerca del límite, rojo = superado. El estado también se muestra con icono y texto."
+      },
+      "tabs": { "title": "Pestañas y gráfico animado" },
+      "accordion": { "title": "Acordeón" }
+    },
+    "typo": {
+      "display": "Opera con claridad",
+      "heading": "Título de sección",
+      "body": "Texto en Inter. Claro, tranquilo y legible en cualquier pantalla.",
+      "muted": "Texto secundario para información de apoyo y etiquetas."
+    },
+    "buttons": {
+      "small": "Pequeño",
+      "primary": "Primario",
+      "large": "Grande",
+      "secondary": "Secundario",
+      "ghost": "Ghost",
+      "disabled": "Desactivado"
+    },
+    "contrast": {
+      "title": "Decisión pendiente: contraste del botón primario",
+      "body": "El texto blanco sobre el degradado azul claro especificado no cumple WCAG AA (4,5:1). Elige una de estas opciones.",
+      "spec": "Según especificación",
+      "navy": "Texto azul marino",
+      "deep": "Degradado más oscuro",
+      "ratio": "Contraste"
+    },
+    "cards": {
+      "payout": {
+        "title": "Pagos rápidos",
+        "body": "Solicita un pago en cuanto cumplas las condiciones."
+      },
+      "leverage": {
+        "title": "Apalancamiento flexible",
+        "body": "Elige el apalancamiento por posición dentro de los límites de la cuenta."
+      },
+      "margin": {
+        "title": "Margen cruzado",
+        "body": "El margen se comparte entre tus posiciones abiertas."
+      },
+      "markets": {
+        "title": "Mercados 24/7",
+        "body": "Los mercados cripto nunca cierran — la plataforma tampoco."
+      }
+    },
+    "badges": {
+      "recommended": "Recomendado",
+      "primary": "Nuevo",
+      "success": "Superado",
+      "warning": "Cerca del límite",
+      "danger": "No superado"
+    },
+    "slider": {
+      "label": "Apalancamiento",
+      "openModal": "Ajustar en modal",
+      "modalTitle": "Configurar apalancamiento",
+      "modalDescription": "Un mayor apalancamiento aumenta tanto las ganancias como las pérdidas potenciales.",
+      "risk": "El apalancamiento amplifica el riesgo. Un pequeño movimiento del precio puede causar una gran pérdida respecto a tu margen."
+    },
+    "stepper": {
+      "label": "Cantidad",
+      "decrement": "Reducir cantidad",
+      "increment": "Aumentar cantidad",
+      "total": "Total"
+    },
+    "meters": {
+      "daily": "Pérdida diaria",
+      "drawdown": "Drawdown máximo",
+      "breached": "Pérdida diaria (ejemplo superado)",
+      "health": "Salud de la cuenta"
+    },
+    "tabs": { "label": "Periodo", "chartLabel": "Curva de equity de ejemplo" },
+    "faq": {
+      "q1": {
+        "q": "¿Las cuentas son con dinero real?",
+        "a": "No. Las cuentas con financiación instantánea son simuladas. Lo indicamos claramente en toda la aplicación."
+      },
+      "q2": {
+        "q": "¿Puedo cambiar el tema?",
+        "a": "Sí — usa el botón de la cabecera. Tu elección se recuerda en este dispositivo."
+      },
+      "q3": {
+        "q": "¿Qué idiomas están disponibles?",
+        "a": "Inglés, neerlandés y español. Se pueden añadir más en el futuro."
+      }
+    }
+  }
+}

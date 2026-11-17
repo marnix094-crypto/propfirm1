@@ -1,0 +1,72 @@
+# Local development. First: cp .env.example .env  (and change the passwords)
+# Then: docker compose up
+name: brand
+
+x-node: &node
+  build: { context: ., dockerfile: docker/dev.Dockerfile }
+  env_file: .env
+  volumes:
+    - .:/app
+    - node_modules:/app/node_modules
+    - api_node_modules:/app/apps/api/node_modules
+    - web_node_modules:/app/apps/web/node_modules
+    - engine_node_modules:/app/packages/engine/node_modules
+    - shared_node_modules:/app/packages/shared/node_modules
+    - pnpm_store:/pnpm/store
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?copy .env.example to .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?copy .env.example to .env}
+      POSTGRES_DB: ${POSTGRES_DB:?copy .env.example to .env}
+    ports: ['5432:5432']
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports: ['6379:6379']
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:v1.21
+    ports: ['8025:8025', '1025:1025']
+
+  # One-shot dependency install shared by api and web (avoids concurrent installs).
+  deps:
+    <<: *node
+    command: pnpm install --frozen-lockfile
+
+  api:
+    <<: *node
+    command: pnpm --filter @brand/api dev
+    ports: ['${API_PORT:-3000}:3000']
+    depends_on:
+      deps: { condition: service_completed_successfully }
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  web:
+    <<: *node
+    command: pnpm --filter @brand/web dev
+    ports: ['${WEB_PORT:-5173}:5173']
+    depends_on:
+      deps: { condition: service_completed_successfully }
+      api: { condition: service_started }
+
+volumes:
+  postgres_data:
+  node_modules:
+  api_node_modules:
+  web_node_modules:
+  engine_node_modules:
+  shared_node_modules:
+  pnpm_store:

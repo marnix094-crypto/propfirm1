@@ -22,3 +22,8 @@
 | D18 | Accountvaluta **USD** (USDT = USD 1:1 in simulatie); challenge-fee in EUR | besloten (A) |
 | D19 | Alleen **Instant funding** in aanbod en pricing (geen 1-step/2-step tabs). Engine en datamodel blijven generiek (ONE_STEP/TWO_STEP enum blijft bestaan, niet actief). Accountgroottes/prijzen: gelabelde voorbeeldwaarden tot aangeleverd | besloten (B) |
 | D20 | Partners later aanleveren; strook verborgen tot er echte partners zijn | besloten (D) |
+| D21 | `--meter-safe` light = #0284C7 (i.p.v. #0EA5E9, 2,8:1) zodat de meter-vulling 3:1 haalt | besloten (fase 1) |
+| D22 | `--profit-text` #15803D voor cijfers (spec #16A34A haalt 3,3:1); #16A34A blijft voor grafieken | besloten (fase 1) |
+| D23 | Primaire knop: witte tekst op #38BDF8→#0EA5E9 haalt AA niet (2,1–2,8:1) | open — keuze in Contrast lab |
+| D24 | `--text-muted` #5B7690 op `--bg` = 4,47:1 (net onder 4,5) | open — voorstel: iets donkerder (#56718A) |
+| D25 | Inter self-hosted via @fontsource (geen Google Fonts i.v.m. GDPR) | besloten |

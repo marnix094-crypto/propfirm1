@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_LOCALE, isLocale } from './i18n';
+import { DEFAULT_LOCALE, isLocale } from './i18n.js';
 
 describe('locales', () => {
   it('defaults to English', () => expect(DEFAULT_LOCALE).toBe('en'));

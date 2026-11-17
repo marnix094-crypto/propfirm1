@@ -13,7 +13,7 @@ COPY packages/shared/package.json packages/shared/
 RUN pnpm install --frozen-lockfile --filter @brand/api...
 COPY apps/api apps/api
 COPY packages packages
-RUN pnpm --filter @brand/api build && pnpm deploy --filter @brand/api --prod --legacy /out
+RUN pnpm --filter "@brand/api..." build && pnpm deploy --filter @brand/api --prod --legacy /out
 
 FROM node:22-bookworm-slim AS runtime
 ENV NODE_ENV=production
@@ -21,6 +21,7 @@ WORKDIR /app
 COPY --from=build /out/node_modules ./node_modules
 COPY --from=build /out/package.json ./package.json
 COPY --from=build /app/apps/api/dist ./dist
+# Migrations are applied by a separate release step (`pnpm --filter @brand/api db:migrate`), not at boot.
 USER node
 EXPOSE 3000
 CMD ["node", "--enable-source-maps", "dist/main.js"]

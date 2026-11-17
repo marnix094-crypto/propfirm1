@@ -1,4 +1,4 @@
-import type { ProductType } from './enums';
+import type { ProductType } from './enums.js';
 
 /**
  * Wire types for the catalog/public endpoints (docs/api.md).

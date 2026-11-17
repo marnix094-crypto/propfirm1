@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { applyBps, divRoundHalfEven, fromDecimalString, toDecimalString } from './fixed-point';
+import {
+  applyBps,
+  divRoundHalfEven,
+  fromDecimalString,
+  parseDecimalRounded,
+  toDecimalString,
+} from './fixed-point.js';
 
 describe('divRoundHalfEven', () => {
   it.each([
@@ -52,4 +58,19 @@ describe('decimal strings', () => {
     expect(() => fromDecimalString('1e5', 2)).toThrow();
     expect(() => fromDecimalString('', 2)).toThrow();
   });
+});
+
+describe('parseDecimalRounded', () => {
+  it.each([
+    ['67000.10', 1, 670001n],
+    ['67000.15', 1, 670002n], // half-even: 1.5 → 2
+    ['67000.25', 1, 670002n], // 2.5 → 2
+    ['0.5', 0, 0n],
+    ['1.5', 0, 2n],
+    ['3', 2, 300n],
+    ['-1.25', 1, -12n],
+  ])('%s @ %s decimals → %s', (s, d, v) => {
+    expect(parseDecimalRounded(s, d)).toBe(v);
+  });
+  it('rejects garbage', () => expect(() => parseDecimalRounded('1e3', 2)).toThrow());
 });

@@ -32,3 +32,11 @@
 | D28 | Payout-notificatie toont alleen echte data uit `/public/payouts-feed`; leeg → kaart met label "Voorbeeld" | besloten |
 | D29 | Pricing: alleen Instant, 3 kaarten per rij; custom configurator haalt prijs van `POST /products/quote` | besloten |
 | D30 | Risk disclosure en FAQ-teksten zijn concepten — juridische review vereist vóór livegang | open (jurist) |
+| D31 | "Eigen geld" = gratis demo-account met virtueel saldo ($100k, resetbaar); geen stortingen/opnames; `LIVE_BROKER` blijft alleen interface | besloten (fase 3) |
+| D32 | Markten: eerst crypto (Binance USDⓈ-M); aandelen/indices/goud later via betaalde feed | besloten |
+| D33 | Binance blokkeert o.a. de cloud-regio en Nederlandse gebruikers; productiebron (Binance vanaf EU-server, of alternatief zoals Coinbase/Kraken/Bitvavo/Hyperliquid/Kaiko) + datalicentie nog kiezen | open |
+| D34 | Volgorde: verticale slice — backend (fase 3) daarna platform-UI (fase 4); 2FA + regelengine schuiven naar fase 5 | besloten |
+| D35 | Instrumentcatalogus in code (`instruments.ts`), bij boot ge-upsert — precisie en kosten versioneren met de code | besloten |
+| D36 | Executie: market/stop op touch + ½ spread-markup + size-afhankelijke slippage, adverse tick-afronding; limit op limiet of beter zonder slippage; margin opnieuw gecheckt bij fill | besloten |
+| D37 | Funding: echte rate uit de feed, afgerekend per interval, idempotent per (positie, tijdstip) + Redis-lock | besloten |
+| D38 | Rate limiting voorlopig in-memory per instance; Redis-storage bij horizontaal schalen | besloten |

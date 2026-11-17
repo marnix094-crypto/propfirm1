@@ -1,0 +1,1448 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "operationId": "HealthController_health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/v1/instruments": {
+      "get": {
+        "operationId": "MarketDataController_instruments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InstrumentDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "market"
+        ]
+      }
+    },
+    "/api/v1/instruments/{symbol}/quote": {
+      "get": {
+        "operationId": "MarketDataController_quote",
+        "parameters": [
+          {
+            "name": "symbol",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "market"
+        ]
+      }
+    },
+    "/api/v1/instruments/{symbol}/candles": {
+      "get": {
+        "operationId": "MarketDataController_candles",
+        "parameters": [
+          {
+            "name": "symbol",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tf",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "default": "1m",
+              "type": "string",
+              "enum": [
+                "1m",
+                "5m",
+                "15m",
+                "1h",
+                "4h",
+                "1d"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 300,
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CandleDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "market"
+        ]
+      }
+    },
+    "/api/v1/market/status": {
+      "get": {
+        "operationId": "MarketDataController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "market"
+        ]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/accounts": {
+      "get": {
+        "operationId": "AccountsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccountDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}": {
+      "get": {
+        "operationId": "AccountsController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/positions": {
+      "get": {
+        "operationId": "AccountsController_positions",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PositionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/orders": {
+      "get": {
+        "operationId": "AccountsController_orders",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "default": "open",
+              "type": "string",
+              "enum": [
+                "open",
+                "history"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      },
+      "post": {
+        "operationId": "AccountsController_placeOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlaceOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/fills": {
+      "get": {
+        "operationId": "AccountsController_fills",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FillDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/ledger": {
+      "get": {
+        "operationId": "AccountsController_ledger",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LedgerEntryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/equity": {
+      "get": {
+        "operationId": "AccountsController_equity",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "range",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "default": "1M",
+              "type": "string",
+              "enum": [
+                "1D",
+                "1W",
+                "1M",
+                "3M",
+                "6M",
+                "1Y"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EquityPointDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/orders/{orderId}": {
+      "delete": {
+        "operationId": "AccountsController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/positions/{positionId}": {
+      "patch": {
+        "operationId": "AccountsController_updatePosition",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "positionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePositionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/positions/{positionId}/close": {
+      "post": {
+        "operationId": "AccountsController_closePosition",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "positionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClosePositionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/positions/close-all": {
+      "post": {
+        "operationId": "AccountsController_closeAll",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/reset": {
+      "post": {
+        "operationId": "AccountsController_reset",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "BRAND API",
+    "description": "Simulated trading platform API. Money: integer strings in minor units (…Minor). Prices/quantities: decimal strings.",
+    "version": "0.3.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "InstrumentDto": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "baseAsset": {
+            "type": "string"
+          },
+          "quoteAsset": {
+            "type": "string"
+          },
+          "priceDecimals": {
+            "type": "number"
+          },
+          "qtyDecimals": {
+            "type": "number"
+          },
+          "tickSize": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "minQty": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "qtyStep": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "maxLeverage": {
+            "type": "number"
+          },
+          "commissionBps": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "symbol",
+          "displayName",
+          "baseAsset",
+          "quoteAsset",
+          "priceDecimals",
+          "qtyDecimals",
+          "tickSize",
+          "minQty",
+          "qtyStep",
+          "maxLeverage",
+          "commissionBps"
+        ]
+      },
+      "QuoteDto": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "bid": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "ask": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "markPrice": {
+            "type": "object",
+            "description": "Decimal string",
+            "nullable": true
+          },
+          "fundingRate": {
+            "type": "object",
+            "description": "Funding rate, decimal string",
+            "nullable": true
+          },
+          "ts": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "symbol",
+          "bid",
+          "ask",
+          "markPrice",
+          "fundingRate",
+          "ts"
+        ]
+      },
+      "CandleDto": {
+        "type": "object",
+        "properties": {
+          "t": {
+            "type": "number"
+          },
+          "o": {
+            "type": "string"
+          },
+          "h": {
+            "type": "string"
+          },
+          "l": {
+            "type": "string"
+          },
+          "c": {
+            "type": "string"
+          },
+          "v": {
+            "type": "string"
+          },
+          "closed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "t",
+          "o",
+          "h",
+          "l",
+          "c",
+          "v",
+          "closed"
+        ]
+      },
+      "FeedStatusDto": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "connecting",
+              "connected",
+              "down"
+            ]
+          }
+        },
+        "required": [
+          "source",
+          "status"
+        ]
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "trader@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 128
+          },
+          "country": {
+            "type": "string",
+            "example": "NL",
+            "description": "ISO 3166-1 alpha-2"
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "nl",
+              "es"
+            ]
+          },
+          "acceptTerms": {
+            "type": "boolean",
+            "description": "Must be true"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "country",
+          "locale",
+          "acceptTerms"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "locale": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "roles",
+          "locale",
+          "country"
+        ]
+      },
+      "AuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "number",
+            "description": "Seconds"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "required": [
+          "accessToken",
+          "expiresIn",
+          "user"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "AccountDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "DEMO",
+              "CHALLENGE",
+              "FUNDED",
+              "LIVE_BROKER"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "isSimulated": {
+            "type": "boolean"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "initialBalanceMinor": {
+            "type": "string"
+          },
+          "balanceMinor": {
+            "type": "string"
+          },
+          "equityMinor": {
+            "type": "string"
+          },
+          "unrealizedPnlMinor": {
+            "type": "string"
+          },
+          "usedMarginMinor": {
+            "type": "string"
+          },
+          "freeMarginMinor": {
+            "type": "string"
+          },
+          "marginLevelBps": {
+            "type": "object",
+            "nullable": true
+          },
+          "dailyPnlMinor": {
+            "type": "string",
+            "description": "Equity change since 00:00 Europe/Amsterdam"
+          },
+          "maxLeverage": {
+            "type": "number"
+          },
+          "seq": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "label",
+          "status",
+          "isSimulated",
+          "currency",
+          "initialBalanceMinor",
+          "balanceMinor",
+          "equityMinor",
+          "unrealizedPnlMinor",
+          "usedMarginMinor",
+          "freeMarginMinor",
+          "marginLevelBps",
+          "dailyPnlMinor",
+          "maxLeverage",
+          "seq"
+        ]
+      },
+      "PositionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "LONG",
+              "SHORT"
+            ]
+          },
+          "qty": {
+            "type": "string"
+          },
+          "avgEntryPrice": {
+            "type": "string"
+          },
+          "markPrice": {
+            "type": "object",
+            "nullable": true,
+            "description": "Price the position would close at now"
+          },
+          "leverage": {
+            "type": "number"
+          },
+          "usedMarginMinor": {
+            "type": "string"
+          },
+          "unrealizedPnlMinor": {
+            "type": "object",
+            "nullable": true
+          },
+          "realizedPnlMinor": {
+            "type": "string"
+          },
+          "fundingAccruedMinor": {
+            "type": "string"
+          },
+          "slPrice": {
+            "type": "object",
+            "nullable": true
+          },
+          "tpPrice": {
+            "type": "object",
+            "nullable": true
+          },
+          "openedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "symbol",
+          "side",
+          "qty",
+          "avgEntryPrice",
+          "markPrice",
+          "leverage",
+          "usedMarginMinor",
+          "unrealizedPnlMinor",
+          "realizedPnlMinor",
+          "fundingAccruedMinor",
+          "slPrice",
+          "tpPrice",
+          "openedAt"
+        ]
+      },
+      "OrderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "clientOrderId": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "MARKET",
+              "LIMIT",
+              "STOP"
+            ]
+          },
+          "qty": {
+            "type": "string"
+          },
+          "limitPrice": {
+            "type": "object",
+            "nullable": true
+          },
+          "stopPrice": {
+            "type": "object",
+            "nullable": true
+          },
+          "slPrice": {
+            "type": "object",
+            "nullable": true
+          },
+          "tpPrice": {
+            "type": "object",
+            "nullable": true
+          },
+          "leverage": {
+            "type": "number"
+          },
+          "reduceOnly": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "OPEN",
+              "FILLED",
+              "CANCELLED",
+              "REJECTED"
+            ]
+          },
+          "filledQty": {
+            "type": "string"
+          },
+          "avgFillPrice": {
+            "type": "object",
+            "nullable": true
+          },
+          "rejectCode": {
+            "type": "object",
+            "nullable": true
+          },
+          "source": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "clientOrderId",
+          "symbol",
+          "side",
+          "type",
+          "qty",
+          "limitPrice",
+          "stopPrice",
+          "slPrice",
+          "tpPrice",
+          "leverage",
+          "reduceOnly",
+          "status",
+          "filledQty",
+          "avgFillPrice",
+          "rejectCode",
+          "source",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "FillDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "orderId": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "side": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "commissionMinor": {
+            "type": "string"
+          },
+          "realizedPnlMinor": {
+            "type": "string"
+          },
+          "executedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "orderId",
+          "symbol",
+          "side",
+          "qty",
+          "price",
+          "commissionMinor",
+          "realizedPnlMinor",
+          "executedAt"
+        ]
+      },
+      "LedgerEntryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "amountMinor": {
+            "type": "string"
+          },
+          "balanceAfterMinor": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "amountMinor",
+          "balanceAfterMinor",
+          "createdAt"
+        ]
+      },
+      "EquityPointDto": {
+        "type": "object",
+        "properties": {
+          "t": {
+            "type": "number"
+          },
+          "equityMinor": {
+            "type": "string"
+          },
+          "balanceMinor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "t",
+          "equityMinor",
+          "balanceMinor"
+        ]
+      },
+      "PlaceOrderDto": {
+        "type": "object",
+        "properties": {
+          "clientOrderId": {
+            "type": "string",
+            "description": "Client-generated id, unique per account (optimistic UI + idempotency)"
+          },
+          "symbol": {
+            "type": "string",
+            "example": "BTCUSDT"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "MARKET",
+              "LIMIT",
+              "STOP"
+            ]
+          },
+          "qty": {
+            "type": "string",
+            "description": "Decimal string in base asset units",
+            "example": "0.010"
+          },
+          "limitPrice": {
+            "type": "string",
+            "description": "Decimal string; required for LIMIT"
+          },
+          "stopPrice": {
+            "type": "string",
+            "description": "Decimal string; required for STOP"
+          },
+          "slPrice": {
+            "type": "string",
+            "description": "Stop loss for the resulting position"
+          },
+          "tpPrice": {
+            "type": "string",
+            "description": "Take profit for the resulting position"
+          },
+          "leverage": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 125
+          },
+          "reduceOnly": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "clientOrderId",
+          "symbol",
+          "side",
+          "type",
+          "qty",
+          "leverage"
+        ]
+      },
+      "UpdatePositionDto": {
+        "type": "object",
+        "properties": {
+          "slPrice": {
+            "type": "object",
+            "nullable": true,
+            "description": "Decimal string, or null to remove"
+          },
+          "tpPrice": {
+            "type": "object",
+            "nullable": true,
+            "description": "Decimal string, or null to remove"
+          }
+        }
+      },
+      "ClosePositionDto": {
+        "type": "object",
+        "properties": {
+          "qty": {
+            "type": "string",
+            "description": "Partial close quantity (decimal string); omit to close fully"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}

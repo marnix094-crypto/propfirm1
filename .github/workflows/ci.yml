@@ -14,8 +14,26 @@ permissions:
 
 jobs:
   checks:
-    name: Lint, typecheck, unit tests, build
+    name: Lint, typecheck, unit + integration tests, build
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: brand
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: brand
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U brand" --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://brand:ci-only-password@localhost:5432/brand
+      REDIS_URL: redis://localhost:6379
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -24,11 +42,16 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter './packages/*' build
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - name: OpenAPI spec is up to date
+        run: |
+          JWT_ACCESS_SECRET=ci node apps/api/dist/scripts/export-openapi.js /tmp/openapi.json
+          diff -u packages/shared/openapi.json /tmp/openapi.json
 
   e2e:
     name: Playwright (desktop + mobile, axe)

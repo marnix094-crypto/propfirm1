@@ -42,3 +42,21 @@ export function fromDecimalString(input: string, decimals: number): bigint {
   const value = BigInt(whole + frac.padEnd(decimals, '0'));
   return sign ? -value : value;
 }
+
+/**
+ * Parse an external decimal string (e.g. from a market data feed) into fixed-point,
+ * rounding half-even when it has more precision than `decimals`.
+ */
+export function parseDecimalRounded(input: string, decimals: number): bigint {
+  const match = /^(-)?(\d+)(?:\.(\d+))?$/.exec(input.trim());
+  if (!match) throw new RangeError(`Invalid decimal: "${input}"`);
+  const [, sign, whole = '0', frac = ''] = match;
+  let value: bigint;
+  if (frac.length <= decimals) {
+    value = BigInt(whole + frac.padEnd(decimals, '0'));
+  } else {
+    const extra = frac.length - decimals;
+    value = divRoundHalfEven(BigInt(whole + frac), 10n ** BigInt(extra));
+  }
+  return sign ? -value : value;
+}

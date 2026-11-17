@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { meterRatioBps, meterState } from './meter';
+import { meterRatioBps, meterState } from './meter.js';
 
 describe('meterState', () => {
   const limit = 500_000n; // $5,000.00 daily loss

@@ -130,3 +130,11 @@ Typen staan in `packages/shared/src/ws.ts` en worden door server én client gebr
 - Elk account-event heeft een oplopend `seq`. Gat gedetecteerd → client vraagt opnieuw `subscribe` met `lastSeq` → server levert delta of `snapshot`.
 - Orders worden **niet** via WS geplaatst, alleen via REST (idempotent).
 - Heartbeat/ping 20s; client toont "verbinding verbroken" na 2 gemiste pings.
+
+## Status fase 3 (geïmplementeerd)
+
+Geïmplementeerd en getest: `auth/register|login|refresh|logout`, `me`, `instruments`, `instruments/:symbol/quote|candles`, `market/status`, `accounts`, `accounts/:id`, `…/positions`, `…/orders?status=open|history`, `…/fills`, `…/ledger`, `…/equity?range=1D|1W|1M|3M|6M|1Y`, `POST …/orders` (Idempotency-Key verplicht), `DELETE …/orders/:orderId`, `PATCH …/positions/:id` (SL/TP), `POST …/positions/:id/close`, `POST …/positions/close-all`, `POST …/reset` (alleen DEMO).
+
+WebSocket (Socket.IO, path `/api/v1/ws`): namespace `/market` (`subscribe {symbols}` → `quote`, `candle` (1m), `feed.status`) en `/account` (handshake `auth.token`; `subscribe {accountId}` → ack met `{account, positions, orders, seq}`; daarna `order.update`, `position.update`, `fill`, `account.update`, `account.status` als `{accountId, seq, data}`; `seq` = 0 voor tick-gedreven `account.update`).
+
+Volgt: 2FA, e-mailverificatie, sessiebeheer, KYC, checkout, uitbetalingen, admin.

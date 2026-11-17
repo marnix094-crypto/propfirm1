@@ -1,3 +1,3 @@
-export * from './i18n';
-export * from './enums';
-export * from './catalog';
+export * from './i18n.js';
+export * from './enums.js';
+export * from './catalog.js';

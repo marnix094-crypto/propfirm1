@@ -8,7 +8,7 @@
 Prop trading platform + broker-app voor de EU-markt. Talen: **EN (standaard)**, NL, ES (taalprefix in URL, bv. `/en/…`, `/es/…`).
 
 1. **Instant funding** — trader betaalt een fee en krijgt direct een **gesimuleerd** funded account met winstdeling (accountvaluta USD, fee in EUR). Alleen Instant wordt aangeboden; 1-step/2-step blijven technisch mogelijk in engine/datamodel maar zijn niet actief. De UI zegt overal duidelijk dat accounts gesimuleerd zijn, tenzij er ooit echte kapitaalallocatie wordt ingebouwd.
-2. **Eigen geld (broker-track)** — handelen met eigen geld via een gelicentieerde broker/LP. **Wij houden nooit klantgeld vast.** Voorlopig alleen een `BrokerAdapter`-interface + mock.
+2. **Eigen account = gratis demo** (besluit D31) — elke trader krijgt bij registratie een `DEMO`-account met $100.000 virtueel saldo (resetbaar). **Er gaat geen echt geld in of uit; wij houden nooit klantgeld vast.** Een echte broker-koppeling (`LIVE_BROKER`) blijft alleen als interface + mock voor later.
 
 ## Stack
 
@@ -38,7 +38,7 @@ Prop trading platform + broker-app voor de EU-markt. Talen: **EN (standaard)**, 
 - **Geen claims over gegarandeerde winst.** Risk disclaimers zichtbaar in footer, checkout en terminal.
 - **Toegankelijkheid**: WCAG 2.2 AA contrast, volledige toetsenbordbediening, zichtbare focus, `prefers-reduced-motion` gerespecteerd. Mobile-first.
 - Partners-strook: alleen echte partners; verborgen zolang er geen zijn.
-- Marktdata: Binance USDⓈ-M futures. Daily reset 00:00 Europe/Amsterdam. Netting-posities.
+- Marktdata: adapter-interface; `MARKET_DATA_SOURCE=binance` (USDⓈ-M) of `simulated` (dev/CI). Binance weigert verbindingen uit geblokkeerde regio's (o.a. deze cloud-omgeving) — bron voor productie nog te bevestigen (D33). Daily reset 00:00 Europe/Amsterdam. Netting-posities.
 - Landenrestricties: configureerbare blocklist (EU-sancties + FATF), gecontroleerd bij registratie, checkout en uitbetaling.
 - KYC pas bij promotie naar funded en bij uitbetaling.
 
@@ -75,6 +75,10 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - `pnpm install` · `pnpm dev` · `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm build` · `pnpm e2e`
 - Docker: `cp .env.example .env` → `docker compose up` (postgres, redis, mailpit :8025, api :3000, web :5173)
 - Landing: `/{en|nl|es}` · design-preview: `/{en|nl|es}/design` · placeholders: `/login`, `/register`, `/legal/:doc`
+- API lokaal: Postgres 16 + Redis 7, `apps/api/.env` (zie `.env.example`), `pnpm --filter './packages/*' build`, `pnpm --filter @brand/api db:migrate`, `pnpm --filter @brand/api dev`. Docs: `/api/docs`, spec: `/api/v1/openapi.json`.
+- OpenAPI-export: `pnpm --filter @brand/api build && pnpm --filter @brand/api openapi:export` → `packages/shared/openapi.json` (CI faalt bij drift).
+- API-tests draaien tegen een verse `<db>_test`-database (globalSetup); audit log blokkeert TRUNCATE.
+- Workspace-packages gebruiken `.js`-extensies in relatieve imports (NodeNext); `dist` wordt gebouwd voor de API, Vite/Vitest lezen `src` via de `source`-conditie.
 - MSW: alleen met `VITE_ENABLE_MSW=true` (dev/test). Productiebuilds bevatten geen mock-code of service worker; een zichtbare "Mock data (dev)"-pil verschijnt zodra mocks actief zijn.
 - Repo: https://github.com/marnix094-crypto/propfirm1 (branch `main`, CI via GitHub Actions)
 - Workspace-pakketten worden als TS-bron geconsumeerd via de `source` export-conditie.
@@ -99,11 +103,11 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 
 - [x] Fase 0 — Plan
 - [x] Fase 1 — Monorepo, Docker, CI, tokens + componentbibliotheek
-- [x] Fase 2 — Landingspagina (wacht op akkoord)
-- [ ] Fase 3 — Backend-kern (DB, auth+2FA, Binance, simulatie-engine)
-- [ ] Fase 4 — Challenge-regelengine + realtime equity-controle
-- [ ] Fase 5 — API + WS, OpenAPI, gegenereerde client, auth in frontend
-- [ ] Fase 6 — Dashboard + trading-terminal live
-- [ ] Fase 7 — Challenge-voortgang, account-wissel, checkout
+- [x] Fase 2 — Landingspagina
+- [x] Fase 3 — Backend-slice: DB, auth (zonder 2FA), marktdata (Binance + simulated), engine, trading-API, WebSockets, OpenAPI (wacht op akkoord)
+- [ ] Fase 4 — Platform-UI op de echte API: app-shell (mobiel bottom-nav), portfolio/dashboard, trading terminal, login/registratie, account-wissel
+- [ ] Fase 5 — 2FA, e-mailverificatie, gegenereerde API-client, regelengine (daily loss/drawdown, pass/fail) + realtime equity-controle
+- [ ] Fase 6 — Funded-accounts (instant funding) + challenge-voortgang
+- [ ] Fase 7 — Pricing-checkout (betaalprovider), facturen
 - [ ] Fase 8 — Admin, audit log, risico-alerts
 - [ ] Fase 9 — KYC, broker-mock, uitbetalingen, e2e, performance, a11y

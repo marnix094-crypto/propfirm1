@@ -1,0 +1,323 @@
+// BRAND data model — see docs/datamodel.md.
+// Money: BigInt minor units (cents). Prices/quantities: BigInt fixed-point using the instrument's decimals.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  TRADER
+  SUPPORT
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING_DELETION
+  DELETED
+}
+
+enum AccountKind {
+  DEMO
+  CHALLENGE
+  FUNDED
+  LIVE_BROKER
+}
+
+enum AccountStatus {
+  ACTIVE
+  PASSED
+  FAILED
+  PENDING_FUNDED
+  FUNDED_ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+enum Side {
+  BUY
+  SELL
+}
+
+enum OrderType {
+  MARKET
+  LIMIT
+  STOP
+}
+
+enum OrderStatus {
+  PENDING
+  OPEN
+  FILLED
+  CANCELLED
+  REJECTED
+}
+
+enum OrderSource {
+  USER
+  SYSTEM_SL
+  SYSTEM_TP
+  SYSTEM_STOPOUT
+  SYSTEM_BREACH
+  ADMIN
+}
+
+enum PositionSide {
+  LONG
+  SHORT
+}
+
+enum PositionStatus {
+  OPEN
+  CLOSED
+}
+
+enum LedgerType {
+  INITIAL_CAPITAL
+  REALIZED_PNL
+  COMMISSION
+  FUNDING
+  PAYOUT
+  ADJUSTMENT
+  RESET
+}
+
+enum ActorType {
+  USER
+  ADMIN
+  SUPPORT
+  SYSTEM
+}
+
+model User {
+  id              String         @id @default(uuid(7)) @db.Uuid
+  email           String         @unique
+  emailVerifiedAt DateTime?
+  passwordHash    String
+  roles           Role[]         @default([TRADER])
+  status          UserStatus     @default(ACTIVE)
+  locale          String         @default("en")
+  country         String         @db.Char(2)
+  termsAcceptedAt DateTime
+  termsVersion    String
+  createdAt       DateTime       @default(now())
+  lastLoginAt     DateTime?
+  refreshTokens   RefreshToken[]
+  accounts        TradingAccount[]
+  watchlist       Watchlist?
+}
+
+model RefreshToken {
+  id           String    @id @default(uuid(7)) @db.Uuid
+  userId       String    @db.Uuid
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyId     String    @db.Uuid
+  tokenHash    String    @unique
+  userAgent    String?
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  replacedById String?   @db.Uuid
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@index([familyId])
+}
+
+model Instrument {
+  id                       String      @id @default(uuid(7)) @db.Uuid
+  symbol                   String      @unique
+  displayName              String
+  assetClass               String      @default("CRYPTO")
+  baseAsset                String
+  quoteAsset               String
+  priceDecimals            Int
+  qtyDecimals              Int
+  tickSize                 BigInt
+  minQty                   BigInt
+  qtyStep                  BigInt
+  maxLeverage              Int
+  spreadMarkupBps          Int
+  commissionBps            Int
+  slippageBaseBps          Int
+  slippageImpactBpsPer100k Int
+  slippageMaxBps           Int
+  fundingIntervalHours     Int         @default(8)
+  marketDataSource         String      @default("binance-usdm")
+  externalSymbol           String
+  isActive                 Boolean     @default(true)
+  sortOrder                Int         @default(0)
+  orders                   Order[]
+  positions                Position[]
+  fills                    Fill[]
+}
+
+model TradingAccount {
+  id                  String           @id @default(uuid(7)) @db.Uuid
+  userId              String           @db.Uuid
+  user                User             @relation(fields: [userId], references: [id])
+  kind                AccountKind
+  isSimulated         Boolean          @default(true)
+  status              AccountStatus    @default(ACTIVE)
+  label               String
+  currency            String           @default("USD")
+  initialBalanceMinor BigInt
+  balanceMinor        BigInt
+  highWaterMarkMinor  BigInt
+  maxLeverage         Int              @default(50)
+  stopOutLevelBps     Int              @default(5000)
+  seq                 BigInt           @default(0)
+  createdAt           DateTime         @default(now())
+  endedAt             DateTime?
+  orders              Order[]
+  positions           Position[]
+  fills               Fill[]
+  ledger              LedgerEntry[]
+  equitySnapshots     EquitySnapshot[]
+
+  @@index([userId])
+}
+
+model Order {
+  id               String       @id @default(uuid(7)) @db.Uuid
+  accountId        String       @db.Uuid
+  account          TradingAccount @relation(fields: [accountId], references: [id])
+  clientOrderId    String
+  instrumentId     String       @db.Uuid
+  instrument       Instrument   @relation(fields: [instrumentId], references: [id])
+  side             Side
+  type             OrderType
+  qty              BigInt
+  limitPrice       BigInt?
+  stopPrice        BigInt?
+  slPrice          BigInt?
+  tpPrice          BigInt?
+  leverage         Int
+  reduceOnly       Boolean      @default(false)
+  status           OrderStatus
+  filledQty        BigInt       @default(0)
+  avgFillPrice     BigInt?
+  rejectCode       String?
+  source           OrderSource  @default(USER)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  fills            Fill[]
+
+  @@unique([accountId, clientOrderId])
+  @@index([accountId, status])
+  @@index([instrumentId, status])
+}
+
+model Fill {
+  id                String     @id @default(uuid(7)) @db.Uuid
+  orderId           String     @db.Uuid
+  order             Order      @relation(fields: [orderId], references: [id])
+  accountId         String     @db.Uuid
+  account           TradingAccount @relation(fields: [accountId], references: [id])
+  instrumentId      String     @db.Uuid
+  instrument        Instrument @relation(fields: [instrumentId], references: [id])
+  side              Side
+  qty               BigInt
+  price             BigInt
+  referencePrice    BigInt
+  spreadCostMinor   BigInt
+  slippageCostMinor BigInt
+  commissionMinor   BigInt
+  realizedPnlMinor  BigInt
+  executedAt        DateTime   @default(now())
+
+  @@index([accountId, executedAt])
+}
+
+model Position {
+  id                  String         @id @default(uuid(7)) @db.Uuid
+  accountId           String         @db.Uuid
+  account             TradingAccount @relation(fields: [accountId], references: [id])
+  instrumentId        String         @db.Uuid
+  instrument          Instrument     @relation(fields: [instrumentId], references: [id])
+  side                PositionSide
+  qty                 BigInt
+  avgEntryPrice       BigInt
+  leverage            Int
+  realizedPnlMinor    BigInt         @default(0)
+  fundingAccruedMinor BigInt         @default(0)
+  slPrice             BigInt?
+  tpPrice             BigInt?
+  status              PositionStatus @default(OPEN)
+  openedAt            DateTime       @default(now())
+  closedAt            DateTime?
+  lastFundingAt       DateTime?
+
+  @@index([accountId, status])
+  @@index([instrumentId, status])
+}
+
+model LedgerEntry {
+  id                BigInt         @id @default(autoincrement())
+  accountId         String         @db.Uuid
+  account           TradingAccount @relation(fields: [accountId], references: [id])
+  type              LedgerType
+  amountMinor       BigInt
+  balanceAfterMinor BigInt
+  refType           String?
+  refId             String?
+  createdAt         DateTime       @default(now())
+
+  @@index([accountId, id])
+}
+
+model EquitySnapshot {
+  accountId       String         @db.Uuid
+  account         TradingAccount @relation(fields: [accountId], references: [id])
+  ts              DateTime
+  balanceMinor    BigInt
+  equityMinor     BigInt
+  usedMarginMinor BigInt
+
+  @@id([accountId, ts])
+}
+
+model Watchlist {
+  userId    String   @id @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  symbols   String[]
+  updatedAt DateTime @updatedAt
+}
+
+model IdempotencyKey {
+  key            String
+  userId         String   @db.Uuid
+  route          String
+  requestHash    String
+  responseStatus Int
+  responseBody   Json
+  createdAt      DateTime @default(now())
+  expiresAt      DateTime
+
+  @@id([userId, key])
+  @@index([expiresAt])
+}
+
+/// Append-only. UPDATE/DELETE are blocked by a trigger (see migration). Contains no PII.
+model AuditLog {
+  id         BigInt    @id @default(autoincrement())
+  ts         DateTime  @default(now())
+  actorType  ActorType
+  actorId    String?   @db.Uuid
+  action     String
+  entityType String
+  entityId   String
+  data       Json
+  requestId  String?
+  prevHash   String
+  hash       String    @unique
+
+  @@index([entityType, entityId])
+  @@index([actorId])
+}

@@ -10,37 +10,52 @@ interface TabsProps {
   label: string;
   children?: ReactNode;
   className?: string;
+  /** Optional content rendered next to the tab list (e.g. a title), inside `listWrapperClassName`. */
+  header?: ReactNode;
+  listWrapperClassName?: string;
 }
 
 /** Segmented tabs with a sliding indicator. */
-export function Tabs({ value, onValueChange, items, label, children, className }: TabsProps) {
+export function Tabs({
+  value,
+  onValueChange,
+  items,
+  label,
+  children,
+  className,
+  header,
+  listWrapperClassName,
+}: TabsProps) {
   const layoutId = useId();
   return (
     <TabsPrimitive.Root value={value} onValueChange={onValueChange} className={className}>
-      <TabsPrimitive.List
-        aria-label={label}
-        className="inline-flex gap-1 rounded-btn border border-border bg-card p-1 shadow-card"
-      >
-        {items.map((item) => (
-          <TabsPrimitive.Trigger
-            key={item.value}
-            value={item.value}
-            className={cn(
-              'relative rounded-[10px] px-4 py-2 text-sm font-semibold text-muted transition-colors hover:text-fg',
-              'data-[state=active]:text-fg',
-            )}
-          >
-            {value === item.value && (
-              <motion.span
-                layoutId={layoutId}
-                className="absolute inset-0 rounded-[10px] bg-primary-tint/60"
-                transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
-              />
-            )}
-            <span className="relative">{item.label}</span>
-          </TabsPrimitive.Trigger>
-        ))}
-      </TabsPrimitive.List>
+      <div className={listWrapperClassName}>
+        {header}
+        <TabsPrimitive.List
+          aria-label={label}
+          className="inline-flex gap-1 rounded-btn border border-border bg-card p-1 shadow-card"
+        >
+          {items.map((item) => (
+            <TabsPrimitive.Trigger
+              key={item.value}
+              value={item.value}
+              className={cn(
+                'relative rounded-[10px] px-4 py-2 text-sm font-semibold text-muted transition-colors hover:text-fg',
+                'data-[state=active]:text-fg',
+              )}
+            >
+              {value === item.value && (
+                <motion.span
+                  layoutId={layoutId}
+                  className="absolute inset-0 rounded-[10px] bg-primary-tint/60"
+                  transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
+                />
+              )}
+              <span className="relative">{item.label}</span>
+            </TabsPrimitive.Trigger>
+          ))}
+        </TabsPrimitive.List>
+      </div>
       {children}
     </TabsPrimitive.Root>
   );

@@ -52,7 +52,7 @@ export function Sparkline({ data, width = 320, height = 96, className, label }: 
         d={area}
         fill={`url(#${id}-fill)`}
         initial={reduce ? false : { opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        whileInView={reduce ? undefined : { opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, delay: 0.6 }}
       />
@@ -65,7 +65,7 @@ export function Sparkline({ data, width = 320, height = 96, className, label }: 
         strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
         initial={reduce ? false : { pathLength: 0 }}
-        whileInView={{ pathLength: 1 }}
+        whileInView={reduce ? undefined : { pathLength: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1.4, ease: [0.65, 0, 0.35, 1] }}
       />

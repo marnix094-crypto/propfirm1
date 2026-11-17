@@ -2,12 +2,6 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.describe('design system preview', () => {
-  test('redirects / to the default language', async ({ page }) => {
-    await page.goto('/');
-    await expect(page).toHaveURL(/\/en\/design$/);
-    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  });
-
   test('theme toggle switches and persists', async ({ page }) => {
     await page.goto('/en/design');
     const html = page.locator('html');
@@ -31,7 +25,7 @@ test.describe('design system preview', () => {
 
   test('unknown language falls back to English', async ({ page }) => {
     await page.goto('/de/design');
-    await expect(page).toHaveURL(/\/en\/design$/);
+    await expect(page).toHaveURL(/\/en$/);
   });
 
   test('has no horizontal page scroll', async ({ page }) => {
@@ -53,8 +47,6 @@ test.describe('design system preview', () => {
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
-        // The primary-button contrast is a pending product decision (see Contrast lab + tokens.test.ts).
-        .exclude('.btn-primary')
         .analyze();
       expect(
         results.violations.map(

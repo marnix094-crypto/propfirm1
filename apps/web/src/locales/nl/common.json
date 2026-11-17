@@ -1,11 +1,15 @@
 {
-  "a11y": { "skipToContent": "Naar inhoud" },
+  "a11y": {
+    "skipToContent": "Naar inhoud"
+  },
   "common": {
     "simulated": "Gesimuleerd account",
     "example": "Voorbeeld",
     "examplePrice": "Voorbeeldprijs",
     "exampleData": "Voorbeelddata",
-    "close": "Sluiten"
+    "close": "Sluiten",
+    "loading": "Laden…",
+    "retry": "Opnieuw proberen"
   },
   "nav": {
     "main": "Hoofdnavigatie",
@@ -23,11 +27,30 @@
     "light": "Naar lichte modus",
     "dark": "Naar donkere modus"
   },
-  "language": { "label": "Taal" },
-  "range": { "1W": "1W", "1M": "1M", "3M": "3M", "6M": "6M", "1Y": "1J" },
-  "meter": { "safe": "Veilig", "warn": "Bijna limiet", "breach": "Overschreden" },
+  "language": {
+    "label": "Taal"
+  },
+  "range": {
+    "1W": "1W",
+    "1M": "1M",
+    "3M": "3M",
+    "6M": "6M",
+    "1Y": "1J"
+  },
+  "meter": {
+    "safe": "Veilig",
+    "warn": "Bijna limiet",
+    "breach": "Overschreden"
+  },
   "risk": {
-    "short": "Handelen in producten met hefboom brengt een hoog risico met zich mee en is niet voor iedereen geschikt. Instant-funded accounts zijn gesimuleerd: er wordt geen echt kapitaal verhandeld en resultaten uit het verleden bieden geen garantie voor de toekomst. Niets op deze pagina is beleggingsadvies."
+    "short": "Handelen in producten met hefboom brengt een hoog risico met zich mee en is niet voor iedereen geschikt. Instant-funded accounts zijn gesimuleerd: er wordt geen echt kapitaal verhandeld en resultaten uit het verleden bieden geen garantie voor de toekomst. Niets op deze pagina is beleggingsadvies.",
+    "title": "Risico-informatie",
+    "p1": "Handelen in producten met hefboom, zoals crypto-derivaten, brengt een hoog risico met zich mee en is niet voor iedere belegger geschikt. Koersen kunnen snel bewegen en een hefboom vergroot zowel winst als verlies.",
+    "p2": "Alle funded accounts van {{brand}} zijn gesimuleerd. Er wordt geen echt kapitaal op financiële markten verhandeld en getoonde winst of verlies is hypothetisch. Uitbetalingen zijn discretionaire beloningen op basis van gesimuleerde prestaties en vallen onder onze algemene voorwaarden.",
+    "p3": "Gesimuleerde of hypothetische resultaten hebben inherente beperkingen en weerspiegelen geen werkelijke handel, waaronder de invloed van liquiditeit, slippage en uitvoering. Resultaten uit het verleden, echt of gesimuleerd, bieden geen betrouwbare indicatie voor de toekomst.",
+    "p4": "{{brand}} is geen broker, bank of beleggingsonderneming, geeft geen beleggingsadvies en houdt geen klantgelden aan. Handelen met eigen geld, waar aangeboden, gebeurt via een gelicentieerde externe broker onder diens eigen voorwaarden en toezichtregime.",
+    "p5": "Marktdata wordt door derden geleverd en kan vertraagd, onderbroken of onjuist zijn. Onze diensten zijn niet beschikbaar in bepaalde rechtsgebieden, waaronder landen onder EU-sancties of op de FATF-lijsten met hoog risico, of waar het gebruik ervan in strijd is met lokale wetgeving.",
+    "p6": "Niets op deze website is financieel, beleggings-, fiscaal of juridisch advies, noch een aanbod of uitnodiging tot aan- of verkoop van een financieel instrument. Neem alleen deel met geld dat je kunt missen."
   },
   "design": {
     "badge": "Design system · Fase 1",
@@ -36,13 +59,18 @@
     "ctaPrimary": "Start met handelen",
     "ctaSecondary": "Bekijk prijzen",
     "equity": "Equity",
-    "notification": { "title": "Uitbetaling ontvangen", "body": "$1.240,00 · 2 min geleden" },
+    "notification": {
+      "title": "Uitbetaling ontvangen",
+      "body": "$1.240,00 · 2 min geleden"
+    },
     "sections": {
       "colors": {
         "title": "Kleuren",
         "description": "Stalen rechtstreeks uit tokens.css — wissel het thema om het donkere palet te zien."
       },
-      "typography": { "title": "Typografie" },
+      "typography": {
+        "title": "Typografie"
+      },
       "buttons": {
         "title": "Knoppen",
         "description": "Primair met gradient en glow bij hover, wit secundair met blauwe rand, en een ghost-stijl."
@@ -51,15 +79,25 @@
         "title": "Kaarten & icoontegels",
         "description": "Radius 28px, zachte blauwe schaduw, glass-variant en hover-lift."
       },
-      "badges": { "title": "Badges" },
-      "slider": { "title": "Slider & modal" },
-      "stepper": { "title": "Hoeveelheid-stepper" },
+      "badges": {
+        "title": "Badges"
+      },
+      "slider": {
+        "title": "Slider & modal"
+      },
+      "stepper": {
+        "title": "Hoeveelheid-stepper"
+      },
       "meters": {
         "title": "Meters",
         "description": "Blauw = veilig, geel = bijna limiet, rood = overschreden. De status staat er ook als icoon en tekst bij."
       },
-      "tabs": { "title": "Tabs & zelftekenende grafiek" },
-      "accordion": { "title": "Accordion" }
+      "tabs": {
+        "title": "Tabs & zelftekenende grafiek"
+      },
+      "accordion": {
+        "title": "Accordion"
+      }
     },
     "typo": {
       "display": "Handel met overzicht",
@@ -75,14 +113,6 @@
       "ghost": "Ghost",
       "disabled": "Uitgeschakeld"
     },
-    "contrast": {
-      "title": "Besluit nodig: contrast primaire knop",
-      "body": "Witte tekst op de opgegeven lichtblauwe gradient haalt WCAG AA (4,5:1) niet. Kies een van deze opties.",
-      "spec": "Volgens spec",
-      "navy": "Marineblauwe tekst",
-      "deep": "Diepere gradient",
-      "ratio": "Contrast"
-    },
     "cards": {
       "payout": {
         "title": "Snelle uitbetaling",
@@ -92,7 +122,10 @@
         "title": "Flexibele hefboom",
         "body": "Kies per positie je hefboom binnen de accountlimieten."
       },
-      "margin": { "title": "Cross margin", "body": "Margin wordt gedeeld over je open posities." },
+      "margin": {
+        "title": "Cross margin",
+        "body": "Margin wordt gedeeld over je open posities."
+      },
       "markets": {
         "title": "24/7 markten",
         "body": "Cryptomarkten sluiten nooit — het platform ook niet."
@@ -124,7 +157,10 @@
       "breached": "Dagelijks verlies (voorbeeld overschreden)",
       "health": "Account health"
     },
-    "tabs": { "label": "Periode", "chartLabel": "Voorbeeld equity-curve" },
+    "tabs": {
+      "label": "Periode",
+      "chartLabel": "Voorbeeld equity-curve"
+    },
     "faq": {
       "q1": {
         "q": "Gaat het om echt geld?",
@@ -139,5 +175,197 @@
         "a": "Engels, Nederlands en Spaans. Meer talen kunnen later worden toegevoegd."
       }
     }
+  },
+  "overview": {
+    "equity": "Equity",
+    "range": "Periode",
+    "chartLabel": "Equity-curve",
+    "health": "Account health",
+    "healthHint": "Afstand tot je verlieslimieten",
+    "dailyLoss": "Dagelijks verlies",
+    "maxDrawdown": "Max drawdown",
+    "positions": "Open posities",
+    "symbol": "Symbool",
+    "side": "Richting",
+    "size": "Grootte",
+    "entry": "Instap",
+    "pnl": "PnL",
+    "LONG": "Long",
+    "SHORT": "Short"
+  },
+  "landing": {
+    "seo": {
+      "title": "{{brand}} — Instant-funded crypto trading accounts (gesimuleerd)",
+      "description": "Krijg direct een gesimuleerd funded trading account, handel 24/7 in cryptomarkten binnen duidelijke risicoregels en vraag een uitbetaling aan zodra je aan de voorwaarden voldoet."
+    },
+    "hero": {
+      "badge": "Instant funding · Gesimuleerde accounts",
+      "title": "Handel vanaf dag één met een funded account",
+      "subtitle": "Kies een accountgrootte, handel 24/7 in cryptomarkten binnen duidelijke risicoregels en vraag een uitbetaling aan zodra je aan de voorwaarden voldoet. Zonder evaluatiefase.",
+      "ctaPrimary": "Kies je account",
+      "ctaSecondary": "Hoe het werkt",
+      "note": "Gesimuleerde handelsomgeving. Geen beleggingsadvies. Uitbetalingen volgens de voorwaarden.",
+      "payout": {
+        "title": "Uitbetaling ontvangen",
+        "exampleMeta": "voorbeeld"
+      }
+    },
+    "partners": {
+      "label": "Partners"
+    },
+    "steps": {
+      "eyebrow": "Hoe het werkt",
+      "title": "In drie stappen naar je eerste uitbetaling",
+      "subtitle": "Geen evaluatie, geen wachttijd. Je start direct op een gesimuleerd funded account.",
+      "step": "Stap {{n}}",
+      "choose": {
+        "title": "Kies je account",
+        "body": "Kies een accountgrootte en betaal een eenmalige fee. Je gesimuleerde account staat direct klaar."
+      },
+      "trade": {
+        "title": "Handel op je funded account",
+        "body": "Handel 24/7 in cryptoparen binnen de limieten voor dagelijks verlies en max drawdown. Je dashboard laat precies zien hoe dicht je erbij zit."
+      },
+      "payout": {
+        "title": "Vraag een uitbetaling aan",
+        "body": "Voldoe aan de uitbetalingsvoorwaarden, rond je identiteitsverificatie af en vraag jouw deel van de gesimuleerde winst aan."
+      }
+    },
+    "features": {
+      "eyebrow": "Features",
+      "title": "Gebouwd voor gefocuste traders",
+      "subtitle": "Een overzichtelijke terminal, transparante regels en tools die jou de controle over je risico geven.",
+      "payout": {
+        "title": "Snelle uitbetaling",
+        "body": "Vraag een uitbetaling aan vanuit je dashboard zodra je aan de voorwaarden voldoet. Elk verzoek wordt beoordeeld en transparant gevolgd.",
+        "request": "Aanvraag",
+        "review": "Beoordeling",
+        "paid": "Uitbetaald"
+      },
+      "leverage": {
+        "title": "Flexibele hefboom",
+        "body": "Stel per positie je hefboom in, binnen de limieten van je account.",
+        "slider": "Hefboom",
+        "margin": "Margin voor een positie van {{size}}",
+        "learnMore": "Wat betekent hefboom?",
+        "modalTitle": "Zo werkt hefboom",
+        "modalDescription": "Met hefboom open je een grotere positie met minder margin — en vergroot je op dezelfde manier het risico.",
+        "point1": "Benodigde margin = positiegrootte ÷ hefboom.",
+        "point2": "Winst en verlies worden berekend over de volledige positie, niet over je margin.",
+        "point3": "Een hogere hefboom brengt je verlieslimieten dichterbij. Een kleine koersbeweging kan ze al overschrijden."
+      },
+      "margin": {
+        "title": "Cross margin",
+        "body": "Je open posities delen één margin-saldo, zodat vrije margin efficiënt over je trades wordt verdeeld.",
+        "used": "Gebruikte margin",
+        "free": "Vrije margin"
+      },
+      "markets": {
+        "title": "24/7 markten",
+        "body": "Crypto slaapt nooit. Handel de belangrijkste paren de klok rond, geprijsd op basis van live marktdata.",
+        "open": "Markten open"
+      }
+    },
+    "pricing": {
+      "eyebrow": "Prijzen",
+      "title": "Kies je accountgrootte",
+      "subtitle": "Eenmalige fee. Direct toegang tot een gesimuleerd funded account.",
+      "examplePrices": "Voorbeeldprijzen — definitief aanbod volgt",
+      "recommended": "Aanbevolen",
+      "capital": "Handelskapitaal (gesimuleerd)",
+      "maxDrawdown": "Max drawdown",
+      "drawdownType": {
+        "STATIC": "Statisch",
+        "TRAILING": "Trailing"
+      },
+      "dailyLoss": "Dagelijkse verlieslimiet",
+      "profitSplit": "Winstdeling",
+      "leverage": "Max hefboom",
+      "oneTimeFee": "eenmalige fee",
+      "quantity": "Aantal accounts van {{size}}",
+      "decrement": "Minder accounts",
+      "increment": "Meer accounts",
+      "total": "Totaal",
+      "buy": "Kies dit account",
+      "error": "De prijzen konden niet worden geladen.",
+      "empty": "Er zijn op dit moment geen accounts beschikbaar.",
+      "customPrompt": "Andere grootte of drawdown nodig?",
+      "custom": "Maak custom account",
+      "disclaimer": "Alle funded accounts zijn gesimuleerd. De fee geeft toegang tot een gesimuleerd handelsaccount en is geen storting. Uitbetalingen zijn afhankelijk van de voorwaarden."
+    },
+    "custom": {
+      "title": "Maak een custom account",
+      "description": "Kies je accountgrootte en max drawdown. De prijs wordt door onze server berekend.",
+      "size": "Handelskapitaal (gesimuleerd)",
+      "drawdown": "Max drawdown",
+      "price": "Prijs",
+      "error": "De prijs kon niet worden berekend. Probeer het opnieuw.",
+      "note": "Dagelijkse verlieslimiet 3% · trailing drawdown · eenmalige fee",
+      "continue": "Doorgaan"
+    },
+    "cta": {
+      "title": "Klaar om op jouw manier te handelen?",
+      "subtitle": "Kies een accountgrootte en start vandaag nog op een gesimuleerd funded account.",
+      "button": "Bekijk accounts",
+      "note": "Handelen brengt risico's met zich mee. Accounts zijn gesimuleerd."
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Veelgestelde vragen",
+      "q1": {
+        "q": "Wat is instant funding?",
+        "a": "Je koopt toegang tot een gesimuleerd funded account en kunt direct handelen — er is geen evaluatiefase. Je handelt binnen vaste risicoregels en kunt een uitbetaling aanvragen zodra je aan de voorwaarden voldoet."
+      },
+      "q2": {
+        "q": "Handel ik met echt geld?",
+        "a": "Nee. Alle funded accounts zijn gesimuleerd: er wordt geen echt kapitaal op de markt verhandeld. Uitbetalingen zijn beloningen op basis van je gesimuleerde resultaat, zoals beschreven in de voorwaarden."
+      },
+      "q3": {
+        "q": "Wat zijn de handelsregels?",
+        "a": "Elk account heeft een dagelijkse verlieslimiet en een maximale drawdown. Je dashboard laat realtime zien hoe dicht je erbij zit. Wordt een limiet overschreden, dan wordt het account automatisch gesloten."
+      },
+      "q4": {
+        "q": "Kan ik meer verliezen dan de fee?",
+        "a": "Nee. Het account is gesimuleerd, dus je maximale kosten zijn de fee die je hebt betaald. Je bent nooit meer verschuldigd."
+      },
+      "q5": {
+        "q": "Hoe werken uitbetalingen?",
+        "a": "Zodra je aan de uitbetalingsvoorwaarden voldoet, vraag je een uitbetaling aan vanuit je dashboard. Voor je eerste uitbetaling verifiëren we je identiteit (KYC). Elk verzoek wordt beoordeeld."
+      },
+      "q6": {
+        "q": "In welke markten kan ik handelen?",
+        "a": "De belangrijkste cryptoparen zoals BTC/USDT en ETH/USDT, 24/7. Prijzen zijn gebaseerd op live marktdata van Binance USDⓈ-M futures."
+      },
+      "q7": {
+        "q": "Is mijn land ondersteund?",
+        "a": "We kunnen geen accounts aanbieden in landen onder EU-sancties of op de FATF-lijsten met hoog risico. Je land wordt gecontroleerd bij registratie en vóór uitbetalingen."
+      },
+      "q8": {
+        "q": "Kan ik met eigen geld handelen?",
+        "a": "We bereiden een optie voor om met eigen geld te handelen via een gelicentieerde partnerbroker. Wij houden zelf nooit klantgeld aan."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Gesimuleerde instant-funded trading accounts voor cryptomarkten.",
+    "social": "Sociale media",
+    "comingSoon": "binnenkort",
+    "platform": "Platform",
+    "legal": "Juridisch",
+    "rights": "Alle rechten voorbehouden."
+  },
+  "legal": {
+    "terms": "Algemene voorwaarden",
+    "privacy": "Privacybeleid",
+    "cookies": "Cookiebeleid",
+    "risk": "Risico-informatie",
+    "aml": "KYC- & AML-beleid"
+  },
+  "placeholder": {
+    "login": "Inloggen",
+    "register": "Account aanmaken",
+    "legalTitle": "Juridisch document",
+    "body": "Deze pagina is in voorbereiding en is binnenkort beschikbaar.",
+    "back": "Terug naar home"
   }
 }

@@ -24,6 +24,11 @@
 | D20 | Partners later aanleveren; strook verborgen tot er echte partners zijn | besloten (D) |
 | D21 | `--meter-safe` light = #0284C7 (i.p.v. #0EA5E9, 2,8:1) zodat de meter-vulling 3:1 haalt | besloten (fase 1) |
 | D22 | `--profit-text` #15803D voor cijfers (spec #16A34A haalt 3,3:1); #16A34A blijft voor grafieken | besloten (fase 1) |
-| D23 | Primaire knop: witte tekst op #38BDF8→#0EA5E9 haalt AA niet (2,1–2,8:1) | open — keuze in Contrast lab |
-| D24 | `--text-muted` #5B7690 op `--bg` = 4,47:1 (net onder 4,5) | open — voorstel: iets donkerder (#56718A) |
+| D23 | Primaire knop: zelfde gradient, marineblauwe tekst #0B2540 (5,6–7,3:1) | besloten (fase 2) |
+| D24 | `--text-muted` → #56718A (AA op `--bg`) | besloten (fase 2) |
 | D25 | Inter self-hosted via @fontsource (geen Google Fonts i.v.m. GDPR) | besloten |
+| D26 | MSW opt-in via `VITE_ENABLE_MSW=true` (dev/test); productiebuild strip mock-chunk en service worker | besloten |
+| D27 | Status-badges krijgen eigen teksttokens (`--badge-success/warn/danger-fg`) voor AA op hun tint | besloten |
+| D28 | Payout-notificatie toont alleen echte data uit `/public/payouts-feed`; leeg → kaart met label "Voorbeeld" | besloten |
+| D29 | Pricing: alleen Instant, 3 kaarten per rij; custom configurator haalt prijs van `POST /products/quote` | besloten |
+| D30 | Risk disclosure en FAQ-teksten zijn concepten — juridische review vereist vóór livegang | open (jurist) |

@@ -5,7 +5,7 @@
  * Contrast notes (WCAG 2.2 AA, checked by src/styles/tokens.test.ts):
  *   - `--profit` (#16A34A) is for chart lines/fills; numbers use `--profit-text`.
  *   - `--meter-warn` is a fill colour; warning text uses `--warn-text`.
- *   - Primary button foreground on the light-blue gradient is PENDING A DECISION (see test file).
+ *   - Primary button uses navy text on the light-blue gradient (decision D23).
  */
 
 :root,
@@ -35,7 +35,7 @@
 
   /* Text */
   --text: #0b2540;
-  --text-muted: #5b7690;
+  --text-muted: #56718a; /* spec #5B7690 darkened slightly for AA on --bg (D24) */
   --text-link: #2563eb;
   --text-on-accent: #ffffff;
 
@@ -44,6 +44,11 @@
   --profit-text: #15803d;
   --loss: #dc2626;
   --loss-text: #dc2626;
+
+  /* Status badges: text on a 14% tint of the status colour (AA) */
+  --badge-success-fg: #166534;
+  --badge-warn-fg: #854d0e;
+  --badge-danger-fg: #b91c1c;
 
   /* Meters */
   --meter-track: #e6f3fd;
@@ -55,11 +60,17 @@
   /* Buttons */
   --btn-primary-from: #38bdf8;
   --btn-primary-to: #0ea5e9;
-  --btn-primary-fg: #ffffff;
+  --btn-primary-fg: #0b2540; /* navy on light-blue gradient: AA (D23) */
   --btn-primary-glow: 0 10px 28px -8px rgb(14 165 233 / 0.6), 0 0 0 1px rgb(14 165 233 / 0.15);
   --btn-secondary-bg: #ffffff;
   --btn-secondary-fg: #2563eb;
   --btn-secondary-border: #7dd3fc;
+
+  /* Closing CTA band (white text needs the deep gradient for AA) */
+  --cta-gradient: linear-gradient(120deg, #0369a1 0%, #1d4ed8 55%, #2563eb 100%);
+  --cta-fg: #ffffff;
+  --cta-btn-bg: #ffffff;
+  --cta-btn-fg: #0b2540;
 
   /* Headings */
   --heading-gradient: linear-gradient(100deg, #0b2540 10%, #0e5a8a 55%, #0ea5e9 100%);
@@ -113,6 +124,10 @@
   --loss: #ef4444;
   --loss-text: #f87171;
 
+  --badge-success-fg: #4ade80;
+  --badge-warn-fg: #facc15;
+  --badge-danger-fg: #f87171;
+
   --meter-track: #12263f;
   --meter-safe: #38bdf8;
   --meter-warn: #facc15;
@@ -121,7 +136,7 @@
 
   --btn-primary-from: #38bdf8;
   --btn-primary-to: #0ea5e9;
-  --btn-primary-fg: #ffffff;
+  --btn-primary-fg: #07111f;
   --btn-primary-glow: 0 10px 30px -8px rgb(56 189 248 / 0.55), 0 0 0 1px rgb(56 189 248 / 0.25);
   --btn-secondary-bg: #0d1b2e;
   --btn-secondary-fg: #38bdf8;

@@ -21,8 +21,7 @@ import { CountUp } from '@/components/motion/count-up';
 import { Sparkline } from '@/components/motion/sparkline';
 import { FloatingCard } from '@/components/motion/floating-card';
 import { formatBps, formatLeverage, formatMoneyMinor } from '@/lib/format';
-import { ContrastLab } from './contrast-lab';
-import { exampleSeries } from './example-data';
+import { exampleSeries } from '@/lib/example-series';
 
 function Section({
   id,
@@ -201,7 +200,6 @@ export function DesignPage() {
               <Button variant="ghost">{t('design.buttons.ghost')}</Button>
               <Button disabled>{t('design.buttons.disabled')}</Button>
             </div>
-            <ContrastLab />
           </Card>
         </Section>
 

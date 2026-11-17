@@ -1,11 +1,15 @@
 {
-  "a11y": { "skipToContent": "Skip to content" },
+  "a11y": {
+    "skipToContent": "Skip to content"
+  },
   "common": {
     "simulated": "Simulated account",
     "example": "Example",
     "examplePrice": "Example price",
     "exampleData": "Example data",
-    "close": "Close"
+    "close": "Close",
+    "loading": "Loading…",
+    "retry": "Try again"
   },
   "nav": {
     "main": "Main navigation",
@@ -23,11 +27,30 @@
     "light": "Switch to light mode",
     "dark": "Switch to dark mode"
   },
-  "language": { "label": "Language" },
-  "range": { "1W": "1W", "1M": "1M", "3M": "3M", "6M": "6M", "1Y": "1Y" },
-  "meter": { "safe": "Safe", "warn": "Near limit", "breach": "Breached" },
+  "language": {
+    "label": "Language"
+  },
+  "range": {
+    "1W": "1W",
+    "1M": "1M",
+    "3M": "3M",
+    "6M": "6M",
+    "1Y": "1Y"
+  },
+  "meter": {
+    "safe": "Safe",
+    "warn": "Near limit",
+    "breach": "Breached"
+  },
   "risk": {
-    "short": "Trading leveraged products carries a high level of risk and may not be suitable for everyone. Instant-funded accounts are simulated: no real capital is traded and past performance is no guarantee of future results. Nothing on this page is investment advice."
+    "short": "Trading leveraged products carries a high level of risk and may not be suitable for everyone. Instant-funded accounts are simulated: no real capital is traded and past performance is no guarantee of future results. Nothing on this page is investment advice.",
+    "title": "Risk disclosure",
+    "p1": "Trading leveraged products such as crypto derivatives carries a high level of risk and may not be suitable for all investors. Prices can move rapidly, and leverage magnifies both gains and losses.",
+    "p2": "All funded accounts offered by {{brand}} are simulated. No real capital is traded on financial markets, and any profit or loss shown is hypothetical. Payouts are discretionary rewards based on simulated performance and are subject to our terms and conditions.",
+    "p3": "Simulated or hypothetical results have inherent limitations and do not reflect actual trading, including the impact of liquidity, slippage and execution. Past performance, whether real or simulated, is not a reliable indicator of future results.",
+    "p4": "{{brand}} is not a broker, bank or investment firm, does not provide investment advice and does not hold client funds. Trading with your own funds, where offered, is provided by a licensed third-party broker under its own terms and regulatory regime.",
+    "p5": "Market data is supplied by third parties and may be delayed, interrupted or inaccurate. Our services are not available in certain jurisdictions, including countries under EU sanctions or on the FATF high-risk lists, or where their use would be contrary to local law.",
+    "p6": "Nothing on this website constitutes financial, investment, tax or legal advice, or an offer or solicitation to buy or sell any financial instrument. Only participate with money you can afford to lose."
   },
   "design": {
     "badge": "Design system · Phase 1",
@@ -36,13 +59,18 @@
     "ctaPrimary": "Start trading",
     "ctaSecondary": "View pricing",
     "equity": "Equity",
-    "notification": { "title": "Payout received", "body": "$1,240.00 · 2 min ago" },
+    "notification": {
+      "title": "Payout received",
+      "body": "$1,240.00 · 2 min ago"
+    },
     "sections": {
       "colors": {
         "title": "Colours",
         "description": "Swatches read straight from tokens.css — switch the theme to see the dark palette."
       },
-      "typography": { "title": "Typography" },
+      "typography": {
+        "title": "Typography"
+      },
       "buttons": {
         "title": "Buttons",
         "description": "Gradient primary with glow on hover, white secondary with a blue border, and a ghost style."
@@ -51,15 +79,25 @@
         "title": "Cards & icon tiles",
         "description": "28px radius, soft blue shadow, glass variant and hover-lift."
       },
-      "badges": { "title": "Badges" },
-      "slider": { "title": "Slider & modal" },
-      "stepper": { "title": "Quantity stepper" },
+      "badges": {
+        "title": "Badges"
+      },
+      "slider": {
+        "title": "Slider & modal"
+      },
+      "stepper": {
+        "title": "Quantity stepper"
+      },
       "meters": {
         "title": "Meters",
         "description": "Blue = safe, yellow = near limit, red = breached. State is shown with an icon and text too."
       },
-      "tabs": { "title": "Tabs & self-drawing chart" },
-      "accordion": { "title": "Accordion" }
+      "tabs": {
+        "title": "Tabs & self-drawing chart"
+      },
+      "accordion": {
+        "title": "Accordion"
+      }
     },
     "typo": {
       "display": "Trade with clarity",
@@ -75,14 +113,6 @@
       "ghost": "Ghost",
       "disabled": "Disabled"
     },
-    "contrast": {
-      "title": "Decision needed: primary button contrast",
-      "body": "White text on the specified light-blue gradient does not meet WCAG AA (4.5:1). Pick one of these options.",
-      "spec": "As specified",
-      "navy": "Navy text",
-      "deep": "Deeper gradient",
-      "ratio": "Contrast"
-    },
     "cards": {
       "payout": {
         "title": "Fast payouts",
@@ -92,7 +122,10 @@
         "title": "Flexible leverage",
         "body": "Choose leverage per position within the account limits."
       },
-      "margin": { "title": "Cross margin", "body": "Margin is shared across your open positions." },
+      "margin": {
+        "title": "Cross margin",
+        "body": "Margin is shared across your open positions."
+      },
       "markets": {
         "title": "24/7 markets",
         "body": "Crypto markets never close — neither does the platform."
@@ -124,7 +157,10 @@
       "breached": "Daily loss (breached example)",
       "health": "Account health"
     },
-    "tabs": { "label": "Time range", "chartLabel": "Example equity curve" },
+    "tabs": {
+      "label": "Time range",
+      "chartLabel": "Example equity curve"
+    },
     "faq": {
       "q1": {
         "q": "Are the accounts real money?",
@@ -139,5 +175,197 @@
         "a": "English, Dutch and Spanish. More can be added later."
       }
     }
+  },
+  "overview": {
+    "equity": "Equity",
+    "range": "Time range",
+    "chartLabel": "Equity curve",
+    "health": "Account health",
+    "healthHint": "Distance to your loss limits",
+    "dailyLoss": "Daily loss",
+    "maxDrawdown": "Max drawdown",
+    "positions": "Open positions",
+    "symbol": "Symbol",
+    "side": "Side",
+    "size": "Size",
+    "entry": "Entry",
+    "pnl": "PnL",
+    "LONG": "Long",
+    "SHORT": "Short"
+  },
+  "landing": {
+    "seo": {
+      "title": "{{brand}} — Instant-funded crypto trading accounts (simulated)",
+      "description": "Get an instant-funded simulated trading account, trade crypto markets 24/7 within clear risk rules and request payouts when you meet the conditions."
+    },
+    "hero": {
+      "badge": "Instant funding · Simulated accounts",
+      "title": "Trade a funded account from day one",
+      "subtitle": "Pick an account size, trade crypto markets 24/7 within clear risk rules, and request payouts when you meet the conditions. No evaluation phase.",
+      "ctaPrimary": "Choose your account",
+      "ctaSecondary": "How it works",
+      "note": "Simulated trading environment. No investment advice. Payouts are subject to the terms.",
+      "payout": {
+        "title": "Payout received",
+        "exampleMeta": "example"
+      }
+    },
+    "partners": {
+      "label": "Partners"
+    },
+    "steps": {
+      "eyebrow": "How it works",
+      "title": "Three steps to your first payout",
+      "subtitle": "No evaluation, no waiting. You start on a simulated funded account straight away.",
+      "step": "Step {{n}}",
+      "choose": {
+        "title": "Choose your account",
+        "body": "Select an account size and pay a one-time fee. Your simulated account is ready immediately."
+      },
+      "trade": {
+        "title": "Trade your funded account",
+        "body": "Trade crypto pairs 24/7 within the daily loss and max drawdown limits. Your dashboard shows exactly how close you are."
+      },
+      "payout": {
+        "title": "Request a payout",
+        "body": "Meet the payout conditions, complete identity verification and request your share of the simulated profit."
+      }
+    },
+    "features": {
+      "eyebrow": "Features",
+      "title": "Built for focused traders",
+      "subtitle": "A clean terminal, transparent rules and tools that keep you in control of your risk.",
+      "payout": {
+        "title": "Fast payouts",
+        "body": "Request a payout from your dashboard once you meet the conditions. Every request is reviewed and tracked transparently.",
+        "request": "Request",
+        "review": "Review",
+        "paid": "Paid out"
+      },
+      "leverage": {
+        "title": "Flexible leverage",
+        "body": "Set leverage per position, within the limits of your account.",
+        "slider": "Leverage",
+        "margin": "Margin for a {{size}} position",
+        "learnMore": "What does leverage mean?",
+        "modalTitle": "How leverage works",
+        "modalDescription": "Leverage lets you open a larger position with less margin — and increases risk in the same way.",
+        "point1": "Required margin = position size ÷ leverage.",
+        "point2": "Gains and losses are calculated on the full position size, not on your margin.",
+        "point3": "Higher leverage brings your loss limits closer. A small price move can breach them."
+      },
+      "margin": {
+        "title": "Cross margin",
+        "body": "Your open positions share one margin balance, so free margin is used efficiently across trades.",
+        "used": "Used margin",
+        "free": "Free margin"
+      },
+      "markets": {
+        "title": "24/7 markets",
+        "body": "Crypto never sleeps. Trade the major pairs around the clock, priced from live market data.",
+        "open": "Markets open"
+      }
+    },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "title": "Choose your account size",
+      "subtitle": "One-time fee. Instant access to a simulated funded account.",
+      "examplePrices": "Example prices — final offer follows",
+      "recommended": "Recommended",
+      "capital": "Trading capital (simulated)",
+      "maxDrawdown": "Max drawdown",
+      "drawdownType": {
+        "STATIC": "Static",
+        "TRAILING": "Trailing"
+      },
+      "dailyLoss": "Daily loss limit",
+      "profitSplit": "Profit split",
+      "leverage": "Max leverage",
+      "oneTimeFee": "one-time fee",
+      "quantity": "Number of {{size}} accounts",
+      "decrement": "Fewer accounts",
+      "increment": "More accounts",
+      "total": "Total",
+      "buy": "Get this account",
+      "error": "Prices could not be loaded.",
+      "empty": "No accounts are available right now.",
+      "customPrompt": "Need a different size or drawdown?",
+      "custom": "Build a custom account",
+      "disclaimer": "All funded accounts are simulated. The fee gives access to a simulated trading account and is not a deposit. Payouts depend on meeting the conditions in the terms."
+    },
+    "custom": {
+      "title": "Build a custom account",
+      "description": "Choose your account size and max drawdown. The price is calculated by our server.",
+      "size": "Trading capital (simulated)",
+      "drawdown": "Max drawdown",
+      "price": "Price",
+      "error": "The price could not be calculated. Please try again.",
+      "note": "Daily loss limit 3% · trailing drawdown · one-time fee",
+      "continue": "Continue"
+    },
+    "cta": {
+      "title": "Ready to trade on your own terms?",
+      "subtitle": "Choose an account size and start on a simulated funded account today.",
+      "button": "View accounts",
+      "note": "Trading involves risk. Accounts are simulated."
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Frequently asked questions",
+      "q1": {
+        "q": "What is instant funding?",
+        "a": "You buy access to a simulated funded account and can start trading straight away — there is no evaluation phase. You trade within fixed risk rules and can request payouts when you meet the payout conditions."
+      },
+      "q2": {
+        "q": "Am I trading real money?",
+        "a": "No. All funded accounts are simulated: no real capital is traded on the market. Payouts are rewards based on your simulated performance, as described in the terms."
+      },
+      "q3": {
+        "q": "What are the trading rules?",
+        "a": "Each account has a daily loss limit and a maximum drawdown. Your dashboard shows in real time how close you are. If a limit is breached, the account is closed automatically."
+      },
+      "q4": {
+        "q": "Can I lose more than the fee?",
+        "a": "No. The account is simulated, so your maximum cost is the fee you paid. You never owe more than that."
+      },
+      "q5": {
+        "q": "How do payouts work?",
+        "a": "Once you meet the payout conditions you can request a payout from your dashboard. Before your first payout we verify your identity (KYC). Every request is reviewed."
+      },
+      "q6": {
+        "q": "Which markets can I trade?",
+        "a": "Major crypto pairs such as BTC/USDT and ETH/USDT, 24/7. Prices are based on live market data from Binance USDⓈ-M futures."
+      },
+      "q7": {
+        "q": "Is my country supported?",
+        "a": "We cannot offer accounts in countries under EU sanctions or on the FATF high-risk lists. Your country is checked when you sign up and before payouts."
+      },
+      "q8": {
+        "q": "Can I trade with my own money?",
+        "a": "We are preparing an option to trade with your own funds through a licensed partner broker. We never hold client money ourselves."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Simulated instant-funded trading accounts for crypto markets.",
+    "social": "Social media",
+    "comingSoon": "coming soon",
+    "platform": "Platform",
+    "legal": "Legal",
+    "rights": "All rights reserved."
+  },
+  "legal": {
+    "terms": "Terms & conditions",
+    "privacy": "Privacy policy",
+    "cookies": "Cookie policy",
+    "risk": "Risk disclosure",
+    "aml": "KYC & AML policy"
+  },
+  "placeholder": {
+    "login": "Log in",
+    "register": "Create account",
+    "legalTitle": "Legal document",
+    "body": "This page is under construction and will be available soon.",
+    "back": "Back to home"
   }
 }

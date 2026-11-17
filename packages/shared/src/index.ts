@@ -1,2 +1,3 @@
 export * from './i18n';
 export * from './enums';
+export * from './catalog';

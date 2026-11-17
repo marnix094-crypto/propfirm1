@@ -1,11 +1,15 @@
 {
-  "a11y": { "skipToContent": "Ir al contenido" },
+  "a11y": {
+    "skipToContent": "Ir al contenido"
+  },
   "common": {
     "simulated": "Cuenta simulada",
     "example": "Ejemplo",
     "examplePrice": "Precio de ejemplo",
     "exampleData": "Datos de ejemplo",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "loading": "Cargando…",
+    "retry": "Reintentar"
   },
   "nav": {
     "main": "Navegación principal",
@@ -23,11 +27,30 @@
     "light": "Cambiar a modo claro",
     "dark": "Cambiar a modo oscuro"
   },
-  "language": { "label": "Idioma" },
-  "range": { "1W": "1S", "1M": "1M", "3M": "3M", "6M": "6M", "1Y": "1A" },
-  "meter": { "safe": "Seguro", "warn": "Cerca del límite", "breach": "Superado" },
+  "language": {
+    "label": "Idioma"
+  },
+  "range": {
+    "1W": "1S",
+    "1M": "1M",
+    "3M": "3M",
+    "6M": "6M",
+    "1Y": "1A"
+  },
+  "meter": {
+    "safe": "Seguro",
+    "warn": "Cerca del límite",
+    "breach": "Superado"
+  },
   "risk": {
-    "short": "Operar con productos apalancados conlleva un alto nivel de riesgo y puede no ser adecuado para todos. Las cuentas con financiación instantánea son simuladas: no se opera con capital real y los resultados pasados no garantizan resultados futuros. Nada en esta página constituye asesoramiento de inversión."
+    "short": "Operar con productos apalancados conlleva un alto nivel de riesgo y puede no ser adecuado para todos. Las cuentas con financiación instantánea son simuladas: no se opera con capital real y los resultados pasados no garantizan resultados futuros. Nada en esta página constituye asesoramiento de inversión.",
+    "title": "Divulgación de riesgos",
+    "p1": "Operar con productos apalancados, como derivados de criptomonedas, conlleva un alto nivel de riesgo y puede no ser adecuado para todos los inversores. Los precios pueden moverse con rapidez y el apalancamiento amplifica tanto las ganancias como las pérdidas.",
+    "p2": "Todas las cuentas financiadas de {{brand}} son simuladas. No se opera con capital real en los mercados financieros y cualquier beneficio o pérdida mostrado es hipotético. Los pagos son recompensas discrecionales basadas en el rendimiento simulado y están sujetos a nuestros términos y condiciones.",
+    "p3": "Los resultados simulados o hipotéticos tienen limitaciones inherentes y no reflejan operaciones reales, incluido el efecto de la liquidez, el deslizamiento y la ejecución. El rendimiento pasado, real o simulado, no es un indicador fiable de resultados futuros.",
+    "p4": "{{brand}} no es un bróker, banco ni empresa de servicios de inversión, no ofrece asesoramiento de inversión y no custodia fondos de clientes. La operativa con fondos propios, cuando se ofrezca, la presta un bróker externo con licencia bajo sus propias condiciones y régimen regulatorio.",
+    "p5": "Los datos de mercado los proporcionan terceros y pueden estar retrasados, interrumpidos o ser inexactos. Nuestros servicios no están disponibles en determinadas jurisdicciones, incluidos los países sujetos a sanciones de la UE o incluidos en las listas de alto riesgo del GAFI, o donde su uso sea contrario a la legislación local.",
+    "p6": "Nada en este sitio web constituye asesoramiento financiero, de inversión, fiscal o jurídico, ni una oferta o invitación a comprar o vender ningún instrumento financiero. Participa solo con dinero que puedas permitirte perder."
   },
   "design": {
     "badge": "Sistema de diseño · Fase 1",
@@ -36,13 +59,18 @@
     "ctaPrimary": "Empieza a operar",
     "ctaSecondary": "Ver precios",
     "equity": "Equity",
-    "notification": { "title": "Pago recibido", "body": "1.240,00 US$ · hace 2 min" },
+    "notification": {
+      "title": "Pago recibido",
+      "body": "1.240,00 US$ · hace 2 min"
+    },
     "sections": {
       "colors": {
         "title": "Colores",
         "description": "Muestras leídas directamente de tokens.css — cambia el tema para ver la paleta oscura."
       },
-      "typography": { "title": "Tipografía" },
+      "typography": {
+        "title": "Tipografía"
+      },
       "buttons": {
         "title": "Botones",
         "description": "Primario con degradado y brillo al pasar el ratón, secundario blanco con borde azul y estilo ghost."
@@ -51,15 +79,25 @@
         "title": "Tarjetas e iconos",
         "description": "Radio de 28px, sombra azul suave, variante glass y elevación al pasar el ratón."
       },
-      "badges": { "title": "Insignias" },
-      "slider": { "title": "Slider y modal" },
-      "stepper": { "title": "Selector de cantidad" },
+      "badges": {
+        "title": "Insignias"
+      },
+      "slider": {
+        "title": "Slider y modal"
+      },
+      "stepper": {
+        "title": "Selector de cantidad"
+      },
       "meters": {
         "title": "Medidores",
         "description": "Azul = seguro, amarillo = cerca del límite, rojo = superado. El estado también se muestra con icono y texto."
       },
-      "tabs": { "title": "Pestañas y gráfico animado" },
-      "accordion": { "title": "Acordeón" }
+      "tabs": {
+        "title": "Pestañas y gráfico animado"
+      },
+      "accordion": {
+        "title": "Acordeón"
+      }
     },
     "typo": {
       "display": "Opera con claridad",
@@ -74,14 +112,6 @@
       "secondary": "Secundario",
       "ghost": "Ghost",
       "disabled": "Desactivado"
-    },
-    "contrast": {
-      "title": "Decisión pendiente: contraste del botón primario",
-      "body": "El texto blanco sobre el degradado azul claro especificado no cumple WCAG AA (4,5:1). Elige una de estas opciones.",
-      "spec": "Según especificación",
-      "navy": "Texto azul marino",
-      "deep": "Degradado más oscuro",
-      "ratio": "Contraste"
     },
     "cards": {
       "payout": {
@@ -127,7 +157,10 @@
       "breached": "Pérdida diaria (ejemplo superado)",
       "health": "Salud de la cuenta"
     },
-    "tabs": { "label": "Periodo", "chartLabel": "Curva de equity de ejemplo" },
+    "tabs": {
+      "label": "Periodo",
+      "chartLabel": "Curva de equity de ejemplo"
+    },
     "faq": {
       "q1": {
         "q": "¿Las cuentas son con dinero real?",
@@ -142,5 +175,197 @@
         "a": "Inglés, neerlandés y español. Se pueden añadir más en el futuro."
       }
     }
+  },
+  "overview": {
+    "equity": "Equity",
+    "range": "Periodo",
+    "chartLabel": "Curva de equity",
+    "health": "Salud de la cuenta",
+    "healthHint": "Distancia a tus límites de pérdida",
+    "dailyLoss": "Pérdida diaria",
+    "maxDrawdown": "Drawdown máximo",
+    "positions": "Posiciones abiertas",
+    "symbol": "Símbolo",
+    "side": "Dirección",
+    "size": "Tamaño",
+    "entry": "Entrada",
+    "pnl": "PnL",
+    "LONG": "Largo",
+    "SHORT": "Corto"
+  },
+  "landing": {
+    "seo": {
+      "title": "{{brand}} — Cuentas de trading cripto con financiación instantánea (simuladas)",
+      "description": "Obtén al instante una cuenta de trading financiada simulada, opera en mercados cripto 24/7 con reglas de riesgo claras y solicita pagos cuando cumplas las condiciones."
+    },
+    "hero": {
+      "badge": "Financiación instantánea · Cuentas simuladas",
+      "title": "Opera con una cuenta financiada desde el primer día",
+      "subtitle": "Elige un tamaño de cuenta, opera en mercados cripto 24/7 con reglas de riesgo claras y solicita pagos cuando cumplas las condiciones. Sin fase de evaluación.",
+      "ctaPrimary": "Elige tu cuenta",
+      "ctaSecondary": "Cómo funciona",
+      "note": "Entorno de trading simulado. No es asesoramiento de inversión. Pagos sujetos a las condiciones.",
+      "payout": {
+        "title": "Pago recibido",
+        "exampleMeta": "ejemplo"
+      }
+    },
+    "partners": {
+      "label": "Socios"
+    },
+    "steps": {
+      "eyebrow": "Cómo funciona",
+      "title": "Tres pasos hasta tu primer pago",
+      "subtitle": "Sin evaluación ni esperas. Empiezas directamente con una cuenta financiada simulada.",
+      "step": "Paso {{n}}",
+      "choose": {
+        "title": "Elige tu cuenta",
+        "body": "Selecciona un tamaño de cuenta y paga una tarifa única. Tu cuenta simulada está lista al instante."
+      },
+      "trade": {
+        "title": "Opera tu cuenta financiada",
+        "body": "Opera pares cripto 24/7 dentro de los límites de pérdida diaria y drawdown máximo. Tu panel muestra exactamente lo cerca que estás."
+      },
+      "payout": {
+        "title": "Solicita un pago",
+        "body": "Cumple las condiciones de pago, completa la verificación de identidad y solicita tu parte del beneficio simulado."
+      }
+    },
+    "features": {
+      "eyebrow": "Funciones",
+      "title": "Diseñado para traders enfocados",
+      "subtitle": "Un terminal claro, reglas transparentes y herramientas que te mantienen al control de tu riesgo.",
+      "payout": {
+        "title": "Pagos rápidos",
+        "body": "Solicita un pago desde tu panel en cuanto cumplas las condiciones. Cada solicitud se revisa y se sigue de forma transparente.",
+        "request": "Solicitud",
+        "review": "Revisión",
+        "paid": "Pagado"
+      },
+      "leverage": {
+        "title": "Apalancamiento flexible",
+        "body": "Ajusta el apalancamiento por posición, dentro de los límites de tu cuenta.",
+        "slider": "Apalancamiento",
+        "margin": "Margen para una posición de {{size}}",
+        "learnMore": "¿Qué significa apalancamiento?",
+        "modalTitle": "Cómo funciona el apalancamiento",
+        "modalDescription": "El apalancamiento te permite abrir una posición mayor con menos margen — y aumenta el riesgo en la misma medida.",
+        "point1": "Margen necesario = tamaño de la posición ÷ apalancamiento.",
+        "point2": "Las ganancias y pérdidas se calculan sobre el tamaño total de la posición, no sobre tu margen.",
+        "point3": "Un mayor apalancamiento acerca tus límites de pérdida. Un pequeño movimiento del precio puede superarlos."
+      },
+      "margin": {
+        "title": "Margen cruzado",
+        "body": "Tus posiciones abiertas comparten un único saldo de margen, de modo que el margen libre se usa de forma eficiente.",
+        "used": "Margen usado",
+        "free": "Margen libre"
+      },
+      "markets": {
+        "title": "Mercados 24/7",
+        "body": "Las cripto nunca duermen. Opera los principales pares a cualquier hora, con precios basados en datos de mercado en vivo.",
+        "open": "Mercados abiertos"
+      }
+    },
+    "pricing": {
+      "eyebrow": "Precios",
+      "title": "Elige el tamaño de tu cuenta",
+      "subtitle": "Tarifa única. Acceso inmediato a una cuenta financiada simulada.",
+      "examplePrices": "Precios de ejemplo — la oferta final llegará pronto",
+      "recommended": "Recomendado",
+      "capital": "Capital de trading (simulado)",
+      "maxDrawdown": "Drawdown máximo",
+      "drawdownType": {
+        "STATIC": "Estático",
+        "TRAILING": "Dinámico"
+      },
+      "dailyLoss": "Límite de pérdida diaria",
+      "profitSplit": "Reparto de beneficios",
+      "leverage": "Apalancamiento máx.",
+      "oneTimeFee": "tarifa única",
+      "quantity": "Número de cuentas de {{size}}",
+      "decrement": "Menos cuentas",
+      "increment": "Más cuentas",
+      "total": "Total",
+      "buy": "Elegir esta cuenta",
+      "error": "No se pudieron cargar los precios.",
+      "empty": "No hay cuentas disponibles en este momento.",
+      "customPrompt": "¿Necesitas otro tamaño o drawdown?",
+      "custom": "Crear cuenta personalizada",
+      "disclaimer": "Todas las cuentas financiadas son simuladas. La tarifa da acceso a una cuenta de trading simulada y no es un depósito. Los pagos dependen del cumplimiento de las condiciones."
+    },
+    "custom": {
+      "title": "Crea una cuenta personalizada",
+      "description": "Elige el tamaño de tu cuenta y el drawdown máximo. Nuestro servidor calcula el precio.",
+      "size": "Capital de trading (simulado)",
+      "drawdown": "Drawdown máximo",
+      "price": "Precio",
+      "error": "No se pudo calcular el precio. Inténtalo de nuevo.",
+      "note": "Límite de pérdida diaria 3% · drawdown dinámico · tarifa única",
+      "continue": "Continuar"
+    },
+    "cta": {
+      "title": "¿Listo para operar a tu manera?",
+      "subtitle": "Elige un tamaño de cuenta y empieza hoy con una cuenta financiada simulada.",
+      "button": "Ver cuentas",
+      "note": "Operar conlleva riesgos. Las cuentas son simuladas."
+    },
+    "faq": {
+      "eyebrow": "Preguntas",
+      "title": "Preguntas frecuentes",
+      "q1": {
+        "q": "¿Qué es la financiación instantánea?",
+        "a": "Compras acceso a una cuenta financiada simulada y puedes operar de inmediato — no hay fase de evaluación. Operas dentro de reglas de riesgo fijas y puedes solicitar pagos cuando cumplas las condiciones."
+      },
+      "q2": {
+        "q": "¿Opero con dinero real?",
+        "a": "No. Todas las cuentas financiadas son simuladas: no se opera con capital real en el mercado. Los pagos son recompensas basadas en tu rendimiento simulado, según lo descrito en las condiciones."
+      },
+      "q3": {
+        "q": "¿Cuáles son las reglas de trading?",
+        "a": "Cada cuenta tiene un límite de pérdida diaria y un drawdown máximo. Tu panel muestra en tiempo real lo cerca que estás. Si se supera un límite, la cuenta se cierra automáticamente."
+      },
+      "q4": {
+        "q": "¿Puedo perder más que la tarifa?",
+        "a": "No. La cuenta es simulada, así que tu coste máximo es la tarifa que pagaste. Nunca deberás más que eso."
+      },
+      "q5": {
+        "q": "¿Cómo funcionan los pagos?",
+        "a": "Cuando cumplas las condiciones de pago, puedes solicitarlo desde tu panel. Antes de tu primer pago verificamos tu identidad (KYC). Cada solicitud se revisa."
+      },
+      "q6": {
+        "q": "¿En qué mercados puedo operar?",
+        "a": "Los principales pares cripto como BTC/USDT y ETH/USDT, 24/7. Los precios se basan en datos de mercado en vivo de Binance USDⓈ-M futures."
+      },
+      "q7": {
+        "q": "¿Está disponible en mi país?",
+        "a": "No podemos ofrecer cuentas en países sujetos a sanciones de la UE o incluidos en las listas de alto riesgo del GAFI. Tu país se comprueba al registrarte y antes de los pagos."
+      },
+      "q8": {
+        "q": "¿Puedo operar con mi propio dinero?",
+        "a": "Estamos preparando una opción para operar con fondos propios a través de un bróker asociado con licencia. Nunca custodiamos dinero de clientes."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Cuentas de trading simuladas con financiación instantánea para mercados cripto.",
+    "social": "Redes sociales",
+    "comingSoon": "próximamente",
+    "platform": "Plataforma",
+    "legal": "Legal",
+    "rights": "Todos los derechos reservados."
+  },
+  "legal": {
+    "terms": "Términos y condiciones",
+    "privacy": "Política de privacidad",
+    "cookies": "Política de cookies",
+    "risk": "Divulgación de riesgos",
+    "aml": "Política KYC y AML"
+  },
+  "placeholder": {
+    "login": "Iniciar sesión",
+    "register": "Crear cuenta",
+    "legalTitle": "Documento legal",
+    "body": "Esta página está en preparación y estará disponible pronto.",
+    "back": "Volver al inicio"
   }
 }

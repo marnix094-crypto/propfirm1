@@ -12,7 +12,8 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    command: 'pnpm build && pnpm preview',
+    // Test build with MSW mock data enabled (never used for production images).
+    command: 'VITE_ENABLE_MSW=true pnpm build && pnpm preview',
     url: 'http://localhost:4173',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

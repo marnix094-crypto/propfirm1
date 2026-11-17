@@ -1,8 +1,16 @@
 import '@testing-library/jest-dom/vitest';
-import { afterEach } from 'vitest';
+import { afterAll, afterEach, beforeAll } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
 afterEach(() => cleanup());
+
+// MSW in Node for component tests that hit the API (only in jsdom test files).
+if (typeof window !== 'undefined') {
+  const { server } = await import('@/mocks/node');
+  beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
+}
 
 // jsdom lacks these browser APIs used by motion / radix.
 if (typeof window !== 'undefined' && !window.matchMedia) {

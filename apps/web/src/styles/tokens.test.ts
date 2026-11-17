@@ -46,24 +46,18 @@ const TEXT_PAIRS: Pair[] = [
   ['warn-text', 'card', 4.5],
   ['btn-secondary-fg', 'btn-secondary-bg', 4.5],
   ['text-on-accent', 'accent-deep', 4.5],
+  ['text-muted', 'bg', 4.5],
+  ['btn-primary-fg', 'btn-primary-from', 4.5],
+  ['btn-primary-fg', 'btn-primary-to', 4.5],
   ['focus-ring', 'bg', 3],
   ['meter-safe', 'card', 3],
   ['meter-breach', 'card', 3],
 ];
 
-/**
- * Known gaps that are pending a product decision (see design preview "Contrast lab").
- * Listed explicitly so they stay visible; remove an entry once resolved.
- */
-const PENDING: Record<'light' | 'dark', string[]> = {
-  light: ['text-muted/bg'],
-  dark: [],
-};
-
 describe.each([
   ['light', light],
   ['dark', dark],
-] as const)('%s theme contrast', (theme, vars) => {
+] as const)('%s theme contrast', (_theme, vars) => {
   it.each(TEXT_PAIRS)('%s on %s ≥ %s:1', (fg, bg, min) => {
     const ratio = contrast(vars[fg]!, vars[bg]!);
     expect(
@@ -71,16 +65,42 @@ describe.each([
       `${fg} (${vars[fg]}) on ${bg} (${vars[bg]}) = ${ratio.toFixed(2)}`,
     ).toBeGreaterThanOrEqual(min);
   });
+});
 
-  it('documents pending decisions', () => {
-    const muted = contrast(vars['text-muted']!, vars['bg']!);
-    if (PENDING[theme].includes('text-muted/bg')) expect(muted).toBeLessThan(4.5);
-    else expect(muted).toBeGreaterThanOrEqual(4.5);
+function mix(fg: string, bg: string, p: number): string {
+  const ch = (h: string, i: number) => parseInt(h.slice(i, i + 2), 16);
+  return (
+    '#' +
+    [1, 3, 5]
+      .map((i) =>
+        Math.round(ch(bg, i) + (ch(fg, i) - ch(bg, i)) * p)
+          .toString(16)
+          .padStart(2, '0'),
+      )
+      .join('')
+  );
+}
+
+describe.each([
+  ['light', light],
+  ['dark', dark],
+] as const)('%s status badges', (_theme, vars) => {
+  it.each([
+    ['badge-success-fg', 'profit'],
+    ['badge-warn-fg', 'meter-warn'],
+    ['badge-danger-fg', 'loss'],
+  ])('%s on a 18%% tint of %s (over card and card-muted) ≥ 4.5:1', (fg, tint) => {
+    for (const surface of ['card', 'card-muted']) {
+      const bg = mix(vars[tint]!, vars[surface]!, 0.18);
+      expect(contrast(vars[fg]!, bg), `${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+    }
   });
 });
 
-describe('primary button (pending decision)', () => {
-  it('spec white-on-gradient is below AA — decision required', () => {
-    expect(contrast(light['btn-primary-fg']!, light['btn-primary-from']!)).toBeLessThan(4.5);
+describe('closing CTA band', () => {
+  it('white text meets AA on every gradient stop', () => {
+    for (const stop of ['#0369a1', '#1d4ed8', '#2563eb']) {
+      expect(contrast('#ffffff', stop)).toBeGreaterThanOrEqual(4.5);
+    }
   });
 });

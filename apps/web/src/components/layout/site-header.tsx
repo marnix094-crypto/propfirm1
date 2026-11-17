@@ -7,9 +7,14 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { LanguageSwitcher } from './language-switcher';
 import { Logo } from './logo';
 
-const NAV = ['howItWorks', 'features', 'pricing', 'faq'] as const;
+export const NAV_ITEMS = [
+  { id: 'how-it-works', key: 'howItWorks' },
+  { id: 'features', key: 'features' },
+  { id: 'pricing', key: 'pricing' },
+  { id: 'faq', key: 'faq' },
+] as const;
 
-/** Sticky header with blur. Refined with real anchors in phase 2. */
+/** Sticky header with blur: logo, section navigation, language, theme toggle, platform button. */
 export function SiteHeader() {
   const { t } = useTranslation();
   const { lang } = useParams();
@@ -23,10 +28,10 @@ export function SiteHeader() {
         </Link>
         <nav aria-label={t('nav.main')} className="ml-6 hidden md:block">
           <ul className="flex items-center gap-1">
-            {NAV.map((key) => (
-              <li key={key}>
+            {NAV_ITEMS.map(({ id, key }) => (
+              <li key={id}>
                 <a
-                  href={`#${key}`}
+                  href={`/${lang}#${id}`}
                   className="rounded-sm px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg"
                 >
                   {t(`nav.${key}`)}
@@ -40,8 +45,8 @@ export function SiteHeader() {
             <LanguageSwitcher />
           </div>
           <ThemeToggle />
-          <Button size="sm" className="hidden sm:inline-flex">
-            {t('nav.toPlatform')}
+          <Button size="sm" className="hidden sm:inline-flex" asChild>
+            <Link to={`/${lang}/login`}>{t('nav.toPlatform')}</Link>
           </Button>
           <button
             type="button"
@@ -66,10 +71,10 @@ export function SiteHeader() {
           className="border-t border-border px-4 pb-4 md:hidden"
         >
           <ul className="flex flex-col py-2">
-            {NAV.map((key) => (
-              <li key={key}>
+            {NAV_ITEMS.map(({ id, key }) => (
+              <li key={id}>
                 <a
-                  href={`#${key}`}
+                  href={`/${lang}#${id}`}
                   onClick={() => setOpen(false)}
                   className="block rounded-sm px-2 py-3 font-medium"
                 >
@@ -80,8 +85,8 @@ export function SiteHeader() {
           </ul>
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
-            <Button size="sm" className="flex-1">
-              {t('nav.toPlatform')}
+            <Button size="sm" className="flex-1" asChild>
+              <Link to={`/${lang}/login`}>{t('nav.toPlatform')}</Link>
             </Button>
           </div>
         </nav>

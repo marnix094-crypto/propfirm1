@@ -11,9 +11,11 @@ const badgeVariants = cva(
         primary: 'bg-primary-tint/60 text-accent',
         recommended:
           'bg-[var(--accent-deep)] text-[var(--text-on-accent)] shadow-[0_6px_18px_-6px_rgb(37_99_235/0.6)]',
-        success: 'bg-[color-mix(in_srgb,var(--profit)_14%,transparent)] text-profit',
-        warning: 'bg-[color-mix(in_srgb,var(--meter-warn)_18%,transparent)] text-warn',
-        danger: 'bg-[color-mix(in_srgb,var(--loss)_12%,transparent)] text-loss',
+        success:
+          'bg-[color-mix(in_srgb,var(--profit)_14%,transparent)] text-[var(--badge-success-fg)]',
+        warning:
+          'bg-[color-mix(in_srgb,var(--meter-warn)_18%,transparent)] text-[var(--badge-warn-fg)]',
+        danger: 'bg-[color-mix(in_srgb,var(--loss)_12%,transparent)] text-[var(--badge-danger-fg)]',
         simulated: 'border border-dashed border-border-strong bg-card text-accent',
       },
     },

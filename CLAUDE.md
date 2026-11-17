@@ -56,14 +56,15 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 | `--primary-tint` | `#BAE6FD` | (afgeleid, lage opacity) |
 | `--accent-deep` | `#2563EB` | `#22D3EE` |
 | `--text` | `#0B2540` | `#E6F1FB` |
-| `--text-muted` | `#5B7690` | (afgeleid, AA-gecontroleerd) |
+| `--text-muted` | `#56718A` (spec #5B7690, iets donkerder voor AA) | `#8FA9C4` |
 | `--glow-aqua` | `#22D3EE` (alleen gradients/glows) | idem |
 | `--glow-lavender` | `#A5B4FC` (alleen gradients/glows) | idem |
-| `--profit` | `#16A34A` (alleen PnL/getallen) | lichtere variant voor AA |
+| `--profit` | `#16A34A` grafieken; cijfers `--profit-text` `#15803D` | `#4ADE80` |
 | `--loss` | `#DC2626` (alleen PnL/getallen) | lichtere variant voor AA |
-| `--meter-safe` / `--meter-warn` / `--meter-breach` | blauw / geel / rood | idem |
+| `--meter-safe` / `--meter-warn` / `--meter-breach` | `#0284C7` / `#CA8A04` / `#DC2626` | `#38BDF8` / `#FACC15` / `#F87171` |
+| `--badge-*-fg` | donkere tekst op status-tint (AA) | `#4ADE80` / `#FACC15` / `#F87171` |
 
-- Primaire knop: gradient `#38BDF8 → #0EA5E9`, witte tekst, radius 12–14px, blauwe glow bij hover. Secundair: wit met blauwe rand.
+- Primaire knop: gradient `#38BDF8 → #0EA5E9`, **marineblauwe tekst** (`#0B2540`, besluit D23 i.v.m. AA), radius 12–14px, blauwe glow bij hover. Secundair: wit met blauwe rand.
 - Font **Inter**; grote koppen met tekstgradient (marineblauw → hemelblauw); `font-variant-numeric: tabular-nums` voor alle cijfers.
 - Kaarten radius 28px, zachte blauwe schaduw; glass-kaarten met `backdrop-blur`; outline-iconen in afgeronde vierkantjes.
 - Thema-toggle in de header, zachte crossfade bij wissel; light = standaard.
@@ -73,7 +74,9 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 
 - `pnpm install` · `pnpm dev` · `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm build` · `pnpm e2e`
 - Docker: `cp .env.example .env` → `docker compose up` (postgres, redis, mailpit :8025, api :3000, web :5173)
-- Design-preview: `/{en|nl|es}/design`
+- Landing: `/{en|nl|es}` · design-preview: `/{en|nl|es}/design` · placeholders: `/login`, `/register`, `/legal/:doc`
+- MSW: alleen met `VITE_ENABLE_MSW=true` (dev/test). Productiebuilds bevatten geen mock-code of service worker; een zichtbare "Mock data (dev)"-pil verschijnt zodra mocks actief zijn.
+- Repo: https://github.com/marnix094-crypto/propfirm1 (branch `main`, CI via GitHub Actions)
 - Workspace-pakketten worden als TS-bron geconsumeerd via de `source` export-conditie.
 - Contrast wordt bewaakt door `apps/web/src/styles/tokens.test.ts` en axe in Playwright.
 
@@ -95,8 +98,8 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 ## Status
 
 - [x] Fase 0 — Plan
-- [x] Fase 1 — Monorepo, Docker, CI, tokens + componentbibliotheek (wacht op akkoord)
-- [ ] Fase 2 — Landingspagina
+- [x] Fase 1 — Monorepo, Docker, CI, tokens + componentbibliotheek
+- [x] Fase 2 — Landingspagina (wacht op akkoord)
 - [ ] Fase 3 — Backend-kern (DB, auth+2FA, Binance, simulatie-engine)
 - [ ] Fase 4 — Challenge-regelengine + realtime equity-controle
 - [ ] Fase 5 — API + WS, OpenAPI, gegenereerde client, auth in frontend

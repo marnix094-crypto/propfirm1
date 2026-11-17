@@ -1,0 +1,95 @@
+# CLAUDE.md — BRAND platform
+
+> Werkafspraken en projectgeheugen. Houd dit bestand bij na elke fase.
+> "BRAND" is een placeholder voor de merknaam; nooit hardcoden buiten `apps/web/src/config/brand.ts` en de i18n-bestanden.
+
+## Product
+
+Prop trading platform + broker-app voor de EU-markt. Talen: **NL (standaard)** en EN.
+
+1. **Challenge / Funded** — trader betaalt een fee, doorloopt een evaluatie (Instant, 1-step, 2-step) op een **gesimuleerd** account, krijgt daarna een funded account (ook gesimuleerd) met winstdeling. De UI zegt overal duidelijk dat accounts gesimuleerd zijn, tenzij er ooit echte kapitaalallocatie wordt ingebouwd.
+2. **Eigen geld (broker-track)** — handelen met eigen geld via een gelicentieerde broker/LP. **Wij houden nooit klantgeld vast.** Voorlopig alleen een `BrokerAdapter`-interface + mock.
+
+## Stack
+
+- Monorepo met **pnpm workspaces**, Node 22 LTS, alles TypeScript (strict).
+- `apps/web`: React + Vite, Tailwind (v4, CSS-first) + shadcn/ui, Framer Motion (`motion/react`), TradingView Lightweight Charts, TanStack Query, Zustand, React Router, react-i18next.
+- `apps/api`: NestJS, PostgreSQL via Prisma, Redis, WebSockets (Socket.IO + Redis-adapter), OpenAPI via `@nestjs/swagger`.
+- `packages/shared`: gedeelde types, enums, foutcodes, WS-eventtypes, **gegenereerde API-client** (openapi-typescript + openapi-fetch).
+- `packages/engine`: pure domeinlogica zonder IO (fixed-point rekenen, orders, posities, margin, PnL, spread/slippage, funding, challenge-regels). Deterministisch → volledig unit-testbaar.
+- Docker Compose (postgres, redis, mailpit, api, web), GitHub Actions CI.
+- Tests: Vitest (unit), Playwright (e2e). MSW alleen in development en tests.
+
+## Harde regels
+
+- **Geld = integers in minor units (cents)**, type `bigint` in engine/DB (`BigInt` in Prisma). Nooit `number`-floats voor geld. In de API: veldnamen eindigen op `Minor` (bv. `balanceMinor`) en worden als integer-**string** verstuurd.
+- **Prijzen en hoeveelheden** = fixed-point integers met per-instrument `priceDecimals` / `qtyDecimals`. In de API als decimale string (`"67012.35"`), nooit float.
+- **Percentages** = basispunten (int), bv. 10% = `1000` bps.
+- **Afronding**: één centrale functie in `packages/engine/money`, half-even (banker's rounding), behalve waar expliciet anders gedocumenteerd.
+- **Idempotentie**: elke muterende order/betaal-call vereist `Idempotency-Key`-header; orders hebben daarnaast een unieke `clientOrderId` per account.
+- **Single writer per account**: mutaties op een account in één DB-transactie met `SELECT … FOR UPDATE` op de account-rij.
+- **Audit log is onveranderlijk**: alleen INSERT (DB-trigger blokkeert UPDATE/DELETE), hash-keten (`prevHash` → `hash`). Elke order, fill, regelovertreding, statuswijziging en adminactie wordt gelogd.
+- **Rule sets zijn onveranderlijk en geversioneerd**: een account blijft op de regelversie waarmee het gekocht is.
+- **GDPR**: PII alleen in `UserProfile` (veldversleuteling AES-256-GCM, sleutel uit env). Audit log bevat geen PII, alleen ids. Verwijderverzoek = pseudonimiseren met behoud van wettelijk verplichte financiële gegevens. Hosting in de EU.
+- **Secrets alleen in env-bestanden** (`.env`, nooit gecommit); elke app heeft een `.env.example`. Config wordt bij boot gevalideerd.
+- **Frontend praat uitsluitend met de echte API + WS.** MSW-handlers alleen achter `import.meta.env.DEV`/test-flag.
+- **Loading-, lege- en foutstaten** op elk scherm. Globale "Verbinding verbroken"-banner met automatische reconnect (exponential backoff) en resync via snapshot.
+- **Social proof**: notificaties als "uitbetaling ontvangen" alleen uit echte, geanonimiseerde data (`/public/payouts-feed`) of zichtbaar gelabeld als "Voorbeeld".
+- **Geen claims over gegarandeerde winst.** Risk disclaimers zichtbaar in footer, checkout en terminal.
+- **Toegankelijkheid**: WCAG 2.2 AA contrast, volledige toetsenbordbediening, zichtbare focus, `prefers-reduced-motion` gerespecteerd. Mobile-first.
+- Partners-strook: alleen echte partners; anders duidelijke placeholders.
+
+## Design system (lichtblauw, premium broker-look)
+
+Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/tokens.css`. Componenten gebruiken nooit hex-waarden direct.
+
+| Token | Light | Dark |
+|---|---|---|
+| `--bg` | `#F4F9FE` + radiale gradient `#E6F3FD` | `#07111F` |
+| `--card` | `#FFFFFF` | `#0D1B2E` |
+| `--border` | `#DCEBF7` | `#17304D` |
+| `--primary` | `#0EA5E9` | `#38BDF8` |
+| `--primary-light` | `#38BDF8` | `#38BDF8` |
+| `--primary-tint` | `#BAE6FD` | (afgeleid, lage opacity) |
+| `--accent-deep` | `#2563EB` | `#22D3EE` |
+| `--text` | `#0B2540` | `#E6F1FB` |
+| `--text-muted` | `#5B7690` | (afgeleid, AA-gecontroleerd) |
+| `--glow-aqua` | `#22D3EE` (alleen gradients/glows) | idem |
+| `--glow-lavender` | `#A5B4FC` (alleen gradients/glows) | idem |
+| `--profit` | `#16A34A` (alleen PnL/getallen) | lichtere variant voor AA |
+| `--loss` | `#DC2626` (alleen PnL/getallen) | lichtere variant voor AA |
+| `--meter-safe` / `--meter-warn` / `--meter-breach` | blauw / geel / rood | idem |
+
+- Primaire knop: gradient `#38BDF8 → #0EA5E9`, witte tekst, radius 12–14px, blauwe glow bij hover. Secundair: wit met blauwe rand.
+- Font **Inter**; grote koppen met tekstgradient (marineblauw → hemelblauw); `font-variant-numeric: tabular-nums` voor alle cijfers.
+- Kaarten radius 28px, zachte blauwe schaduw; glass-kaarten met `backdrop-blur`; outline-iconen in afgeronde vierkantjes.
+- Thema-toggle in de header, zachte crossfade bij wissel; light = standaard.
+- Animaties: scroll-reveal (fade + slide-up, stagger), count-up getallen, zelftekenende grafieklijnen, hover-lift, zwevende notificatiekaart, vloeiende accordion/slider. Alleen `transform`/`opacity` animeren (60fps, geen layout shift). `prefers-reduced-motion` → animaties uit.
+
+## Code-afspraken
+
+- Code, identifiers en commentaar in het **Engels**; documentatie en UI-teksten NL (+ EN-vertaling). Geen hardcoded UI-strings: alles via i18n.
+- Formatting via `Intl` met locale (`nl-NL`: `€ 1.234,56`).
+- ESLint + Prettier, Conventional Commits.
+- API: REST onder `/api/v1`, fouten als RFC 9457 `application/problem+json` met stabiele `code` (vertaald in de client). Cursor-paginatie.
+- Elke NestJS-module: controller → service → repository (Prisma). Domeinberekeningen alleen in `packages/engine`.
+- Nieuwe adapters (marktdata, broker, betaling, KYC, uitbetaling) implementeren altijd een interface + hebben een mock/fake voor tests.
+
+## Werkwijze
+
+- Werk in fases, strikt in volgorde. Na elke fase: samenvatting, wat getest is, open vragen → **wachten op "ga door"**.
+- Bij onduidelijkheid: vragen stellen, geen aannames.
+- Ontwerpdocumenten: `docs/architecture.md`, `docs/datamodel.md`, `docs/api.md`, `docs/roadmap.md`, besluiten in `docs/decisions.md`.
+
+## Status
+
+- [x] Fase 0 — Plan (wacht op akkoord)
+- [ ] Fase 1 — Monorepo, Docker, CI, tokens + componentbibliotheek
+- [ ] Fase 2 — Landingspagina
+- [ ] Fase 3 — Backend-kern (DB, auth+2FA, Binance, simulatie-engine)
+- [ ] Fase 4 — Challenge-regelengine + realtime equity-controle
+- [ ] Fase 5 — API + WS, OpenAPI, gegenereerde client, auth in frontend
+- [ ] Fase 6 — Dashboard + trading-terminal live
+- [ ] Fase 7 — Challenge-voortgang, account-wissel, checkout
+- [ ] Fase 8 — Admin, audit log, risico-alerts
+- [ ] Fase 9 — KYC, broker-mock, uitbetalingen, e2e, performance, a11y

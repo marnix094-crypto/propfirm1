@@ -63,6 +63,10 @@ erDiagram
 
 **WebhookEvent** — `id`, `provider`, `externalEventId` (uniek per provider), `type`, `payload` jsonb, `receivedAt`, `processedAt`, `error`.
 
+**PriceQuote** (custom configurator) — `id`, `userId?`, `type`, `accountSizeMinor`, `options` jsonb, `priceMinor`, `currency`, `ruleSetDraft` jsonb, `expiresAt`.
+
+**CountryRestriction** — `countryCode` (PK), `level` (BLOCKED/NO_PAYOUT/REVIEW), `source` (EU_SANCTIONS/FATF_BLACK/FATF_GREY/MANUAL), `updatedAt`, `updatedById`.
+
 **IdempotencyKey** — `key` + `userId` (PK), `route`, `requestHash`, `responseStatus`, `responseBody` jsonb, `createdAt`, `expiresAt` (24u).
 
 ### Trading

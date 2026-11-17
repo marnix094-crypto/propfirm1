@@ -5,7 +5,7 @@
 
 ## Product
 
-Prop trading platform + broker-app voor de EU-markt. Talen: **NL (standaard)** en EN.
+Prop trading platform + broker-app voor de EU-markt. Talen: **NL (standaard)**, EN, ES, uitbreidbaar (taalprefix in URL, bv. `/en/…`, `/es/…`).
 
 1. **Challenge / Funded** — trader betaalt een fee, doorloopt een evaluatie (Instant, 1-step, 2-step) op een **gesimuleerd** account, krijgt daarna een funded account (ook gesimuleerd) met winstdeling. De UI zegt overal duidelijk dat accounts gesimuleerd zijn, tenzij er ooit echte kapitaalallocatie wordt ingebouwd.
 2. **Eigen geld (broker-track)** — handelen met eigen geld via een gelicentieerde broker/LP. **Wij houden nooit klantgeld vast.** Voorlopig alleen een `BrokerAdapter`-interface + mock.
@@ -13,7 +13,7 @@ Prop trading platform + broker-app voor de EU-markt. Talen: **NL (standaard)** e
 ## Stack
 
 - Monorepo met **pnpm workspaces**, Node 22 LTS, alles TypeScript (strict).
-- `apps/web`: React + Vite, Tailwind (v4, CSS-first) + shadcn/ui, Framer Motion (`motion/react`), TradingView Lightweight Charts, TanStack Query, Zustand, React Router, react-i18next.
+- `apps/web`: React + Vite, Tailwind (v4, CSS-first) + shadcn/ui, Framer Motion (`motion/react`), TradingView Lightweight Charts, TanStack Query, Zustand, React Router, react-i18next (locales als losse JSON per taal, lazy geladen).
 - `apps/api`: NestJS, PostgreSQL via Prisma, Redis, WebSockets (Socket.IO + Redis-adapter), OpenAPI via `@nestjs/swagger`.
 - `packages/shared`: gedeelde types, enums, foutcodes, WS-eventtypes, **gegenereerde API-client** (openapi-typescript + openapi-fetch).
 - `packages/engine`: pure domeinlogica zonder IO (fixed-point rekenen, orders, posities, margin, PnL, spread/slippage, funding, challenge-regels). Deterministisch → volledig unit-testbaar.
@@ -38,6 +38,9 @@ Prop trading platform + broker-app voor de EU-markt. Talen: **NL (standaard)** e
 - **Geen claims over gegarandeerde winst.** Risk disclaimers zichtbaar in footer, checkout en terminal.
 - **Toegankelijkheid**: WCAG 2.2 AA contrast, volledige toetsenbordbediening, zichtbare focus, `prefers-reduced-motion` gerespecteerd. Mobile-first.
 - Partners-strook: alleen echte partners; anders duidelijke placeholders.
+- Marktdata: Binance USDⓈ-M futures. Daily reset 00:00 Europe/Amsterdam. Netting-posities.
+- Landenrestricties: configureerbare blocklist (EU-sancties + FATF), gecontroleerd bij registratie, checkout en uitbetaling.
+- KYC pas bij promotie naar funded en bij uitbetaling.
 
 ## Design system (lichtblauw, premium broker-look)
 

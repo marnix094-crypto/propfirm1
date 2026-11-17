@@ -87,7 +87,7 @@ flowchart LR
 ```
 
 ### Datastroom prijzen
-1. `BinanceMarketDataAdapter` (implementeert `MarketDataAdapter`) verbindt met publieke streams (`bookTicker` voor bid/ask, `kline_*` voor candles). Auto-reconnect + heartbeat; bij 24u-disconnect van Binance proactief herverbinden.
+1. `BinanceMarketDataAdapter` (implementeert `MarketDataAdapter`) verbindt met publieke **USDⓈ-M futures**-streams (`bookTicker` voor bid/ask, `markPrice@1s` voor mark price + funding rate, `kline_*` voor candles). Auto-reconnect + heartbeat; bij 24u-disconnect van Binance proactief herverbinden.
 2. Genormaliseerde `Quote { instrumentId, bid, ask, ts, source }` → Redis pub/sub `quotes:{symbol}` + laatste quote in Redis-hash.
 3. Afnemers: **Risk loop** (elke tick), **pending-order matcher** (limit/stop), **WS-gateway** (gethrottled naar clients, max ~4 updates/s per symbool).
 4. Historische candles: REST-proxy naar Binance klines met Redis-cache.
@@ -121,7 +121,7 @@ Pure functies/klassen, geen IO, `bigint` overal.
   - Stop triggert op bid/ask-cross en wordt een market-fill met slippage.
 - **Posities**: modus **netting** (één positie per instrument per account) — zie vraag Q4. Gemiddelde instapprijs, partial close, gerealiseerde/ongerealiseerde PnL.
 - **Margin**: `initialMargin = notional / leverage`; `marginLevel = equity / usedMargin`; margin call- en stop-out-niveau per rule set (bv. stop-out bij 50%).
-- **Funding/financing**: per instrument `fundingIntervalHours` + `fundingRateLongBps/ShortBps` (vast, configureerbaar). Later optioneel echte funding rates van Binance futures.
+- **Funding/financing**: per instrument `fundingIntervalHours` + `fundingRateLongBps/ShortBps` (fallback). Standaard: echte funding rate uit Binance `markPrice`-stream, elke 8 uur afgerekend.
 - **Fees**: commissie per instrument (bps van notional) → ledger.
 - **Equity** = balance + Σ unrealized PnL − openstaande fundingkosten.
 
@@ -152,7 +152,7 @@ Configuratie per **RuleSet** (onveranderlijk, geversioneerd) per fase van een pr
 | Interface | Eerste implementatie | Opmerking |
 |---|---|---|
 | `MarketDataAdapter` | Binance (publieke streams) | Polygon/Databento/forex later |
-| `PaymentProvider` | Stripe **of** Mollie (testmodus) — Q6 | webhooks idempotent via `WebhookEvent` |
+| `PaymentProvider` | Mock; Stripe/Mollie later (D11) | webhooks idempotent via `WebhookEvent` |
 | `KycProvider` | Mock; Sumsub-adapter in fase 9 | status via webhook |
 | `BrokerAdapter` | Mock | `openAccount`, `getBalance`, `placeOrder`, `syncPositions`, `onExecution`. Geen klantgeld bij ons. |
 | `PayoutProvider` | Placeholder (handmatig "markeer betaald") | |
@@ -175,7 +175,7 @@ Configuratie per **RuleSet** (onveranderlijk, geversioneerd) per fase van een pr
 - **Optimistische orders**: order verschijnt direct als `PENDING` met `clientOrderId`; server-bevestiging via REST-response en `order.update` op WS; rollback + toast bij weigering.
 - **Reconnect**: exponential backoff (1s → 30s, jitter), banner "Verbinding verbroken — opnieuw verbinden…", na reconnect `resync` met laatst bekende `seq` → server stuurt snapshot.
 - Routes: `/` (landing), `/login`, `/register`, `/2fa`, `/app/dashboard`, `/app/terminal`, `/app/challenge`, `/app/accounts`, `/app/payouts`, `/app/billing`, `/app/profile`, `/app/security`, `/admin/*`. Code-splitting per route.
-- i18n: `nl` standaard, `en` beschikbaar, taal in URL-prefix voor landing (`/en/…`) t.b.v. SEO — zie Q12.
+- i18n: `nl` standaard, `en` beschikbaar, taal in URL-prefix (`/nl`, `/en`, `/es`, …), `hreflang`-tags, lazy-geladen vertalingen.
 
 ## 8. Lokaal draaien & CI
 

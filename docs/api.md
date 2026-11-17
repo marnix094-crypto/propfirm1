@@ -46,8 +46,8 @@ Legenda rol: P = publiek, T = trader (ingelogd), S = support, A = admin, ⚡ = s
 | GET | `/products?type=INSTANT\|ONE_STEP\|TWO_STEP` | P | pricing-kaarten incl. regels |
 |---|---|---|---|
 | GET | `/products/:id` | P | |
-| POST | `/custom-account-requests` | P/T | "Maak custom account" (zie vraag Q11) |
-| POST | `/checkout` | T 🔑 | `{ productId, quantity }` → `{ purchaseId, paymentUrl }` |
+| POST | `/products/quote` | P | custom account configurator: `{ type, accountSizeMinor, options }` → berekende prijs + rules (server is bron van waarheid) |
+| POST | `/checkout` | T 🔑 | `{ productId \| quoteId, quantity }` → `{ purchaseId, paymentUrl }` |
 | GET | `/checkout/:purchaseId` | T | status na terugkeer van PSP |
 | POST | `/webhooks/payments/:provider` | P (signature) | betaling → accounts aanmaken |
 | GET | `/invoices` · `/invoices/:id/pdf` | T | |

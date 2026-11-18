@@ -23,6 +23,7 @@ import { RealtimeModule } from './modules/realtime/realtime.module.js';
 import { RulesModule } from './modules/rules/rules.module.js';
 import { TradingModule } from './modules/trading/trading.module.js';
 import { UsersModule } from './modules/users/users.module.js';
+import { CompeteModule } from './modules/compete/compete.module.js';
 
 @Module({
   imports: [
@@ -53,6 +54,8 @@ import { UsersModule } from './modules/users/users.module.js';
     CertificatesModule,
     RealtimeModule,
     UsersModule,
+    // Separate product (D97): no dependencies on or from the prop-firm modules.
+    CompeteModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

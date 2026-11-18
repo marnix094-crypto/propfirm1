@@ -1428,6 +1428,294 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/compete/operator': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_operator'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/rounds/current': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_current'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/rounds/recent': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_recent'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/rounds/{id}/leaderboard': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_publicLeaderboard'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/auth/register': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteController_register'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/auth/login': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteController_login'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/auth/refresh': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteController_refresh'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/auth/logout': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteController_logout'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/me': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_me'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/me/round': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_myRound'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/me/history': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_history'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/me/rounds/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_myRoundById'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/me/rounds/{id}/leaderboard': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_myLeaderboard'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/rounds/{id}/entries': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteController_join'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/entries/{id}/test-payment': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteController_testPayment'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/entries/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_entry'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/entries/{id}/orders': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteController_orders'];
+    put?: never;
+    post: operations['CompeteController_placeOrder'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/entries/{id}/positions/{symbol}/close': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteController_closePosition'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2590,6 +2878,181 @@ export interface components {
        *     ]
        */
       symbols: string[];
+    };
+    CompeteOperatorDto: {
+      slug: string;
+      name: string;
+      primaryColor: string;
+      timeZone: string;
+      /** @description Local start time, minutes after midnight */
+      startMinuteOfDay: number;
+      durationMinutes: number;
+      entryFeeMinor: string;
+      currency: string;
+      startBalanceMinor: string;
+      leverage: number;
+      maxDrawdownBps: number;
+      minParticipants: number;
+      prizePoolBps: number;
+      prizeSplitBps: number[];
+      /** @description True while only test payments exist (no real money) */
+      testPayments: boolean;
+    };
+    CompetePositionDto: {
+      symbol: string;
+      /** @enum {string} */
+      side: 'LONG' | 'SHORT';
+      qty: string;
+      avgEntryPrice: string;
+      markPrice: string | null;
+      unrealizedPnlMinor: string;
+      leverage: number;
+    };
+    CompeteEntryDto: {
+      id: string;
+      roundId: string;
+      /** @enum {string} */
+      status:
+        'PENDING_PAYMENT' | 'PAYMENT_FAILED' | 'ACTIVE' | 'BREACHED' | 'FINISHED' | 'REFUNDED';
+      startBalanceMinor: string;
+      balanceMinor: string;
+      equityMinor: string;
+      usedMarginMinor: string;
+      freeMarginMinor: string;
+      /** @description Equity at or below this ends the entry (static 10%) */
+      floorMinor: string;
+      /** @description Return on the starting balance in bps */
+      returnBps: string;
+      rank: number | null;
+      prizeMinor: string | null;
+      paidAt: string | null;
+      endedAt: string | null;
+      positions: components['schemas']['CompetePositionDto'][];
+    };
+    CompeteRoundDto: {
+      id: string;
+      /** @enum {string} */
+      status: 'OPEN' | 'LIVE' | 'SETTLED' | 'CANCELLED';
+      startsAt: string;
+      endsAt: string;
+      entryFeeMinor: string;
+      currency: string;
+      startBalanceMinor: string;
+      leverage: number;
+      maxDrawdownBps: number;
+      minParticipants: number;
+      prizePoolBps: number;
+      prizeSplitBps: number[];
+      /** @description Paid entries */
+      participants: number;
+      potMinor: string;
+      /** @description Prize per place for the current pot */
+      prizesMinor: string[];
+      myEntry: components['schemas']['CompeteEntryDto'] | null;
+    };
+    CompeteLeaderboardRowDto: {
+      rank: number;
+      nickname: string;
+      returnBps: string;
+      equityMinor: string;
+      /** @enum {string} */
+      status:
+        'PENDING_PAYMENT' | 'PAYMENT_FAILED' | 'ACTIVE' | 'BREACHED' | 'FINISHED' | 'REFUNDED';
+      /** @description Final prize, or the projected prize while the round runs */
+      prizeMinor: string;
+      isMe: boolean;
+    };
+    CompeteLeaderboardDto: {
+      roundId: string;
+      /** @enum {string} */
+      status: 'OPEN' | 'LIVE' | 'SETTLED' | 'CANCELLED';
+      participants: number;
+      potMinor: string;
+      asOf: string;
+      rows: components['schemas']['CompeteLeaderboardRowDto'][];
+      me?: components['schemas']['CompeteLeaderboardRowDto'] | null;
+    };
+    CompeteRegisterDto: {
+      /** @example player@example.com */
+      email: string;
+      password: string;
+      /**
+       * @description Public name on leaderboards
+       * @example bull_rider
+       */
+      nickname: string;
+      /**
+       * @description ISO 3166-1 alpha-2
+       * @example NL
+       */
+      country: string;
+      /** @enum {string} */
+      locale: 'en' | 'nl' | 'es';
+      /** @description Must be true */
+      acceptTerms: boolean;
+      /** @description Player confirms being 18 or older; must be true */
+      confirmAdult: boolean;
+    };
+    CompetePlayerDto: {
+      id: string;
+      email: string;
+      nickname: string;
+      country: string;
+      locale: string;
+      operatorId: string;
+    };
+    CompeteAuthResponseDto: {
+      accessToken: string;
+      expiresIn: number;
+      player: components['schemas']['CompetePlayerDto'];
+    };
+    CompeteLoginDto: {
+      email: string;
+      password: string;
+    };
+    CompeteTokenDto: {
+      accessToken: string;
+      expiresIn: number;
+    };
+    CompeteHistoryItemDto: {
+      round: components['schemas']['CompeteRoundDto'];
+      entry: components['schemas']['CompeteEntryDto'];
+    };
+    CompeteJoinResponseDto: {
+      entry: components['schemas']['CompeteEntryDto'];
+      /** @description Where the player pays the entry fee */
+      paymentUrl: string;
+    };
+    CompeteTestPaymentDto: {
+      /** @enum {string} */
+      outcome: 'succeeded' | 'failed';
+    };
+    CompeteOrderDto: {
+      id: string;
+      clientOrderId: string;
+      symbol: string;
+      /** @enum {string} */
+      side: 'BUY' | 'SELL';
+      qty: string;
+      price: string;
+      feeMinor: string;
+      realizedPnlMinor: string;
+      /** @enum {string} */
+      reason: 'PLAYER' | 'DRAWDOWN' | 'ROUND_END';
+      createdAt: string;
+    };
+    PlaceCompeteOrderDto: {
+      /** @description Client-generated id, unique per entry */
+      clientOrderId: string;
+      /** @example BTCUSDT */
+      symbol: string;
+      /** @enum {string} */
+      side: 'BUY' | 'SELL';
+      /**
+       * @description Decimal string in base asset units
+       * @example 0.100
+       */
+      qty: string;
     };
   };
   responses: never;
@@ -4828,6 +5291,412 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['WatchlistDto'];
+        };
+      };
+    };
+  };
+  CompeteController_operator: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteOperatorDto'];
+        };
+      };
+    };
+  };
+  CompeteController_current: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteRoundDto'];
+        };
+      };
+    };
+  };
+  CompeteController_recent: {
+    parameters: {
+      query: {
+        limit: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteRoundDto'][];
+        };
+      };
+    };
+  };
+  CompeteController_publicLeaderboard: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteLeaderboardDto'];
+        };
+      };
+    };
+  };
+  CompeteController_register: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteRegisterDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAuthResponseDto'];
+        };
+      };
+    };
+  };
+  CompeteController_login: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteLoginDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAuthResponseDto'];
+        };
+      };
+    };
+  };
+  CompeteController_refresh: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteTokenDto'];
+        };
+      };
+    };
+  };
+  CompeteController_logout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CompeteController_me: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompetePlayerDto'];
+        };
+      };
+    };
+  };
+  CompeteController_myRound: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Current round with my entry */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteRoundDto'];
+        };
+      };
+    };
+  };
+  CompeteController_history: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteHistoryItemDto'][];
+        };
+      };
+    };
+  };
+  CompeteController_myRoundById: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteRoundDto'];
+        };
+      };
+    };
+  };
+  CompeteController_myLeaderboard: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteLeaderboardDto'];
+        };
+      };
+    };
+  };
+  CompeteController_join: {
+    parameters: {
+      query?: never;
+      header: {
+        'idempotency-key': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteJoinResponseDto'];
+        };
+      };
+    };
+  };
+  CompeteController_testPayment: {
+    parameters: {
+      query?: never;
+      header: {
+        'idempotency-key': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteTestPaymentDto'];
+      };
+    };
+    responses: {
+      /** @description Fake provider only (dev/test) */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteEntryDto'];
+        };
+      };
+    };
+  };
+  CompeteController_entry: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteEntryDto'];
+        };
+      };
+    };
+  };
+  CompeteController_orders: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteOrderDto'][];
+        };
+      };
+    };
+  };
+  CompeteController_placeOrder: {
+    parameters: {
+      query?: never;
+      header: {
+        'idempotency-key': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PlaceCompeteOrderDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteOrderDto'];
+        };
+      };
+    };
+  };
+  CompeteController_closePosition: {
+    parameters: {
+      query?: never;
+      header: {
+        'idempotency-key': string;
+      };
+      path: {
+        id: string;
+        symbol: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteOrderDto'];
         };
       };
     };

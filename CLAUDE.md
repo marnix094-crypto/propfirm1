@@ -9,6 +9,8 @@
 
 **Multi-tenant (D83):** elke klant is een `Firm` met eigen traders, producten, regelversies, huisstijl (naam, kleur, logo, domein) en een **adminpanel** op `/{lang}/admin`. Alleen de admin van die firma (één, aangemaakt door Daily Funded) en Daily Funded zelf (superadmin) komen erin, via de aparte partner-login `/{lang}/admin/login` (D91). Het adminpanel is nooit bereikbaar of gelinkt vanuit het klantdashboard; de admin stelt daar het klantdashboard samen (huisstijl, producten/regels, modules aan/uit, D92).
 
+**Tweede product — Compete (D97–D102, `docs/compete.md`):** dagelijkse betaalde tradingcompetitie, ook white label (klanten = "operators"). Strikt gescheiden van de prop-firm-software en het prop-firm-adminpanel: eigen API-module `apps/api/src/modules/compete`, eigen `Compete*`-tabellen, eigen spelers/sessies/tokens, eigen audit-keten; deelt alleen `packages/engine` en de marktdata. Niets in de prop-firm-modules importeert compete en andersom. Spelregels: $10 inleg, $100k virtueel, 1:100, 1 uur, statische 10% drawdown, max. 1 entry per ronde, min. 50 deelnemers (anders refund), 80% pot naar top 3 (50/30/20). Echt geld alleen na vergunning; tot dan testbetalingen.
+
 Functionaliteit van het platform (zoals een klant-prop-firm het inzet): prop trading platform + broker-app voor de EU-markt. Talen: **EN (standaard)**, NL, ES (taalprefix in URL, bv. `/en/…`, `/es/…`).
 
 1. **Instant funding** — trader betaalt een fee en krijgt direct een **gesimuleerd** funded account met winstdeling (accountvaluta USD, fee in EUR). Alleen Instant wordt aangeboden; 1-step/2-step blijven technisch mogelijk in engine/datamodel maar zijn niet actief. De UI zegt overal duidelijk dat accounts gesimuleerd zijn, tenzij er ooit echte kapitaalallocatie wordt ingebouwd.
@@ -101,6 +103,7 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - Repo: https://github.com/marnix094-crypto/propfirm1 (branch `main`, CI via GitHub Actions)
 - Workspace-pakketten worden als TS-bron geconsumeerd via de `source` export-conditie.
 - Adminpanel: API `apps/api/src/modules/admin` (`AdminGuard`: alleen firma-admin (OWNER) of superadmin + 2FA + firmakeuze superadmin), firma-resolutie + `ModuleGuard` (`@RequiresModule`) in `modules/firms`, risicomeldingen `modules/risk`. Modules-lijst gedeeld: `@brand/shared` `CLIENT_MODULES`. Superadmin aanmaken: `pnpm --filter @brand/api build && pnpm --filter @brand/api superadmin:create <email>` (print link om wachtwoord in te stellen). Web: `features/admin/*`, hooks `hooks/use-admin.ts`, huisstijl `components/layout/firm-brand.tsx` + `lib/brand-color.ts` (AA-palet). Nieuwe env: `DEFAULT_FIRM_SLUG` (standaard `daily-funded`), `ADMIN_REQUIRE_2FA` (alleen `false` in dev/e2e). Lokaal/e2e: `POST /dev/staff` (alleen `DEV_TOOLS_ENABLED`) maakt een firma + admin met wachtwoord; preview-admin: `admin@dailyfunded.demo` / `demo-admin-2026` (alleen in preview-builds). Preview van een andere firma: `?firm=slug` (of `VITE_FIRM_SLUG`).
+- Compete (D97): API `/api/v1/compete/*` (`@Public()` voor de prop-firm-guard, `CompeteAuthGuard` voor spelers), WS-namespace `/compete`. Nieuwe env: `COMPETE_DEFAULT_OPERATOR_SLUG` (standaard `your-arena`), `COMPETE_LOOP_ENABLED` (scheduler + drawdown; uit in API-tests, die tikken via `POST /compete/dev/tick`). Dev: `POST /compete/dev/rounds|tick|bots` (alleen `DEV_TOOLS_ENABLED`). Tests: `apps/api/test/compete.e2e.test.ts`.
 - Contrast wordt bewaakt door `apps/web/src/styles/tokens.test.ts` en axe in Playwright.
 
 ## Code-afspraken
@@ -130,3 +133,6 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - [ ] Fase 7 — Pricing-checkout (betaalprovider), facturen (na fase 8, D90)
 - [x] Fase 8 — Multi-tenant firma's, gescheiden adminpanel voor firma-admins + Daily Funded (overzicht, traders, accounts, producten, regelsets, klantdashboard samenstellen, huisstijl, risicomeldingen, audit log, beveiliging, firma's), white-label huisstijl (wacht op akkoord)
 - [ ] Fase 9 — KYC, broker-mock, uitbetalingen, e2e, performance, a11y
+- [x] Compete C1 — engine (ranking, prijzen, drawdown, annulering), aparte DB + API-module (spelers, rondes, inschrijving + testbetaling, trading, ranglijst + WS, afrekening, eigen audit-keten) (wacht op akkoord)
+- [ ] Compete C2 — frontend-app `apps/compete` (home, login, dashboard, terminal, live ranglijst)
+- [ ] Compete C3 — productpagina op de website + operator-beheerpanel

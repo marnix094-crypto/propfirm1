@@ -44,6 +44,16 @@ const schema = z.object({
     .enum(['true', 'false'])
     .default('true')
     .transform((v) => v === 'true'),
+  /** Compete product (D97): operator used when a request names none and its host matches none. */
+  COMPETE_DEFAULT_OPERATOR_SLUG: z
+    .string()
+    .regex(/^[a-z0-9-]{1,40}$/)
+    .default('your-arena'),
+  /** Compete scheduler + drawdown loop (rounds open, start, settle). */
+  COMPETE_LOOP_ENABLED: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((v) => v === 'true'),
   RISK_LOOP_ENABLED: z
     .enum(['true', 'false'])
     .default('true')
@@ -73,6 +83,7 @@ export type AppConfig = Readonly<{
   salesEmail: string | null;
   defaultFirmSlug: string;
   adminRequire2fa: boolean;
+  compete: { defaultOperatorSlug: string; loopEnabled: boolean };
 }>;
 
 export const APP_CONFIG = Symbol('APP_CONFIG');
@@ -122,5 +133,9 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     salesEmail: e.SALES_EMAIL ?? null,
     defaultFirmSlug: e.DEFAULT_FIRM_SLUG,
     adminRequire2fa: e.ADMIN_REQUIRE_2FA,
+    compete: {
+      defaultOperatorSlug: e.COMPETE_DEFAULT_OPERATOR_SLUG,
+      loopEnabled: e.COMPETE_LOOP_ENABLED,
+    },
   };
 }

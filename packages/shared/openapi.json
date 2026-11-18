@@ -3247,6 +3247,630 @@
           "me"
         ]
       }
+    },
+    "/api/v1/compete/operator": {
+      "get": {
+        "operationId": "CompeteController_operator",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteOperatorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/rounds/current": {
+      "get": {
+        "operationId": "CompeteController_current",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteRoundDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/rounds/recent": {
+      "get": {
+        "operationId": "CompeteController_recent",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompeteRoundDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/rounds/{id}/leaderboard": {
+      "get": {
+        "operationId": "CompeteController_publicLeaderboard",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteLeaderboardDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/auth/register": {
+      "post": {
+        "operationId": "CompeteController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteRegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAuthResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/auth/login": {
+      "post": {
+        "operationId": "CompeteController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAuthResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/auth/refresh": {
+      "post": {
+        "operationId": "CompeteController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteTokenDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/auth/logout": {
+      "post": {
+        "operationId": "CompeteController_logout",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/me": {
+      "get": {
+        "operationId": "CompeteController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompetePlayerDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/me/round": {
+      "get": {
+        "operationId": "CompeteController_myRound",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Current round with my entry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteRoundDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/me/history": {
+      "get": {
+        "operationId": "CompeteController_history",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompeteHistoryItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/me/rounds/{id}": {
+      "get": {
+        "operationId": "CompeteController_myRoundById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteRoundDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/me/rounds/{id}/leaderboard": {
+      "get": {
+        "operationId": "CompeteController_myLeaderboard",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteLeaderboardDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/rounds/{id}/entries": {
+      "post": {
+        "operationId": "CompeteController_join",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteJoinResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/entries/{id}/test-payment": {
+      "post": {
+        "operationId": "CompeteController_testPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteTestPaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Fake provider only (dev/test)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteEntryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/entries/{id}": {
+      "get": {
+        "operationId": "CompeteController_entry",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteEntryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/entries/{id}/orders": {
+      "get": {
+        "operationId": "CompeteController_orders",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompeteOrderDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      },
+      "post": {
+        "operationId": "CompeteController_placeOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlaceCompeteOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteOrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      }
+    },
+    "/api/v1/compete/entries/{id}/positions/{symbol}/close": {
+      "post": {
+        "operationId": "CompeteController_closePosition",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "symbol",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteOrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete"
+        ]
+      }
     }
   },
   "info": {
@@ -7356,6 +7980,648 @@
         },
         "required": [
           "symbols"
+        ]
+      },
+      "CompeteOperatorDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "primaryColor": {
+            "type": "string"
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "startMinuteOfDay": {
+            "type": "number",
+            "description": "Local start time, minutes after midnight"
+          },
+          "durationMinutes": {
+            "type": "number"
+          },
+          "entryFeeMinor": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "startBalanceMinor": {
+            "type": "string"
+          },
+          "leverage": {
+            "type": "number"
+          },
+          "maxDrawdownBps": {
+            "type": "number"
+          },
+          "minParticipants": {
+            "type": "number"
+          },
+          "prizePoolBps": {
+            "type": "number"
+          },
+          "prizeSplitBps": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "testPayments": {
+            "type": "boolean",
+            "description": "True while only test payments exist (no real money)"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "primaryColor",
+          "timeZone",
+          "startMinuteOfDay",
+          "durationMinutes",
+          "entryFeeMinor",
+          "currency",
+          "startBalanceMinor",
+          "leverage",
+          "maxDrawdownBps",
+          "minParticipants",
+          "prizePoolBps",
+          "prizeSplitBps",
+          "testPayments"
+        ]
+      },
+      "CompetePositionDto": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "LONG",
+              "SHORT"
+            ]
+          },
+          "qty": {
+            "type": "string"
+          },
+          "avgEntryPrice": {
+            "type": "string"
+          },
+          "markPrice": {
+            "type": "string",
+            "nullable": true
+          },
+          "unrealizedPnlMinor": {
+            "type": "string"
+          },
+          "leverage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "symbol",
+          "side",
+          "qty",
+          "avgEntryPrice",
+          "markPrice",
+          "unrealizedPnlMinor",
+          "leverage"
+        ]
+      },
+      "CompeteEntryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "roundId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_PAYMENT",
+              "PAYMENT_FAILED",
+              "ACTIVE",
+              "BREACHED",
+              "FINISHED",
+              "REFUNDED"
+            ]
+          },
+          "startBalanceMinor": {
+            "type": "string"
+          },
+          "balanceMinor": {
+            "type": "string"
+          },
+          "equityMinor": {
+            "type": "string"
+          },
+          "usedMarginMinor": {
+            "type": "string"
+          },
+          "freeMarginMinor": {
+            "type": "string"
+          },
+          "floorMinor": {
+            "type": "string",
+            "description": "Equity at or below this ends the entry (static 10%)"
+          },
+          "returnBps": {
+            "type": "string",
+            "description": "Return on the starting balance in bps"
+          },
+          "rank": {
+            "type": "number",
+            "nullable": true
+          },
+          "prizeMinor": {
+            "type": "string",
+            "nullable": true
+          },
+          "paidAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "endedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompetePositionDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "roundId",
+          "status",
+          "startBalanceMinor",
+          "balanceMinor",
+          "equityMinor",
+          "usedMarginMinor",
+          "freeMarginMinor",
+          "floorMinor",
+          "returnBps",
+          "rank",
+          "prizeMinor",
+          "paidAt",
+          "endedAt",
+          "positions"
+        ]
+      },
+      "CompeteRoundDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "LIVE",
+              "SETTLED",
+              "CANCELLED"
+            ]
+          },
+          "startsAt": {
+            "type": "string"
+          },
+          "endsAt": {
+            "type": "string"
+          },
+          "entryFeeMinor": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "startBalanceMinor": {
+            "type": "string"
+          },
+          "leverage": {
+            "type": "number"
+          },
+          "maxDrawdownBps": {
+            "type": "number"
+          },
+          "minParticipants": {
+            "type": "number"
+          },
+          "prizePoolBps": {
+            "type": "number"
+          },
+          "prizeSplitBps": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "participants": {
+            "type": "number",
+            "description": "Paid entries"
+          },
+          "potMinor": {
+            "type": "string"
+          },
+          "prizesMinor": {
+            "description": "Prize per place for the current pot",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "myEntry": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CompeteEntryDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "startsAt",
+          "endsAt",
+          "entryFeeMinor",
+          "currency",
+          "startBalanceMinor",
+          "leverage",
+          "maxDrawdownBps",
+          "minParticipants",
+          "prizePoolBps",
+          "prizeSplitBps",
+          "participants",
+          "potMinor",
+          "prizesMinor",
+          "myEntry"
+        ]
+      },
+      "CompeteLeaderboardRowDto": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "returnBps": {
+            "type": "string"
+          },
+          "equityMinor": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_PAYMENT",
+              "PAYMENT_FAILED",
+              "ACTIVE",
+              "BREACHED",
+              "FINISHED",
+              "REFUNDED"
+            ]
+          },
+          "prizeMinor": {
+            "type": "string",
+            "description": "Final prize, or the projected prize while the round runs"
+          },
+          "isMe": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "rank",
+          "nickname",
+          "returnBps",
+          "equityMinor",
+          "status",
+          "prizeMinor",
+          "isMe"
+        ]
+      },
+      "CompeteLeaderboardDto": {
+        "type": "object",
+        "properties": {
+          "roundId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "LIVE",
+              "SETTLED",
+              "CANCELLED"
+            ]
+          },
+          "participants": {
+            "type": "number"
+          },
+          "potMinor": {
+            "type": "string"
+          },
+          "asOf": {
+            "type": "string"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompeteLeaderboardRowDto"
+            }
+          },
+          "me": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CompeteLeaderboardRowDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "roundId",
+          "status",
+          "participants",
+          "potMinor",
+          "asOf",
+          "rows"
+        ]
+      },
+      "CompeteRegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "player@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 128
+          },
+          "nickname": {
+            "type": "string",
+            "description": "Public name on leaderboards",
+            "example": "bull_rider"
+          },
+          "country": {
+            "type": "string",
+            "example": "NL",
+            "description": "ISO 3166-1 alpha-2"
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "nl",
+              "es"
+            ]
+          },
+          "acceptTerms": {
+            "type": "boolean",
+            "description": "Must be true"
+          },
+          "confirmAdult": {
+            "type": "boolean",
+            "description": "Player confirms being 18 or older; must be true"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "nickname",
+          "country",
+          "locale",
+          "acceptTerms",
+          "confirmAdult"
+        ]
+      },
+      "CompetePlayerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "operatorId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "nickname",
+          "country",
+          "locale",
+          "operatorId"
+        ]
+      },
+      "CompeteAuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "number"
+          },
+          "player": {
+            "$ref": "#/components/schemas/CompetePlayerDto"
+          }
+        },
+        "required": [
+          "accessToken",
+          "expiresIn",
+          "player"
+        ]
+      },
+      "CompeteLoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "CompeteTokenDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "accessToken",
+          "expiresIn"
+        ]
+      },
+      "CompeteHistoryItemDto": {
+        "type": "object",
+        "properties": {
+          "round": {
+            "$ref": "#/components/schemas/CompeteRoundDto"
+          },
+          "entry": {
+            "$ref": "#/components/schemas/CompeteEntryDto"
+          }
+        },
+        "required": [
+          "round",
+          "entry"
+        ]
+      },
+      "CompeteJoinResponseDto": {
+        "type": "object",
+        "properties": {
+          "entry": {
+            "$ref": "#/components/schemas/CompeteEntryDto"
+          },
+          "paymentUrl": {
+            "type": "string",
+            "description": "Where the player pays the entry fee"
+          }
+        },
+        "required": [
+          "entry",
+          "paymentUrl"
+        ]
+      },
+      "CompeteTestPaymentDto": {
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "succeeded",
+              "failed"
+            ]
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "CompeteOrderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "clientOrderId": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "qty": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "feeMinor": {
+            "type": "string"
+          },
+          "realizedPnlMinor": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "PLAYER",
+              "DRAWDOWN",
+              "ROUND_END"
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "clientOrderId",
+          "symbol",
+          "side",
+          "qty",
+          "price",
+          "feeMinor",
+          "realizedPnlMinor",
+          "reason",
+          "createdAt"
+        ]
+      },
+      "PlaceCompeteOrderDto": {
+        "type": "object",
+        "properties": {
+          "clientOrderId": {
+            "type": "string",
+            "description": "Client-generated id, unique per entry"
+          },
+          "symbol": {
+            "type": "string",
+            "example": "BTCUSDT"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "qty": {
+            "type": "string",
+            "description": "Decimal string in base asset units",
+            "example": "0.100"
+          }
+        },
+        "required": [
+          "clientOrderId",
+          "symbol",
+          "side",
+          "qty"
         ]
       }
     }

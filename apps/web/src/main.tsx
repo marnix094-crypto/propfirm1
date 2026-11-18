@@ -15,9 +15,16 @@ import i18n from './lib/i18n';
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 2 } },
 });
-realtime.init(queryClient);
+if (import.meta.env.VITE_DEMO_MODE !== 'true') realtime.init(queryClient);
 
 async function enableMocks() {
+  // Shareable preview: backend + realtime run in the browser (no server, no service worker).
+  if (import.meta.env.VITE_DEMO_MODE === 'true') {
+    const { installDemo } = await import('./demo/install');
+    installDemo();
+    realtime.init(queryClient);
+    return;
+  }
   // MSW only runs in development and in test builds (VITE_ENABLE_MSW=true). Never in production.
   // The literal env check lets Vite drop the mock chunk from production bundles entirely.
   if (import.meta.env.VITE_ENABLE_MSW === 'true') {
@@ -33,7 +40,7 @@ void enableMocks().then(() => {
         <MotionConfig reducedMotion="user">
           <RouterProvider router={router} />
           <Toaster closeLabel={i18n.t('common.close')} />
-          {isMockData() && <MockDataIndicator />}
+          {(isMockData() || import.meta.env.VITE_DEMO_MODE === 'true') && <MockDataIndicator />}
         </MotionConfig>
       </QueryClientProvider>
     </StrictMode>,

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { SectionLink } from '@/components/layout/section-link';
 import { useTranslation } from 'react-i18next';
 import { Check, ChevronDown, Sparkles } from 'lucide-react';
 import { Sheet } from '@/components/ui/sheet';
@@ -22,7 +22,6 @@ const initials = (kind: string) => kind.slice(0, 2);
 
 export function AccountSwitcher({ className }: { className?: string }) {
   const { t } = useTranslation();
-  const { lang } = useParams();
   const f = useFormat();
   const [open, setOpen] = useState(false);
   const accounts = useAccounts();
@@ -114,8 +113,8 @@ export function AccountSwitcher({ className }: { className?: string }) {
           {t('app.account.createExample')}
         </Button>
       )}
-      <a
-        href={`/${lang}#pricing`}
+      <SectionLink
+        id="pricing"
         className="mt-4 flex items-center gap-3 rounded-[18px] border border-dashed border-border-strong p-3.5 transition-colors hover:bg-primary-tint/20"
       >
         <Sparkles className="size-5 shrink-0 text-accent" aria-hidden="true" />
@@ -123,7 +122,7 @@ export function AccountSwitcher({ className }: { className?: string }) {
           <span className="block font-semibold">{t('app.account.getFunded')}</span>
           <span className="block text-sm text-muted">{t('app.account.getFundedBody')}</span>
         </span>
-      </a>
+      </SectionLink>
     </Sheet>
   );
 }

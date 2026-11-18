@@ -169,4 +169,16 @@ class Realtime {
   }
 }
 
-export const realtime = new Realtime();
+export interface RealtimeLike {
+  init(qc: QueryClient): void;
+  watchSymbols(symbols: string[]): () => void;
+  onCandle(l: (c: LiveCandle) => void): () => void;
+  watchAccount(accountId: string): () => void;
+  disconnectAccount(): void;
+}
+
+/** Live binding: the demo preview swaps in an in-browser implementation before render. */
+export let realtime: RealtimeLike = new Realtime();
+export function setRealtime(r: RealtimeLike) {
+  realtime = r;
+}

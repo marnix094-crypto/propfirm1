@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SectionLink } from './section-link';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Menu, X } from 'lucide-react';
@@ -30,12 +31,12 @@ export function SiteHeader() {
           <ul className="flex items-center gap-1">
             {NAV_ITEMS.map(({ id, key }) => (
               <li key={id}>
-                <a
-                  href={`/${lang}#${id}`}
+                <SectionLink
+                  id={id}
                   className="rounded-sm px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg"
                 >
                   {t(`nav.${key}`)}
-                </a>
+                </SectionLink>
               </li>
             ))}
           </ul>
@@ -73,13 +74,13 @@ export function SiteHeader() {
           <ul className="flex flex-col py-2">
             {NAV_ITEMS.map(({ id, key }) => (
               <li key={id}>
-                <a
-                  href={`/${lang}#${id}`}
+                <SectionLink
+                  id={id}
                   onClick={() => setOpen(false)}
                   className="block rounded-sm px-2 py-3 font-medium"
                 >
                   {t(`nav.${key}`)}
-                </a>
+                </SectionLink>
               </li>
             ))}
           </ul>

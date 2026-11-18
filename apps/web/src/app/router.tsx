@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router';
+import { createBrowserRouter, createMemoryRouter, Navigate, type RouteObject } from 'react-router';
 import { LangLayout } from './lang-layout';
 import { RootRedirect } from './root-redirect';
 
@@ -7,7 +7,7 @@ const placeholder = (kind: 'legal') => () =>
     Component: () => <m.PlaceholderPage kind={kind} />,
   }));
 
-export const router = createBrowserRouter([
+const routes: RouteObject[] = [
   { path: '/', element: <RootRedirect /> },
   {
     path: '/:lang',
@@ -98,4 +98,13 @@ export const router = createBrowserRouter([
       { path: '*', element: <Navigate to="." replace /> },
     ],
   },
-]);
+];
+
+/**
+ * The shareable demo preview runs inside a sandboxed frame where the URL path cannot change,
+ * so it routes in memory. The real app uses normal URLs.
+ */
+export const router =
+  import.meta.env.VITE_DEMO_MODE === 'true'
+    ? createMemoryRouter(routes, { initialEntries: ['/'] })
+    : createBrowserRouter(routes);

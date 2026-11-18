@@ -7,3 +7,4 @@ docs
 CLAUDE.md
 packages/shared/openapi.json
 apps/api/src/generated
+dist-demo

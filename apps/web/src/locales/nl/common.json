@@ -15,7 +15,9 @@
     "save": "Opslaan",
     "back": "Terug",
     "remove": "Verwijderen",
-    "optional": "optioneel"
+    "optional": "optioneel",
+    "demoPreview": "Demo-preview · gesimuleerde data in je browser",
+    "mockData": "Mockdata (dev)"
   },
   "nav": {
     "main": "Hoofdnavigatie",

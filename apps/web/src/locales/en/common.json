@@ -15,7 +15,9 @@
     "save": "Save",
     "back": "Back",
     "remove": "Remove",
-    "optional": "optional"
+    "optional": "optional",
+    "demoPreview": "Demo preview · simulated data in your browser",
+    "mockData": "Mock data (dev)"
   },
   "nav": {
     "main": "Main navigation",

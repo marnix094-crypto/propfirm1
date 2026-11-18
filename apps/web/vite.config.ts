@@ -25,6 +25,8 @@ function stripMockWorker(): Plugin {
 }
 
 export default defineConfig({
+  // Relative asset URLs for the shareable demo build (served from a sub-path).
+  base: process.env.VITE_DEMO_MODE === 'true' ? './' : '/',
   plugins: [react(), tailwindcss(), stripMockWorker()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },

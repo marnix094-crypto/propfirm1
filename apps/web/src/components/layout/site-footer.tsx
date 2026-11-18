@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router';
+import { SectionLink } from './section-link';
 import { useTranslation } from 'react-i18next';
 import { brand, socials } from '@/config/brand';
 import { Logo } from './logo';
@@ -56,9 +57,9 @@ export function SiteFooter() {
             <ul className="mt-4 flex flex-col gap-3">
               {NAV_ITEMS.map(({ id, key }) => (
                 <li key={id}>
-                  <a href={`/${lang}#${id}`} className={linkClass}>
+                  <SectionLink id={id} className={linkClass}>
                     {t(`nav.${key}`)}
-                  </a>
+                  </SectionLink>
                 </li>
               ))}
               <li>

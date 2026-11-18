@@ -31,13 +31,15 @@ function Seo() {
 }
 
 export function LandingPage() {
-  const { hash } = useLocation();
+  const { hash, state } = useLocation();
+  const section =
+    (state as { section?: string } | null)?.section ??
+    (hash ? decodeURIComponent(hash.slice(1)) : null);
 
   // Lazy-loaded route: scroll to the requested section once it exists.
   useEffect(() => {
-    if (!hash) return;
-    document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView();
-  }, [hash]);
+    if (section) document.getElementById(section)?.scrollIntoView();
+  }, [section]);
 
   return (
     <>

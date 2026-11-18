@@ -1,4 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router';
+import { SectionLink } from '@/components/layout/section-link';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -63,13 +64,13 @@ export function MorePage() {
             <LogOut className="size-5" aria-hidden="true" />
           </button>
         </div>
-        <a
-          href={`/${lang}#pricing`}
+        <SectionLink
+          id="pricing"
           className="mx-5 mb-4 flex items-center justify-center gap-2 rounded-btn bg-card-muted px-4 py-3 font-semibold hover:bg-primary-tint/30"
         >
           {t('app.account.getFunded')}{' '}
           <Sparkles className="size-4 text-accent" aria-hidden="true" />
-        </a>
+        </SectionLink>
       </Card>
 
       <Card padding="none" className="overflow-hidden divide-y divide-border">
@@ -96,11 +97,11 @@ export function MorePage() {
       </Card>
 
       <Card padding="none" className="overflow-hidden divide-y divide-border">
-        <a href={`/${lang}#faq`} className={row}>
+        <SectionLink id="faq" className={row}>
           <HelpCircle className="size-5 text-muted" aria-hidden="true" />
           <span className="flex-1">{t('app.more.help')}</span>
           <ChevronRight className="size-4 text-muted" aria-hidden="true" />
-        </a>
+        </SectionLink>
         <a href={`mailto:${brand.supportEmail}`} className={row}>
           <Headphones className="size-5 text-muted" aria-hidden="true" />
           <span className="flex-1">{t('app.more.support')}</span>

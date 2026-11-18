@@ -15,7 +15,9 @@
     "save": "Guardar",
     "back": "Atrás",
     "remove": "Quitar",
-    "optional": "opcional"
+    "optional": "opcional",
+    "demoPreview": "Vista previa demo · datos simulados en tu navegador",
+    "mockData": "Datos simulados (dev)"
   },
   "nav": {
     "main": "Navegación principal",

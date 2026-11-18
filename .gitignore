@@ -11,3 +11,4 @@ test-results
 .vite
 *.tsbuildinfo
 **/src/generated/
+dist-demo

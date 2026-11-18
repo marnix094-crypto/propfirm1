@@ -32,6 +32,25 @@ export const router = createBrowserRouter([
         lazy: () =>
           import('@/features/auth/register-page').then((m) => ({ Component: m.RegisterPage })),
       },
+      {
+        path: 'forgot-password',
+        lazy: () =>
+          import('@/features/auth/recovery-pages').then((m) => ({
+            Component: m.ForgotPasswordPage,
+          })),
+      },
+      {
+        path: 'reset-password',
+        lazy: () =>
+          import('@/features/auth/recovery-pages').then((m) => ({
+            Component: m.ResetPasswordPage,
+          })),
+      },
+      {
+        path: 'verify-email',
+        lazy: () =>
+          import('@/features/auth/recovery-pages').then((m) => ({ Component: m.VerifyEmailPage })),
+      },
       { path: 'legal/:doc', lazy: placeholder('legal') },
       {
         path: 'app',
@@ -65,6 +84,15 @@ export const router = createBrowserRouter([
             lazy: () =>
               import('@/features/more/more-page').then((m) => ({ Component: m.MorePage })),
           },
+          {
+            path: 'security',
+            lazy: () =>
+              import('@/features/security/security-page').then((m) => ({
+                Component: m.SecurityPage,
+              })),
+          },
+          // Unknown app routes fall back to the portfolio instead of rendering nothing.
+          { path: '*', element: <Navigate to="portfolio" replace /> },
         ],
       },
       { path: '*', element: <Navigate to="." replace /> },

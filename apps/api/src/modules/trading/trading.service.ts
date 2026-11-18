@@ -28,7 +28,12 @@ import type {
   Position,
   TradingAccount,
 } from '../../generated/prisma/client.js';
-import { AccountStateService } from './account-state.service.js';
+import {
+  AccountStateService,
+  type BreachEvent,
+  type RuleStatePatch,
+} from './account-state.service.js';
+import { tradingDateKey } from './day.js';
 import { TradingEvents, type AccountEvent } from './events.js';
 import { toFillDto, toOrderDto } from './mappers.js';
 import type { OrderDto, PlaceOrderDto, UpdatePositionDto } from './dto.js';
@@ -102,6 +107,13 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
           this.closeAll(null, accountId, 'SYSTEM_STOPOUT'),
         ),
       ),
+      this.state.breach$.subscribe((b) =>
+        this.guarded(`breach:${b.accountId}`, () => this.failAccount(b)),
+      ),
+      this.state.ruleState$.subscribe(
+        (patch) =>
+          void this.persistRuleState(patch).catch((e: Error) => this.logger.warn(e.message)),
+      ),
     );
   }
 
@@ -167,6 +179,7 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
       for (const id of ctx.closed) this.unindexOpen(id);
       for (const { order } of ctx.opened) this.indexOpen(order);
       const live = await this.state.reload(accountId);
+      if (live?.rules) this.state.evaluateNow(accountId);
       let seq = ctx.account.seq - BigInt(ctx.events.length);
       for (const e of ctx.events) {
         seq += 1n;
@@ -515,9 +528,20 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
     }
     account.balanceMinor = balance;
     if (balance > account.highWaterMarkMinor) account.highWaterMarkMinor = balance;
+    // Trading days: a day counts once it has at least one fill (Europe/Amsterdam).
+    const today = tradingDateKey(now);
+    if (account.lastTradingDate !== today) {
+      account.lastTradingDate = today;
+      account.tradingDaysCount += 1;
+    }
     await tx.tradingAccount.update({
       where: { id: account.id },
-      data: { balanceMinor: balance, highWaterMarkMinor: account.highWaterMarkMinor },
+      data: {
+        balanceMinor: balance,
+        highWaterMarkMinor: account.highWaterMarkMinor,
+        lastTradingDate: account.lastTradingDate,
+        tradingDaysCount: account.tradingDaysCount,
+      },
     });
 
     const fill = await tx.fill.create({
@@ -808,6 +832,184 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
         payload: { status: ctx.account.status, reason: 'RESET' },
       });
     });
+  }
+
+  // ---------------------------------------------------------------- account opening
+
+  /**
+   * Open a rule-governed (challenge/funded) simulated account. Used by checkout (phase 6)
+   * and, in development, by the example-account helper.
+   */
+  async openRuleAccount(args: {
+    userId: string;
+    ruleSetId: string;
+    kind: 'CHALLENGE' | 'FUNDED';
+    initialBalanceMinor: bigint;
+    label: string;
+    actor: { type: 'USER' | 'SYSTEM'; id: string | null };
+  }): Promise<string> {
+    const ruleSet = await this.prisma.ruleSet.findUniqueOrThrow({ where: { id: args.ruleSetId } });
+    const today = tradingDateKey();
+    const id = await this.prisma.$transaction(async (tx) => {
+      const acc = await tx.tradingAccount.create({
+        data: {
+          userId: args.userId,
+          kind: args.kind,
+          status: args.kind === 'FUNDED' ? 'FUNDED_ACTIVE' : 'ACTIVE',
+          label: args.label,
+          initialBalanceMinor: args.initialBalanceMinor,
+          balanceMinor: args.initialBalanceMinor,
+          highWaterMarkMinor: args.initialBalanceMinor,
+          maxLeverage: ruleSet.maxLeverage,
+          ruleSetId: ruleSet.id,
+          ruleHighWaterMarkMinor: args.initialBalanceMinor,
+          dayStartBalanceMinor: args.initialBalanceMinor,
+          dayStartEquityMinor: args.initialBalanceMinor,
+          dayStartDate: today,
+        },
+      });
+      await tx.ledgerEntry.create({
+        data: {
+          accountId: acc.id,
+          type: 'INITIAL_CAPITAL',
+          amountMinor: args.initialBalanceMinor,
+          balanceAfterMinor: args.initialBalanceMinor,
+          refType: 'account',
+          refId: acc.id,
+        },
+      });
+      await this.audit.append(tx, {
+        actorType: args.actor.type,
+        actorId: args.actor.id,
+        action: 'account.created',
+        entityType: 'TradingAccount',
+        entityId: acc.id,
+        data: {
+          kind: args.kind,
+          ruleSetId: ruleSet.id,
+          ruleSetVersion: ruleSet.version,
+          initialBalanceMinor: args.initialBalanceMinor,
+        },
+      });
+      return acc.id;
+    });
+    await this.state.reload(id);
+    return id;
+  }
+
+  // ---------------------------------------------------------------- rules
+
+  /** Persist rule state (high-water mark / day start). No trading side effects. */
+  async persistRuleState(patch: RuleStatePatch): Promise<void> {
+    const { accountId, ...data } = patch;
+    await this.withAccount(
+      accountId,
+      null,
+      async (ctx) => {
+        if (!ctx.account.ruleSetId) return;
+        await ctx.tx.tradingAccount.update({ where: { id: accountId }, data });
+      },
+      { allowInactive: true },
+    );
+  }
+
+  /**
+   * Hard rule breached: close every position at market (SYSTEM_BREACH), cancel open orders,
+   * mark the account FAILED and record the violation. Idempotent: a FAILED account is skipped.
+   */
+  async failAccount(b: BreachEvent): Promise<void> {
+    await this.withAccount(
+      b.accountId,
+      null,
+      async (ctx) => {
+        const { tx, account } = ctx;
+        if (account.status !== 'ACTIVE' && account.status !== 'FUNDED_ACTIVE') return;
+        const positions = await tx.position.findMany({
+          where: { accountId: account.id, status: 'OPEN' },
+        });
+        for (const pos of positions) {
+          const inst = this.md.instrumentById(pos.instrumentId);
+          const quote = this.md.peekQuote(inst.symbol) ?? {
+            bid: pos.avgEntryPrice,
+            ask: pos.avgEntryPrice,
+            ts: Date.now(),
+          };
+          const side = pos.side === 'LONG' ? 'SELL' : 'BUY';
+          const order = await tx.order.create({
+            data: {
+              accountId: account.id,
+              clientOrderId: `breach-${pos.id}`,
+              instrumentId: inst.id,
+              side,
+              type: 'MARKET',
+              qty: pos.qty,
+              leverage: pos.leverage,
+              reduceOnly: true,
+              status: 'PENDING',
+              source: 'SYSTEM_BREACH',
+            },
+          });
+          await this.auditOrder(ctx, 'order.placed', order, { positionId: pos.id, reason: b.rule });
+          await this.fill(ctx, order, inst, marketExecution(side, pos.qty, quote, inst));
+        }
+        const open = await tx.order.findMany({ where: { accountId: account.id, status: 'OPEN' } });
+        for (const o of open) {
+          const cancelled = await tx.order.update({
+            where: { id: o.id },
+            data: { status: 'CANCELLED' },
+          });
+          await this.auditOrder(ctx, 'order.cancelled', cancelled, { reason: b.rule });
+          ctx.closed.push(o.id);
+          ctx.events.push({
+            type: 'order.update',
+            payload: toOrderDto(cancelled, this.md.instrumentById(o.instrumentId)),
+          });
+        }
+        await tx.ruleViolation.create({
+          data: {
+            accountId: account.id,
+            ruleSetId: account.ruleSetId!,
+            rule: b.rule,
+            floorMinor: b.floorMinor,
+            observedMinor: b.equityMinor,
+            details: JSON.parse(
+              JSON.stringify(b.evaluation.rules, (_k, v: unknown) =>
+                typeof v === 'bigint' ? v.toString() : v,
+              ),
+            ) as object,
+          },
+        });
+        await tx.tradingAccount.update({
+          where: { id: account.id },
+          data: { status: 'FAILED', endedAt: new Date(), failReason: b.rule },
+        });
+        account.status = 'FAILED';
+        await this.audit.append(tx, {
+          actorType: 'SYSTEM',
+          action: 'rule.breached',
+          entityType: 'TradingAccount',
+          entityId: account.id,
+          data: {
+            rule: b.rule,
+            floorMinor: b.floorMinor,
+            equityMinor: b.equityMinor,
+            ruleSetId: account.ruleSetId,
+          },
+        });
+        await this.audit.append(tx, {
+          actorType: 'SYSTEM',
+          action: 'account.failed',
+          entityType: 'TradingAccount',
+          entityId: account.id,
+          data: { reason: b.rule, finalBalanceMinor: account.balanceMinor },
+        });
+        ctx.events.push({ type: 'account.status', payload: { status: 'FAILED', reason: b.rule } });
+        this.logger.warn(
+          `Account ${account.id} FAILED: ${b.rule} (equity ${b.equityMinor} ≤ floor ${b.floorMinor})`,
+        );
+      },
+      { allowInactive: true },
+    );
   }
 
   // ---------------------------------------------------------------- funding

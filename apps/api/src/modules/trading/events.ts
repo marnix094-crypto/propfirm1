@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { Subject } from 'rxjs';
 
 export type AccountEventType =
-  'order.update' | 'position.update' | 'fill' | 'account.update' | 'account.status';
+  | 'order.update'
+  | 'position.update'
+  | 'fill'
+  | 'account.update'
+  | 'account.status'
+  | 'rule.progress';
 
 export interface AccountEvent {
   accountId: string;

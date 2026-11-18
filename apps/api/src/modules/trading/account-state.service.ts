@@ -8,15 +8,23 @@ import {
 import { Subject, type Subscription } from 'rxjs';
 import {
   accountMetrics,
+  evaluateRules,
   isStopOut,
+  nextHighWaterMark,
   type AccountMetrics,
   type MarkedPosition,
   type PositionState,
+  type RuleCode,
+  type RuleEvaluation,
+  type RuleParams,
+  type RuleState,
 } from '@brand/engine';
+import type { AccountStatus } from '../../generated/prisma/client.js';
+import { toRuleParams } from '../rules/rules.service.js';
 import { APP_CONFIG, type AppConfig } from '../../config/env.js';
 import { PrismaService } from '../../infra/prisma.service.js';
 import { MarketDataService } from '../market-data/market-data.service.js';
-import { tradingDayStart } from './day.js';
+import { tradingDateKey, tradingDayStart } from './day.js';
 import { TradingEvents } from './events.js';
 
 export interface LivePosition {
@@ -28,9 +36,41 @@ export interface LivePosition {
   tpPrice: bigint | null;
 }
 
+export interface LiveRules {
+  ruleSetId: string;
+  params: RuleParams;
+  hwm: bigint;
+  hwmPersisted: bigint;
+  dayStartBalance: bigint;
+  dayStartEquity: bigint;
+  dayStartDate: string;
+  tradingDays: number;
+}
+
+export interface BreachEvent {
+  accountId: string;
+  rule: RuleCode;
+  floorMinor: bigint;
+  equityMinor: bigint;
+  evaluation: RuleEvaluation;
+}
+
+export interface RuleStatePatch {
+  accountId: string;
+  ruleHighWaterMarkMinor?: bigint;
+  dayStartBalanceMinor?: bigint;
+  dayStartEquityMinor?: bigint;
+  dayStartDate?: string;
+}
+
+const TRADABLE: AccountStatus[] = ['ACTIVE', 'FUNDED_ACTIVE'];
+
 export interface LiveAccount {
   id: string;
   userId: string;
+  status: AccountStatus;
+  initialBalanceMinor: bigint;
+  rules: LiveRules | null;
   balanceMinor: bigint;
   stopOutLevelBps: number;
   dayStartBalanceMinor: bigint;
@@ -40,6 +80,7 @@ export interface LiveAccount {
 
 const PUSH_INTERVAL_MS = 1000;
 const SNAPSHOT_INTERVAL_MS = 60_000;
+const RULE_HOUSEKEEPING_MS = 15_000;
 
 /**
  * In-memory view of active accounts with open positions, kept in sync after every commit.
@@ -57,6 +98,11 @@ export class AccountStateService implements OnApplicationBootstrap, OnModuleDest
 
   /** Accounts whose margin level hit the stop-out level. */
   readonly stopOut$ = new Subject<string>();
+  /** Accounts that breached a hard rule (daily loss / max drawdown). */
+  readonly breach$ = new Subject<BreachEvent>();
+  /** Rule state to persist (high-water mark, day start). */
+  readonly ruleState$ = new Subject<RuleStatePatch>();
+  private ruleTimer?: NodeJS.Timeout;
 
   constructor(
     @Inject(APP_CONFIG) private readonly config: AppConfig,
@@ -77,6 +123,7 @@ export class AccountStateService implements OnApplicationBootstrap, OnModuleDest
     if (this.config.riskLoopEnabled) {
       this.sub = this.md.quotes$.subscribe(({ instrumentId }) => this.onQuote(instrumentId));
       this.snapshotTimer = setInterval(() => void this.snapshotAll(), SNAPSHOT_INTERVAL_MS);
+      this.ruleTimer = setInterval(() => void this.ruleHousekeeping(), RULE_HOUSEKEEPING_MS);
     }
     this.logger.log(`Loaded ${rows.length} accounts with open positions`);
   }
@@ -84,13 +131,14 @@ export class AccountStateService implements OnApplicationBootstrap, OnModuleDest
   onModuleDestroy() {
     this.sub?.unsubscribe();
     if (this.snapshotTimer) clearInterval(this.snapshotTimer);
+    if (this.ruleTimer) clearInterval(this.ruleTimer);
   }
 
   /** Reload one account from the database (call after every committed change). */
   async reload(accountId: string): Promise<LiveAccount | null> {
     const acc = await this.prisma.tradingAccount.findUnique({
       where: { id: accountId },
-      include: { positions: { where: { status: 'OPEN' } } },
+      include: { positions: { where: { status: 'OPEN' } }, ruleSet: true },
     });
     this.unindex(accountId);
     if (!acc) return null;
@@ -99,6 +147,9 @@ export class AccountStateService implements OnApplicationBootstrap, OnModuleDest
     const live: LiveAccount = {
       id: acc.id,
       userId: acc.userId,
+      status: acc.status,
+      initialBalanceMinor: acc.initialBalanceMinor,
+      rules: null,
       balanceMinor: acc.balanceMinor,
       stopOutLevelBps: acc.stopOutLevelBps,
       dayStartBalanceMinor:
@@ -118,6 +169,20 @@ export class AccountStateService implements OnApplicationBootstrap, OnModuleDest
         slPrice: p.slPrice,
         tpPrice: p.tpPrice,
       });
+    }
+    if (acc.ruleSet) {
+      const hwm = acc.ruleHighWaterMarkMinor ?? acc.initialBalanceMinor;
+      live.rules = {
+        ruleSetId: acc.ruleSet.id,
+        params: toRuleParams(acc.ruleSet),
+        hwm: prev?.rules && prev.rules.hwm > hwm ? prev.rules.hwm : hwm,
+        hwmPersisted: hwm,
+        dayStartBalance: acc.dayStartBalanceMinor ?? acc.balanceMinor,
+        dayStartEquity: acc.dayStartEquityMinor ?? acc.balanceMinor,
+        dayStartDate: acc.dayStartDate ?? '',
+        tradingDays: acc.tradingDaysCount,
+      };
+      this.rollDayIfNeeded(live);
     }
     this.accounts.set(accountId, live);
     for (const instrumentId of live.positions.keys()) {
@@ -182,8 +247,9 @@ export class AccountStateService implements OnApplicationBootstrap, OnModuleDest
     const now = Date.now();
     for (const id of ids) {
       const live = this.accounts.get(id);
-      if (!live) continue;
+      if (!live || !TRADABLE.includes(live.status)) continue;
       const m = this.metrics(live);
+      const ev = this.evaluate(live, m);
       if (isStopOut(m, live.stopOutLevelBps)) this.stopOut$.next(id);
       if (now - (this.lastPush.get(id) ?? 0) >= PUSH_INTERVAL_MS) {
         this.lastPush.set(id, now);
@@ -194,6 +260,122 @@ export class AccountStateService implements OnApplicationBootstrap, OnModuleDest
           seq: 0n,
           payload: this.metricsPayload(live, m),
         });
+        if (ev)
+          this.events.emit({
+            accountId: id,
+            userId: live.userId,
+            type: 'rule.progress',
+            seq: 0n,
+            payload: this.rulesPayload(ev),
+          });
+      }
+    }
+  }
+
+  private ruleState(live: LiveAccount, r: LiveRules, m: AccountMetrics): RuleState {
+    return {
+      initialBalanceMinor: live.initialBalanceMinor,
+      balanceMinor: m.balanceMinor,
+      equityMinor: m.equityMinor,
+      dayStartBalanceMinor: r.dayStartBalance,
+      dayStartEquityMinor: r.dayStartEquity,
+      highWaterMarkMinor: r.hwm,
+      tradingDays: r.tradingDays,
+    };
+  }
+
+  /**
+   * Evaluate the account's rules against mark-to-market equity. Raises the trailing
+   * high-water mark in memory and emits a breach event when a hard limit is hit.
+   */
+  evaluate(live: LiveAccount, m: AccountMetrics = this.metrics(live)): RuleEvaluation | null {
+    const r = live.rules;
+    if (!r) return null;
+    const base = this.ruleState(live, r, m);
+    r.hwm = nextHighWaterMark(r.params, base);
+    const ev = evaluateRules(r.params, { ...base, highWaterMarkMinor: r.hwm });
+    if (ev.breach && TRADABLE.includes(live.status)) {
+      const rule = ev.rules.find((x) => x.rule === ev.breach)!;
+      this.breach$.next({
+        accountId: live.id,
+        rule: ev.breach,
+        floorMinor: rule.floorEquityMinor ?? 0n,
+        equityMinor: m.equityMinor,
+        evaluation: ev,
+      });
+    }
+    return ev;
+  }
+
+  /** Evaluate immediately (fills can breach without a price move). */
+  evaluateNow(accountId: string): RuleEvaluation | null {
+    const live = this.accounts.get(accountId);
+    if (!live || !TRADABLE.includes(live.status)) return null;
+    const ev = this.evaluate(live);
+    if (ev)
+      this.events.emit({
+        accountId,
+        userId: live.userId,
+        type: 'rule.progress',
+        seq: 0n,
+        payload: this.rulesPayload(ev),
+      });
+    return ev;
+  }
+
+  /** Current evaluation without side effects (read endpoints). */
+  peekEvaluation(live: LiveAccount): RuleEvaluation | null {
+    const r = live.rules;
+    if (!r) return null;
+    const base = this.ruleState(live, r, this.metrics(live));
+    return evaluateRules(r.params, {
+      ...base,
+      highWaterMarkMinor: nextHighWaterMark(r.params, base),
+    });
+  }
+
+  rulesPayload(ev: RuleEvaluation) {
+    return {
+      breach: ev.breach,
+      passed: ev.passed,
+      rules: ev.rules.map((r) => ({
+        rule: r.rule,
+        usedMinor: r.usedMinor.toString(),
+        limitMinor: r.limitMinor.toString(),
+        floorEquityMinor: r.floorEquityMinor?.toString() ?? null,
+        state: r.state,
+        reached: r.reached ?? null,
+      })),
+    };
+  }
+
+  /** New trading day (00:00 Europe/Amsterdam): reset the day-start reference. */
+  private rollDayIfNeeded(live: LiveAccount) {
+    const r = live.rules;
+    if (!r || !TRADABLE.includes(live.status)) return;
+    const today = tradingDateKey();
+    if (r.dayStartDate === today) return;
+    const m = this.metrics(live);
+    r.dayStartDate = today;
+    r.dayStartBalance = m.balanceMinor;
+    r.dayStartEquity = m.equityMinor;
+    this.ruleState$.next({
+      accountId: live.id,
+      dayStartBalanceMinor: m.balanceMinor,
+      dayStartEquityMinor: m.equityMinor,
+      dayStartDate: today,
+    });
+  }
+
+  /** Periodic: day rollover and persisting a risen high-water mark. */
+  private async ruleHousekeeping() {
+    for (const live of this.accounts.values()) {
+      const r = live.rules;
+      if (!r || !TRADABLE.includes(live.status)) continue;
+      this.rollDayIfNeeded(live);
+      if (r.hwm > r.hwmPersisted) {
+        r.hwmPersisted = r.hwm;
+        this.ruleState$.next({ accountId: live.id, ruleHighWaterMarkMinor: r.hwm });
       }
     }
   }

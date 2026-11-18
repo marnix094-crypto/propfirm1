@@ -18,6 +18,8 @@ export type PlaceOrder = Schemas['PlaceOrderDto'];
 export const client = createClient<paths>({
   baseUrl: import.meta.env.VITE_API_URL ?? '',
   credentials: 'include',
+  // Resolve fetch per request (not at import time) so test interceptors (MSW) apply.
+  fetch: (request) => globalThis.fetch(request),
 });
 
 client.use({

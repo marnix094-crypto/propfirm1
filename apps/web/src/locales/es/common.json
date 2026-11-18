@@ -399,6 +399,36 @@
       "submit": "Crear cuenta",
       "haveAccount": "¿Ya tienes cuenta?",
       "loginLink": "Iniciar sesión"
+    },
+    "forgotLink": "¿Olvidaste tu contraseña?",
+    "forgot": {
+      "title": "Restablece tu contraseña",
+      "subtitle": "Introduce tu correo y te enviaremos un enlace.",
+      "submit": "Enviar enlace",
+      "sent": "Si existe una cuenta con este correo, recibirás un enlace en unos minutos. Revisa también la carpeta de spam.",
+      "back": "Volver a iniciar sesión"
+    },
+    "reset": {
+      "title": "Elige una nueva contraseña",
+      "subtitle": "Se cerrará la sesión en todos los dispositivos.",
+      "submit": "Guardar nueva contraseña",
+      "done": "Tu contraseña se ha cambiado. Ya puedes iniciar sesión."
+    },
+    "verify": {
+      "title": "Confirma tu correo",
+      "verifying": "Confirmando tu correo electrónico…",
+      "success": "Tu correo electrónico está confirmado.",
+      "failed": "Este enlace no es válido o ha caducado. Solicita uno nuevo desde la plataforma.",
+      "toApp": "Ir a la plataforma"
+    },
+    "mfa": {
+      "title": "Verificación en dos pasos",
+      "subtitle": "Introduce el código de 6 dígitos de tu app de autenticación.",
+      "code": "Código de verificación",
+      "recovery": "Código de recuperación",
+      "submit": "Verificar",
+      "useRecovery": "Usar un código de recuperación",
+      "useCode": "Usar un código de la app"
     }
   },
   "errors": {
@@ -428,7 +458,13 @@
     "ACCOUNT_NOT_ACTIVE": "Esta cuenta no puede operar.",
     "POSITIONS_OPEN": "Cierra primero todas las posiciones.",
     "ORDER_NOT_OPEN": "Esta orden ya no está abierta.",
-    "generic": "Algo salió mal. Inténtalo de nuevo."
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "TWO_FACTOR_CODE_INVALID": "Ese código no es válido. Usa el código más reciente de tu app.",
+    "MFA_TOKEN_INVALID": "El inicio de sesión tardó demasiado. Vuelve a iniciar sesión.",
+    "TOKEN_INVALID": "Este enlace no es válido o ha caducado.",
+    "PASSWORD_INCORRECT": "La contraseña es incorrecta.",
+    "TWO_FACTOR_ALREADY_ENABLED": "La verificación en dos pasos ya está activada.",
+    "TWO_FACTOR_NOT_SET_UP": "Vuelve a empezar la configuración."
   },
   "app": {
     "nav": {
@@ -454,7 +490,18 @@
       "getFunded": "Consigue financiación",
       "getFundedBody": "Opera una cuenta financiada simulada con reparto de beneficios.",
       "loading": "Cargando tus cuentas…",
-      "error": "No se pudieron cargar tus cuentas."
+      "error": "No se pudieron cargar tus cuentas.",
+      "createExample": "Crear cuenta financiada de ejemplo (dev)",
+      "exampleCreated": "Cuenta financiada de ejemplo creada",
+      "statuses": {
+        "ACTIVE": "Activa",
+        "FUNDED_ACTIVE": "Financiada",
+        "FAILED": "Cerrada",
+        "PASSED": "Superada",
+        "PENDING_FUNDED": "Pendiente",
+        "SUSPENDED": "Suspendida",
+        "CLOSED": "Cerrada"
+      }
     },
     "portfolio": {
       "title": "Cartera",
@@ -582,7 +629,78 @@
       "help": "Ayuda y preguntas",
       "support": "Contactar con soporte",
       "legal": "Legal",
-      "risk": "Operar conlleva riesgos. Todas las cuentas de esta plataforma son simuladas; los fondos demo son virtuales y no se pueden retirar."
+      "risk": "Operar conlleva riesgos. Todas las cuentas de esta plataforma son simuladas; los fondos demo son virtuales y no se pueden retirar.",
+      "security": "Seguridad"
+    },
+    "verifyBanner": {
+      "text": "Confirma tu correo electrónico — enviamos un enlace a {{email}}.",
+      "resend": "Reenviar correo",
+      "sent": "Correo enviado"
+    },
+    "security": {
+      "title": "Seguridad",
+      "twoFactor": {
+        "title": "Verificación en dos pasos (2FA)",
+        "on": "Activada",
+        "off": "Desactivada",
+        "description": "Protege tu cuenta con un código de una app de autenticación como Google Authenticator, 1Password o Authy.",
+        "enable": "Activar",
+        "setupTitle": "Configurar la verificación en dos pasos",
+        "step1": "1. Escanea este código QR con tu app de autenticación.",
+        "qrAlt": "Código QR para tu app de autenticación",
+        "manual": "¿No puedes escanearlo? Introduce esta clave:",
+        "step2": "2. Introduce el código de 6 dígitos que muestra la app.",
+        "confirm": "Activar 2FA",
+        "codesTitle": "Guarda tus códigos de recuperación",
+        "codesBody": "Cada código funciona una vez. Guárdalos en un lugar seguro: los necesitarás si pierdes el teléfono. Solo se muestran ahora.",
+        "copy": "Copiar códigos",
+        "copied": "Copiado",
+        "done": "Ya los he guardado",
+        "disable": "Desactivar",
+        "disableTitle": "Desactivar la verificación en dos pasos",
+        "disableBody": "Introduce tu contraseña y un código actual de tu app.",
+        "regenerate": "Nuevos códigos de recuperación",
+        "regenerateBody": "Introduce un código actual. Tus códigos de recuperación anteriores dejarán de funcionar.",
+        "enabledToast": "La verificación en dos pasos está activada",
+        "disabledToast": "La verificación en dos pasos está desactivada"
+      },
+      "password": {
+        "title": "Cambiar contraseña",
+        "current": "Contraseña actual",
+        "new": "Nueva contraseña",
+        "code": "Código de verificación",
+        "submit": "Cambiar contraseña",
+        "done": "Contraseña cambiada. Se ha cerrado la sesión en los demás dispositivos."
+      },
+      "sessions": {
+        "title": "Sesiones activas",
+        "current": "Este dispositivo",
+        "unknown": "Dispositivo desconocido",
+        "started": "Sesión iniciada el {{date}}",
+        "revoke": "Cerrar sesión",
+        "revoked": "Sesión cerrada"
+      }
+    },
+    "rules": {
+      "title": "Reglas de la cuenta",
+      "example": "Reglas de ejemplo",
+      "DAILY_LOSS": "Límite de pérdida diaria",
+      "MAX_DRAWDOWN": "Drawdown máximo",
+      "PROFIT_TARGET": "Objetivo de beneficio",
+      "MIN_TRADING_DAYS": "Días de trading",
+      "floor": "Límite: {{value}}",
+      "TRAILING": "dinámico",
+      "STATIC": "estático",
+      "tradingDays": "Días de trading: {{count}}",
+      "profitSplit": "Reparto de beneficios: {{value}}",
+      "resetNote": "El límite diario se reinicia a las 00:00 (hora de Ámsterdam).",
+      "failedTitle": "Cuenta cerrada",
+      "failedBody": {
+        "DAILY_LOSS": "Se superó el límite de pérdida diaria. Se cerraron todas las posiciones y esta cuenta ya no puede operar.",
+        "MAX_DRAWDOWN": "Se superó el drawdown máximo. Se cerraron todas las posiciones y esta cuenta ya no puede operar.",
+        "other": "Se incumplió una regla. Se cerraron todas las posiciones y esta cuenta ya no puede operar."
+      },
+      "cannotTrade": "Esta cuenta está cerrada y no puede colocar órdenes."
     }
   }
 }

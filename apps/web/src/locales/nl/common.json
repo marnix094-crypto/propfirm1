@@ -399,6 +399,36 @@
       "submit": "Account aanmaken",
       "haveAccount": "Heb je al een account?",
       "loginLink": "Inloggen"
+    },
+    "forgotLink": "Wachtwoord vergeten?",
+    "forgot": {
+      "title": "Wachtwoord opnieuw instellen",
+      "subtitle": "Vul je e-mailadres in, dan sturen we je een link.",
+      "submit": "Link versturen",
+      "sent": "Als er een account bestaat met dit e-mailadres, ontvang je binnen enkele minuten een link. Kijk ook in je spammap.",
+      "back": "Terug naar inloggen"
+    },
+    "reset": {
+      "title": "Kies een nieuw wachtwoord",
+      "subtitle": "Je wordt op alle apparaten uitgelogd.",
+      "submit": "Nieuw wachtwoord opslaan",
+      "done": "Je wachtwoord is gewijzigd. Je kunt nu inloggen."
+    },
+    "verify": {
+      "title": "E-mailadres bevestigen",
+      "verifying": "Je e-mailadres wordt bevestigd…",
+      "success": "Je e-mailadres is bevestigd.",
+      "failed": "Deze link is ongeldig of verlopen. Vraag een nieuwe aan via het platform.",
+      "toApp": "Naar het platform"
+    },
+    "mfa": {
+      "title": "Verificatie in twee stappen",
+      "subtitle": "Vul de 6-cijferige code uit je authenticator-app in.",
+      "code": "Verificatiecode",
+      "recovery": "Herstelcode",
+      "submit": "Verifiëren",
+      "useRecovery": "Gebruik een herstelcode",
+      "useCode": "Gebruik een code uit je app"
     }
   },
   "errors": {
@@ -428,7 +458,13 @@
     "ACCOUNT_NOT_ACTIVE": "Met dit account kan niet gehandeld worden.",
     "POSITIONS_OPEN": "Sluit eerst alle posities.",
     "ORDER_NOT_OPEN": "Deze order staat niet meer open.",
-    "generic": "Er ging iets mis. Probeer het opnieuw."
+    "generic": "Er ging iets mis. Probeer het opnieuw.",
+    "TWO_FACTOR_CODE_INVALID": "Deze code is niet geldig. Gebruik de nieuwste code uit je app.",
+    "MFA_TOKEN_INVALID": "Het inloggen duurde te lang. Log opnieuw in.",
+    "TOKEN_INVALID": "Deze link is ongeldig of verlopen.",
+    "PASSWORD_INCORRECT": "Het wachtwoord is onjuist.",
+    "TWO_FACTOR_ALREADY_ENABLED": "Verificatie in twee stappen staat al aan.",
+    "TWO_FACTOR_NOT_SET_UP": "Begin opnieuw met instellen."
   },
   "app": {
     "nav": {
@@ -454,7 +490,18 @@
       "getFunded": "Krijg een funded account",
       "getFundedBody": "Handel met een gesimuleerd funded account met winstdeling.",
       "loading": "Je accounts worden geladen…",
-      "error": "Je accounts konden niet worden geladen."
+      "error": "Je accounts konden niet worden geladen.",
+      "createExample": "Voorbeeld funded account aanmaken (dev)",
+      "exampleCreated": "Voorbeeld funded account aangemaakt",
+      "statuses": {
+        "ACTIVE": "Actief",
+        "FUNDED_ACTIVE": "Funded",
+        "FAILED": "Gesloten",
+        "PASSED": "Gehaald",
+        "PENDING_FUNDED": "In afwachting",
+        "SUSPENDED": "Geschorst",
+        "CLOSED": "Gesloten"
+      }
     },
     "portfolio": {
       "title": "Portfolio",
@@ -582,7 +629,78 @@
       "help": "Help & FAQ",
       "support": "Contact met support",
       "legal": "Juridisch",
-      "risk": "Handelen brengt risico's met zich mee. Alle accounts op dit platform zijn gesimuleerd; demo-saldo is virtueel en kan niet worden opgenomen."
+      "risk": "Handelen brengt risico's met zich mee. Alle accounts op dit platform zijn gesimuleerd; demo-saldo is virtueel en kan niet worden opgenomen.",
+      "security": "Beveiliging"
+    },
+    "verifyBanner": {
+      "text": "Bevestig je e-mailadres — we hebben een link gestuurd naar {{email}}.",
+      "resend": "Opnieuw versturen",
+      "sent": "E-mail verstuurd"
+    },
+    "security": {
+      "title": "Beveiliging",
+      "twoFactor": {
+        "title": "Verificatie in twee stappen (2FA)",
+        "on": "Aan",
+        "off": "Uit",
+        "description": "Bescherm je account met een code uit een authenticator-app, zoals Google Authenticator, 1Password of Authy.",
+        "enable": "Inschakelen",
+        "setupTitle": "Verificatie in twee stappen instellen",
+        "step1": "1. Scan deze QR-code met je authenticator-app.",
+        "qrAlt": "QR-code voor je authenticator-app",
+        "manual": "Lukt scannen niet? Vul deze sleutel in:",
+        "step2": "2. Vul de 6-cijferige code uit de app in.",
+        "confirm": "2FA inschakelen",
+        "codesTitle": "Bewaar je herstelcodes",
+        "codesBody": "Elke code werkt één keer. Bewaar ze op een veilige plek — je hebt ze nodig als je je telefoon kwijtraakt. Ze worden alleen nu getoond.",
+        "copy": "Codes kopiëren",
+        "copied": "Gekopieerd",
+        "done": "Ik heb ze bewaard",
+        "disable": "Uitschakelen",
+        "disableTitle": "Verificatie in twee stappen uitschakelen",
+        "disableBody": "Vul je wachtwoord en een actuele code uit je app in.",
+        "regenerate": "Nieuwe herstelcodes",
+        "regenerateBody": "Vul een actuele code in. Je oude herstelcodes werken dan niet meer.",
+        "enabledToast": "Verificatie in twee stappen staat aan",
+        "disabledToast": "Verificatie in twee stappen staat uit"
+      },
+      "password": {
+        "title": "Wachtwoord wijzigen",
+        "current": "Huidig wachtwoord",
+        "new": "Nieuw wachtwoord",
+        "code": "Verificatiecode",
+        "submit": "Wachtwoord wijzigen",
+        "done": "Wachtwoord gewijzigd. Andere apparaten zijn uitgelogd."
+      },
+      "sessions": {
+        "title": "Actieve sessies",
+        "current": "Dit apparaat",
+        "unknown": "Onbekend apparaat",
+        "started": "Ingelogd op {{date}}",
+        "revoke": "Uitloggen",
+        "revoked": "Sessie uitgelogd"
+      }
+    },
+    "rules": {
+      "title": "Accountregels",
+      "example": "Voorbeeldregels",
+      "DAILY_LOSS": "Dagelijkse verlieslimiet",
+      "MAX_DRAWDOWN": "Max drawdown",
+      "PROFIT_TARGET": "Winstdoel",
+      "MIN_TRADING_DAYS": "Handelsdagen",
+      "floor": "Grens: {{value}}",
+      "TRAILING": "trailing",
+      "STATIC": "statisch",
+      "tradingDays": "Handelsdagen: {{count}}",
+      "profitSplit": "Winstdeling: {{value}}",
+      "resetNote": "De dagelijkse limiet begint om 00:00 (Amsterdamse tijd) opnieuw.",
+      "failedTitle": "Account gesloten",
+      "failedBody": {
+        "DAILY_LOSS": "De dagelijkse verlieslimiet is overschreden. Alle posities zijn gesloten en met dit account kan niet meer gehandeld worden.",
+        "MAX_DRAWDOWN": "De maximale drawdown is overschreden. Alle posities zijn gesloten en met dit account kan niet meer gehandeld worden.",
+        "other": "Er is een regel overschreden. Alle posities zijn gesloten en met dit account kan niet meer gehandeld worden."
+      },
+      "cannotTrade": "Dit account is gesloten en kan geen orders plaatsen."
     }
   }
 }

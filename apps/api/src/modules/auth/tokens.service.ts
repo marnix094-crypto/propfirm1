@@ -33,13 +33,37 @@ export class TokensService {
       .sign(this.config.jwt.accessSecret);
   }
 
+  /** Short-lived token proving the password step passed; only valid for /auth/2fa/verify. */
+  async signMfa(userId: string): Promise<string> {
+    return new SignJWT({ purpose: 'mfa' })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setSubject(userId)
+      .setIssuer(this.config.jwt.issuer)
+      .setIssuedAt()
+      .setExpirationTime('5m')
+      .sign(this.config.jwt.accessSecret);
+  }
+
+  async verifyMfa(token: string): Promise<string> {
+    try {
+      const { payload } = await jwtVerify(token, this.config.jwt.accessSecret, {
+        issuer: this.config.jwt.issuer,
+        algorithms: ['HS256'],
+      });
+      if (payload.purpose !== 'mfa' || !payload.sub) throw new Error('wrong purpose');
+      return payload.sub;
+    } catch {
+      throw Errors.unauthorized('MFA_TOKEN_INVALID');
+    }
+  }
+
   async verifyAccess(token: string): Promise<AuthUser> {
     try {
       const { payload } = await jwtVerify(token, this.config.jwt.accessSecret, {
         issuer: this.config.jwt.issuer,
         algorithms: ['HS256'],
       });
-      if (!payload.sub) throw new Error('no sub');
+      if (!payload.sub || payload.purpose !== undefined) throw new Error('not an access token');
       return { id: payload.sub, roles: (payload.roles as Role[]) ?? [] };
     } catch {
       throw Errors.unauthorized('TOKEN_INVALID');
@@ -104,6 +128,36 @@ export class TokensService {
       data: { revokedAt: new Date(), replacedById: next?.id },
     });
     return { userId: row.userId, tokens };
+  }
+
+  /** Refresh-token family of a presented refresh token (= the current session). */
+  async familyOf(presented: string | undefined): Promise<string | null> {
+    if (!presented) return null;
+    const row = await this.prisma.refreshToken.findUnique({
+      where: { tokenHash: sha256(presented) },
+      select: { familyId: true },
+    });
+    return row?.familyId ?? null;
+  }
+
+  async revokeFamily(userId: string, familyId: string): Promise<number> {
+    const r = await this.prisma.refreshToken.updateMany({
+      where: { userId, familyId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+    return r.count;
+  }
+
+  /** Revoke every session of a user, optionally keeping one family (the current one). */
+  async revokeAll(userId: string, exceptFamilyId?: string | null): Promise<void> {
+    await this.prisma.refreshToken.updateMany({
+      where: {
+        userId,
+        revokedAt: null,
+        ...(exceptFamilyId ? { familyId: { not: exceptFamilyId } } : {}),
+      },
+      data: { revokedAt: new Date() },
+    });
   }
 
   async revoke(presented: string): Promise<void> {

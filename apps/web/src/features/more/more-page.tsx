@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -8,6 +8,7 @@ import {
   HelpCircle,
   LogOut,
   Moon,
+  ShieldCheck,
   Sparkles,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -72,6 +73,11 @@ export function MorePage() {
       </Card>
 
       <Card padding="none" className="overflow-hidden divide-y divide-border">
+        <Link to={`/${lang}/app/security`} className={row}>
+          <ShieldCheck className="size-5 text-muted" aria-hidden="true" />
+          <span className="flex-1">{t('app.more.security')}</span>
+          <ChevronRight className="size-4 text-muted" aria-hidden="true" />
+        </Link>
         <label className={row}>
           <Moon className="size-5 text-muted" aria-hidden="true" />
           <span className="flex-1">{t('app.more.theme')}</span>

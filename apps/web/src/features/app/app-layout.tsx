@@ -10,6 +10,7 @@ import { useLiveAccount } from '@/hooks/use-realtime';
 import { cn } from '@/lib/cn';
 import { AccountSwitcher } from './account-switcher';
 import { ConnectionBanner, LiveDot } from './connection-banner';
+import { VerifyEmailBanner } from './verify-email-banner';
 
 const NAV = [
   { to: 'portfolio', key: 'portfolio', icon: WalletCards },
@@ -71,6 +72,7 @@ export function AppLayout() {
         </div>
       </header>
       <ConnectionBanner />
+      <VerifyEmailBanner />
 
       <main id="main" className="mx-auto w-full max-w-7xl px-4 pt-5 pb-28 sm:px-6 lg:pb-10">
         <Outlet />

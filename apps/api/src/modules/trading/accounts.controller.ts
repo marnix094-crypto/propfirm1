@@ -19,6 +19,7 @@ import { AccountsService } from './accounts.service.js';
 import { TradingService } from './trading.service.js';
 import {
   AccountDto,
+  AccountRulesDto,
   ClosePositionDto,
   EquityPointDto,
   EquityQuery,
@@ -57,6 +58,12 @@ export class AccountsController {
   @ApiOkResponse({ type: AccountDto })
   get(@CurrentUser() u: AuthUser, @Param('id', UUID) id: string) {
     return this.accounts.snapshot(u.id, id);
+  }
+
+  @Get(':id/rules')
+  @ApiOkResponse({ type: AccountRulesDto })
+  rules(@CurrentUser() u: AuthUser, @Param('id', UUID) id: string) {
+    return this.accounts.rules(u.id, id);
   }
 
   @Get(':id/positions')

@@ -179,6 +179,46 @@ export class AccountDto {
   dailyPnlMinor!: string;
   @ApiProperty() maxLeverage!: number;
   @ApiProperty() seq!: string;
+  @ApiProperty({ description: 'Account is governed by a rule set (challenge/funded)' })
+  hasRules!: boolean;
+  @ApiProperty({ type: String, nullable: true, description: 'Rule that failed the account' })
+  failReason!: string | null;
+}
+
+export class RuleProgressDto {
+  @ApiProperty({ enum: ['DAILY_LOSS', 'MAX_DRAWDOWN', 'PROFIT_TARGET', 'MIN_TRADING_DAYS'] })
+  rule!: string;
+  @ApiProperty({ description: 'Loss so far (limits) or progress (targets), minor units or days' })
+  usedMinor!: string;
+  @ApiProperty() limitMinor!: string;
+  @ApiProperty({ type: String, nullable: true, description: 'Equity level that breaches the rule' })
+  floorEquityMinor!: string | null;
+  @ApiProperty({ enum: ['safe', 'warn', 'breach'] }) state!: string;
+  @ApiProperty({ type: Boolean, nullable: true }) reached!: boolean | null;
+}
+
+export class RuleSetDto {
+  @ApiProperty() code!: string;
+  @ApiProperty() version!: number;
+  @ApiProperty() name!: string;
+  @ApiProperty() isExample!: boolean;
+  @ApiProperty() maxDailyLossBps!: number;
+  @ApiProperty() maxDrawdownBps!: number;
+  @ApiProperty({ enum: ['STATIC', 'TRAILING'] }) drawdownType!: string;
+  @ApiProperty({ type: Number, nullable: true }) profitTargetBps!: number | null;
+  @ApiProperty() minTradingDays!: number;
+  @ApiProperty({ type: Number, nullable: true }) profitSplitBps!: number | null;
+  @ApiProperty() maxLeverage!: number;
+}
+
+export class AccountRulesDto {
+  @ApiProperty({ type: RuleSetDto, nullable: true }) ruleSet!: RuleSetDto | null;
+  @ApiProperty({ type: [RuleProgressDto] }) rules!: RuleProgressDto[];
+  @ApiProperty({ type: String, nullable: true }) breach!: string | null;
+  @ApiProperty() passed!: boolean;
+  @ApiProperty() status!: string;
+  @ApiProperty({ type: String, nullable: true }) failReason!: string | null;
+  @ApiProperty() tradingDays!: number;
 }
 
 export class LedgerEntryDto {

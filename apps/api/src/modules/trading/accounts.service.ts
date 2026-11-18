@@ -14,6 +14,7 @@ import { toFillDto, toLedgerDto, toOrderDto } from './mappers.js';
 import type {
   AccountDto,
   EquityPointDto,
+  AccountRulesDto,
   EquityQuery,
   LedgerEntryDto,
   PositionDto,
@@ -73,6 +74,53 @@ export class AccountsService {
       dailyPnlMinor: this.state.dailyPnlMinor(live, m.equityMinor).toString(),
       maxLeverage: acc.maxLeverage,
       seq: acc.seq.toString(),
+      hasRules: acc.ruleSetId !== null,
+      failReason: acc.failReason,
+    };
+  }
+
+  /** Rule set and live progress (meters) for challenge/funded accounts. */
+  async rules(userId: string, accountId: string): Promise<AccountRulesDto> {
+    const acc = await this.prisma.tradingAccount.findFirst({
+      where: { id: accountId, userId },
+      include: { ruleSet: true },
+    });
+    if (!acc) throw Errors.notFound('Account');
+    if (!acc.ruleSet) {
+      return {
+        ruleSet: null,
+        rules: [],
+        breach: null,
+        passed: false,
+        status: acc.status,
+        failReason: acc.failReason,
+        tradingDays: acc.tradingDaysCount,
+      };
+    }
+    const live = this.state.get(accountId) ?? (await this.state.reload(accountId))!;
+    const ev = this.state.peekEvaluation(live);
+    const r = acc.ruleSet;
+    const payload = ev ? this.state.rulesPayload(ev) : { rules: [], breach: null, passed: false };
+    return {
+      ruleSet: {
+        code: r.code,
+        version: r.version,
+        name: r.name,
+        isExample: r.isExample,
+        maxDailyLossBps: r.maxDailyLossBps,
+        maxDrawdownBps: r.maxDrawdownBps,
+        drawdownType: r.drawdownType,
+        profitTargetBps: r.profitTargetBps,
+        minTradingDays: r.minTradingDays,
+        profitSplitBps: r.profitSplitBps,
+        maxLeverage: r.maxLeverage,
+      },
+      ...payload,
+      // A failed account keeps showing what failed it.
+      breach: acc.status === 'FAILED' ? acc.failReason : payload.breach,
+      status: acc.status,
+      failReason: acc.failReason,
+      tradingDays: acc.tradingDaysCount,
     };
   }
 

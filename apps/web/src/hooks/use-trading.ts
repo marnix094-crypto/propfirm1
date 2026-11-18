@@ -14,6 +14,9 @@ export const qk = {
   tickers: ['tickers'] as const,
   candles: (symbol: string, tf: string) => ['candles', symbol, tf] as const,
   watchlist: ['watchlist'] as const,
+  rules: (id: string) => ['rules', id] as const,
+  config: ['client-config'] as const,
+  sessions: ['sessions'] as const,
 };
 
 const useAuthed = () => useSession((s) => s.status === 'authenticated');
@@ -168,6 +171,7 @@ export function invalidateTrading(qc: ReturnType<typeof useQueryClient>, account
     qk.account(accountId),
     qk.accounts,
     ['equity', accountId],
+    qk.rules(accountId),
   ]) {
     void qc.invalidateQueries({ queryKey: key });
   }
@@ -275,5 +279,37 @@ export function useResetDemo(accountId: string | undefined) {
         client.POST('/api/v1/accounts/{id}/reset', { params: { path: { id: accountId! } } }),
       ),
     onSettled: () => accountId && invalidateTrading(qc, accountId),
+  });
+}
+
+export function useRules(accountId: string | undefined, enabled = true) {
+  return useQuery({
+    queryKey: qk.rules(accountId ?? 'none'),
+    queryFn: () =>
+      call(() =>
+        client.GET('/api/v1/accounts/{id}/rules', { params: { path: { id: accountId! } } }),
+      ),
+    enabled: !!accountId && enabled,
+  });
+}
+
+export function useClientConfig() {
+  return useQuery({
+    queryKey: qk.config,
+    queryFn: () => call(() => client.GET('/api/v1/config')),
+    staleTime: Infinity,
+  });
+}
+
+/** DEV ONLY: create the example funded account and switch to it. */
+export function useCreateExampleFunded() {
+  const qc = useQueryClient();
+  const setActive = useTradingUi((s) => s.setActiveAccount);
+  return useMutation({
+    mutationFn: () => call(() => client.POST('/api/v1/dev/example-funded-account')),
+    onSuccess: (r) => {
+      setActive(r.id);
+      void qc.invalidateQueries({ queryKey: qk.accounts });
+    },
   });
 }

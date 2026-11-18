@@ -132,6 +132,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/auth/2fa/verify': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AuthController_verifyMfa'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/auth/refresh': {
     parameters: {
       query?: never;
@@ -164,6 +180,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/auth/verify-email': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AuthController_verifyEmail'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/auth/verify-email/resend': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AuthController_resendVerification'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/auth/password/forgot': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AuthController_forgot'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/auth/password/reset': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AuthController_reset'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/me': {
     parameters: {
       query?: never;
@@ -175,6 +255,118 @@ export interface paths {
     put?: never;
     post?: never;
     delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/me/password': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AuthController_changePassword'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/me/2fa/setup': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AuthController_setup2fa'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/me/2fa/enable': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AuthController_enable2fa'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/me/2fa/disable': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AuthController_disable2fa'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/me/2fa/recovery-codes': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AuthController_recoveryCodes'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/me/sessions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AuthController_sessions'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/me/sessions/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations['AuthController_revokeSession'];
     options?: never;
     head?: never;
     patch?: never;
@@ -204,6 +396,22 @@ export interface paths {
       cookie?: never;
     };
     get: operations['AccountsController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/accounts/{id}/rules': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AccountsController_rules'];
     put?: never;
     post?: never;
     delete?: never;
@@ -372,6 +580,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/config': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['DevToolsController_clientConfig'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/dev/example-funded-account': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['DevToolsController_exampleFunded'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/me/watchlist': {
     parameters: {
       query?: never;
@@ -465,6 +705,8 @@ export interface components {
       roles: string[];
       locale: string;
       country: string;
+      emailVerified: boolean;
+      twoFactorEnabled: boolean;
     };
     AuthResponseDto: {
       accessToken: string;
@@ -475,6 +717,62 @@ export interface components {
     LoginDto: {
       email: string;
       password: string;
+    };
+    LoginResponseDto: {
+      accessToken?: string;
+      /** @description Seconds */
+      expiresIn?: number;
+      user?: components['schemas']['UserDto'];
+      /** @description Password OK; a 2FA code is required next */
+      mfaRequired?: boolean;
+      /** @description Pass to /auth/2fa/verify (valid 5 minutes) */
+      mfaToken?: string;
+    };
+    MfaVerifyDto: {
+      mfaToken: string;
+      /** @description 6-digit authenticator code */
+      code?: string;
+      /** @description One of the recovery codes */
+      recoveryCode?: string;
+    };
+    TokenDto: {
+      token: string;
+    };
+    ForgotPasswordDto: {
+      email: string;
+    };
+    ResetPasswordDto: {
+      token: string;
+      password: string;
+    };
+    ChangePasswordDto: {
+      currentPassword: string;
+      newPassword: string;
+      /** @description Required when 2FA is enabled */
+      code?: string;
+    };
+    TwoFactorSetupDto: {
+      /** @description Base32 secret for manual entry */
+      secret: string;
+      otpauthUri: string;
+    };
+    TwoFactorCodeDto: {
+      code: string;
+    };
+    RecoveryCodesDto: {
+      /** @description Shown once. Each code works one time. */
+      recoveryCodes: string[];
+    };
+    TwoFactorDisableDto: {
+      password: string;
+      code: string;
+    };
+    SessionDto: {
+      id: string;
+      userAgent: string | null;
+      createdAt: string;
+      lastUsedAt: string;
+      current: boolean;
     };
     AccountDto: {
       id: string;
@@ -495,6 +793,45 @@ export interface components {
       dailyPnlMinor: string;
       maxLeverage: number;
       seq: string;
+      /** @description Account is governed by a rule set (challenge/funded) */
+      hasRules: boolean;
+      /** @description Rule that failed the account */
+      failReason: string | null;
+    };
+    RuleSetDto: {
+      code: string;
+      version: number;
+      name: string;
+      isExample: boolean;
+      maxDailyLossBps: number;
+      maxDrawdownBps: number;
+      /** @enum {string} */
+      drawdownType: 'STATIC' | 'TRAILING';
+      profitTargetBps: number | null;
+      minTradingDays: number;
+      profitSplitBps: number | null;
+      maxLeverage: number;
+    };
+    RuleProgressDto: {
+      /** @enum {string} */
+      rule: 'DAILY_LOSS' | 'MAX_DRAWDOWN' | 'PROFIT_TARGET' | 'MIN_TRADING_DAYS';
+      /** @description Loss so far (limits) or progress (targets), minor units or days */
+      usedMinor: string;
+      limitMinor: string;
+      /** @description Equity level that breaches the rule */
+      floorEquityMinor: string | null;
+      /** @enum {string} */
+      state: 'safe' | 'warn' | 'breach';
+      reached: boolean | null;
+    };
+    AccountRulesDto: {
+      ruleSet: components['schemas']['RuleSetDto'] | null;
+      rules: components['schemas']['RuleProgressDto'][];
+      breach: string | null;
+      passed: boolean;
+      status: string;
+      failReason: string | null;
+      tradingDays: number;
     };
     PositionDto: {
       id: string;
@@ -595,6 +932,13 @@ export interface components {
     ClosePositionDto: {
       /** @description Partial close quantity (decimal string); omit to close fully */
       qty?: string;
+    };
+    ClientConfigDto: {
+      /** @description Development helpers are available (never in production) */
+      devTools: boolean;
+    };
+    CreatedAccountDto: {
+      id: string;
     };
     WatchlistDto: {
       /**
@@ -769,6 +1113,30 @@ export interface operations {
       };
     };
     responses: {
+      /** @description Tokens, or { mfaRequired, mfaToken } when 2FA is enabled */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LoginResponseDto'];
+        };
+      };
+    };
+  };
+  AuthController_verifyMfa: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MfaVerifyDto'];
+      };
+    };
+    responses: {
       200: {
         headers: {
           [name: string]: unknown;
@@ -815,6 +1183,87 @@ export interface operations {
       };
     };
   };
+  AuthController_verifyEmail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TokenDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_resendVerification: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_forgot: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ForgotPasswordDto'];
+      };
+    };
+    responses: {
+      /** @description Always 204, whether or not the email exists */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_reset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ResetPasswordDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AuthController_me: {
     parameters: {
       query?: never;
@@ -831,6 +1280,151 @@ export interface operations {
         content: {
           'application/json': components['schemas']['UserDto'];
         };
+      };
+    };
+  };
+  AuthController_changePassword: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ChangePasswordDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_setup2fa: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TwoFactorSetupDto'];
+        };
+      };
+    };
+  };
+  AuthController_enable2fa: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TwoFactorCodeDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['RecoveryCodesDto'];
+        };
+      };
+    };
+  };
+  AuthController_disable2fa: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TwoFactorDisableDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_recoveryCodes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TwoFactorCodeDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['RecoveryCodesDto'];
+        };
+      };
+    };
+  };
+  AuthController_sessions: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SessionDto'][];
+        };
+      };
+    };
+  };
+  AuthController_revokeSession: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -870,6 +1464,27 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['AccountDto'];
+        };
+      };
+    };
+  };
+  AccountsController_rules: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AccountRulesDto'];
         };
       };
     };
@@ -1117,6 +1732,44 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  DevToolsController_clientConfig: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ClientConfigDto'];
+        };
+      };
+    };
+  };
+  DevToolsController_exampleFunded: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CreatedAccountDto'];
+        };
       };
     };
   };

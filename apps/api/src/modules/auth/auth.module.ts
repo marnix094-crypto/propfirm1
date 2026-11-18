@@ -4,10 +4,18 @@ import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
 import { TokensService } from './tokens.service.js';
+import { EmailTokensService } from './email-tokens.service.js';
+import { TwoFactorService } from './two-factor.service.js';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, TokensService, { provide: APP_GUARD, useClass: JwtAuthGuard }],
+  providers: [
+    AuthService,
+    TokensService,
+    EmailTokensService,
+    TwoFactorService,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+  ],
   exports: [TokensService],
 })
 export class AuthModule {}

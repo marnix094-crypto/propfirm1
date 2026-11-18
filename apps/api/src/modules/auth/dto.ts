@@ -1,9 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   Equals,
   IsEmail,
   IsIn,
+  IsOptional,
   IsString,
   Length,
   Matches,
@@ -63,10 +64,92 @@ export class UserDto {
   @ApiProperty({ type: [String] }) roles!: string[];
   @ApiProperty() locale!: string;
   @ApiProperty() country!: string;
+  @ApiProperty() emailVerified!: boolean;
+  @ApiProperty() twoFactorEnabled!: boolean;
 }
 
 export class AuthResponseDto {
   @ApiProperty() accessToken!: string;
   @ApiProperty({ description: 'Seconds' }) expiresIn!: number;
   @ApiProperty({ type: UserDto }) user!: UserDto;
+}
+
+export class LoginResponseDto {
+  @ApiPropertyOptional() accessToken?: string;
+  @ApiPropertyOptional({ description: 'Seconds' }) expiresIn?: number;
+  @ApiPropertyOptional({ type: UserDto }) user?: UserDto;
+  @ApiPropertyOptional({ description: 'Password OK; a 2FA code is required next' })
+  mfaRequired?: boolean;
+  @ApiPropertyOptional({ description: 'Pass to /auth/2fa/verify (valid 5 minutes)' })
+  mfaToken?: string;
+}
+
+export class MfaVerifyDto {
+  @ApiProperty() @IsString() @MaxLength(2000) mfaToken!: string;
+  @ApiPropertyOptional({ description: '6-digit authenticator code' })
+  @IsOptional()
+  @Matches(/^\d{6}$/)
+  code?: string;
+  @ApiPropertyOptional({ description: 'One of the recovery codes' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  recoveryCode?: string;
+}
+
+export class TokenDto {
+  @ApiProperty() @IsString() @Length(20, 200) token!: string;
+}
+
+export class ForgotPasswordDto {
+  @ApiProperty() @Transform(lower) @IsEmail() email!: string;
+}
+
+export class ResetPasswordDto {
+  @ApiProperty() @IsString() @Length(20, 200) token!: string;
+  @ApiProperty({ minLength: 12, maxLength: 128 })
+  @IsString()
+  @MinLength(12)
+  @MaxLength(128)
+  password!: string;
+}
+
+export class ChangePasswordDto {
+  @ApiProperty() @IsString() @MaxLength(128) currentPassword!: string;
+  @ApiProperty({ minLength: 12, maxLength: 128 })
+  @IsString()
+  @MinLength(12)
+  @MaxLength(128)
+  newPassword!: string;
+  @ApiPropertyOptional({ description: 'Required when 2FA is enabled' })
+  @IsOptional()
+  @Matches(/^\d{6}$/)
+  code?: string;
+}
+
+export class TwoFactorSetupDto {
+  @ApiProperty({ description: 'Base32 secret for manual entry' }) secret!: string;
+  @ApiProperty() otpauthUri!: string;
+}
+
+export class TwoFactorCodeDto {
+  @ApiProperty() @Matches(/^\d{6}$/) code!: string;
+}
+
+export class TwoFactorDisableDto {
+  @ApiProperty() @IsString() @MaxLength(128) password!: string;
+  @ApiProperty() @Matches(/^\d{6}$/) code!: string;
+}
+
+export class RecoveryCodesDto {
+  @ApiProperty({ type: [String], description: 'Shown once. Each code works one time.' })
+  recoveryCodes!: string[];
+}
+
+export class SessionDto {
+  @ApiProperty() id!: string;
+  @ApiProperty({ type: String, nullable: true }) userAgent!: string | null;
+  @ApiProperty() createdAt!: string;
+  @ApiProperty() lastUsedAt!: string;
+  @ApiProperty() current!: boolean;
 }

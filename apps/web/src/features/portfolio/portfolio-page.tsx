@@ -24,6 +24,7 @@ import { errorMessage } from '@/lib/errors';
 import { cn } from '@/lib/cn';
 import type { Account } from '@/lib/api-client';
 import { AssetAvatar, MarketsList } from './markets-list';
+import { AccountClosedBanner, RulesCard } from '../rules/rules-card';
 
 const RANGES: EquityRange[] = ['1D', '1W', '1M', '3M', '6M', '1Y'];
 
@@ -124,6 +125,9 @@ export function PortfolioPage() {
         </p>
         <div className="mt-2 flex gap-2">
           <Badge variant="simulated">{t(`app.account.kinds.${account.kind}`)}</Badge>
+          {account.status === 'FAILED' && (
+            <Badge variant="danger">{t('app.account.statuses.FAILED')}</Badge>
+          )}
           {account.kind === 'DEMO' && <Badge>{t('app.account.virtual')}</Badge>}
         </div>
 
@@ -153,6 +157,8 @@ export function PortfolioPage() {
           />
         </div>
       </section>
+
+      <AccountClosedBanner account={account} />
 
       {details && (
         <Card id="account-details" padding="md">
@@ -274,6 +280,7 @@ export function PortfolioPage() {
         </div>
 
         <div className="flex flex-col gap-5">
+          <RulesCard account={account} />
           <Card padding="lg" className="flex items-center gap-5">
             <RadialMeter
               value={health}

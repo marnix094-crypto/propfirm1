@@ -76,6 +76,9 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - Docker: `cp .env.example .env` → `docker compose up` (postgres, redis, mailpit :8025, api :3000, web :5173)
 - App: `/{lang}/app/portfolio|trade/:symbol|more`, auth: `/{lang}/login|register`. Access token alleen in geheugen; refresh via httpOnly-cookie (`stores/session.ts`).
 - Frontend-API: gegenereerde types (`@brand/shared/api`, `pnpm --filter @brand/shared generate:api`) + `openapi-fetch` via `lib/api-client.ts` (`call()` ververst de sessie bij 401). Realtime: `lib/realtime.ts` (Socket.IO, resync via `seq`).
+- Regels: `packages/engine/src/rules/rule-engine.ts` (puur). Regelsets als catalogus in `apps/api/src/modules/rules/catalog.ts`; rijen zijn onveranderlijk (DB-trigger) → nieuwe versie toevoegen i.p.v. wijzigen. Realtime evaluatie in `AccountStateService` (elke tick + na elke fill); overtreding → `TradingService.failAccount` (posities sluiten tegen markt, orders annuleren, FAILED, `RuleViolation`, audit).
+- Nieuwe env: `FIELD_ENCRYPTION_KEY` (32 bytes base64, versleutelt 2FA-secrets — back-up nodig), `APP_BASE_URL` (links in e-mails), `SMTP_URL` (Mailpit in dev; zonder → mails in API-log), `MAIL_FROM`, `DEV_TOOLS_ENABLED` (alleen dev; verboden in productie).
+- Dev-hulpmiddel: in de accountwisselaar "Voorbeeld funded account aanmaken (dev)" (alleen met `DEV_TOOLS_ENABLED=true`).
 - E2E draait tegen de echte API (Playwright start API + preview); vereist Postgres + Redis.
 - Landing: `/{en|nl|es}` · design-preview: `/{en|nl|es}/design` · placeholders: `/login`, `/register`, `/legal/:doc`
 - API lokaal: Postgres 16 + Redis 7, `apps/api/.env` (zie `.env.example`), `pnpm --filter './packages/*' build`, `pnpm --filter @brand/api db:migrate`, `pnpm --filter @brand/api dev`. Docs: `/api/docs`, spec: `/api/v1/openapi.json`.
@@ -108,8 +111,8 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - [x] Fase 1 — Monorepo, Docker, CI, tokens + componentbibliotheek
 - [x] Fase 2 — Landingspagina
 - [x] Fase 3 — Backend-slice: DB, auth (zonder 2FA), marktdata (Binance + simulated), engine, trading-API, WebSockets, OpenAPI
-- [x] Fase 4 — Platform-UI op de echte API: app-shell (mobiel bottom-nav), portfolio/dashboard, trading terminal, login/registratie, account-wissel (wacht op akkoord)
-- [ ] Fase 5 — 2FA, e-mailverificatie, gegenereerde API-client, regelengine (daily loss/drawdown, pass/fail) + realtime equity-controle
+- [x] Fase 4 — Platform-UI op de echte API: app-shell (mobiel bottom-nav), portfolio/dashboard, trading terminal, login/registratie, account-wissel
+- [x] Fase 5 — 2FA (TOTP + herstelcodes), e-mailverificatie, wachtwoord-reset, sessiebeheer, regelengine (daily loss/drawdown, targets) + realtime equity-controle met automatische FAILED (wacht op akkoord)
 - [ ] Fase 6 — Funded-accounts (instant funding) + challenge-voortgang
 - [ ] Fase 7 — Pricing-checkout (betaalprovider), facturen
 - [ ] Fase 8 — Admin, audit log, risico-alerts

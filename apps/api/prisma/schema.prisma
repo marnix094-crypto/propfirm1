@@ -89,6 +89,32 @@ enum LedgerType {
   RESET
 }
 
+enum DrawdownType {
+  STATIC
+  TRAILING
+}
+
+enum TrailingBasis {
+  EQUITY
+  BALANCE
+}
+
+enum DailyLossBasis {
+  INITIAL_BALANCE
+  DAY_START
+}
+
+enum DailyLossReference {
+  DAY_START_BALANCE
+  DAY_START_EQUITY
+  MAX_OF_BOTH
+}
+
+enum EmailTokenPurpose {
+  VERIFY_EMAIL
+  RESET_PASSWORD
+}
+
 enum ActorType {
   USER
   ADMIN
@@ -97,21 +123,87 @@ enum ActorType {
 }
 
 model User {
-  id              String         @id @default(uuid(7)) @db.Uuid
-  email           String         @unique
+  id              String           @id @default(uuid(7)) @db.Uuid
+  email           String           @unique
   emailVerifiedAt DateTime?
   passwordHash    String
-  roles           Role[]         @default([TRADER])
-  status          UserStatus     @default(ACTIVE)
-  locale          String         @default("en")
-  country         String         @db.Char(2)
+  roles           Role[]           @default([TRADER])
+  status          UserStatus       @default(ACTIVE)
+  locale          String           @default("en")
+  country         String           @db.Char(2)
   termsAcceptedAt DateTime
   termsVersion    String
-  createdAt       DateTime       @default(now())
+  createdAt       DateTime         @default(now())
   lastLoginAt     DateTime?
   refreshTokens   RefreshToken[]
   accounts        TradingAccount[]
   watchlist       Watchlist?
+  twoFactor       TwoFactor?
+  emailTokens     EmailToken[]
+}
+
+/// TOTP secret is encrypted (AES-256-GCM, FIELD_ENCRYPTION_KEY); recovery codes are hashed.
+model TwoFactor {
+  userId             String    @id @db.Uuid
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  secretEnc          String
+  enabledAt          DateTime?
+  recoveryCodeHashes String[]
+  lastUsedStep       BigInt?
+  createdAt          DateTime  @default(now())
+}
+
+/// One-time tokens for email verification and password reset (stored hashed).
+model EmailToken {
+  id        String            @id @default(uuid(7)) @db.Uuid
+  userId    String            @db.Uuid
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purpose   EmailTokenPurpose
+  tokenHash String            @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime          @default(now())
+
+  @@index([userId, purpose])
+}
+
+/// Immutable and versioned (decision D5): accounts keep the version they were opened with.
+model RuleSet {
+  id                     String             @id @default(uuid(7)) @db.Uuid
+  code                   String
+  version                Int
+  name                   String
+  maxDailyLossBps        Int
+  dailyLossBasis         DailyLossBasis
+  dailyLossReference     DailyLossReference
+  maxDrawdownBps         Int
+  drawdownType           DrawdownType
+  trailingBasis          TrailingBasis
+  trailingLocksAtInitial Boolean
+  profitTargetBps        Int?
+  minTradingDays         Int                @default(0)
+  maxLeverage            Int
+  profitSplitBps         Int?
+  warnRatioBps           Int                @default(7000)
+  isExample              Boolean            @default(false)
+  createdAt              DateTime           @default(now())
+  accounts               TradingAccount[]
+
+  @@unique([code, version])
+}
+
+model RuleViolation {
+  id            String         @id @default(uuid(7)) @db.Uuid
+  accountId     String         @db.Uuid
+  account       TradingAccount @relation(fields: [accountId], references: [id])
+  ruleSetId     String         @db.Uuid
+  rule          String
+  floorMinor    BigInt
+  observedMinor BigInt
+  details       Json
+  createdAt     DateTime       @default(now())
+
+  @@index([accountId])
 }
 
 model RefreshToken {
@@ -131,10 +223,10 @@ model RefreshToken {
 }
 
 model Instrument {
-  id                       String      @id @default(uuid(7)) @db.Uuid
-  symbol                   String      @unique
+  id                       String     @id @default(uuid(7)) @db.Uuid
+  symbol                   String     @unique
   displayName              String
-  assetClass               String      @default("CRYPTO")
+  assetClass               String     @default("CRYPTO")
   baseAsset                String
   quoteAsset               String
   priceDecimals            Int
@@ -148,66 +240,78 @@ model Instrument {
   slippageBaseBps          Int
   slippageImpactBpsPer100k Int
   slippageMaxBps           Int
-  fundingIntervalHours     Int         @default(8)
-  marketDataSource         String      @default("binance-usdm")
+  fundingIntervalHours     Int        @default(8)
+  marketDataSource         String     @default("binance-usdm")
   externalSymbol           String
-  isActive                 Boolean     @default(true)
-  sortOrder                Int         @default(0)
+  isActive                 Boolean    @default(true)
+  sortOrder                Int        @default(0)
   orders                   Order[]
   positions                Position[]
   fills                    Fill[]
 }
 
 model TradingAccount {
-  id                  String           @id @default(uuid(7)) @db.Uuid
-  userId              String           @db.Uuid
-  user                User             @relation(fields: [userId], references: [id])
-  kind                AccountKind
-  isSimulated         Boolean          @default(true)
-  status              AccountStatus    @default(ACTIVE)
-  label               String
-  currency            String           @default("USD")
-  initialBalanceMinor BigInt
-  balanceMinor        BigInt
-  highWaterMarkMinor  BigInt
-  maxLeverage         Int              @default(50)
-  stopOutLevelBps     Int              @default(5000)
-  seq                 BigInt           @default(0)
-  createdAt           DateTime         @default(now())
-  endedAt             DateTime?
-  orders              Order[]
-  positions           Position[]
-  fills               Fill[]
-  ledger              LedgerEntry[]
-  equitySnapshots     EquitySnapshot[]
+  id                     String           @id @default(uuid(7)) @db.Uuid
+  userId                 String           @db.Uuid
+  user                   User             @relation(fields: [userId], references: [id])
+  kind                   AccountKind
+  isSimulated            Boolean          @default(true)
+  status                 AccountStatus    @default(ACTIVE)
+  label                  String
+  currency               String           @default("USD")
+  initialBalanceMinor    BigInt
+  balanceMinor           BigInt
+  highWaterMarkMinor     BigInt
+  maxLeverage            Int              @default(50)
+  stopOutLevelBps        Int              @default(5000)
+  seq                    BigInt           @default(0)
+  ruleSetId              String?          @db.Uuid
+  ruleSet                RuleSet?         @relation(fields: [ruleSetId], references: [id])
+  /// Peak used by trailing drawdown (equity or balance per rule set).
+  ruleHighWaterMarkMinor BigInt?
+  dayStartBalanceMinor   BigInt?
+  dayStartEquityMinor    BigInt?
+  /// Trading day (YYYY-MM-DD, Europe/Amsterdam) the day-start values belong to.
+  dayStartDate           String?
+  tradingDaysCount       Int              @default(0)
+  lastTradingDate        String?
+  failReason             String?
+  violations             RuleViolation[]
+  createdAt              DateTime         @default(now())
+  endedAt                DateTime?
+  orders                 Order[]
+  positions              Position[]
+  fills                  Fill[]
+  ledger                 LedgerEntry[]
+  equitySnapshots        EquitySnapshot[]
 
   @@index([userId])
 }
 
 model Order {
-  id               String       @id @default(uuid(7)) @db.Uuid
-  accountId        String       @db.Uuid
-  account          TradingAccount @relation(fields: [accountId], references: [id])
-  clientOrderId    String
-  instrumentId     String       @db.Uuid
-  instrument       Instrument   @relation(fields: [instrumentId], references: [id])
-  side             Side
-  type             OrderType
-  qty              BigInt
-  limitPrice       BigInt?
-  stopPrice        BigInt?
-  slPrice          BigInt?
-  tpPrice          BigInt?
-  leverage         Int
-  reduceOnly       Boolean      @default(false)
-  status           OrderStatus
-  filledQty        BigInt       @default(0)
-  avgFillPrice     BigInt?
-  rejectCode       String?
-  source           OrderSource  @default(USER)
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
-  fills            Fill[]
+  id            String         @id @default(uuid(7)) @db.Uuid
+  accountId     String         @db.Uuid
+  account       TradingAccount @relation(fields: [accountId], references: [id])
+  clientOrderId String
+  instrumentId  String         @db.Uuid
+  instrument    Instrument     @relation(fields: [instrumentId], references: [id])
+  side          Side
+  type          OrderType
+  qty           BigInt
+  limitPrice    BigInt?
+  stopPrice     BigInt?
+  slPrice       BigInt?
+  tpPrice       BigInt?
+  leverage      Int
+  reduceOnly    Boolean        @default(false)
+  status        OrderStatus
+  filledQty     BigInt         @default(0)
+  avgFillPrice  BigInt?
+  rejectCode    String?
+  source        OrderSource    @default(USER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  fills         Fill[]
 
   @@unique([accountId, clientOrderId])
   @@index([accountId, status])
@@ -215,13 +319,13 @@ model Order {
 }
 
 model Fill {
-  id                String     @id @default(uuid(7)) @db.Uuid
-  orderId           String     @db.Uuid
-  order             Order      @relation(fields: [orderId], references: [id])
-  accountId         String     @db.Uuid
+  id                String         @id @default(uuid(7)) @db.Uuid
+  orderId           String         @db.Uuid
+  order             Order          @relation(fields: [orderId], references: [id])
+  accountId         String         @db.Uuid
   account           TradingAccount @relation(fields: [accountId], references: [id])
-  instrumentId      String     @db.Uuid
-  instrument        Instrument @relation(fields: [instrumentId], references: [id])
+  instrumentId      String         @db.Uuid
+  instrument        Instrument     @relation(fields: [instrumentId], references: [id])
   side              Side
   qty               BigInt
   price             BigInt
@@ -230,7 +334,7 @@ model Fill {
   slippageCostMinor BigInt
   commissionMinor   BigInt
   realizedPnlMinor  BigInt
-  executedAt        DateTime   @default(now())
+  executedAt        DateTime       @default(now())
 
   @@index([accountId, executedAt])
 }

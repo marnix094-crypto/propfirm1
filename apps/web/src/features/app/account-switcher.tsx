@@ -5,7 +5,15 @@ import { Check, ChevronDown, Sparkles } from 'lucide-react';
 import { Sheet } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/feedback';
-import { useAccounts, useActiveAccount } from '@/hooks/use-trading';
+import {
+  useAccounts,
+  useActiveAccount,
+  useClientConfig,
+  useCreateExampleFunded,
+} from '@/hooks/use-trading';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/toaster';
+import { errorMessage } from '@/lib/errors';
 import { useFormat } from '@/hooks/use-format';
 import { useTradingUi } from '@/stores/trading';
 import { cn } from '@/lib/cn';
@@ -20,6 +28,8 @@ export function AccountSwitcher({ className }: { className?: string }) {
   const accounts = useAccounts();
   const { account } = useActiveAccount();
   const setActive = useTradingUi((s) => s.setActiveAccount);
+  const config = useClientConfig();
+  const createExample = useCreateExampleFunded();
 
   if (!account) return <Skeleton className={cn('h-10 w-44 rounded-full', className)} />;
 
@@ -71,6 +81,9 @@ export function AccountSwitcher({ className }: { className?: string }) {
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2 font-semibold">
                     {a.label} <Badge variant="simulated">{t(`app.account.kinds.${a.kind}`)}</Badge>
+                    {a.status === 'FAILED' && (
+                      <Badge variant="danger">{t('app.account.statuses.FAILED')}</Badge>
+                    )}
                   </span>
                   <span className="block text-sm text-muted tabular-nums">
                     {f.money(a.equityMinor, a.currency)} · {t('app.account.virtual')}
@@ -82,6 +95,25 @@ export function AccountSwitcher({ className }: { className?: string }) {
           );
         })}
       </ul>
+      {config.data?.devTools && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="mt-3 w-full border border-dashed border-border-strong"
+          disabled={createExample.isPending}
+          onClick={() =>
+            createExample.mutate(undefined, {
+              onSuccess: () => {
+                toast({ kind: 'success', title: t('app.account.exampleCreated') });
+                setOpen(false);
+              },
+              onError: (e) => toast({ kind: 'error', title: errorMessage(t, e) }),
+            })
+          }
+        >
+          {t('app.account.createExample')}
+        </Button>
+      )}
       <a
         href={`/${lang}#pricing`}
         className="mt-4 flex items-center gap-3 rounded-[18px] border border-dashed border-border-strong p-3.5 transition-colors hover:bg-primary-tint/20"

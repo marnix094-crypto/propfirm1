@@ -40,6 +40,8 @@ const account: Account = {
   dailyPnlMinor: '0',
   maxLeverage: 50,
   seq: '0',
+  hasRules: false,
+  failReason: null,
 };
 
 describe('decimal input helpers', () => {

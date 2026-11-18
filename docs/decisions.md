@@ -46,3 +46,9 @@
 | D42 | Geen "Book/Trades"-tab: we hebben geen echte orderboek-/tradedata; i.p.v. nep-data een Info-tab met contractspecificaties en funding | besloten |
 | D43 | Koop/verkoop-knoppen eigen tokens (`--buy-bg`, `--sell-bg`) voor AA in beide thema's | besloten |
 | D44 | Favorieten server-side (`/me/watchlist`); actieve account-keuze per apparaat (localStorage, alleen gemak) | besloten |
+| D45 | Regelset `INSTANT_EXAMPLE v1` met VOORBEELDwaarden (3% daily loss van initieel t.o.v. max(dagstart-balans, -equity); 6% trailing equity-drawdown die stopt op de startbalans; 80% winstdeling; 1:50) — te vervangen door het echte aanbod via een nieuwe versie | besloten (fase 5), waarden open |
+| D46 | Overtreding = equity ≤ grens (inclusief). Afhandeling: alle posities direct tegen markt sluiten (`SYSTEM_BREACH`), open orders annuleren, account `FAILED`, `RuleViolation` + audit. Precies één keer per account (guard + statuscheck in transactie) | besloten |
+| D47 | High-water mark in geheugen per tick, elke 15 s persistent; dagwissel 00:00 Europe/Amsterdam zet dagstart-balans/equity; handelsdag telt bij ≥ 1 fill | besloten |
+| D48 | 2FA: TOTP (RFC 6238, SHA-1, 6 cijfers, ±1 stap, replay-bescherming), secret AES-256-GCM versleuteld, 10 gehashte herstelcodes; uitschakelen vereist wachtwoord + code; inloggen in twee stappen met een 5-min MFA-token | besloten |
+| D49 | E-mailtokens: eenmalig, gehasht, verifiëren 24 u / reset 1 u; "wachtwoord vergeten" verraadt nooit of een e-mail bestaat; reset en wachtwoordwijziging loggen andere sessies uit | besloten |
+| D50 | E-mailverificatie blokkeert demo-handel niet (banner); vereist vóór checkout/uitbetaling (fase 6–7) | besloten |

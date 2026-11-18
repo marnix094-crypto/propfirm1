@@ -399,6 +399,36 @@
       "submit": "Create account",
       "haveAccount": "Already have an account?",
       "loginLink": "Log in"
+    },
+    "forgotLink": "Forgot password?",
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send you a reset link.",
+      "submit": "Send link",
+      "sent": "If an account exists for this email, you'll receive a link within a few minutes. Check your spam folder too.",
+      "back": "Back to log in"
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "subtitle": "You'll be signed out on all devices.",
+      "submit": "Save new password",
+      "done": "Your password has been changed. You can now log in."
+    },
+    "verify": {
+      "title": "Confirm your email",
+      "verifying": "Confirming your email address…",
+      "success": "Your email address is confirmed.",
+      "failed": "This link is invalid or has expired. Request a new one from the platform.",
+      "toApp": "Go to the platform"
+    },
+    "mfa": {
+      "title": "Two-step verification",
+      "subtitle": "Enter the 6-digit code from your authenticator app.",
+      "code": "Authentication code",
+      "recovery": "Recovery code",
+      "submit": "Verify",
+      "useRecovery": "Use a recovery code instead",
+      "useCode": "Use an authenticator code"
     }
   },
   "errors": {
@@ -428,7 +458,13 @@
     "ACCOUNT_NOT_ACTIVE": "This account cannot trade.",
     "POSITIONS_OPEN": "Close all positions first.",
     "ORDER_NOT_OPEN": "This order is no longer open.",
-    "generic": "Something went wrong. Please try again."
+    "generic": "Something went wrong. Please try again.",
+    "TWO_FACTOR_CODE_INVALID": "That code is not valid. Use the latest code from your app.",
+    "MFA_TOKEN_INVALID": "Your sign-in took too long. Please log in again.",
+    "TOKEN_INVALID": "This link is invalid or has expired.",
+    "PASSWORD_INCORRECT": "The password is incorrect.",
+    "TWO_FACTOR_ALREADY_ENABLED": "Two-step verification is already on.",
+    "TWO_FACTOR_NOT_SET_UP": "Start the setup again."
   },
   "app": {
     "nav": {
@@ -454,7 +490,18 @@
       "getFunded": "Get funded",
       "getFundedBody": "Trade a simulated funded account with profit split.",
       "loading": "Loading your accounts…",
-      "error": "Your accounts could not be loaded."
+      "error": "Your accounts could not be loaded.",
+      "createExample": "Create example funded account (dev)",
+      "exampleCreated": "Example funded account created",
+      "statuses": {
+        "ACTIVE": "Active",
+        "FUNDED_ACTIVE": "Funded",
+        "FAILED": "Closed",
+        "PASSED": "Passed",
+        "PENDING_FUNDED": "Pending",
+        "SUSPENDED": "Suspended",
+        "CLOSED": "Closed"
+      }
     },
     "portfolio": {
       "title": "Portfolio",
@@ -582,7 +629,78 @@
       "help": "Help & FAQ",
       "support": "Contact support",
       "legal": "Legal",
-      "risk": "Trading involves risk. All accounts on this platform are simulated; demo funds are virtual and cannot be withdrawn."
+      "risk": "Trading involves risk. All accounts on this platform are simulated; demo funds are virtual and cannot be withdrawn.",
+      "security": "Security"
+    },
+    "verifyBanner": {
+      "text": "Confirm your email address — we sent a link to {{email}}.",
+      "resend": "Resend email",
+      "sent": "Email sent"
+    },
+    "security": {
+      "title": "Security",
+      "twoFactor": {
+        "title": "Two-step verification (2FA)",
+        "on": "On",
+        "off": "Off",
+        "description": "Protect your account with a code from an authenticator app such as Google Authenticator, 1Password or Authy.",
+        "enable": "Turn on",
+        "setupTitle": "Set up two-step verification",
+        "step1": "1. Scan this QR code with your authenticator app.",
+        "qrAlt": "QR code for your authenticator app",
+        "manual": "Can't scan it? Enter this key:",
+        "step2": "2. Enter the 6-digit code shown in the app.",
+        "confirm": "Turn on 2FA",
+        "codesTitle": "Save your recovery codes",
+        "codesBody": "Each code works once. Keep them somewhere safe — you need them if you lose your phone. They are shown only now.",
+        "copy": "Copy codes",
+        "copied": "Copied",
+        "done": "I've saved them",
+        "disable": "Turn off",
+        "disableTitle": "Turn off two-step verification",
+        "disableBody": "Enter your password and a current code from your app.",
+        "regenerate": "New recovery codes",
+        "regenerateBody": "Enter a current code. Your old recovery codes stop working.",
+        "enabledToast": "Two-step verification is on",
+        "disabledToast": "Two-step verification is off"
+      },
+      "password": {
+        "title": "Change password",
+        "current": "Current password",
+        "new": "New password",
+        "code": "Authentication code",
+        "submit": "Change password",
+        "done": "Password changed. Other devices have been signed out."
+      },
+      "sessions": {
+        "title": "Active sessions",
+        "current": "This device",
+        "unknown": "Unknown device",
+        "started": "Signed in {{date}}",
+        "revoke": "Sign out",
+        "revoked": "Session signed out"
+      }
+    },
+    "rules": {
+      "title": "Account rules",
+      "example": "Example rules",
+      "DAILY_LOSS": "Daily loss limit",
+      "MAX_DRAWDOWN": "Max drawdown",
+      "PROFIT_TARGET": "Profit target",
+      "MIN_TRADING_DAYS": "Trading days",
+      "floor": "Breach level: {{value}}",
+      "TRAILING": "trailing",
+      "STATIC": "static",
+      "tradingDays": "Trading days: {{count}}",
+      "profitSplit": "Profit split: {{value}}",
+      "resetNote": "The daily limit resets at 00:00 Amsterdam time.",
+      "failedTitle": "Account closed",
+      "failedBody": {
+        "DAILY_LOSS": "The daily loss limit was breached. All positions were closed and this account can no longer trade.",
+        "MAX_DRAWDOWN": "The maximum drawdown was breached. All positions were closed and this account can no longer trade.",
+        "other": "A rule was breached. All positions were closed and this account can no longer trade."
+      },
+      "cannotTrade": "This account is closed and cannot place orders."
     }
   }
 }

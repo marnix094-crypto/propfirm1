@@ -8,6 +8,7 @@ import {
   MarketDataService,
 } from '../src/modules/market-data/market-data.service.js';
 import type { MarketDataAdapter } from '../src/modules/market-data/types.js';
+import { MAILER, MemoryMailer } from '../src/modules/mail/mailer.js';
 
 /** Feed that never ticks by itself; tests push quotes explicitly. */
 export class StaticAdapter implements MarketDataAdapter {
@@ -23,6 +24,7 @@ export class StaticAdapter implements MarketDataAdapter {
 
 export interface TestApp {
   app: INestApplication;
+  mail: MemoryMailer;
   md: MarketDataService;
   http: () => ReturnType<typeof request>;
   url: string;
@@ -34,11 +36,17 @@ export async function createTestApp(): Promise<TestApp> {
     DATABASE_URL: process.env.TEST_DATABASE_URL,
     JWT_ACCESS_SECRET: 'test-secret-test-secret-test-secret-123',
     MARKET_DATA_SOURCE: 'simulated',
+    DEV_TOOLS_ENABLED: 'true',
+    FIELD_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString('base64'),
+    APP_BASE_URL: 'http://localhost:5173',
     REDIS_URL: process.env.REDIS_URL ?? 'redis://localhost:6379',
   });
+  const mail = new MemoryMailer();
   const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
     .overrideProvider(MARKET_DATA_ADAPTER)
     .useValue(new StaticAdapter())
+    .overrideProvider(MAILER)
+    .useValue(mail)
     .compile();
   const app = moduleRef.createNestApplication();
   configureApp(app, ['http://localhost:5173']);
@@ -46,6 +54,7 @@ export async function createTestApp(): Promise<TestApp> {
   const url = await app.getUrl();
   return {
     app,
+    mail,
     md: app.get(MarketDataService),
     http: () => request(app.getHttpServer()),
     url: url.replace('[::1]', 'localhost'),

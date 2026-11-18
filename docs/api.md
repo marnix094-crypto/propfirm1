@@ -138,3 +138,7 @@ Geïmplementeerd en getest: `auth/register|login|refresh|logout`, `me`, `instrum
 WebSocket (Socket.IO, path `/api/v1/ws`): namespace `/market` (`subscribe {symbols}` → `quote`, `candle` (1m), `feed.status`) en `/account` (handshake `auth.token`; `subscribe {accountId}` → ack met `{account, positions, orders, seq}`; daarna `order.update`, `position.update`, `fill`, `account.update`, `account.status` als `{accountId, seq, data}`; `seq` = 0 voor tick-gedreven `account.update`).
 
 Volgt: 2FA, e-mailverificatie, sessiebeheer, KYC, checkout, uitbetalingen, admin.
+
+## Status fase 5 (geïmplementeerd)
+
+Auth: `auth/2fa/verify`, `auth/verify-email`, `auth/verify-email/resend`, `auth/password/forgot`, `auth/password/reset`; `auth/login` geeft bij 2FA `{ mfaRequired, mfaToken }`. Me: `me/password`, `me/2fa/setup|enable|disable|recovery-codes`, `me/sessions` (GET), `me/sessions/:id` (DELETE). Regels: `accounts/:id/rules` + WS-event `rule.progress` (`{ breach, passed, rules[] }`) en `account.status` bij FAILED. Config: `config` (`{ devTools }`), dev-only `dev/example-funded-account`.

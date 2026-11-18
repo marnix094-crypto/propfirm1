@@ -109,6 +109,18 @@ class Realtime {
       for (const type of ['order.update', 'position.update', 'fill', 'account.status']) {
         s.on(type, (e: { accountId: string; seq: string }) => this.onPersistedEvent(e));
       }
+      s.on(
+        'rule.progress',
+        (e: {
+          accountId: string;
+          data: { breach: string | null; passed: boolean; rules: unknown[] };
+        }) => {
+          this.qc?.setQueryData(
+            qk.rules(e.accountId),
+            (old: Record<string, unknown> | undefined) => (old ? { ...old, ...e.data } : old),
+          );
+        },
+      );
       s.on('account.update', (e: { accountId: string; data: Partial<Account> }) => {
         this.qc?.setQueryData<Account>(qk.account(e.accountId), (old) =>
           old ? { ...old, ...e.data } : old,

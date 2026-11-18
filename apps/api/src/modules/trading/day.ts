@@ -23,3 +23,13 @@ export function tradingDayStart(now: Date = new Date(), timeZone = 'Europe/Amste
   const offset = localNowAsUtc - Math.floor(now.getTime() / 1000) * 1000;
   return new Date(localMidnightAsUtc - offset);
 }
+
+/** Trading-day key (YYYY-MM-DD in Europe/Amsterdam). */
+export function tradingDateKey(now: Date = new Date(), timeZone = 'Europe/Amsterdam'): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(now);
+}

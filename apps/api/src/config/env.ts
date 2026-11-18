@@ -20,6 +20,16 @@ const schema = z.object({
   QUOTE_STALE_MS: z.coerce.number().int().positive().default(10_000),
   DEMO_INITIAL_BALANCE_MINOR: z.coerce.bigint().default(10_000_000n),
   TERMS_VERSION: z.string().default('2026-11-draft'),
+  DEV_TOOLS_ENABLED: bool,
+  FIELD_ENCRYPTION_KEY: z
+    .string()
+    .refine(
+      (v) => Buffer.from(v, 'base64').length === 32,
+      'FIELD_ENCRYPTION_KEY must be 32 random bytes, base64-encoded',
+    ),
+  APP_BASE_URL: z.string().url().default('http://localhost:5173'),
+  SMTP_URL: z.string().url().optional(),
+  MAIL_FROM: z.string().default('BRAND <no-reply@example.com>'),
   RISK_LOOP_ENABLED: z
     .enum(['true', 'false'])
     .default('true')
@@ -39,6 +49,12 @@ export type AppConfig = Readonly<{
   demoInitialBalanceMinor: bigint;
   termsVersion: string;
   riskLoopEnabled: boolean;
+  /** Dev-only helpers (e.g. example funded account). Never enabled in production. */
+  devToolsEnabled: boolean;
+  fieldEncryptionKey: Buffer;
+  appBaseUrl: string;
+  smtpUrl: string | null;
+  mailFrom: string;
 }>;
 
 export const APP_CONFIG = Symbol('APP_CONFIG');
@@ -53,6 +69,8 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
   const e = parsed.data;
   if (e.NODE_ENV === 'production' && !e.COOKIE_SECURE)
     throw new Error('COOKIE_SECURE must be true in production');
+  if (e.NODE_ENV === 'production' && e.DEV_TOOLS_ENABLED)
+    throw new Error('DEV_TOOLS_ENABLED must be false in production');
   return {
     env: e.NODE_ENV,
     port: e.API_PORT,
@@ -73,5 +91,10 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     demoInitialBalanceMinor: e.DEMO_INITIAL_BALANCE_MINOR,
     termsVersion: e.TERMS_VERSION,
     riskLoopEnabled: e.RISK_LOOP_ENABLED,
+    devToolsEnabled: e.DEV_TOOLS_ENABLED,
+    fieldEncryptionKey: Buffer.from(e.FIELD_ENCRYPTION_KEY, 'base64'),
+    appBaseUrl: e.APP_BASE_URL.replace(/\/$/, ''),
+    smtpUrl: e.SMTP_URL ?? null,
+    mailFrom: e.MAIL_FROM,
   };
 }

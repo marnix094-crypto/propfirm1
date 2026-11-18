@@ -29,6 +29,9 @@ export default defineConfig({
         DATABASE_URL:
           process.env.DATABASE_URL ?? 'postgresql://brand:change-me@localhost:5432/brand',
         REDIS_URL: process.env.REDIS_URL ?? 'redis://localhost:6379',
+        FIELD_ENCRYPTION_KEY:
+          process.env.FIELD_ENCRYPTION_KEY ?? Buffer.alloc(32, 3).toString('base64'),
+        DEV_TOOLS_ENABLED: 'true',
       },
     },
     {

@@ -4,10 +4,13 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule } from './config/config.module.js';
 import { InfraModule } from './infra/infra.module.js';
 import { AuditModule } from './modules/audit/audit.module.js';
+import { MailModule } from './modules/mail/mail.module.js';
+import { SecurityModule } from './modules/security/security.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { HealthController } from './modules/health/health.controller.js';
 import { MarketDataModule } from './modules/market-data/market-data.module.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
+import { RulesModule } from './modules/rules/rules.module.js';
 import { TradingModule } from './modules/trading/trading.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 
@@ -16,6 +19,8 @@ import { UsersModule } from './modules/users/users.module.js';
     ConfigModule,
     InfraModule,
     AuditModule,
+    SecurityModule,
+    MailModule,
     // In-memory rate limiting per instance; Redis-backed storage follows with horizontal scaling.
     ThrottlerModule.forRoot({
       throttlers: [{ ttl: 60_000, limit: 120 }],
@@ -23,6 +28,7 @@ import { UsersModule } from './modules/users/users.module.js';
       skipIf: () => process.env.NODE_ENV === 'test' && process.env.TEST_THROTTLE !== 'true',
     }),
     MarketDataModule,
+    RulesModule,
     AuthModule,
     TradingModule,
     RealtimeModule,

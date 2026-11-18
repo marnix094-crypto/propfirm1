@@ -222,6 +222,37 @@
         },
         "responses": {
           "200": {
+            "description": "Tokens, or { mfaRequired, mfaToken } when 2FA is enabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/2fa/verify": {
+      "post": {
+        "operationId": "AuthController_verifyMfa",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MfaVerifyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
@@ -272,6 +303,92 @@
         ]
       }
     },
+    "/api/v1/auth/verify-email": {
+      "post": {
+        "operationId": "AuthController_verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/verify-email/resend": {
+      "post": {
+        "operationId": "AuthController_resendVerification",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/password/forgot": {
+      "post": {
+        "operationId": "AuthController_forgot",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Always 204, whether or not the email exists"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/password/reset": {
+      "post": {
+        "operationId": "AuthController_reset",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/me": {
       "get": {
         "operationId": "AuthController_me",
@@ -286,6 +403,184 @@
                 }
               }
             }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/me/password": {
+      "post": {
+        "operationId": "AuthController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/me/2fa/setup": {
+      "post": {
+        "operationId": "AuthController_setup2fa",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwoFactorSetupDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/me/2fa/enable": {
+      "post": {
+        "operationId": "AuthController_enable2fa",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TwoFactorCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoveryCodesDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/me/2fa/disable": {
+      "post": {
+        "operationId": "AuthController_disable2fa",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TwoFactorDisableDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/me/2fa/recovery-codes": {
+      "post": {
+        "operationId": "AuthController_recoveryCodes",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TwoFactorCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoveryCodesDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/me/sessions": {
+      "get": {
+        "operationId": "AuthController_sessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SessionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/me/sessions/{id}": {
+      "delete": {
+        "operationId": "AuthController_revokeSession",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
           }
         },
         "tags": [
@@ -337,6 +632,36 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AccountDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/v1/accounts/{id}/rules": {
+      "get": {
+        "operationId": "AccountsController_rules",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountRulesDto"
                 }
               }
             }
@@ -761,6 +1086,48 @@
         ]
       }
     },
+    "/api/v1/config": {
+      "get": {
+        "operationId": "DevToolsController_clientConfig",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/api/v1/dev/example-funded-account": {
+      "post": {
+        "operationId": "DevToolsController_exampleFunded",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedAccountDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "config"
+        ]
+      }
+    },
     "/api/v1/me/watchlist": {
       "get": {
         "operationId": "WatchlistController_get",
@@ -1072,6 +1439,12 @@
           },
           "country": {
             "type": "string"
+          },
+          "emailVerified": {
+            "type": "boolean"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -1079,7 +1452,9 @@
           "email",
           "roles",
           "locale",
-          "country"
+          "country",
+          "emailVerified",
+          "twoFactorEnabled"
         ]
       },
       "AuthResponseDto": {
@@ -1115,6 +1490,193 @@
         "required": [
           "email",
           "password"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "number",
+            "description": "Seconds"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "mfaRequired": {
+            "type": "boolean",
+            "description": "Password OK; a 2FA code is required next"
+          },
+          "mfaToken": {
+            "type": "string",
+            "description": "Pass to /auth/2fa/verify (valid 5 minutes)"
+          }
+        }
+      },
+      "MfaVerifyDto": {
+        "type": "object",
+        "properties": {
+          "mfaToken": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "description": "6-digit authenticator code"
+          },
+          "recoveryCode": {
+            "type": "string",
+            "description": "One of the recovery codes"
+          }
+        },
+        "required": [
+          "mfaToken"
+        ]
+      },
+      "TokenDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "token",
+          "password"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 128
+          },
+          "code": {
+            "type": "string",
+            "description": "Required when 2FA is enabled"
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ]
+      },
+      "TwoFactorSetupDto": {
+        "type": "object",
+        "properties": {
+          "secret": {
+            "type": "string",
+            "description": "Base32 secret for manual entry"
+          },
+          "otpauthUri": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "secret",
+          "otpauthUri"
+        ]
+      },
+      "TwoFactorCodeDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "RecoveryCodesDto": {
+        "type": "object",
+        "properties": {
+          "recoveryCodes": {
+            "description": "Shown once. Each code works one time.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "recoveryCodes"
+        ]
+      },
+      "TwoFactorDisableDto": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "password",
+          "code"
+        ]
+      },
+      "SessionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userAgent": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "lastUsedAt": {
+            "type": "string"
+          },
+          "current": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "userAgent",
+          "createdAt",
+          "lastUsedAt",
+          "current"
         ]
       },
       "AccountDto": {
@@ -1175,6 +1737,15 @@
           },
           "seq": {
             "type": "string"
+          },
+          "hasRules": {
+            "type": "boolean",
+            "description": "Account is governed by a rule set (challenge/funded)"
+          },
+          "failReason": {
+            "type": "string",
+            "nullable": true,
+            "description": "Rule that failed the account"
           }
         },
         "required": [
@@ -1193,7 +1764,158 @@
           "marginLevelBps",
           "dailyPnlMinor",
           "maxLeverage",
-          "seq"
+          "seq",
+          "hasRules",
+          "failReason"
+        ]
+      },
+      "RuleSetDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isExample": {
+            "type": "boolean"
+          },
+          "maxDailyLossBps": {
+            "type": "number"
+          },
+          "maxDrawdownBps": {
+            "type": "number"
+          },
+          "drawdownType": {
+            "type": "string",
+            "enum": [
+              "STATIC",
+              "TRAILING"
+            ]
+          },
+          "profitTargetBps": {
+            "type": "number",
+            "nullable": true
+          },
+          "minTradingDays": {
+            "type": "number"
+          },
+          "profitSplitBps": {
+            "type": "number",
+            "nullable": true
+          },
+          "maxLeverage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "code",
+          "version",
+          "name",
+          "isExample",
+          "maxDailyLossBps",
+          "maxDrawdownBps",
+          "drawdownType",
+          "profitTargetBps",
+          "minTradingDays",
+          "profitSplitBps",
+          "maxLeverage"
+        ]
+      },
+      "RuleProgressDto": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "type": "string",
+            "enum": [
+              "DAILY_LOSS",
+              "MAX_DRAWDOWN",
+              "PROFIT_TARGET",
+              "MIN_TRADING_DAYS"
+            ]
+          },
+          "usedMinor": {
+            "type": "string",
+            "description": "Loss so far (limits) or progress (targets), minor units or days"
+          },
+          "limitMinor": {
+            "type": "string"
+          },
+          "floorEquityMinor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Equity level that breaches the rule"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "safe",
+              "warn",
+              "breach"
+            ]
+          },
+          "reached": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "required": [
+          "rule",
+          "usedMinor",
+          "limitMinor",
+          "floorEquityMinor",
+          "state",
+          "reached"
+        ]
+      },
+      "AccountRulesDto": {
+        "type": "object",
+        "properties": {
+          "ruleSet": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RuleSetDto"
+              }
+            ]
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RuleProgressDto"
+            }
+          },
+          "breach": {
+            "type": "string",
+            "nullable": true
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string"
+          },
+          "failReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "tradingDays": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "ruleSet",
+          "rules",
+          "breach",
+          "passed",
+          "status",
+          "failReason",
+          "tradingDays"
         ]
       },
       "PositionDto": {
@@ -1550,6 +2272,29 @@
             "description": "Partial close quantity (decimal string); omit to close fully"
           }
         }
+      },
+      "ClientConfigDto": {
+        "type": "object",
+        "properties": {
+          "devTools": {
+            "type": "boolean",
+            "description": "Development helpers are available (never in production)"
+          }
+        },
+        "required": [
+          "devTools"
+        ]
+      },
+      "CreatedAccountDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
       },
       "WatchlistDto": {
         "type": "object",

@@ -6,6 +6,8 @@ export interface SessionUser {
   roles: string[];
   locale: string;
   country: string;
+  emailVerified: boolean;
+  twoFactorEnabled: boolean;
 }
 
 interface AuthPayload {
@@ -21,6 +23,7 @@ interface SessionState {
   accessToken: string | null;
   user: SessionUser | null;
   setSession: (p: AuthPayload) => void;
+  updateUser: (patch: Partial<SessionUser>) => void;
   clear: () => void;
   /** Exchanges the httpOnly refresh cookie for a new access token. Single-flight. */
   refresh: () => Promise<boolean>;
@@ -41,6 +44,10 @@ export const useSession = create<SessionState>((set, get) => ({
     clearTimeout(refreshTimer);
     // Refresh one minute before expiry.
     refreshTimer = setTimeout(() => void get().refresh(), Math.max(10, p.expiresIn - 60) * 1000);
+  },
+  updateUser: (patch) => {
+    const u = get().user;
+    if (u) set({ user: { ...u, ...patch } });
   },
   clear: () => {
     clearTimeout(refreshTimer);

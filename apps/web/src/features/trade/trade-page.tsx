@@ -29,6 +29,7 @@ import { ChangeBadge, useLivePrice } from '../portfolio/markets-list';
 import { InstrumentPicker } from './instrument-picker';
 import { OrderForm } from './order-form';
 import { PositionsPanel } from './positions-panel';
+import { AccountClosedBanner, isTradable } from '../rules/rules-card';
 
 const TFS: Timeframe[] = ['1m', '5m', '15m', '1h', '4h', '1d'];
 
@@ -168,6 +169,8 @@ export function TradePage() {
           </button>
         </div>
 
+        {account && <AccountClosedBanner account={account} />}
+
         <Card padding="none" className="overflow-hidden">
           <Tabs
             label={t('app.trade.chart')}
@@ -243,13 +246,17 @@ export function TradePage() {
         {account && (
           <Card padding="md" className="sticky top-20">
             <h2 className="mb-4 text-lg font-semibold">{t('app.trade.orderTitle')}</h2>
-            <OrderForm instrument={inst} account={account} />
+            {isTradable(account) ? (
+              <OrderForm instrument={inst} account={account} />
+            ) : (
+              <p className="text-sm text-muted">{t('app.rules.cannotTrade')}</p>
+            )}
           </Card>
         )}
       </aside>
 
       {/* Mobile: sticky button opens the order sheet. */}
-      {account && (
+      {account && isTradable(account) && (
         <div className="fixed inset-x-0 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-30 px-4 lg:hidden">
           <Sheet
             open={sheet}

@@ -20,7 +20,7 @@ export function requestHost(req: Pick<Request, 'headers'>): string | null {
  * it only decides where a trader registers / logs in and whose catalogue is shown. After login
  * the firm always comes from the user row.
  *
- * Order: `X-Firm` header (slug) → request host matched to a firm domain → DEFAULT_FIRM_SLUG.
+ * Order: `X-Firm` header (slug) → firm subdomain → verified own domain → DEFAULT_FIRM_SLUG.
  */
 @Injectable()
 export class FirmsService implements OnModuleInit {
@@ -61,7 +61,9 @@ export class FirmsService implements OnModuleInit {
   private async findByDomain(host: string): Promise<Firm | null> {
     const hit = this.byDomain.get(host);
     if (hit && Date.now() - hit.at < CACHE_MS) return hit.firm;
-    const firm = await this.prisma.firm.findUnique({ where: { domain: host } });
+    // Only a verified own domain routes traffic to a firm (D95).
+    const found = await this.prisma.firm.findUnique({ where: { domain: host } });
+    const firm = found?.domainStatus === 'ACTIVE' ? found : null;
     this.byDomain.set(host, { firm, at: Date.now() });
     return firm;
   }
@@ -77,6 +79,12 @@ export class FirmsService implements OnModuleInit {
     }
     const host = requestHost(req);
     if (host) {
+      // Automatic subdomain: <slug>.<PLATFORM_BASE_DOMAIN> (D95).
+      const base = this.config.platformBaseDomain;
+      if (base && host.endsWith(`.${base}`)) {
+        const firm = await this.findBySlug(host.slice(0, -(base.length + 1)));
+        if (firm) return firm;
+      }
       const firm = await this.findByDomain(host);
       if (firm) return firm;
     }

@@ -29,6 +29,30 @@ enum FirmStatus {
   SUSPENDED
 }
 
+enum DomainStatus {
+  NONE
+  PENDING_DNS
+  ACTIVE
+  FAILED
+}
+
+enum ProvisioningStepKey {
+  TENANT
+  ADMIN
+  DATABASE
+  SUBDOMAIN
+  CUSTOM_DOMAIN
+}
+
+enum ProvisioningStatus {
+  PENDING
+  RUNNING
+  WAITING
+  DONE
+  SKIPPED
+  FAILED
+}
+
 enum RiskAlertType {
   BREACH
   NEAR_BREACH
@@ -163,26 +187,35 @@ enum ActorType {
 
 /// A prop firm running its own brand on the platform (tenant, D83).
 model Firm {
-  id              String        @id @default(uuid(7)) @db.Uuid
-  slug            String        @unique @db.VarChar(40)
-  name            String        @db.VarChar(80)
-  status          FirmStatus    @default(ACTIVE)
+  id                String             @id @default(uuid(7)) @db.Uuid
+  slug              String             @unique @db.VarChar(40)
+  name              String             @db.VarChar(80)
+  status            FirmStatus         @default(ACTIVE)
   /// Custom domain (hostname only), resolves traders to this firm.
-  domain          String?       @unique @db.VarChar(253)
+  domain            String?            @unique @db.VarChar(253)
   /// Brand colour as #RRGGBB; null = Daily Funded lime.
-  primaryColor    String?       @db.Char(7)
+  primaryColor      String?            @db.Char(7)
   /// PNG/JPEG/WebP as data URL (max ~200 KB); null = default logo.
-  logoDataUrl     String?
-  supportEmail    String?       @db.VarChar(254)
+  logoDataUrl       String?
+  supportEmail      String?            @db.VarChar(254)
   /// Client-dashboard modules switched off by the firm admin (keys from @brand/shared CLIENT_MODULES).
-  disabledModules String[]      @default([])
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @default(now()) @updatedAt
-  users           User[]
-  products        Product[]
-  ruleSets        RuleSet[]
-  competitions    Competition[]
-  riskAlerts      RiskAlert[]
+  disabledModules   String[]           @default([])
+  /// Own-domain verification (D95): only ACTIVE domains route traffic to this firm.
+  domainStatus      DomainStatus       @default(NONE)
+  /// Random value the firm publishes as TXT record to prove it controls the domain.
+  domainToken       String?            @db.VarChar(64)
+  domainCheckedAt   DateTime?
+  /// Dedicated database (D94): connection string encrypted with FIELD_ENCRYPTION_KEY.
+  dedicatedDatabase Boolean            @default(false)
+  databaseUrlEnc    String?
+  provisioning      ProvisioningStep[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @default(now()) @updatedAt
+  users             User[]
+  products          Product[]
+  ruleSets          RuleSet[]
+  competitions      Competition[]
+  riskAlerts        RiskAlert[]
 }
 
 model User {
@@ -803,4 +836,20 @@ model RiskAlert {
   ackById   String?       @db.Uuid
 
   @@index([firmId, ackAt, createdAt])
+}
+
+/// One step of the automatic set-up of a firm (D93). Retried until DONE/SKIPPED.
+model ProvisioningStep {
+  id        String              @id @default(uuid(7)) @db.Uuid
+  firmId    String              @db.Uuid
+  firm      Firm                @relation(fields: [firmId], references: [id])
+  step      ProvisioningStepKey
+  status    ProvisioningStatus  @default(PENDING)
+  /// Machine-readable outcome code (translated in the client), no secrets.
+  detail    String?             @db.VarChar(200)
+  attempts  Int                 @default(0)
+  updatedAt DateTime            @default(now()) @updatedAt
+
+  @@unique([firmId, step])
+  @@index([status])
 }

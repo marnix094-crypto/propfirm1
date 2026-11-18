@@ -61,6 +61,11 @@ export class AdminFirmDto {
   @ApiProperty() name!: string;
   @ApiProperty({ enum: ['ACTIVE', 'SUSPENDED'] }) status!: 'ACTIVE' | 'SUSPENDED';
   @ApiProperty({ type: String, nullable: true }) domain!: string | null;
+  @ApiProperty({ enum: ['NONE', 'PENDING_DNS', 'ACTIVE', 'FAILED'] })
+  domainStatus!: 'NONE' | 'PENDING_DNS' | 'ACTIVE' | 'FAILED';
+  @ApiProperty({ type: String, nullable: true, description: 'Automatic <slug>.<platform> host' })
+  subdomain!: string | null;
+  @ApiProperty() dedicatedDatabase!: boolean;
   @ApiProperty({ type: String, nullable: true }) primaryColor!: string | null;
   @ApiProperty({ type: String, nullable: true }) logoDataUrl!: string | null;
   @ApiProperty({ type: String, nullable: true }) supportEmail!: string | null;
@@ -470,10 +475,37 @@ export class FirmAdminInfoDto {
   @ApiProperty() twoFactorEnabled!: boolean;
 }
 
+const STEP_KEYS = ['TENANT', 'ADMIN', 'DATABASE', 'SUBDOMAIN', 'CUSTOM_DOMAIN'] as const;
+const STEP_STATUSES = ['PENDING', 'RUNNING', 'WAITING', 'DONE', 'SKIPPED', 'FAILED'] as const;
+
+export class ProvisioningStepDto {
+  @ApiProperty({ enum: STEP_KEYS }) step!: (typeof STEP_KEYS)[number];
+  @ApiProperty({ enum: STEP_STATUSES }) status!: (typeof STEP_STATUSES)[number];
+  @ApiProperty({ type: String, nullable: true, description: 'Outcome code' })
+  detail!: string | null;
+  @ApiProperty() attempts!: number;
+  @ApiProperty() updatedAt!: string;
+}
+
+export class DomainSetupDto {
+  @ApiProperty({ type: String, nullable: true }) domain!: string | null;
+  @ApiProperty({ enum: ['NONE', 'PENDING_DNS', 'ACTIVE', 'FAILED'] })
+  status!: 'NONE' | 'PENDING_DNS' | 'ACTIVE' | 'FAILED';
+  @ApiProperty({ type: String, nullable: true }) subdomain!: string | null;
+  @ApiProperty({ type: String, nullable: true, description: 'CNAME the domain to this host' })
+  cnameTarget!: string | null;
+  @ApiProperty({ type: String, nullable: true, description: 'TXT record name' })
+  txtName!: string | null;
+  @ApiProperty({ type: String, nullable: true, description: 'TXT record value' })
+  txtValue!: string | null;
+  @ApiProperty({ type: String, nullable: true }) checkedAt!: string | null;
+}
+
 export class AdminFirmSummaryDto extends AdminFirmDto {
   @ApiProperty() traders!: number;
   @ApiProperty() fundedActive!: number;
   @ApiProperty({ type: FirmAdminInfoDto, nullable: true }) admin!: FirmAdminInfoDto | null;
+  @ApiProperty({ type: [ProvisioningStepDto] }) provisioning!: ProvisioningStepDto[];
 }
 
 export class AdminFirmListDto {
@@ -493,6 +525,16 @@ export class CreateFirmDto {
   @IsEmail()
   @MaxLength(254)
   ownerEmail!: string;
+
+  @ApiPropertyOptional({ description: 'Create a dedicated database for this firm (D94)' })
+  @IsOptional()
+  @IsBoolean()
+  dedicatedDatabase?: boolean;
+
+  @ApiPropertyOptional({ example: 'trade.acmeprop.com', description: 'Own domain (verified via DNS)' })
+  @IsOptional()
+  @Matches(HOSTNAME)
+  domain?: string;
 }
 
 export class FirmAdminDto {

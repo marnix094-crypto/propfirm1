@@ -32,16 +32,22 @@ const DAY_MS = 86_400_000;
 const CLIENTS = { firmRole: null, NOT: { roles: { has: 'ADMIN' as const } } };
 const PAID = ['PAID', 'FULFILLED'] as const;
 
-export const toAdminFirmDto = (f: Firm, defaultSlug: string): AdminFirmDto => ({
+export const toAdminFirmDto = (
+  f: Firm,
+  config: Pick<AppConfig, 'defaultFirmSlug' | 'platformBaseDomain'>,
+): AdminFirmDto => ({
   id: f.id,
   slug: f.slug,
   name: f.name,
   status: f.status,
   domain: f.domain,
+  domainStatus: f.domainStatus,
+  subdomain: config.platformBaseDomain ? `${f.slug}.${config.platformBaseDomain}` : null,
+  dedicatedDatabase: f.dedicatedDatabase,
   primaryColor: f.primaryColor,
   logoDataUrl: f.logoDataUrl,
   supportEmail: f.supportEmail,
-  isDefault: f.slug === defaultSlug,
+  isDefault: f.slug === config.defaultFirmSlug,
   disabledModules: f.disabledModules.filter(isClientModule),
   createdAt: f.createdAt.toISOString(),
 });
@@ -98,7 +104,7 @@ export class AdminService {
     return {
       role: ctx.role,
       superadmin: ctx.superadmin,
-      firm: toAdminFirmDto(firm, this.config.defaultFirmSlug),
+      firm: toAdminFirmDto(firm, this.config),
       twoFactorEnabled: ctx.twoFactorEnabled,
       twoFactorRequired: this.config.adminRequire2fa,
     };

@@ -34,6 +34,16 @@ const schema = z.object({
   SALES_EMAIL: z.string().email().optional(),
   /** Payment provider. `fake` = test payments without real money (dev/test only). */
   PAYMENT_PROVIDER: z.enum(['fake']).default('fake'),
+  /** Platform domain for automatic firm subdomains, e.g. dailyfunded.com → acme.dailyfunded.com (D95). */
+  PLATFORM_BASE_DOMAIN: z.string().regex(/^(?=.{4,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/).optional(),
+  /** Hostname firms point their own domain to (CNAME). Default: tenants.<PLATFORM_BASE_DOMAIN>. */
+  PLATFORM_CNAME_TARGET: z.string().regex(/^(?=.{4,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/).optional(),
+  /** DNS lookups for own-domain verification: system resolver, or fake (tests). */
+  DNS_RESOLVER: z.enum(['system', 'fake']).default('system'),
+  /** Dedicated firm databases (D94): none = not offered, fake = tests, postgres = CREATE DATABASE. */
+  DATABASE_PROVISIONER: z.enum(['none', 'fake', 'postgres']).default('none'),
+  /** Connection with CREATEDB rights, used only to create dedicated firm databases. */
+  DATABASE_ADMIN_URL: z.string().url().optional(),
   /** Tenant used when a request names no firm (X-Firm header) and its host matches no domain. */
   DEFAULT_FIRM_SLUG: z
     .string()
@@ -73,6 +83,11 @@ export type AppConfig = Readonly<{
   salesEmail: string | null;
   defaultFirmSlug: string;
   adminRequire2fa: boolean;
+  platformBaseDomain: string | null;
+  platformCnameTarget: string | null;
+  dnsResolver: 'system' | 'fake';
+  databaseProvisioner: 'none' | 'fake' | 'postgres';
+  databaseAdminUrl: string | null;
 }>;
 
 export const APP_CONFIG = Symbol('APP_CONFIG');
@@ -91,6 +106,10 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     throw new Error('DEV_TOOLS_ENABLED must be false in production');
   if (e.NODE_ENV === 'production' && e.PAYMENT_PROVIDER === 'fake')
     throw new Error('PAYMENT_PROVIDER=fake is not allowed in production');
+  if (e.NODE_ENV === 'production' && (e.DNS_RESOLVER === 'fake' || e.DATABASE_PROVISIONER === 'fake'))
+    throw new Error('Fake DNS resolver / database provisioner are not allowed in production');
+  if (e.DATABASE_PROVISIONER === 'postgres' && !e.DATABASE_ADMIN_URL)
+    throw new Error('DATABASE_PROVISIONER=postgres needs DATABASE_ADMIN_URL');
   if (e.NODE_ENV === 'production' && !e.ADMIN_REQUIRE_2FA)
     throw new Error('ADMIN_REQUIRE_2FA must be true in production');
   return {
@@ -122,5 +141,11 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     salesEmail: e.SALES_EMAIL ?? null,
     defaultFirmSlug: e.DEFAULT_FIRM_SLUG,
     adminRequire2fa: e.ADMIN_REQUIRE_2FA,
+    platformBaseDomain: e.PLATFORM_BASE_DOMAIN ?? null,
+    platformCnameTarget:
+      e.PLATFORM_CNAME_TARGET ?? (e.PLATFORM_BASE_DOMAIN ? `tenants.${e.PLATFORM_BASE_DOMAIN}` : null),
+    dnsResolver: e.DNS_RESOLVER,
+    databaseProvisioner: e.DATABASE_PROVISIONER,
+    databaseAdminUrl: e.DATABASE_ADMIN_URL ?? null,
   };
 }

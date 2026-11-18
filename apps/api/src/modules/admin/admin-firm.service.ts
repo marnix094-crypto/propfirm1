@@ -39,7 +39,7 @@ export class AdminFirmService {
   // ---------------------------------------------------------------- branding
   async branding(ctx: AdminContext): Promise<AdminFirmDto> {
     const f = await this.prisma.firm.findUniqueOrThrow({ where: { id: ctx.firmId } });
-    return toAdminFirmDto(f, this.config.defaultFirmSlug);
+    return toAdminFirmDto(f, this.config);
   }
 
   async updateBranding(ctx: AdminContext, dto: UpdateBrandingDto): Promise<AdminFirmDto> {
@@ -65,7 +65,7 @@ export class AdminFirmService {
         return updated;
       });
       this.firms.invalidate();
-      return toAdminFirmDto(f, this.config.defaultFirmSlug);
+      return toAdminFirmDto(f, this.config);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002')
         throw Errors.conflict('DOMAIN_TAKEN', 'This domain is already used by another firm');
@@ -257,7 +257,7 @@ export class AdminFirmService {
     const t = new Map(traders.map((r) => [r.firmId, r._count._all]));
     const fa = new Map(funded.map((r) => [r.firmId, Number(r.n)]));
     return firms.map((f) => ({
-      ...toAdminFirmDto(f, this.config.defaultFirmSlug),
+      ...toAdminFirmDto(f, this.config),
       traders: t.get(f.id) ?? 0,
       fundedActive: fa.get(f.id) ?? 0,
       admin: adminBy.has(f.id)

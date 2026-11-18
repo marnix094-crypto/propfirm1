@@ -35,6 +35,7 @@ import {
 } from './account-state.service.js';
 import { tradingDateKey } from './day.js';
 import { TradingEvents, type AccountEvent } from './events.js';
+import { LARGE_LOSS_BPS, RiskAlertsService } from '../risk/risk-alerts.service.js';
 import { toFillDto, toOrderDto } from './mappers.js';
 import type { OrderDto, PlaceOrderDto, UpdatePositionDto } from './dto.js';
 
@@ -105,6 +106,7 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
     private readonly audit: AuditService,
     private readonly state: AccountStateService,
     private readonly events: TradingEvents,
+    private readonly risk: RiskAlertsService,
   ) {}
 
   async onModuleInit() {
@@ -527,6 +529,26 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
       ctx.events.push({
         type: 'position.update',
         payload: { id: position.id, symbol: inst.symbol, status: 'OPEN' },
+      });
+    }
+
+    // One closing fill that loses ≥ LARGE_LOSS_BPS of the starting balance → risk alert.
+    if (
+      result.realizedPnlMinor < 0n &&
+      -result.realizedPnlMinor * 10_000n >= account.initialBalanceMinor * LARGE_LOSS_BPS
+    ) {
+      await this.risk.raiseTx(tx, {
+        accountId: account.id,
+        userId: account.userId,
+        type: 'LARGE_LOSS',
+        severity: 'WARNING',
+        dedupKey: `LARGE_LOSS:${order.id}`,
+        details: {
+          orderId: order.id,
+          symbol: inst.symbol,
+          realizedPnlMinor: result.realizedPnlMinor,
+          initialBalanceMinor: account.initialBalanceMinor,
+        },
       });
     }
 
@@ -994,6 +1016,81 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
    * Hard rule breached: close every position at market (SYSTEM_BREACH), cancel open orders,
    * mark the account FAILED and record the violation. Idempotent: a FAILED account is skipped.
    */
+  /** Close every open position at market and cancel open orders (breach or admin action). */
+  private async liquidate(ctx: Ctx, reason: string, source: 'SYSTEM_BREACH' | 'ADMIN') {
+    const { tx, account } = ctx;
+    const positions = await tx.position.findMany({
+      where: { accountId: account.id, status: 'OPEN' },
+    });
+    for (const pos of positions) {
+      const inst = this.md.instrumentById(pos.instrumentId);
+      const quote = this.md.peekQuote(inst.symbol) ?? {
+        bid: pos.avgEntryPrice,
+        ask: pos.avgEntryPrice,
+        ts: Date.now(),
+      };
+      const side = pos.side === 'LONG' ? 'SELL' : 'BUY';
+      const order = await tx.order.create({
+        data: {
+          accountId: account.id,
+          clientOrderId: `${source === 'ADMIN' ? 'admin' : 'breach'}-${pos.id}`,
+          instrumentId: inst.id,
+          side,
+          type: 'MARKET',
+          qty: pos.qty,
+          leverage: pos.leverage,
+          reduceOnly: true,
+          status: 'PENDING',
+          source,
+        },
+      });
+      await this.auditOrder(ctx, 'order.placed', order, { positionId: pos.id, reason: reason });
+      await this.fill(ctx, order, inst, marketExecution(side, pos.qty, quote, inst));
+    }
+    const open = await tx.order.findMany({ where: { accountId: account.id, status: 'OPEN' } });
+    for (const o of open) {
+      const cancelled = await tx.order.update({
+        where: { id: o.id },
+        data: { status: 'CANCELLED' },
+      });
+      await this.auditOrder(ctx, 'order.cancelled', cancelled, { reason: reason });
+      ctx.closed.push(o.id);
+      ctx.events.push({
+        type: 'order.update',
+        payload: toOrderDto(cancelled, this.md.instrumentById(o.instrumentId)),
+      });
+    }
+  }
+
+  /** Admin action (D86): fail an account by hand, e.g. after a terms violation. */
+  async failByAdmin(accountId: string, adminId: string, reason: string): Promise<void> {
+    await this.withAccount(
+      accountId,
+      null,
+      async (ctx) => {
+        const { tx, account } = ctx;
+        if (account.status !== 'ACTIVE' && account.status !== 'FUNDED_ACTIVE')
+          throw Errors.unprocessable('ACCOUNT_NOT_ACTIVE', 'Only active accounts can be failed');
+        await this.liquidate(ctx, 'ADMIN', 'ADMIN');
+        await tx.tradingAccount.update({
+          where: { id: account.id },
+          data: { status: 'FAILED', endedAt: new Date(), failReason: 'ADMIN' },
+        });
+        account.status = 'FAILED';
+        await this.audit.append(tx, {
+          actorType: 'ADMIN',
+          actorId: adminId,
+          action: 'account.failed_by_admin',
+          entityType: 'TradingAccount',
+          entityId: account.id,
+          data: { reason, finalBalanceMinor: account.balanceMinor },
+        });
+        ctx.events.push({ type: 'account.status', payload: { status: 'FAILED', reason: 'ADMIN' } });
+      },
+      { allowInactive: true },
+    );
+  }
+
   async failAccount(b: BreachEvent): Promise<void> {
     await this.withAccount(
       b.accountId,
@@ -1001,47 +1098,7 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
       async (ctx) => {
         const { tx, account } = ctx;
         if (account.status !== 'ACTIVE' && account.status !== 'FUNDED_ACTIVE') return;
-        const positions = await tx.position.findMany({
-          where: { accountId: account.id, status: 'OPEN' },
-        });
-        for (const pos of positions) {
-          const inst = this.md.instrumentById(pos.instrumentId);
-          const quote = this.md.peekQuote(inst.symbol) ?? {
-            bid: pos.avgEntryPrice,
-            ask: pos.avgEntryPrice,
-            ts: Date.now(),
-          };
-          const side = pos.side === 'LONG' ? 'SELL' : 'BUY';
-          const order = await tx.order.create({
-            data: {
-              accountId: account.id,
-              clientOrderId: `breach-${pos.id}`,
-              instrumentId: inst.id,
-              side,
-              type: 'MARKET',
-              qty: pos.qty,
-              leverage: pos.leverage,
-              reduceOnly: true,
-              status: 'PENDING',
-              source: 'SYSTEM_BREACH',
-            },
-          });
-          await this.auditOrder(ctx, 'order.placed', order, { positionId: pos.id, reason: b.rule });
-          await this.fill(ctx, order, inst, marketExecution(side, pos.qty, quote, inst));
-        }
-        const open = await tx.order.findMany({ where: { accountId: account.id, status: 'OPEN' } });
-        for (const o of open) {
-          const cancelled = await tx.order.update({
-            where: { id: o.id },
-            data: { status: 'CANCELLED' },
-          });
-          await this.auditOrder(ctx, 'order.cancelled', cancelled, { reason: b.rule });
-          ctx.closed.push(o.id);
-          ctx.events.push({
-            type: 'order.update',
-            payload: toOrderDto(cancelled, this.md.instrumentById(o.instrumentId)),
-          });
-        }
+        await this.liquidate(ctx, b.rule, 'SYSTEM_BREACH');
         await tx.ruleViolation.create({
           data: {
             accountId: account.id,
@@ -1061,6 +1118,14 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
           data: { status: 'FAILED', endedAt: new Date(), failReason: b.rule },
         });
         account.status = 'FAILED';
+        await this.risk.raiseTx(tx, {
+          accountId: account.id,
+          userId: account.userId,
+          type: 'BREACH',
+          severity: 'CRITICAL',
+          dedupKey: `BREACH:${account.id}`,
+          details: { rule: b.rule, floorMinor: b.floorMinor, equityMinor: b.equityMinor },
+        });
         await this.audit.append(tx, {
           actorType: 'SYSTEM',
           action: 'rule.breached',

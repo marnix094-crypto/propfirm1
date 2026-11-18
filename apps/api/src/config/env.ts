@@ -34,6 +34,16 @@ const schema = z.object({
   SALES_EMAIL: z.string().email().optional(),
   /** Payment provider. `fake` = test payments without real money (dev/test only). */
   PAYMENT_PROVIDER: z.enum(['fake']).default('fake'),
+  /** Tenant used when a request names no firm (X-Firm header) and its host matches no domain. */
+  DEFAULT_FIRM_SLUG: z
+    .string()
+    .regex(/^[a-z0-9-]{1,40}$/)
+    .default('daily-funded'),
+  /** Admin panel requires two-step verification. Only `false` outside production (dev/e2e). */
+  ADMIN_REQUIRE_2FA: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((v) => v === 'true'),
   RISK_LOOP_ENABLED: z
     .enum(['true', 'false'])
     .default('true')
@@ -61,6 +71,8 @@ export type AppConfig = Readonly<{
   mailFrom: string;
   paymentProvider: 'fake';
   salesEmail: string | null;
+  defaultFirmSlug: string;
+  adminRequire2fa: boolean;
 }>;
 
 export const APP_CONFIG = Symbol('APP_CONFIG');
@@ -79,6 +91,8 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     throw new Error('DEV_TOOLS_ENABLED must be false in production');
   if (e.NODE_ENV === 'production' && e.PAYMENT_PROVIDER === 'fake')
     throw new Error('PAYMENT_PROVIDER=fake is not allowed in production');
+  if (e.NODE_ENV === 'production' && !e.ADMIN_REQUIRE_2FA)
+    throw new Error('ADMIN_REQUIRE_2FA must be true in production');
   return {
     env: e.NODE_ENV,
     port: e.API_PORT,
@@ -106,5 +120,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     mailFrom: e.MAIL_FROM,
     paymentProvider: e.PAYMENT_PROVIDER,
     salesEmail: e.SALES_EMAIL ?? null,
+    defaultFirmSlug: e.DEFAULT_FIRM_SLUG,
+    adminRequire2fa: e.ADMIN_REQUIRE_2FA,
   };
 }

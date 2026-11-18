@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Req } from '@nestjs/common';
+import type { Request } from 'express';
+import { FirmsService } from '../firms/firms.service.js';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../auth/public.decorator.js';
 import { CurrentUser, type AuthUser } from '../auth/current-user.decorator.js';
@@ -17,7 +19,10 @@ const UUID = new ParseUUIDPipe({ version: '7' });
 @ApiTags('community')
 @Controller()
 export class CommunityController {
-  constructor(private readonly community: CommunityService) {}
+  constructor(
+    private readonly community: CommunityService,
+    private readonly firms: FirmsService,
+  ) {}
 
   @Get('me/profile')
   @ApiOkResponse({ type: TraderProfileDto })
@@ -52,7 +57,7 @@ export class CommunityController {
   @Public()
   @Get('public/transparency')
   @ApiOkResponse({ type: TransparencyDto })
-  transparency() {
-    return this.community.transparency();
+  async transparency(@Req() req: Request) {
+    return this.community.transparency((await this.firms.fromRequest(req)).id);
   }
 }

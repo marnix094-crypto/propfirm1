@@ -26,6 +26,7 @@ import { PrismaService } from '../../infra/prisma.service.js';
 import { MarketDataService } from '../market-data/market-data.service.js';
 import { tradingDateKey, tradingDayStart } from './day.js';
 import { TradingEvents } from './events.js';
+import { RiskAlertsService } from '../risk/risk-alerts.service.js';
 
 export interface LivePosition {
   id: string;
@@ -109,6 +110,7 @@ export class AccountStateService implements OnApplicationBootstrap, OnModuleDest
     private readonly prisma: PrismaService,
     private readonly md: MarketDataService,
     private readonly events: TradingEvents,
+    private readonly risk: RiskAlertsService,
   ) {}
 
   async onApplicationBootstrap() {
@@ -294,6 +296,25 @@ export class AccountStateService implements OnApplicationBootstrap, OnModuleDest
     const base = this.ruleState(live, r, m);
     r.hwm = nextHighWaterMark(r.params, base);
     const ev = evaluateRules(r.params, { ...base, highWaterMarkMinor: r.hwm });
+    if (!ev.breach && TRADABLE.includes(live.status)) {
+      // Warning zone of a hard limit: one alert per account, rule and trading day.
+      for (const x of ev.rules) {
+        if (x.state !== 'warn' || x.floorEquityMinor === null) continue;
+        this.risk.raise({
+          accountId: live.id,
+          userId: live.userId,
+          type: 'NEAR_BREACH',
+          severity: 'WARNING',
+          dedupKey: `NEAR_BREACH:${live.id}:${x.rule}:${tradingDateKey()}`,
+          details: {
+            rule: x.rule,
+            usedMinor: x.usedMinor,
+            limitMinor: x.limitMinor,
+            equityMinor: m.equityMinor,
+          },
+        });
+      }
+    }
     if (ev.breach && TRADABLE.includes(live.status)) {
       const rule = ev.rules.find((x) => x.rule === ev.breach)!;
       this.breach$.next({

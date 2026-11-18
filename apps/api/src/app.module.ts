@@ -4,6 +4,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule } from './config/config.module.js';
 import { InfraModule } from './infra/infra.module.js';
 import { AuditModule } from './modules/audit/audit.module.js';
+import { FirmsModule } from './modules/firms/firms.module.js';
+import { RiskModule } from './modules/risk/risk.module.js';
+import { AdminModule } from './modules/admin/admin.module.js';
 import { MailModule } from './modules/mail/mail.module.js';
 import { SecurityModule } from './modules/security/security.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
@@ -26,6 +29,9 @@ import { UsersModule } from './modules/users/users.module.js';
     ConfigModule,
     InfraModule,
     AuditModule,
+    FirmsModule,
+    RiskModule,
+    AdminModule,
     SecurityModule,
     MailModule,
     // In-memory rate limiting per instance; Redis-backed storage follows with horizontal scaling.

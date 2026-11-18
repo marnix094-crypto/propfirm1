@@ -17,6 +17,30 @@ enum Role {
   ADMIN
 }
 
+/// Staff role within a firm (admin panel). Platform superadmins have Role.ADMIN.
+enum FirmRole {
+  OWNER
+  ADMIN
+  SUPPORT
+}
+
+enum FirmStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum RiskAlertType {
+  BREACH
+  NEAR_BREACH
+  LARGE_LOSS
+}
+
+enum RiskSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
 enum UserStatus {
   ACTIVE
   SUSPENDED
@@ -137,9 +161,35 @@ enum ActorType {
   SYSTEM
 }
 
+/// A prop firm running its own brand on the platform (tenant, D83).
+model Firm {
+  id           String        @id @default(uuid(7)) @db.Uuid
+  slug         String        @unique @db.VarChar(40)
+  name         String        @db.VarChar(80)
+  status       FirmStatus    @default(ACTIVE)
+  /// Custom domain (hostname only), resolves traders to this firm.
+  domain       String?       @unique @db.VarChar(253)
+  /// Brand colour as #RRGGBB; null = Daily Funded lime.
+  primaryColor String?       @db.Char(7)
+  /// PNG/JPEG/WebP as data URL (max ~200 KB); null = default logo.
+  logoDataUrl  String?
+  supportEmail String?       @db.VarChar(254)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
+  users        User[]
+  products     Product[]
+  ruleSets     RuleSet[]
+  competitions Competition[]
+  riskAlerts   RiskAlert[]
+}
+
 model User {
   id                 String             @id @default(uuid(7)) @db.Uuid
-  email              String             @unique
+  firmId             String             @db.Uuid
+  firm               Firm               @relation(fields: [firmId], references: [id])
+  /// Admin-panel role in the firm; null = trader only.
+  firmRole           FirmRole?
+  email              String
   emailVerifiedAt    DateTime?
   passwordHash       String
   roles              Role[]             @default([TRADER])
@@ -163,6 +213,9 @@ model User {
   offers             Offer[]
   twoFactor          TwoFactor?
   emailTokens        EmailToken[]
+
+  @@unique([firmId, email])
+  @@index([firmId, createdAt])
 }
 
 /// TOTP secret is encrypted (AES-256-GCM, FIELD_ENCRYPTION_KEY); recovery codes are hashed.
@@ -193,6 +246,9 @@ model EmailToken {
 /// Immutable and versioned (decision D5): accounts keep the version they were opened with.
 model RuleSet {
   id                      String             @id @default(uuid(7)) @db.Uuid
+  /// null = platform template; otherwise owned by that firm.
+  firmId                  String?            @db.Uuid
+  firm                    Firm?              @relation(fields: [firmId], references: [id], onDelete: Restrict)
   code                    String
   version                 Int
   name                    String
@@ -223,7 +279,8 @@ model RuleSet {
   quotes                  PriceQuote[]
   purchases               Purchase[]
 
-  @@unique([code, version])
+  /// Platform templates: unique (code, version) where firmId IS NULL (partial index in SQL).
+  @@unique([firmId, code, version])
 }
 
 model RuleViolation {
@@ -461,6 +518,8 @@ model AuditLog {
   ts         DateTime  @default(now())
   actorType  ActorType
   actorId    String?   @db.Uuid
+  /// Tenant the event belongs to (null = platform-level). Part of the hash only when set.
+  firmId     String?   @db.Uuid
   action     String
   entityType String
   entityId   String
@@ -471,12 +530,15 @@ model AuditLog {
 
   @@index([entityType, entityId])
   @@index([actorId])
+  @@index([firmId, id])
 }
 
 /// Catalogue item shown on the pricing page. The purchase snapshots size, price and rule set.
 model Product {
   id               String      @id @default(uuid(7)) @db.Uuid
-  slug             String      @unique
+  firmId           String      @db.Uuid
+  firm             Firm        @relation(fields: [firmId], references: [id])
+  slug             String
   type             ProductType
   accountSizeMinor BigInt
   priceMinor       BigInt
@@ -489,6 +551,8 @@ model Product {
   sortOrder        Int         @default(0)
   createdAt        DateTime    @default(now())
   purchases        Purchase[]
+
+  @@unique([firmId, slug])
 }
 
 /// Server-calculated price for a custom account (configurator). Short-lived.
@@ -628,7 +692,9 @@ model TraderProfile {
 /// Time-boxed trading competition: every entrant gets the same simulated starting balance.
 model Competition {
   id                   String             @id @default(uuid(7)) @db.Uuid
-  slug                 String             @unique
+  firmId               String             @db.Uuid
+  firm                 Firm               @relation(fields: [firmId], references: [id])
+  slug                 String
   name                 String
   startsAt             DateTime
   endsAt               DateTime
@@ -638,6 +704,8 @@ model Competition {
   prize                String?
   createdAt            DateTime           @default(now())
   entries              CompetitionEntry[]
+
+  @@unique([firmId, slug])
 }
 
 model CompetitionEntry {
@@ -714,4 +782,23 @@ model Lead {
   locale     String   @db.VarChar(5)
   consentAt  DateTime
   createdAt  DateTime @default(now())
+}
+
+/// Risk signal for a firm's admins (breach, near-breach, large loss). No PII, ids only.
+model RiskAlert {
+  id        String        @id @default(uuid(7)) @db.Uuid
+  firmId    String        @db.Uuid
+  firm      Firm          @relation(fields: [firmId], references: [id])
+  accountId String        @db.Uuid
+  userId    String        @db.Uuid
+  type      RiskAlertType
+  severity  RiskSeverity
+  /// Deduplication key, e.g. NEAR_BREACH once per account per trading day.
+  dedupKey  String        @unique
+  details   Json
+  createdAt DateTime      @default(now())
+  ackAt     DateTime?
+  ackById   String?       @db.Uuid
+
+  @@index([firmId, ackAt, createdAt])
 }

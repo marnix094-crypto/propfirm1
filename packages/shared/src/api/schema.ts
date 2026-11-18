@@ -20,14 +20,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/instruments': {
+  '/api/v1/public/firm': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['MarketDataController_instruments'];
+    get: operations['PublicFirmController_firm'];
     put?: never;
     post?: never;
     delete?: never;
@@ -36,14 +36,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/instruments/{symbol}/quote': {
+  '/api/v1/admin/me': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['MarketDataController_quote'];
+    get: operations['AdminController_me'];
     put?: never;
     post?: never;
     delete?: never;
@@ -52,14 +52,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/instruments/{symbol}/candles': {
+  '/api/v1/admin/overview': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['MarketDataController_candles'];
+    get: operations['AdminController_overview'];
     put?: never;
     post?: never;
     delete?: never;
@@ -68,14 +68,14 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/market/tickers': {
+  '/api/v1/admin/traders': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['MarketDataController_tickers'];
+    get: operations['AdminController_traders'];
     put?: never;
     post?: never;
     delete?: never;
@@ -84,16 +84,272 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/market/status': {
+  '/api/v1/admin/traders/{id}': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['MarketDataController_status'];
+    get: operations['AdminController_trader'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/traders/{id}/suspend': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AdminController_suspend'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/traders/{id}/reactivate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AdminController_reactivate'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/accounts': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AdminController_accounts'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/accounts/{id}/fail': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AdminController_failAccount'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/products': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AdminController_products'];
+    put?: never;
+    post: operations['AdminController_createProduct'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/products/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations['AdminController_updateProduct'];
+    trace?: never;
+  };
+  '/api/v1/admin/rule-sets': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AdminController_ruleSets'];
+    put?: never;
+    post: operations['AdminController_createRuleSet'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/branding': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AdminController_branding'];
+    put: operations['AdminController_updateBranding'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/alerts': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AdminController_alerts'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/alerts/{id}/ack': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AdminController_ack'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/audit': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AdminController_auditLog'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/audit/verify': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AdminController_verifyAudit'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/team': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AdminController_team'];
+    put?: never;
+    post: operations['AdminController_invite'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/team/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations['AdminController_removeMember'];
+    options?: never;
+    head?: never;
+    patch: operations['AdminController_changeRole'];
+    trace?: never;
+  };
+  '/api/v1/admin/firms': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AdminController_firms'];
+    put?: never;
+    post: operations['AdminController_createFirm'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/firms/{id}/status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AdminController_firmStatus'];
     delete?: never;
     options?: never;
     head?: never;
@@ -367,6 +623,134 @@ export interface paths {
     put?: never;
     post?: never;
     delete: operations['AuthController_revokeSession'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/products': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['ProductsController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/products/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['ProductsController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/products/quote': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['ProductsController_quote'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/products/quotes/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['ProductsController_getQuote'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/public/payouts-feed': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['ProductsController_payoutsFeed'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/checkout': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CheckoutController_list'];
+    put?: never;
+    post: operations['CheckoutController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/checkout/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CheckoutController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/checkout/{id}/test-payment': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CheckoutController_testPayment'];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -660,134 +1044,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/products': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['ProductsController_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/products/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['ProductsController_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/products/quote': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['ProductsController_quote'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/products/quotes/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['ProductsController_getQuote'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/public/payouts-feed': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['ProductsController_payoutsFeed'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/checkout': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['CheckoutController_list'];
-    put?: never;
-    post: operations['CheckoutController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/checkout/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['CheckoutController_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/checkout/{id}/test-payment': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['CheckoutController_testPayment'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/api/v1/points': {
     parameters: {
       query?: never;
@@ -828,6 +1084,86 @@ export interface paths {
       cookie?: never;
     };
     get: operations['RewardsController_offers'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/instruments': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['MarketDataController_instruments'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/instruments/{symbol}/quote': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['MarketDataController_quote'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/instruments/{symbol}/candles': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['MarketDataController_candles'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/market/tickers': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['MarketDataController_tickers'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/market/status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['MarketDataController_status'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1064,58 +1400,334 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    InstrumentDto: {
-      symbol: string;
-      displayName: string;
-      baseAsset: string;
-      quoteAsset: string;
-      priceDecimals: number;
-      qtyDecimals: number;
-      /** @description Decimal string */
-      tickSize: string;
-      /** @description Decimal string */
-      minQty: string;
-      /** @description Decimal string */
-      qtyStep: string;
-      maxLeverage: number;
-      commissionBps: number;
-    };
-    QuoteDto: {
-      symbol: string;
-      /** @description Decimal string */
-      bid: string;
-      /** @description Decimal string */
-      ask: string;
-      /** @description Decimal string */
-      markPrice: string | null;
-      /** @description Funding rate, decimal string */
-      fundingRate: string | null;
-      ts: number;
-    };
-    CandleDto: {
-      t: number;
-      o: string;
-      h: string;
-      l: string;
-      c: string;
-      v: string;
-      closed: boolean;
-    };
-    TickerDto: {
-      symbol: string;
-      /** @description Last mid price, decimal string */
-      last: string | null;
-      /** @description Price 24h ago (open of the 24h window), decimal string */
-      open24h: string | null;
-      /** @description 24h change in basis points */
-      changeBps: number | null;
-      high24h: string | null;
-      low24h: string | null;
-    };
-    FeedStatusDto: {
-      source: string;
+    FirmBrandingDto: {
+      slug: string;
+      name: string;
+      /** @description True for the Daily Funded default tenant */
+      isDefault: boolean;
+      /** @description #RRGGBB or null (default lime) */
+      primaryColor: string | null;
+      /** @description Logo as data URL */
+      logoDataUrl: string | null;
+      supportEmail: string | null;
       /** @enum {string} */
-      status: 'connecting' | 'connected' | 'down';
+      status: 'ACTIVE' | 'SUSPENDED';
+    };
+    AdminFirmDto: {
+      id: string;
+      slug: string;
+      name: string;
+      /** @enum {string} */
+      status: 'ACTIVE' | 'SUSPENDED';
+      domain: string | null;
+      primaryColor: string | null;
+      logoDataUrl: string | null;
+      supportEmail: string | null;
+      isDefault: boolean;
+      createdAt: string;
+    };
+    AdminMeDto: {
+      /** @enum {string} */
+      role: 'OWNER' | 'ADMIN' | 'SUPPORT';
+      /** @description Daily Funded platform staff (can manage every firm) */
+      superadmin: boolean;
+      firm: components['schemas']['AdminFirmDto'];
+      twoFactorEnabled: boolean;
+      /** @description Admin routes refuse access until 2FA is enabled */
+      twoFactorRequired: boolean;
+    };
+    DailySalesDto: {
+      /** @example 2026-11-18 */
+      date: string;
+      salesMinor: string;
+      orders: number;
+    };
+    AdminOverviewDto: {
+      traders: number;
+      /** @description Registered in the last 30 days */
+      newTraders30d: number;
+      demoAccounts: number;
+      fundedActive: number;
+      /** @description Funded accounts that failed in the last 30 days */
+      fundedFailed30d: number;
+      competitionAccounts: number;
+      /** @description Paid purchases, last 30 days (EUR minor units) */
+      sales30dMinor: string;
+      orders30d: number;
+      salesAllTimeMinor: string;
+      openAlerts: number;
+      criticalAlerts: number;
+      salesByDay: components['schemas']['DailySalesDto'][];
+      /** @enum {string} */
+      currency: 'EUR';
+    };
+    AdminAccountCountsDto: {
+      total: number;
+      funded: number;
+      failed: number;
+    };
+    AdminTraderDto: {
+      id: string;
+      email: string;
+      country: string;
+      /** @enum {string} */
+      status: 'ACTIVE' | 'SUSPENDED' | 'PENDING_DELETION' | 'DELETED';
+      emailVerified: boolean;
+      /** @enum {string|null} */
+      firmRole: 'OWNER' | 'ADMIN' | 'SUPPORT' | null;
+      createdAt: string;
+      lastLoginAt: string | null;
+      accounts: components['schemas']['AdminAccountCountsDto'];
+    };
+    AdminTraderPageDto: {
+      items: components['schemas']['AdminTraderDto'][];
+      nextCursor: string | null;
+    };
+    AdminAccountDto: {
+      id: string;
+      userId: string;
+      userEmail: string;
+      label: string;
+      /** @enum {string} */
+      kind: 'DEMO' | 'CHALLENGE' | 'FUNDED' | 'LIVE_BROKER' | 'COMPETITION';
+      /** @enum {string} */
+      status:
+        | 'ACTIVE'
+        | 'PASSED'
+        | 'FAILED'
+        | 'PENDING_FUNDED'
+        | 'FUNDED_ACTIVE'
+        | 'SUSPENDED'
+        | 'CLOSED';
+      currency: string;
+      initialBalanceMinor: string;
+      balanceMinor: string;
+      /** @description Balance minus starting balance */
+      pnlMinor: string;
+      ruleSetName: string | null;
+      failReason: string | null;
+      createdAt: string;
+      endedAt: string | null;
+    };
+    AdminPurchaseDto: {
+      id: string;
+      accountSizeMinor: string;
+      quantity: number;
+      totalMinor: string;
+      currency: string;
+      /** @enum {string} */
+      status: 'PENDING' | 'PAID' | 'FULFILLED' | 'FAILED' | 'CANCELLED';
+      createdAt: string;
+    };
+    AdminTraderDetailDto: {
+      id: string;
+      email: string;
+      country: string;
+      /** @enum {string} */
+      status: 'ACTIVE' | 'SUSPENDED' | 'PENDING_DELETION' | 'DELETED';
+      emailVerified: boolean;
+      /** @enum {string|null} */
+      firmRole: 'OWNER' | 'ADMIN' | 'SUPPORT' | null;
+      createdAt: string;
+      lastLoginAt: string | null;
+      accounts: components['schemas']['AdminAccountCountsDto'];
+      twoFactorEnabled: boolean;
+      nickname: string | null;
+      accountList: components['schemas']['AdminAccountDto'][];
+      purchases: components['schemas']['AdminPurchaseDto'][];
+    };
+    ReasonDto: {
+      /** @description Stored in the audit log */
+      reason: string;
+    };
+    AdminAccountPageDto: {
+      items: components['schemas']['AdminAccountDto'][];
+      nextCursor: string | null;
+    };
+    AdminProductDto: {
+      id: string;
+      slug: string;
+      /** @enum {string} */
+      type: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
+      accountSizeMinor: string;
+      priceMinor: string;
+      priceCurrency: string;
+      ruleSetId: string;
+      ruleSetName: string;
+      ruleSetVersion: number;
+      isActive: boolean;
+      isRecommended: boolean;
+      isExample: boolean;
+      sortOrder: number;
+      /** @description Paid or fulfilled purchases */
+      sold: number;
+    };
+    AdminProductListDto: {
+      items: components['schemas']['AdminProductDto'][];
+    };
+    CreateProductDto: {
+      /** @example instant-15k */
+      slug: string;
+      /** @description USD minor units */
+      accountSizeMinor: string;
+      /** @description EUR minor units */
+      priceMinor: string;
+      ruleSetId: string;
+      isRecommended?: boolean;
+      sortOrder?: number;
+    };
+    UpdateProductDto: {
+      /** @description EUR minor units */
+      priceMinor?: string;
+      ruleSetId?: string;
+      isActive?: boolean;
+      isRecommended?: boolean;
+      sortOrder?: number;
+    };
+    AdminRuleSetDto: {
+      id: string;
+      code: string;
+      version: number;
+      name: string;
+      /** @description Platform template (read-only) vs. this firm’s own version */
+      isTemplate: boolean;
+      isExample: boolean;
+      maxDailyLossBps: number;
+      maxDrawdownBps: number;
+      /** @enum {string} */
+      drawdownType: 'STATIC' | 'TRAILING';
+      profitTargetBps: number | null;
+      minTradingDays: number;
+      maxLeverage: number;
+      profitSplitBps: number | null;
+      payoutIntervalDays: number | null;
+      minTradingDaysPerPayout: number | null;
+      minPayoutMinor: string | null;
+      /** @description Accounts opened with this exact version */
+      accounts: number;
+      createdAt: string;
+    };
+    AdminRuleSetListDto: {
+      items: components['schemas']['AdminRuleSetDto'][];
+    };
+    CreateRuleSetDto: {
+      /** @description Template or own rule set to start from */
+      basedOnId: string;
+      name: string;
+      maxDailyLossBps?: number;
+      maxDrawdownBps?: number;
+      /** @enum {string} */
+      drawdownType?: 'STATIC' | 'TRAILING';
+      maxLeverage?: number;
+      profitSplitBps?: number;
+      minTradingDays?: number;
+      payoutIntervalDays?: number;
+      minTradingDaysPerPayout?: number;
+      /** @description USD minor units */
+      minPayoutMinor?: string;
+    };
+    UpdateBrandingDto: {
+      name?: string;
+      /** @example #AFE604 */
+      primaryColor?: string | null;
+      /** @description PNG/JPEG/WebP data URL */
+      logoDataUrl?: string | null;
+      /** @example trade.yourfirm.com */
+      domain?: string | null;
+      supportEmail?: string | null;
+    };
+    AdminAlertDto: {
+      id: string;
+      /** @enum {string} */
+      type: 'BREACH' | 'NEAR_BREACH' | 'LARGE_LOSS';
+      /** @enum {string} */
+      severity: 'INFO' | 'WARNING' | 'CRITICAL';
+      accountId: string;
+      accountLabel: string;
+      userId: string;
+      userEmail: string;
+      details: {
+        [key: string]: unknown;
+      };
+      createdAt: string;
+      ackAt: string | null;
+    };
+    AdminAlertPageDto: {
+      items: components['schemas']['AdminAlertDto'][];
+      nextCursor: string | null;
+    };
+    AdminAuditDto: {
+      id: string;
+      ts: string;
+      /** @enum {string} */
+      actorType: 'USER' | 'ADMIN' | 'SUPPORT' | 'SYSTEM';
+      actorId: string | null;
+      action: string;
+      entityType: string;
+      entityId: string;
+      data: {
+        [key: string]: unknown;
+      };
+      hash: string;
+    };
+    AdminAuditPageDto: {
+      items: components['schemas']['AdminAuditDto'][];
+      nextCursor: string | null;
+    };
+    AuditVerifyDto: {
+      ok: boolean;
+      checked: number;
+      brokenAtId: string | null;
+    };
+    TeamMemberDto: {
+      id: string;
+      email: string;
+      /** @enum {string} */
+      role: 'OWNER' | 'ADMIN' | 'SUPPORT';
+      twoFactorEnabled: boolean;
+      lastLoginAt: string | null;
+      isYou: boolean;
+    };
+    TeamListDto: {
+      items: components['schemas']['TeamMemberDto'][];
+    };
+    InviteMemberDto: {
+      email: string;
+      /** @enum {string} */
+      role: 'OWNER' | 'ADMIN' | 'SUPPORT';
+    };
+    UpdateMemberDto: {
+      /** @enum {string} */
+      role: 'OWNER' | 'ADMIN' | 'SUPPORT';
+    };
+    AdminFirmSummaryDto: {
+      id: string;
+      slug: string;
+      name: string;
+      /** @enum {string} */
+      status: 'ACTIVE' | 'SUSPENDED';
+      domain: string | null;
+      primaryColor: string | null;
+      logoDataUrl: string | null;
+      supportEmail: string | null;
+      isDefault: boolean;
+      createdAt: string;
+      traders: number;
+      fundedActive: number;
+    };
+    AdminFirmListDto: {
+      items: components['schemas']['AdminFirmSummaryDto'][];
+    };
+    CreateFirmDto: {
+      name: string;
+      /** @example acme-trading */
+      slug: string;
+      /** @description Receives an invitation as OWNER */
+      ownerEmail: string;
+    };
+    FirmStatusDto: {
+      /** @enum {string} */
+      status: 'ACTIVE' | 'SUSPENDED';
     };
     RegisterDto: {
       /** @example trader@example.com */
@@ -1139,6 +1751,11 @@ export interface components {
       country: string;
       emailVerified: boolean;
       twoFactorEnabled: boolean;
+      /**
+       * @description Admin-panel role in the firm (null = trader only)
+       * @enum {string|null}
+       */
+      firmRole: 'OWNER' | 'ADMIN' | 'SUPPORT' | null;
     };
     AuthResponseDto: {
       accessToken: string;
@@ -1205,6 +1822,115 @@ export interface components {
       createdAt: string;
       lastUsedAt: string;
       current: boolean;
+    };
+    ProductRulesDto: {
+      maxDailyLossBps: number;
+      maxDrawdownBps: number;
+      /** @enum {string} */
+      drawdownType: 'STATIC' | 'TRAILING';
+      profitSplitBps: number;
+      maxLeverage: number;
+      minTradingDays: number;
+      payoutIntervalDays: number | null;
+      minTradingDaysPerPayout: number | null;
+      scalingStepBps: number | null;
+      /** @description Rule set has example values (not the final offer) */
+      isExample: boolean;
+    };
+    ProductDto: {
+      id: string;
+      slug: string;
+      /** @enum {string} */
+      type: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
+      /** @description Simulated capital, USD minor units */
+      accountSizeMinor: string;
+      /** @enum {string} */
+      accountCurrency: 'USD';
+      /** @description One-time fee, minor units of priceCurrency */
+      priceMinor: string;
+      /** @enum {string} */
+      priceCurrency: 'EUR';
+      isRecommended: boolean;
+      isExample: boolean;
+      rules: components['schemas']['ProductRulesDto'];
+    };
+    ProductListDto: {
+      items: components['schemas']['ProductDto'][];
+    };
+    PriceQuoteRequestDto: {
+      /** @enum {string} */
+      type: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
+      /**
+       * @description USD minor units, integer string
+       * @example 3000000
+       */
+      accountSizeMinor: string;
+      /** @enum {number} */
+      maxDrawdownBps: 400 | 600 | 800;
+    };
+    PriceQuoteDto: {
+      quoteId: string;
+      priceMinor: string;
+      /** @enum {string} */
+      priceCurrency: 'EUR';
+      accountSizeMinor: string;
+      rules: components['schemas']['ProductRulesDto'];
+      expiresAt: string;
+    };
+    PayoutFeedItemDto: {
+      id: string;
+      countryCode: string;
+      amountMinor: string;
+      /** @enum {string} */
+      currency: 'USD';
+      paidAt: string;
+    };
+    PayoutFeedDto: {
+      items: components['schemas']['PayoutFeedItemDto'][];
+    };
+    CheckoutRequestDto: {
+      /** @description Catalogue product (exactly one of productId / quoteId) */
+      productId?: string;
+      /** @description Custom-account quote */
+      quoteId?: string;
+      quantity: number;
+      /** @description Terms, risk disclosure and refund policy accepted */
+      acceptTerms: boolean;
+      /** @enum {string} */
+      locale?: 'en' | 'nl' | 'es';
+      /** @description Personal offer code (e.g. from Daily Points) */
+      offerCode?: string;
+    };
+    PurchaseDto: {
+      id: string;
+      /** @enum {string} */
+      status: 'PENDING' | 'PAID' | 'FULFILLED' | 'FAILED' | 'CANCELLED';
+      /** @enum {string} */
+      type: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
+      quantity: number;
+      accountSizeMinor: string;
+      unitPriceMinor: string;
+      totalMinor: string;
+      /** @description Offer discount, EUR minor units */
+      discountMinor: string;
+      offerCode: string | null;
+      /** @enum {string} */
+      currency: 'EUR';
+      provider: string;
+      /** @description Test provider: no real money moves */
+      isTestPayment: boolean;
+      paymentUrl: string | null;
+      failureCode: string | null;
+      accountIds: string[];
+      rules: components['schemas']['ProductRulesDto'];
+      createdAt: string;
+    };
+    PurchaseListDto: {
+      items: components['schemas']['PurchaseDto'][];
+    };
+    TestPaymentDto: {
+      /** @enum {string} */
+      outcome: 'succeeded' | 'failed' | 'cancelled';
     };
     AccountDto: {
       id: string;
@@ -1469,115 +2195,6 @@ export interface components {
     CreatedAccountDto: {
       id: string;
     };
-    ProductRulesDto: {
-      maxDailyLossBps: number;
-      maxDrawdownBps: number;
-      /** @enum {string} */
-      drawdownType: 'STATIC' | 'TRAILING';
-      profitSplitBps: number;
-      maxLeverage: number;
-      minTradingDays: number;
-      payoutIntervalDays: number | null;
-      minTradingDaysPerPayout: number | null;
-      scalingStepBps: number | null;
-      /** @description Rule set has example values (not the final offer) */
-      isExample: boolean;
-    };
-    ProductDto: {
-      id: string;
-      slug: string;
-      /** @enum {string} */
-      type: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
-      /** @description Simulated capital, USD minor units */
-      accountSizeMinor: string;
-      /** @enum {string} */
-      accountCurrency: 'USD';
-      /** @description One-time fee, minor units of priceCurrency */
-      priceMinor: string;
-      /** @enum {string} */
-      priceCurrency: 'EUR';
-      isRecommended: boolean;
-      isExample: boolean;
-      rules: components['schemas']['ProductRulesDto'];
-    };
-    ProductListDto: {
-      items: components['schemas']['ProductDto'][];
-    };
-    PriceQuoteRequestDto: {
-      /** @enum {string} */
-      type: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
-      /**
-       * @description USD minor units, integer string
-       * @example 3000000
-       */
-      accountSizeMinor: string;
-      /** @enum {number} */
-      maxDrawdownBps: 400 | 600 | 800;
-    };
-    PriceQuoteDto: {
-      quoteId: string;
-      priceMinor: string;
-      /** @enum {string} */
-      priceCurrency: 'EUR';
-      accountSizeMinor: string;
-      rules: components['schemas']['ProductRulesDto'];
-      expiresAt: string;
-    };
-    PayoutFeedItemDto: {
-      id: string;
-      countryCode: string;
-      amountMinor: string;
-      /** @enum {string} */
-      currency: 'USD';
-      paidAt: string;
-    };
-    PayoutFeedDto: {
-      items: components['schemas']['PayoutFeedItemDto'][];
-    };
-    CheckoutRequestDto: {
-      /** @description Catalogue product (exactly one of productId / quoteId) */
-      productId?: string;
-      /** @description Custom-account quote */
-      quoteId?: string;
-      quantity: number;
-      /** @description Terms, risk disclosure and refund policy accepted */
-      acceptTerms: boolean;
-      /** @enum {string} */
-      locale?: 'en' | 'nl' | 'es';
-      /** @description Personal offer code (e.g. from Daily Points) */
-      offerCode?: string;
-    };
-    PurchaseDto: {
-      id: string;
-      /** @enum {string} */
-      status: 'PENDING' | 'PAID' | 'FULFILLED' | 'FAILED' | 'CANCELLED';
-      /** @enum {string} */
-      type: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
-      quantity: number;
-      accountSizeMinor: string;
-      unitPriceMinor: string;
-      totalMinor: string;
-      /** @description Offer discount, EUR minor units */
-      discountMinor: string;
-      offerCode: string | null;
-      /** @enum {string} */
-      currency: 'EUR';
-      provider: string;
-      /** @description Test provider: no real money moves */
-      isTestPayment: boolean;
-      paymentUrl: string | null;
-      failureCode: string | null;
-      accountIds: string[];
-      rules: components['schemas']['ProductRulesDto'];
-      createdAt: string;
-    };
-    PurchaseListDto: {
-      items: components['schemas']['PurchaseDto'][];
-    };
-    TestPaymentDto: {
-      /** @enum {string} */
-      outcome: 'succeeded' | 'failed' | 'cancelled';
-    };
     PointsEntryDto: {
       id: string;
       /** @enum {string} */
@@ -1627,6 +2244,59 @@ export interface components {
     };
     OfferListDto: {
       items: components['schemas']['OfferDto'][];
+    };
+    InstrumentDto: {
+      symbol: string;
+      displayName: string;
+      baseAsset: string;
+      quoteAsset: string;
+      priceDecimals: number;
+      qtyDecimals: number;
+      /** @description Decimal string */
+      tickSize: string;
+      /** @description Decimal string */
+      minQty: string;
+      /** @description Decimal string */
+      qtyStep: string;
+      maxLeverage: number;
+      commissionBps: number;
+    };
+    QuoteDto: {
+      symbol: string;
+      /** @description Decimal string */
+      bid: string;
+      /** @description Decimal string */
+      ask: string;
+      /** @description Decimal string */
+      markPrice: string | null;
+      /** @description Funding rate, decimal string */
+      fundingRate: string | null;
+      ts: number;
+    };
+    CandleDto: {
+      t: number;
+      o: string;
+      h: string;
+      l: string;
+      c: string;
+      v: string;
+      closed: boolean;
+    };
+    TickerDto: {
+      symbol: string;
+      /** @description Last mid price, decimal string */
+      last: string | null;
+      /** @description Price 24h ago (open of the 24h window), decimal string */
+      open24h: string | null;
+      /** @description 24h change in basis points */
+      changeBps: number | null;
+      high24h: string | null;
+      low24h: string | null;
+    };
+    FeedStatusDto: {
+      source: string;
+      /** @enum {string} */
+      status: 'connecting' | 'connected' | 'down';
     };
     JournalEntryDto: {
       id: string;
@@ -1820,7 +2490,7 @@ export interface operations {
       };
     };
   };
-  MarketDataController_instruments: {
+  PublicFirmController_firm: {
     parameters: {
       query?: never;
       header?: never;
@@ -1834,18 +2504,19 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['InstrumentDto'][];
+          'application/json': components['schemas']['FirmBrandingDto'];
         };
       };
     };
   };
-  MarketDataController_quote: {
+  AdminController_me: {
     parameters: {
       query?: never;
-      header?: never;
-      path: {
-        symbol: string;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
       };
+      path?: never;
       cookie?: never;
     };
     requestBody?: never;
@@ -1855,20 +2526,70 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['QuoteDto'];
+          'application/json': components['schemas']['AdminMeDto'];
         };
       };
     };
   };
-  MarketDataController_candles: {
+  AdminController_overview: {
     parameters: {
-      query: {
-        tf: '1m' | '5m' | '15m' | '1h' | '4h' | '1d';
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminOverviewDto'];
+        };
+      };
+    };
+  };
+  AdminController_traders: {
+    parameters: {
+      query?: {
+        cursor?: string;
         limit?: number;
+        /** @description Part of the email address */
+        q?: string;
+        status?: 'ACTIVE' | 'SUSPENDED';
       };
-      header?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminTraderPageDto'];
+        };
+      };
+    };
+  };
+  AdminController_trader: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
       path: {
-        symbol: string;
+        id: string;
       };
       cookie?: never;
     };
@@ -1879,15 +2600,86 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['CandleDto'][];
+          'application/json': components['schemas']['AdminTraderDetailDto'];
         };
       };
     };
   };
-  MarketDataController_tickers: {
+  AdminController_suspend: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReasonDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminTraderDetailDto'];
+        };
+      };
+    };
+  };
+  AdminController_reactivate: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReasonDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminTraderDetailDto'];
+        };
+      };
+    };
+  };
+  AdminController_accounts: {
+    parameters: {
+      query?: {
+        cursor?: string;
+        limit?: number;
+        kind?: 'DEMO' | 'CHALLENGE' | 'FUNDED' | 'LIVE_BROKER' | 'COMPETITION';
+        status?:
+          | 'ACTIVE'
+          | 'PASSED'
+          | 'FAILED'
+          | 'PENDING_FUNDED'
+          | 'FUNDED_ACTIVE'
+          | 'SUSPENDED'
+          | 'CLOSED';
+      };
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -1898,15 +2690,46 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['TickerDto'][];
+          'application/json': components['schemas']['AdminAccountPageDto'];
         };
       };
     };
   };
-  MarketDataController_status: {
+  AdminController_failAccount: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReasonDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminAccountDto'];
+        };
+      };
+    };
+  };
+  AdminController_products: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -1917,7 +2740,430 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['FeedStatusDto'];
+          'application/json': components['schemas']['AdminProductListDto'];
+        };
+      };
+    };
+  };
+  AdminController_createProduct: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateProductDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminProductDto'];
+        };
+      };
+    };
+  };
+  AdminController_updateProduct: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateProductDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminProductDto'];
+        };
+      };
+    };
+  };
+  AdminController_ruleSets: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminRuleSetListDto'];
+        };
+      };
+    };
+  };
+  AdminController_createRuleSet: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateRuleSetDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminRuleSetDto'];
+        };
+      };
+    };
+  };
+  AdminController_branding: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminFirmDto'];
+        };
+      };
+    };
+  };
+  AdminController_updateBranding: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateBrandingDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminFirmDto'];
+        };
+      };
+    };
+  };
+  AdminController_alerts: {
+    parameters: {
+      query?: {
+        cursor?: string;
+        limit?: number;
+        state?: 'open' | 'all';
+      };
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminAlertPageDto'];
+        };
+      };
+    };
+  };
+  AdminController_ack: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminController_auditLog: {
+    parameters: {
+      query?: {
+        cursor?: string;
+        limit?: number;
+        /** @description Action prefix, e.g. "order." or "admin." */
+        action?: string;
+      };
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminAuditPageDto'];
+        };
+      };
+    };
+  };
+  AdminController_verifyAudit: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuditVerifyDto'];
+        };
+      };
+    };
+  };
+  AdminController_team: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TeamListDto'];
+        };
+      };
+    };
+  };
+  AdminController_invite: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['InviteMemberDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TeamListDto'];
+        };
+      };
+    };
+  };
+  AdminController_removeMember: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TeamListDto'];
+        };
+      };
+    };
+  };
+  AdminController_changeRole: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateMemberDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TeamListDto'];
+        };
+      };
+    };
+  };
+  AdminController_firms: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminFirmListDto'];
+        };
+      };
+    };
+  };
+  AdminController_createFirm: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateFirmDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminFirmListDto'];
+        };
+      };
+    };
+  };
+  AdminController_firmStatus: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FirmStatusDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminFirmListDto'];
         };
       };
     };
@@ -2270,6 +3516,201 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  ProductsController_list: {
+    parameters: {
+      query?: {
+        type?: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ProductListDto'];
+        };
+      };
+    };
+  };
+  ProductsController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ProductDto'];
+        };
+      };
+    };
+  };
+  ProductsController_quote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PriceQuoteRequestDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PriceQuoteDto'];
+        };
+      };
+    };
+  };
+  ProductsController_getQuote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PriceQuoteDto'];
+        };
+      };
+    };
+  };
+  ProductsController_payoutsFeed: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PayoutFeedDto'];
+        };
+      };
+    };
+  };
+  CheckoutController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PurchaseListDto'];
+        };
+      };
+    };
+  };
+  CheckoutController_create: {
+    parameters: {
+      query?: never;
+      header: {
+        'Idempotency-Key': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CheckoutRequestDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PurchaseDto'];
+        };
+      };
+    };
+  };
+  CheckoutController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PurchaseDto'];
+        };
+      };
+    };
+  };
+  CheckoutController_testPayment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TestPaymentDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PurchaseDto'];
+        };
       };
     };
   };
@@ -2680,201 +4121,6 @@ export interface operations {
       };
     };
   };
-  ProductsController_list: {
-    parameters: {
-      query?: {
-        type?: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ProductListDto'];
-        };
-      };
-    };
-  };
-  ProductsController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ProductDto'];
-        };
-      };
-    };
-  };
-  ProductsController_quote: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PriceQuoteRequestDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PriceQuoteDto'];
-        };
-      };
-    };
-  };
-  ProductsController_getQuote: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PriceQuoteDto'];
-        };
-      };
-    };
-  };
-  ProductsController_payoutsFeed: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PayoutFeedDto'];
-        };
-      };
-    };
-  };
-  CheckoutController_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PurchaseListDto'];
-        };
-      };
-    };
-  };
-  CheckoutController_create: {
-    parameters: {
-      query?: never;
-      header: {
-        'Idempotency-Key': string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CheckoutRequestDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PurchaseDto'];
-        };
-      };
-    };
-  };
-  CheckoutController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PurchaseDto'];
-        };
-      };
-    };
-  };
-  CheckoutController_testPayment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['TestPaymentDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PurchaseDto'];
-        };
-      };
-    };
-  };
   RewardsController_points: {
     parameters: {
       query?: never;
@@ -2934,6 +4180,108 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['OfferListDto'];
+        };
+      };
+    };
+  };
+  MarketDataController_instruments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['InstrumentDto'][];
+        };
+      };
+    };
+  };
+  MarketDataController_quote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        symbol: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['QuoteDto'];
+        };
+      };
+    };
+  };
+  MarketDataController_candles: {
+    parameters: {
+      query: {
+        tf: '1m' | '5m' | '15m' | '1h' | '4h' | '1d';
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        symbol: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CandleDto'][];
+        };
+      };
+    };
+  };
+  MarketDataController_tickers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TickerDto'][];
+        };
+      };
+    };
+  };
+  MarketDataController_status: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FeedStatusDto'];
         };
       };
     };

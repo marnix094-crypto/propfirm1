@@ -10,6 +10,8 @@ export interface AuditEntry {
   action: string;
   entityType: string;
   entityId: string;
+  /** Tenant; resolved from the actor or entity when omitted (null = platform-level). */
+  firmId?: string | null;
   /** Never put PII here — ids and amounts only. */
   data: Record<string, unknown>;
   requestId?: string | null;
@@ -26,6 +28,8 @@ export function auditHash(prevHash: string, ts: Date, e: AuditEntry): string {
     action: e.action,
     entityType: e.entityType,
     entityId: e.entityId,
+    // Only part of the hash when set, so rows written before multi-tenancy still verify.
+    ...(e.firmId ? { firmId: e.firmId } : {}),
     data: e.data,
   });
   return createHash('sha256').update(payload).digest('hex');
@@ -39,7 +43,67 @@ export function auditHash(prevHash: string, ts: Date, e: AuditEntry): string {
 export class AuditService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /** Tenant of an audit entry: explicit, else via the acting user, else via the entity. */
+  private async resolveFirm(tx: Tx, e: AuditEntry): Promise<string | null> {
+    if (e.firmId !== undefined) return e.firmId;
+    const userFirm = async (id: string) =>
+      (await tx.user.findUnique({ where: { id }, select: { firmId: true } }))?.firmId ?? null;
+    if (e.actorId && e.actorType !== 'SYSTEM') {
+      const f = await userFirm(e.actorId);
+      if (f) return f;
+    }
+    const viaAccount = async (accountId: string | null | undefined) =>
+      accountId
+        ? ((
+            await tx.tradingAccount.findUnique({
+              where: { id: accountId },
+              select: { user: { select: { firmId: true } } },
+            })
+          )?.user.firmId ?? null)
+        : null;
+    switch (e.entityType) {
+      case 'User':
+        return userFirm(e.entityId);
+      case 'TradingAccount':
+        return viaAccount(e.entityId);
+      case 'Order':
+        return viaAccount(
+          (await tx.order.findUnique({ where: { id: e.entityId }, select: { accountId: true } }))
+            ?.accountId,
+        );
+      case 'Position':
+        return viaAccount(
+          (
+            await tx.position.findUnique({
+              where: { id: e.entityId },
+              select: { accountId: true },
+            })
+          )?.accountId,
+        );
+      case 'Purchase': {
+        const p = await tx.purchase.findUnique({
+          where: { id: e.entityId },
+          select: { user: { select: { firmId: true } } },
+        });
+        return p?.user.firmId ?? null;
+      }
+      case 'Offer': {
+        const o = await tx.offer.findUnique({
+          where: { id: e.entityId },
+          select: { user: { select: { firmId: true } } },
+        });
+        return o?.user.firmId ?? null;
+      }
+      case 'Firm':
+        return e.entityId;
+      default:
+        return null;
+    }
+  }
+
   async append(tx: Tx, entry: AuditEntry): Promise<void> {
+    const firmId = await this.resolveFirm(tx, entry);
+    entry = { ...entry, firmId };
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('audit_log'))`;
     const last = await tx.auditLog.findFirst({ orderBy: { id: 'desc' }, select: { hash: true } });
     const prevHash = last?.hash ?? GENESIS_HASH;
@@ -50,6 +114,7 @@ export class AuditService {
         ts,
         actorType: entry.actorType,
         actorId: entry.actorId ?? null,
+        firmId,
         action: entry.action,
         entityType: entry.entityType,
         entityId: entry.entityId,
@@ -77,6 +142,7 @@ export class AuditService {
         const expected = auditHash(prev, r.ts, {
           actorType: r.actorType,
           actorId: r.actorId,
+          firmId: r.firmId,
           action: r.action,
           entityType: r.entityType,
           entityId: r.entityId,

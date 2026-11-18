@@ -1,6 +1,7 @@
 import type { RuleSet } from '../../generated/prisma/client.js';
 
-type RuleSetDefinition = Omit<RuleSet, 'id' | 'createdAt'>;
+/** Platform templates (firmId null); firms add their own versions via the admin panel. */
+type RuleSetDefinition = Omit<RuleSet, 'id' | 'createdAt' | 'firmId'>;
 
 /**
  * Rule set catalogue. Rows are IMMUTABLE once created (DB trigger): to change rules,

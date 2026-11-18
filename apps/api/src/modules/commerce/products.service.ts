@@ -4,6 +4,7 @@ import { PrismaService } from '../../infra/prisma.service.js';
 import { Errors } from '../../common/errors.js';
 import type { Product, RuleSet } from '../../generated/prisma/client.js';
 import { RulesService } from '../rules/rules.service.js';
+import { FirmsService } from '../firms/firms.service.js';
 import { INSTANT_RULE_CODE_BY_DRAWDOWN } from '../rules/catalog.js';
 import type { PriceQuoteDto, PriceQuoteRequestDto, ProductDto, ProductRulesDto } from './dto.js';
 import { CUSTOM_SIZE, PRODUCT_CATALOG, QUOTE_TTL_MS } from './products.catalog.js';
@@ -44,18 +45,31 @@ export class ProductsService implements OnModuleInit {
   constructor(
     private readonly prisma: PrismaService,
     private readonly rules: RulesService,
+    private readonly firms: FirmsService,
   ) {}
 
-  /** Creates missing catalogue products. Existing rows are left alone (admin-managed later). */
+  /** The default firm gets the example catalogue on first boot. */
   async onModuleInit() {
+    const firm = await this.firms.defaultFirm();
+    await this.seedCatalog(firm.id);
+  }
+
+  /**
+   * Creates missing example products for a firm (also used when a new firm is created).
+   * Existing rows are left alone — they are managed in the admin panel.
+   */
+  async seedCatalog(firmId: string): Promise<void> {
     await this.rules.ensureCatalog();
     for (const [i, def] of PRODUCT_CATALOG.entries()) {
-      const exists = await this.prisma.product.findUnique({ where: { slug: def.slug } });
+      const exists = await this.prisma.product.findUnique({
+        where: { firmId_slug: { firmId, slug: def.slug } },
+      });
       if (exists) continue;
       const ruleSet = await this.rules.latest(def.ruleSetCode);
       await this.prisma.product
         .create({
           data: {
+            firmId,
             slug: def.slug,
             type: 'INSTANT',
             accountSizeMinor: def.accountSizeMinor,
@@ -69,22 +83,22 @@ export class ProductsService implements OnModuleInit {
         .catch((e: { code?: string }) => {
           if (e.code !== 'P2002') throw e; // created concurrently by another instance
         });
-      this.logger.log(`Created product ${def.slug}`);
+      this.logger.log(`Created product ${def.slug} for firm ${firmId}`);
     }
   }
 
-  async list(type?: ProductDto['type']): Promise<ProductDto[]> {
+  async list(firmId: string, type?: ProductDto['type']): Promise<ProductDto[]> {
     const rows = await this.prisma.product.findMany({
-      where: { isActive: true, ...(type ? { type } : {}) },
+      where: { firmId, isActive: true, ...(type ? { type } : {}) },
       include: { ruleSet: true },
       orderBy: [{ sortOrder: 'asc' }, { accountSizeMinor: 'asc' }],
     });
     return rows.map(toProductDto);
   }
 
-  async get(id: string): Promise<ProductDto> {
+  async get(firmId: string, id: string): Promise<ProductDto> {
     const p = await this.prisma.product.findFirst({
-      where: { id, isActive: true },
+      where: { id, firmId, isActive: true },
       include: { ruleSet: true },
     });
     if (!p) throw Errors.notFound('Product');

@@ -16,6 +16,6 @@ import { TwoFactorService } from './two-factor.service.js';
     TwoFactorService,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
-  exports: [TokensService],
+  exports: [TokensService, EmailTokensService],
 })
 export class AuthModule {}

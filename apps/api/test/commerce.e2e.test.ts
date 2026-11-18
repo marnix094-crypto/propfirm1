@@ -222,7 +222,7 @@ describe('checkout', () => {
 
   it('blocks restricted countries', async () => {
     const u = await verifiedUser();
-    await prisma.user.update({ where: { email: u.email }, data: { country: 'IR' } });
+    await prisma.user.update({ where: { id: u.id }, data: { country: 'IR' } });
     const res = await checkout(u.token, {
       productId: (await product()).id,
       quantity: 1,

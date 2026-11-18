@@ -66,6 +66,12 @@ export class UserDto {
   @ApiProperty() country!: string;
   @ApiProperty() emailVerified!: boolean;
   @ApiProperty() twoFactorEnabled!: boolean;
+  @ApiProperty({
+    enum: ['OWNER', 'ADMIN', 'SUPPORT'],
+    nullable: true,
+    description: 'Admin-panel role in the firm (null = trader only)',
+  })
+  firmRole!: 'OWNER' | 'ADMIN' | 'SUPPORT' | null;
 }
 
 export class AuthResponseDto {

@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { hash, verify } from '@node-rs/argon2';
 import { APP_CONFIG, type AppConfig } from '../../config/env.js';
-import { PrismaService } from '../../infra/prisma.service.js';
+import { PrismaService, type Tx } from '../../infra/prisma.service.js';
 import { AuditService } from '../audit/audit.service.js';
 import { Errors } from '../../common/errors.js';
 import { Prisma, type User } from '../../generated/prisma/client.js';
@@ -26,7 +26,44 @@ export const toUserDto = (u: User, twoFactorEnabled: boolean): UserDto => ({
   country: u.country,
   emailVerified: u.emailVerifiedAt !== null,
   twoFactorEnabled,
+  firmRole: u.firmRole,
 });
+
+/** Free DEMO account with virtual funds, created for every new user (D31). */
+export async function openDemoAccount(
+  tx: Tx,
+  audit: AuditService,
+  userId: string,
+  initial: bigint,
+): Promise<void> {
+  const acc = await tx.tradingAccount.create({
+    data: {
+      userId,
+      kind: 'DEMO',
+      label: 'Demo',
+      initialBalanceMinor: initial,
+      balanceMinor: initial,
+      highWaterMarkMinor: initial,
+    },
+  });
+  await tx.ledgerEntry.create({
+    data: {
+      accountId: acc.id,
+      type: 'INITIAL_CAPITAL',
+      amountMinor: initial,
+      balanceAfterMinor: initial,
+      refType: 'account',
+      refId: acc.id,
+    },
+  });
+  await audit.append(tx, {
+    actorType: 'SYSTEM',
+    action: 'account.created',
+    entityType: 'TradingAccount',
+    entityId: acc.id,
+    data: { kind: 'DEMO', initialBalanceMinor: initial },
+  });
+}
 
 @Injectable()
 export class AuthService {
@@ -71,8 +108,10 @@ export class AuthService {
   }
 
   /** Always succeeds from the caller's view (no account enumeration). */
-  async forgotPassword(email: string): Promise<void> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+  async forgotPassword(email: string, firmId: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { firmId_email: { firmId, email } },
+    });
     if (!user || user.status !== 'ACTIVE') return;
     const token = await this.emailTokens.issue(user.id, 'RESET_PASSWORD');
     const link = `${this.config.appBaseUrl}/${user.locale}/reset-password?token=${token}`;
@@ -138,6 +177,7 @@ export class AuthService {
 
   async register(
     dto: RegisterDto,
+    firmId: string,
     userAgent?: string,
   ): Promise<{ user: User; tokens: IssuedTokens }> {
     if (BLOCKED_COUNTRIES.has(dto.country))
@@ -149,6 +189,7 @@ export class AuthService {
       user = await this.prisma.$transaction(async (tx) => {
         const u = await tx.user.create({
           data: {
+            firmId,
             email: dto.email,
             passwordHash,
             country: dto.country,
@@ -158,26 +199,6 @@ export class AuthService {
           },
         });
         // Every trader gets a free demo account with virtual funds (decision: own funds = demo only).
-        const acc = await tx.tradingAccount.create({
-          data: {
-            userId: u.id,
-            kind: 'DEMO',
-            label: 'Demo',
-            initialBalanceMinor: initial,
-            balanceMinor: initial,
-            highWaterMarkMinor: initial,
-          },
-        });
-        await tx.ledgerEntry.create({
-          data: {
-            accountId: acc.id,
-            type: 'INITIAL_CAPITAL',
-            amountMinor: initial,
-            balanceAfterMinor: initial,
-            refType: 'account',
-            refId: acc.id,
-          },
-        });
         await this.audit.append(tx, {
           actorType: 'USER',
           actorId: u.id,
@@ -186,13 +207,7 @@ export class AuthService {
           entityId: u.id,
           data: { country: u.country },
         });
-        await this.audit.append(tx, {
-          actorType: 'SYSTEM',
-          action: 'account.created',
-          entityType: 'TradingAccount',
-          entityId: acc.id,
-          data: { kind: 'DEMO', initialBalanceMinor: initial },
-        });
+        await openDemoAccount(tx, this.audit, u.id, initial);
         return u;
       });
     } catch (e) {
@@ -207,9 +222,12 @@ export class AuthService {
 
   async login(
     dto: LoginDto,
+    firmId: string,
     userAgent?: string,
   ): Promise<{ user: User; tokens: IssuedTokens } | { mfaToken: string }> {
-    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    const user = await this.prisma.user.findUnique({
+      where: { firmId_email: { firmId, email: dto.email } },
+    });
     const ok = await verify(user?.passwordHash ?? DUMMY_HASH, dto.password);
     if (!user || !ok) throw Errors.unauthorized('INVALID_CREDENTIALS');
     if (user.status !== 'ACTIVE') throw Errors.forbidden('ACCOUNT_SUSPENDED');

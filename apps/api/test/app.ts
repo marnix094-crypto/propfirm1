@@ -81,7 +81,11 @@ export async function registerUser(t: TestApp, overrides: Record<string, unknown
     throw new Error(`register failed: ${res.status} ${JSON.stringify(res.body)}`);
   const token = res.body.accessToken as string;
   const accounts = await t.http().get('/api/v1/accounts').set('Authorization', `Bearer ${token}`);
+  const id = (
+    JSON.parse(Buffer.from(token.split('.')[1]!, 'base64url').toString()) as { sub: string }
+  ).sub;
   return {
+    id,
     email,
     token,
     accountId: accounts.body[0].id as string,

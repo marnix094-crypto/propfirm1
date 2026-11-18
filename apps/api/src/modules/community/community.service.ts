@@ -108,9 +108,19 @@ export class CommunityService {
 
   // ------------------------------------------------------------- leaderboard
   /** Active funded accounts of traders who opted in (best account per trader), by return. */
+  private async firmOf(userId: string): Promise<string> {
+    const u = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { firmId: true },
+    });
+    return u.firmId;
+  }
+
   async leaderboard(userId: string): Promise<LeaderboardDto> {
+    const firmId = await this.firmOf(userId);
     const accounts = await this.prisma.tradingAccount.findMany({
       where: {
+        user: { firmId },
         kind: 'FUNDED',
         status: 'FUNDED_ACTIVE',
         purchaseId: { not: null },
@@ -161,13 +171,18 @@ export class CommunityService {
 
   // ------------------------------------------------------------- competitions
   /** The monthly competition always exists for the current month (created on first use). */
-  async ensureMonthly(now = new Date()): Promise<Competition> {
+  async ensureMonthly(firmId: string, now = new Date()): Promise<Competition> {
     const m = amsterdamMonth(now);
+    const firm = await this.prisma.firm.findUniqueOrThrow({
+      where: { id: firmId },
+      select: { name: true },
+    });
     return this.prisma.competition.upsert({
-      where: { slug: m.slug },
+      where: { firmId_slug: { firmId, slug: m.slug } },
       create: {
+        firmId,
         slug: m.slug,
-        name: `Daily Funded Monthly — ${m.label}`,
+        name: `${firm.name} Monthly — ${m.label}`,
         startsAt: m.start,
         endsAt: m.end,
         startingBalanceMinor: 10_000_000n,
@@ -219,14 +234,21 @@ export class CommunityService {
   }
 
   async competitions(userId: string): Promise<CompetitionDto[]> {
-    await this.ensureMonthly();
-    const list = await this.prisma.competition.findMany({ orderBy: { startsAt: 'desc' }, take: 6 });
+    const firmId = await this.firmOf(userId);
+    await this.ensureMonthly(firmId);
+    const list = await this.prisma.competition.findMany({
+      where: { firmId },
+      orderBy: { startsAt: 'desc' },
+      take: 6,
+    });
     return Promise.all(list.map((c) => this.toDto(c, userId)));
   }
 
   /** Join a running competition: opens a dedicated simulated competition account. */
   async join(userId: string, competitionId: string): Promise<CompetitionDto> {
-    const c = await this.prisma.competition.findUnique({ where: { id: competitionId } });
+    const c = await this.prisma.competition.findFirst({
+      where: { id: competitionId, firmId: await this.firmOf(userId) },
+    });
     if (!c) throw Errors.notFound('Competition');
     if (this.statusOf(c) === 'ENDED')
       throw Errors.unprocessable('COMPETITION_NOT_ACTIVE', 'The competition has ended');
@@ -238,7 +260,7 @@ export class CommunityService {
         userId,
         initialBalanceMinor: c.startingBalanceMinor,
         maxLeverage: c.maxLeverage,
-        label: c.name.replace('Daily Funded Monthly — ', 'Competition '),
+        label: c.name.replace(/^.* Monthly — /, 'Competition '),
       });
       try {
         await this.prisma.competitionEntry.create({ data: { competitionId, userId, accountId } });
@@ -250,21 +272,21 @@ export class CommunityService {
   }
 
   // ------------------------------------------------------------- transparency
-  async transparency(): Promise<TransparencyDto> {
-    const [traders, funded, active, closed, competitions] = await Promise.all([
-      this.prisma.user.count({ where: { status: 'ACTIVE' } }),
-      this.prisma.tradingAccount.count({ where: { kind: 'FUNDED', purchaseId: { not: null } } }),
+  /** Real counts for one firm (its traders only see their own platform's numbers). */
+  async transparency(firmId: string): Promise<TransparencyDto> {
+    const funded = { user: { firmId }, kind: 'FUNDED' as const, purchaseId: { not: null } };
+    const [traders, fundedCount, active, closed, competitions] = await Promise.all([
+      this.prisma.user.count({ where: { firmId, status: 'ACTIVE' } }),
+      this.prisma.tradingAccount.count({ where: funded }),
+      this.prisma.tradingAccount.count({ where: { ...funded, status: 'FUNDED_ACTIVE' } }),
       this.prisma.tradingAccount.count({
-        where: { kind: 'FUNDED', purchaseId: { not: null }, status: 'FUNDED_ACTIVE' },
+        where: { ...funded, status: { in: ['FAILED', 'CLOSED'] } },
       }),
-      this.prisma.tradingAccount.count({
-        where: { kind: 'FUNDED', purchaseId: { not: null }, status: { in: ['FAILED', 'CLOSED'] } },
-      }),
-      this.prisma.competition.count(),
+      this.prisma.competition.count({ where: { firmId } }),
     ]);
     return {
       traders,
-      fundedAccounts: funded,
+      fundedAccounts: fundedCount,
       activeFundedAccounts: active,
       closedFundedAccounts: closed,
       payouts: 0,

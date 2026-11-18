@@ -8,7 +8,9 @@ import {
   ParseUUIDPipe,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { Errors } from '../../common/errors.js';
@@ -28,26 +30,32 @@ import {
   TestPaymentDto,
 } from './dto.js';
 import { ProductsService } from './products.service.js';
+import { FirmsService } from '../firms/firms.service.js';
 
 const UUID = new ParseUUIDPipe({ version: '7' });
 
 @ApiTags('catalog')
 @Controller()
 export class ProductsController {
-  constructor(private readonly products: ProductsService) {}
+  constructor(
+    private readonly products: ProductsService,
+    private readonly firms: FirmsService,
+  ) {}
 
   @Public()
   @Get('products')
   @ApiOkResponse({ type: ProductListDto })
-  async list(@Query() q: ProductQueryDto): Promise<ProductListDto> {
-    return { items: await this.products.list(q.type) };
+  async list(@Query() q: ProductQueryDto, @Req() req: Request): Promise<ProductListDto> {
+    const firm = await this.firms.fromRequest(req);
+    return { items: await this.products.list(firm.id, q.type) };
   }
 
   @Public()
   @Get('products/:id')
   @ApiOkResponse({ type: ProductDto })
-  get(@Param('id', UUID) id: string) {
-    return this.products.get(id);
+  async get(@Param('id', UUID) id: string, @Req() req: Request) {
+    const firm = await this.firms.fromRequest(req);
+    return this.products.get(firm.id, id);
   }
 
   @Public()

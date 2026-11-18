@@ -15,9 +15,9 @@
         ]
       }
     },
-    "/api/v1/instruments": {
+    "/api/v1/public/firm": {
       "get": {
-        "operationId": "MarketDataController_instruments",
+        "operationId": "PublicFirmController_firm",
         "parameters": [],
         "responses": {
           "200": {
@@ -25,28 +25,26 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/InstrumentDto"
-                  }
+                  "$ref": "#/components/schemas/FirmBrandingDto"
                 }
               }
             }
           }
         },
         "tags": [
-          "market"
+          "firms"
         ]
       }
     },
-    "/api/v1/instruments/{symbol}/quote": {
+    "/api/v1/admin/me": {
       "get": {
-        "operationId": "MarketDataController_quote",
+        "operationId": "AdminController_me",
         "parameters": [
           {
-            "name": "symbol",
-            "required": true,
-            "in": "path",
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -58,44 +56,67 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuoteDto"
+                  "$ref": "#/components/schemas/AdminMeDto"
                 }
               }
             }
           }
         },
         "tags": [
-          "market"
+          "admin"
         ]
       }
     },
-    "/api/v1/instruments/{symbol}/candles": {
+    "/api/v1/admin/overview": {
       "get": {
-        "operationId": "MarketDataController_candles",
+        "operationId": "AdminController_overview",
         "parameters": [
           {
-            "name": "symbol",
-            "required": true,
-            "in": "path",
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOverviewDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/traders": {
+      "get": {
+        "operationId": "AdminController_traders",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "tf",
-            "required": true,
+            "name": "cursor",
+            "required": false,
             "in": "query",
             "schema": {
-              "default": "1m",
-              "type": "string",
-              "enum": [
-                "1m",
-                "5m",
-                "15m",
-                "1h",
-                "4h",
-                "1d"
-              ]
+              "type": "string"
             }
           },
           {
@@ -104,9 +125,30 @@
             "in": "query",
             "schema": {
               "minimum": 1,
-              "maximum": 1000,
-              "default": 300,
+              "maximum": 100,
+              "default": 50,
               "type": "number"
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Part of the email address",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "SUSPENDED"
+              ]
             }
           }
         ],
@@ -116,62 +158,1001 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CandleDto"
-                  }
+                  "$ref": "#/components/schemas/AdminTraderPageDto"
                 }
               }
             }
           }
         },
         "tags": [
-          "market"
+          "admin"
         ]
       }
     },
-    "/api/v1/market/tickers": {
+    "/api/v1/admin/traders/{id}": {
       "get": {
-        "operationId": "MarketDataController_tickers",
-        "parameters": [],
+        "operationId": "AdminController_trader",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TickerDto"
-                  }
+                  "$ref": "#/components/schemas/AdminTraderDetailDto"
                 }
               }
             }
           }
         },
         "tags": [
-          "market"
+          "admin"
         ]
       }
     },
-    "/api/v1/market/status": {
-      "get": {
-        "operationId": "MarketDataController_status",
-        "parameters": [],
+    "/api/v1/admin/traders/{id}/suspend": {
+      "post": {
+        "operationId": "AdminController_suspend",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FeedStatusDto"
+                  "$ref": "#/components/schemas/AdminTraderDetailDto"
                 }
               }
             }
           }
         },
         "tags": [
-          "market"
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/traders/{id}/reactivate": {
+      "post": {
+        "operationId": "AdminController_reactivate",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminTraderDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/accounts": {
+      "get": {
+        "operationId": "AdminController_accounts",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "kind",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DEMO",
+                "CHALLENGE",
+                "FUNDED",
+                "LIVE_BROKER",
+                "COMPETITION"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "PASSED",
+                "FAILED",
+                "PENDING_FUNDED",
+                "FUNDED_ACTIVE",
+                "SUSPENDED",
+                "CLOSED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAccountPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/accounts/{id}/fail": {
+      "post": {
+        "operationId": "AdminController_failAccount",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAccountDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/products": {
+      "get": {
+        "operationId": "AdminController_products",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminProductListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "AdminController_createProduct",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminProductDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/products/{id}": {
+      "patch": {
+        "operationId": "AdminController_updateProduct",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminProductDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/rule-sets": {
+      "get": {
+        "operationId": "AdminController_ruleSets",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminRuleSetListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "AdminController_createRuleSet",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRuleSetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminRuleSetDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/branding": {
+      "get": {
+        "operationId": "AdminController_branding",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminFirmDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      },
+      "put": {
+        "operationId": "AdminController_updateBranding",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBrandingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminFirmDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/alerts": {
+      "get": {
+        "operationId": "AdminController_alerts",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "open",
+              "type": "string",
+              "enum": [
+                "open",
+                "all"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAlertPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/alerts/{id}/ack": {
+      "post": {
+        "operationId": "AdminController_ack",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/audit": {
+      "get": {
+        "operationId": "AdminController_auditLog",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "action",
+            "required": false,
+            "in": "query",
+            "description": "Action prefix, e.g. \"order.\" or \"admin.\"",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAuditPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/audit/verify": {
+      "get": {
+        "operationId": "AdminController_verifyAudit",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditVerifyDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/team": {
+      "get": {
+        "operationId": "AdminController_team",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "AdminController_invite",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/team/{id}": {
+      "patch": {
+        "operationId": "AdminController_changeRole",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      },
+      "delete": {
+        "operationId": "AdminController_removeMember",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/firms": {
+      "get": {
+        "operationId": "AdminController_firms",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminFirmListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "AdminController_createFirm",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFirmDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminFirmListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/firms/{id}/status": {
+      "post": {
+        "operationId": "AdminController_firmStatus",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FirmStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminFirmListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
         ]
       }
     },
@@ -585,6 +1566,282 @@
         },
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/api/v1/products": {
+      "get": {
+        "operationId": "ProductsController_list",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "INSTANT",
+                "ONE_STEP",
+                "TWO_STEP"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/products/{id}": {
+      "get": {
+        "operationId": "ProductsController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/products/quote": {
+      "post": {
+        "operationId": "ProductsController_quote",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PriceQuoteRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceQuoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/products/quotes/{id}": {
+      "get": {
+        "operationId": "ProductsController_getQuote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceQuoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/public/payouts-feed": {
+      "get": {
+        "operationId": "ProductsController_payoutsFeed",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutFeedDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/checkout": {
+      "post": {
+        "operationId": "CheckoutController_create",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "checkout"
+        ]
+      },
+      "get": {
+        "operationId": "CheckoutController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "checkout"
+        ]
+      }
+    },
+    "/api/v1/checkout/{id}": {
+      "get": {
+        "operationId": "CheckoutController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "checkout"
+        ]
+      }
+    },
+    "/api/v1/checkout/{id}/test-payment": {
+      "post": {
+        "operationId": "CheckoutController_testPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestPaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "checkout"
         ]
       }
     },
@@ -1211,282 +2468,6 @@
         ]
       }
     },
-    "/api/v1/products": {
-      "get": {
-        "operationId": "ProductsController_list",
-        "parameters": [
-          {
-            "name": "type",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "INSTANT",
-                "ONE_STEP",
-                "TWO_STEP"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductListDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "catalog"
-        ]
-      }
-    },
-    "/api/v1/products/{id}": {
-      "get": {
-        "operationId": "ProductsController_get",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "catalog"
-        ]
-      }
-    },
-    "/api/v1/products/quote": {
-      "post": {
-        "operationId": "ProductsController_quote",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PriceQuoteRequestDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PriceQuoteDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "catalog"
-        ]
-      }
-    },
-    "/api/v1/products/quotes/{id}": {
-      "get": {
-        "operationId": "ProductsController_getQuote",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PriceQuoteDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "catalog"
-        ]
-      }
-    },
-    "/api/v1/public/payouts-feed": {
-      "get": {
-        "operationId": "ProductsController_payoutsFeed",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PayoutFeedDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "catalog"
-        ]
-      }
-    },
-    "/api/v1/checkout": {
-      "post": {
-        "operationId": "CheckoutController_create",
-        "parameters": [
-          {
-            "name": "Idempotency-Key",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CheckoutRequestDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PurchaseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "checkout"
-        ]
-      },
-      "get": {
-        "operationId": "CheckoutController_list",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PurchaseListDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "checkout"
-        ]
-      }
-    },
-    "/api/v1/checkout/{id}": {
-      "get": {
-        "operationId": "CheckoutController_get",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PurchaseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "checkout"
-        ]
-      }
-    },
-    "/api/v1/checkout/{id}/test-payment": {
-      "post": {
-        "operationId": "CheckoutController_testPayment",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TestPaymentDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PurchaseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "checkout"
-        ]
-      }
-    },
     "/api/v1/points": {
       "get": {
         "operationId": "RewardsController_points",
@@ -1566,6 +2547,166 @@
         },
         "tags": [
           "rewards"
+        ]
+      }
+    },
+    "/api/v1/instruments": {
+      "get": {
+        "operationId": "MarketDataController_instruments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InstrumentDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "market"
+        ]
+      }
+    },
+    "/api/v1/instruments/{symbol}/quote": {
+      "get": {
+        "operationId": "MarketDataController_quote",
+        "parameters": [
+          {
+            "name": "symbol",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "market"
+        ]
+      }
+    },
+    "/api/v1/instruments/{symbol}/candles": {
+      "get": {
+        "operationId": "MarketDataController_candles",
+        "parameters": [
+          {
+            "name": "symbol",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tf",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "default": "1m",
+              "type": "string",
+              "enum": [
+                "1m",
+                "5m",
+                "15m",
+                "1h",
+                "4h",
+                "1d"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 300,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CandleDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "market"
+        ]
+      }
+    },
+    "/api/v1/market/tickers": {
+      "get": {
+        "operationId": "MarketDataController_tickers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TickerDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "market"
+        ]
+      }
+    },
+    "/api/v1/market/status": {
+      "get": {
+        "operationId": "MarketDataController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "market"
         ]
       }
     },
@@ -2099,188 +3240,1259 @@
       }
     },
     "schemas": {
-      "InstrumentDto": {
+      "FirmBrandingDto": {
         "type": "object",
         "properties": {
-          "symbol": {
+          "slug": {
             "type": "string"
           },
-          "displayName": {
+          "name": {
             "type": "string"
           },
-          "baseAsset": {
-            "type": "string"
+          "isDefault": {
+            "type": "boolean",
+            "description": "True for the Daily Funded default tenant"
           },
-          "quoteAsset": {
-            "type": "string"
-          },
-          "priceDecimals": {
-            "type": "number"
-          },
-          "qtyDecimals": {
-            "type": "number"
-          },
-          "tickSize": {
+          "primaryColor": {
             "type": "string",
-            "description": "Decimal string"
+            "nullable": true,
+            "description": "#RRGGBB or null (default lime)"
           },
-          "minQty": {
+          "logoDataUrl": {
             "type": "string",
-            "description": "Decimal string"
+            "nullable": true,
+            "description": "Logo as data URL"
           },
-          "qtyStep": {
+          "supportEmail": {
             "type": "string",
-            "description": "Decimal string"
+            "nullable": true
           },
-          "maxLeverage": {
-            "type": "number"
-          },
-          "commissionBps": {
-            "type": "number"
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED"
+            ]
           }
         },
         "required": [
-          "symbol",
-          "displayName",
-          "baseAsset",
-          "quoteAsset",
-          "priceDecimals",
-          "qtyDecimals",
-          "tickSize",
-          "minQty",
-          "qtyStep",
-          "maxLeverage",
-          "commissionBps"
+          "slug",
+          "name",
+          "isDefault",
+          "primaryColor",
+          "logoDataUrl",
+          "supportEmail",
+          "status"
         ]
       },
-      "QuoteDto": {
+      "AdminFirmDto": {
         "type": "object",
         "properties": {
-          "symbol": {
+          "id": {
             "type": "string"
           },
-          "bid": {
-            "type": "string",
-            "description": "Decimal string"
-          },
-          "ask": {
-            "type": "string",
-            "description": "Decimal string"
-          },
-          "markPrice": {
-            "type": "string",
-            "description": "Decimal string",
-            "nullable": true
-          },
-          "fundingRate": {
-            "type": "string",
-            "description": "Funding rate, decimal string",
-            "nullable": true
-          },
-          "ts": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "symbol",
-          "bid",
-          "ask",
-          "markPrice",
-          "fundingRate",
-          "ts"
-        ]
-      },
-      "CandleDto": {
-        "type": "object",
-        "properties": {
-          "t": {
-            "type": "number"
-          },
-          "o": {
+          "slug": {
             "type": "string"
           },
-          "h": {
-            "type": "string"
-          },
-          "l": {
-            "type": "string"
-          },
-          "c": {
-            "type": "string"
-          },
-          "v": {
-            "type": "string"
-          },
-          "closed": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "t",
-          "o",
-          "h",
-          "l",
-          "c",
-          "v",
-          "closed"
-        ]
-      },
-      "TickerDto": {
-        "type": "object",
-        "properties": {
-          "symbol": {
-            "type": "string"
-          },
-          "last": {
-            "type": "string",
-            "description": "Last mid price, decimal string",
-            "nullable": true
-          },
-          "open24h": {
-            "type": "string",
-            "description": "Price 24h ago (open of the 24h window), decimal string",
-            "nullable": true
-          },
-          "changeBps": {
-            "type": "number",
-            "description": "24h change in basis points",
-            "nullable": true
-          },
-          "high24h": {
-            "type": "string",
-            "nullable": true
-          },
-          "low24h": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "required": [
-          "symbol",
-          "last",
-          "open24h",
-          "changeBps",
-          "high24h",
-          "low24h"
-        ]
-      },
-      "FeedStatusDto": {
-        "type": "object",
-        "properties": {
-          "source": {
+          "name": {
             "type": "string"
           },
           "status": {
             "type": "string",
             "enum": [
-              "connecting",
-              "connected",
-              "down"
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true
+          },
+          "primaryColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "logoDataUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "supportEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "status",
+          "domain",
+          "primaryColor",
+          "logoDataUrl",
+          "supportEmail",
+          "isDefault",
+          "createdAt"
+        ]
+      },
+      "AdminMeDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "ADMIN",
+              "SUPPORT"
+            ]
+          },
+          "superadmin": {
+            "type": "boolean",
+            "description": "Daily Funded platform staff (can manage every firm)"
+          },
+          "firm": {
+            "$ref": "#/components/schemas/AdminFirmDto"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
+          },
+          "twoFactorRequired": {
+            "type": "boolean",
+            "description": "Admin routes refuse access until 2FA is enabled"
+          }
+        },
+        "required": [
+          "role",
+          "superadmin",
+          "firm",
+          "twoFactorEnabled",
+          "twoFactorRequired"
+        ]
+      },
+      "DailySalesDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026-11-18"
+          },
+          "salesMinor": {
+            "type": "string"
+          },
+          "orders": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "salesMinor",
+          "orders"
+        ]
+      },
+      "AdminOverviewDto": {
+        "type": "object",
+        "properties": {
+          "traders": {
+            "type": "number"
+          },
+          "newTraders30d": {
+            "type": "number",
+            "description": "Registered in the last 30 days"
+          },
+          "demoAccounts": {
+            "type": "number"
+          },
+          "fundedActive": {
+            "type": "number"
+          },
+          "fundedFailed30d": {
+            "type": "number",
+            "description": "Funded accounts that failed in the last 30 days"
+          },
+          "competitionAccounts": {
+            "type": "number"
+          },
+          "sales30dMinor": {
+            "type": "string",
+            "description": "Paid purchases, last 30 days (EUR minor units)"
+          },
+          "orders30d": {
+            "type": "number"
+          },
+          "salesAllTimeMinor": {
+            "type": "string"
+          },
+          "openAlerts": {
+            "type": "number"
+          },
+          "criticalAlerts": {
+            "type": "number"
+          },
+          "salesByDay": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailySalesDto"
+            }
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "EUR"
             ]
           }
         },
         "required": [
-          "source",
+          "traders",
+          "newTraders30d",
+          "demoAccounts",
+          "fundedActive",
+          "fundedFailed30d",
+          "competitionAccounts",
+          "sales30dMinor",
+          "orders30d",
+          "salesAllTimeMinor",
+          "openAlerts",
+          "criticalAlerts",
+          "salesByDay",
+          "currency"
+        ]
+      },
+      "AdminAccountCountsDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "funded": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "funded",
+          "failed"
+        ]
+      },
+      "AdminTraderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED",
+              "PENDING_DELETION",
+              "DELETED"
+            ]
+          },
+          "emailVerified": {
+            "type": "boolean"
+          },
+          "firmRole": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "ADMIN",
+              "SUPPORT"
+            ],
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "lastLoginAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "accounts": {
+            "$ref": "#/components/schemas/AdminAccountCountsDto"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "country",
+          "status",
+          "emailVerified",
+          "firmRole",
+          "createdAt",
+          "lastLoginAt",
+          "accounts"
+        ]
+      },
+      "AdminTraderPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminTraderDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "AdminAccountDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "DEMO",
+              "CHALLENGE",
+              "FUNDED",
+              "LIVE_BROKER",
+              "COMPETITION"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "PASSED",
+              "FAILED",
+              "PENDING_FUNDED",
+              "FUNDED_ACTIVE",
+              "SUSPENDED",
+              "CLOSED"
+            ]
+          },
+          "currency": {
+            "type": "string"
+          },
+          "initialBalanceMinor": {
+            "type": "string"
+          },
+          "balanceMinor": {
+            "type": "string"
+          },
+          "pnlMinor": {
+            "type": "string",
+            "description": "Balance minus starting balance"
+          },
+          "ruleSetName": {
+            "type": "string",
+            "nullable": true
+          },
+          "failReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "endedAt": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "userEmail",
+          "label",
+          "kind",
+          "status",
+          "currency",
+          "initialBalanceMinor",
+          "balanceMinor",
+          "pnlMinor",
+          "ruleSetName",
+          "failReason",
+          "createdAt",
+          "endedAt"
+        ]
+      },
+      "AdminPurchaseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountSizeMinor": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "totalMinor": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PAID",
+              "FULFILLED",
+              "FAILED",
+              "CANCELLED"
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "accountSizeMinor",
+          "quantity",
+          "totalMinor",
+          "currency",
+          "status",
+          "createdAt"
+        ]
+      },
+      "AdminTraderDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED",
+              "PENDING_DELETION",
+              "DELETED"
+            ]
+          },
+          "emailVerified": {
+            "type": "boolean"
+          },
+          "firmRole": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "ADMIN",
+              "SUPPORT"
+            ],
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "lastLoginAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "accounts": {
+            "$ref": "#/components/schemas/AdminAccountCountsDto"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
+          },
+          "nickname": {
+            "type": "string",
+            "nullable": true
+          },
+          "accountList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminAccountDto"
+            }
+          },
+          "purchases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminPurchaseDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "country",
+          "status",
+          "emailVerified",
+          "firmRole",
+          "createdAt",
+          "lastLoginAt",
+          "accounts",
+          "twoFactorEnabled",
+          "nickname",
+          "accountList",
+          "purchases"
+        ]
+      },
+      "ReasonDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "description": "Stored in the audit log"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "AdminAccountPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminAccountDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "AdminProductDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INSTANT",
+              "ONE_STEP",
+              "TWO_STEP"
+            ]
+          },
+          "accountSizeMinor": {
+            "type": "string"
+          },
+          "priceMinor": {
+            "type": "string"
+          },
+          "priceCurrency": {
+            "type": "string"
+          },
+          "ruleSetId": {
+            "type": "string"
+          },
+          "ruleSetName": {
+            "type": "string"
+          },
+          "ruleSetVersion": {
+            "type": "number"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "isRecommended": {
+            "type": "boolean"
+          },
+          "isExample": {
+            "type": "boolean"
+          },
+          "sortOrder": {
+            "type": "number"
+          },
+          "sold": {
+            "type": "number",
+            "description": "Paid or fulfilled purchases"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "type",
+          "accountSizeMinor",
+          "priceMinor",
+          "priceCurrency",
+          "ruleSetId",
+          "ruleSetName",
+          "ruleSetVersion",
+          "isActive",
+          "isRecommended",
+          "isExample",
+          "sortOrder",
+          "sold"
+        ]
+      },
+      "AdminProductListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminProductDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "example": "instant-15k"
+          },
+          "accountSizeMinor": {
+            "type": "string",
+            "description": "USD minor units"
+          },
+          "priceMinor": {
+            "type": "string",
+            "description": "EUR minor units"
+          },
+          "ruleSetId": {
+            "type": "string"
+          },
+          "isRecommended": {
+            "type": "boolean"
+          },
+          "sortOrder": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "slug",
+          "accountSizeMinor",
+          "priceMinor",
+          "ruleSetId"
+        ]
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "priceMinor": {
+            "type": "string",
+            "description": "EUR minor units"
+          },
+          "ruleSetId": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "isRecommended": {
+            "type": "boolean"
+          },
+          "sortOrder": {
+            "type": "number"
+          }
+        }
+      },
+      "AdminRuleSetDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isTemplate": {
+            "type": "boolean",
+            "description": "Platform template (read-only) vs. this firm’s own version"
+          },
+          "isExample": {
+            "type": "boolean"
+          },
+          "maxDailyLossBps": {
+            "type": "number"
+          },
+          "maxDrawdownBps": {
+            "type": "number"
+          },
+          "drawdownType": {
+            "type": "string",
+            "enum": [
+              "STATIC",
+              "TRAILING"
+            ]
+          },
+          "profitTargetBps": {
+            "type": "number",
+            "nullable": true
+          },
+          "minTradingDays": {
+            "type": "number"
+          },
+          "maxLeverage": {
+            "type": "number"
+          },
+          "profitSplitBps": {
+            "type": "number",
+            "nullable": true
+          },
+          "payoutIntervalDays": {
+            "type": "number",
+            "nullable": true
+          },
+          "minTradingDaysPerPayout": {
+            "type": "number",
+            "nullable": true
+          },
+          "minPayoutMinor": {
+            "type": "string",
+            "nullable": true
+          },
+          "accounts": {
+            "type": "number",
+            "description": "Accounts opened with this exact version"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "version",
+          "name",
+          "isTemplate",
+          "isExample",
+          "maxDailyLossBps",
+          "maxDrawdownBps",
+          "drawdownType",
+          "profitTargetBps",
+          "minTradingDays",
+          "maxLeverage",
+          "profitSplitBps",
+          "payoutIntervalDays",
+          "minTradingDaysPerPayout",
+          "minPayoutMinor",
+          "accounts",
+          "createdAt"
+        ]
+      },
+      "AdminRuleSetListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminRuleSetDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CreateRuleSetDto": {
+        "type": "object",
+        "properties": {
+          "basedOnId": {
+            "type": "string",
+            "description": "Template or own rule set to start from"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 60
+          },
+          "maxDailyLossBps": {
+            "type": "number",
+            "minimum": 50,
+            "maximum": 2000
+          },
+          "maxDrawdownBps": {
+            "type": "number",
+            "minimum": 100,
+            "maximum": 5000
+          },
+          "drawdownType": {
+            "type": "string",
+            "enum": [
+              "STATIC",
+              "TRAILING"
+            ]
+          },
+          "maxLeverage": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "profitSplitBps": {
+            "type": "number",
+            "minimum": 1000,
+            "maximum": 10000
+          },
+          "minTradingDays": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 60
+          },
+          "payoutIntervalDays": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 90
+          },
+          "minTradingDaysPerPayout": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 60
+          },
+          "minPayoutMinor": {
+            "type": "string",
+            "description": "USD minor units"
+          }
+        },
+        "required": [
+          "basedOnId",
+          "name"
+        ]
+      },
+      "UpdateBrandingDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "primaryColor": {
+            "type": "string",
+            "nullable": true,
+            "example": "#AFE604"
+          },
+          "logoDataUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "PNG/JPEG/WebP data URL"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "example": "trade.yourfirm.com"
+          },
+          "supportEmail": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "AdminAlertDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "BREACH",
+              "NEAR_BREACH",
+              "LARGE_LOSS"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "INFO",
+              "WARNING",
+              "CRITICAL"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "accountLabel": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "ackAt": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "severity",
+          "accountId",
+          "accountLabel",
+          "userId",
+          "userEmail",
+          "details",
+          "createdAt",
+          "ackAt"
+        ]
+      },
+      "AdminAlertPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminAlertDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "AdminAuditDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "ts": {
+            "type": "string"
+          },
+          "actorType": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "ADMIN",
+              "SUPPORT",
+              "SYSTEM"
+            ]
+          },
+          "actorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string"
+          },
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "hash": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "ts",
+          "actorType",
+          "actorId",
+          "action",
+          "entityType",
+          "entityId",
+          "data",
+          "hash"
+        ]
+      },
+      "AdminAuditPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminAuditDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "AuditVerifyDto": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "checked": {
+            "type": "number"
+          },
+          "brokenAtId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "ok",
+          "checked",
+          "brokenAtId"
+        ]
+      },
+      "TeamMemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "ADMIN",
+              "SUPPORT"
+            ]
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
+          },
+          "lastLoginAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "isYou": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role",
+          "twoFactorEnabled",
+          "lastLoginAt",
+          "isYou"
+        ]
+      },
+      "TeamListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TeamMemberDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "InviteMemberDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "ADMIN",
+              "SUPPORT"
+            ]
+          }
+        },
+        "required": [
+          "email",
+          "role"
+        ]
+      },
+      "UpdateMemberDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "ADMIN",
+              "SUPPORT"
+            ]
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
+      "AdminFirmSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true
+          },
+          "primaryColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "logoDataUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "supportEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "traders": {
+            "type": "number"
+          },
+          "fundedActive": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "status",
+          "domain",
+          "primaryColor",
+          "logoDataUrl",
+          "supportEmail",
+          "isDefault",
+          "createdAt",
+          "traders",
+          "fundedActive"
+        ]
+      },
+      "AdminFirmListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminFirmSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CreateFirmDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "slug": {
+            "type": "string",
+            "example": "acme-trading"
+          },
+          "ownerEmail": {
+            "type": "string",
+            "description": "Receives an invitation as OWNER"
+          }
+        },
+        "required": [
+          "name",
+          "slug",
+          "ownerEmail"
+        ]
+      },
+      "FirmStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          }
+        },
+        "required": [
           "status"
         ]
       },
@@ -2348,6 +4560,16 @@
           },
           "twoFactorEnabled": {
             "type": "boolean"
+          },
+          "firmRole": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "ADMIN",
+              "SUPPORT"
+            ],
+            "nullable": true,
+            "description": "Admin-panel role in the firm (null = trader only)"
           }
         },
         "required": [
@@ -2357,7 +4579,8 @@
           "locale",
           "country",
           "emailVerified",
-          "twoFactorEnabled"
+          "twoFactorEnabled",
+          "firmRole"
         ]
       },
       "AuthResponseDto": {
@@ -2580,6 +4803,410 @@
           "createdAt",
           "lastUsedAt",
           "current"
+        ]
+      },
+      "ProductRulesDto": {
+        "type": "object",
+        "properties": {
+          "maxDailyLossBps": {
+            "type": "number"
+          },
+          "maxDrawdownBps": {
+            "type": "number"
+          },
+          "drawdownType": {
+            "type": "string",
+            "enum": [
+              "STATIC",
+              "TRAILING"
+            ]
+          },
+          "profitSplitBps": {
+            "type": "number"
+          },
+          "maxLeverage": {
+            "type": "number"
+          },
+          "minTradingDays": {
+            "type": "number"
+          },
+          "payoutIntervalDays": {
+            "type": "number",
+            "nullable": true
+          },
+          "minTradingDaysPerPayout": {
+            "type": "number",
+            "nullable": true
+          },
+          "scalingStepBps": {
+            "type": "number",
+            "nullable": true
+          },
+          "isExample": {
+            "type": "boolean",
+            "description": "Rule set has example values (not the final offer)"
+          }
+        },
+        "required": [
+          "maxDailyLossBps",
+          "maxDrawdownBps",
+          "drawdownType",
+          "profitSplitBps",
+          "maxLeverage",
+          "minTradingDays",
+          "payoutIntervalDays",
+          "minTradingDaysPerPayout",
+          "scalingStepBps",
+          "isExample"
+        ]
+      },
+      "ProductDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INSTANT",
+              "ONE_STEP",
+              "TWO_STEP"
+            ]
+          },
+          "accountSizeMinor": {
+            "type": "string",
+            "description": "Simulated capital, USD minor units"
+          },
+          "accountCurrency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          },
+          "priceMinor": {
+            "type": "string",
+            "description": "One-time fee, minor units of priceCurrency"
+          },
+          "priceCurrency": {
+            "type": "string",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "isRecommended": {
+            "type": "boolean"
+          },
+          "isExample": {
+            "type": "boolean"
+          },
+          "rules": {
+            "$ref": "#/components/schemas/ProductRulesDto"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "type",
+          "accountSizeMinor",
+          "accountCurrency",
+          "priceMinor",
+          "priceCurrency",
+          "isRecommended",
+          "isExample",
+          "rules"
+        ]
+      },
+      "ProductListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "PriceQuoteRequestDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "INSTANT",
+              "ONE_STEP",
+              "TWO_STEP"
+            ]
+          },
+          "accountSizeMinor": {
+            "type": "string",
+            "description": "USD minor units, integer string",
+            "example": "3000000"
+          },
+          "maxDrawdownBps": {
+            "type": "number",
+            "enum": [
+              400,
+              600,
+              800
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "accountSizeMinor",
+          "maxDrawdownBps"
+        ]
+      },
+      "PriceQuoteDto": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string"
+          },
+          "priceMinor": {
+            "type": "string"
+          },
+          "priceCurrency": {
+            "type": "string",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "accountSizeMinor": {
+            "type": "string"
+          },
+          "rules": {
+            "$ref": "#/components/schemas/ProductRulesDto"
+          },
+          "expiresAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "quoteId",
+          "priceMinor",
+          "priceCurrency",
+          "accountSizeMinor",
+          "rules",
+          "expiresAt"
+        ]
+      },
+      "PayoutFeedItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "amountMinor": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          },
+          "paidAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "countryCode",
+          "amountMinor",
+          "currency",
+          "paidAt"
+        ]
+      },
+      "PayoutFeedDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayoutFeedItemDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CheckoutRequestDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "Catalogue product (exactly one of productId / quoteId)"
+          },
+          "quoteId": {
+            "type": "string",
+            "description": "Custom-account quote"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "acceptTerms": {
+            "type": "boolean",
+            "description": "Terms, risk disclosure and refund policy accepted"
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "nl",
+              "es"
+            ]
+          },
+          "offerCode": {
+            "type": "string",
+            "description": "Personal offer code (e.g. from Daily Points)"
+          }
+        },
+        "required": [
+          "quantity",
+          "acceptTerms"
+        ]
+      },
+      "PurchaseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PAID",
+              "FULFILLED",
+              "FAILED",
+              "CANCELLED"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INSTANT",
+              "ONE_STEP",
+              "TWO_STEP"
+            ]
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "accountSizeMinor": {
+            "type": "string"
+          },
+          "unitPriceMinor": {
+            "type": "string"
+          },
+          "totalMinor": {
+            "type": "string"
+          },
+          "discountMinor": {
+            "type": "string",
+            "description": "Offer discount, EUR minor units"
+          },
+          "offerCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "isTestPayment": {
+            "type": "boolean",
+            "description": "Test provider: no real money moves"
+          },
+          "paymentUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "failureCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "accountIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rules": {
+            "$ref": "#/components/schemas/ProductRulesDto"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "type",
+          "quantity",
+          "accountSizeMinor",
+          "unitPriceMinor",
+          "totalMinor",
+          "discountMinor",
+          "offerCode",
+          "currency",
+          "provider",
+          "isTestPayment",
+          "paymentUrl",
+          "failureCode",
+          "accountIds",
+          "rules",
+          "createdAt"
+        ]
+      },
+      "PurchaseListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PurchaseDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "TestPaymentDto": {
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "succeeded",
+              "failed",
+              "cancelled"
+            ]
+          }
+        },
+        "required": [
+          "outcome"
         ]
       },
       "AccountDto": {
@@ -3569,410 +6196,6 @@
           "id"
         ]
       },
-      "ProductRulesDto": {
-        "type": "object",
-        "properties": {
-          "maxDailyLossBps": {
-            "type": "number"
-          },
-          "maxDrawdownBps": {
-            "type": "number"
-          },
-          "drawdownType": {
-            "type": "string",
-            "enum": [
-              "STATIC",
-              "TRAILING"
-            ]
-          },
-          "profitSplitBps": {
-            "type": "number"
-          },
-          "maxLeverage": {
-            "type": "number"
-          },
-          "minTradingDays": {
-            "type": "number"
-          },
-          "payoutIntervalDays": {
-            "type": "number",
-            "nullable": true
-          },
-          "minTradingDaysPerPayout": {
-            "type": "number",
-            "nullable": true
-          },
-          "scalingStepBps": {
-            "type": "number",
-            "nullable": true
-          },
-          "isExample": {
-            "type": "boolean",
-            "description": "Rule set has example values (not the final offer)"
-          }
-        },
-        "required": [
-          "maxDailyLossBps",
-          "maxDrawdownBps",
-          "drawdownType",
-          "profitSplitBps",
-          "maxLeverage",
-          "minTradingDays",
-          "payoutIntervalDays",
-          "minTradingDaysPerPayout",
-          "scalingStepBps",
-          "isExample"
-        ]
-      },
-      "ProductDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "slug": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "INSTANT",
-              "ONE_STEP",
-              "TWO_STEP"
-            ]
-          },
-          "accountSizeMinor": {
-            "type": "string",
-            "description": "Simulated capital, USD minor units"
-          },
-          "accountCurrency": {
-            "type": "string",
-            "enum": [
-              "USD"
-            ]
-          },
-          "priceMinor": {
-            "type": "string",
-            "description": "One-time fee, minor units of priceCurrency"
-          },
-          "priceCurrency": {
-            "type": "string",
-            "enum": [
-              "EUR"
-            ]
-          },
-          "isRecommended": {
-            "type": "boolean"
-          },
-          "isExample": {
-            "type": "boolean"
-          },
-          "rules": {
-            "$ref": "#/components/schemas/ProductRulesDto"
-          }
-        },
-        "required": [
-          "id",
-          "slug",
-          "type",
-          "accountSizeMinor",
-          "accountCurrency",
-          "priceMinor",
-          "priceCurrency",
-          "isRecommended",
-          "isExample",
-          "rules"
-        ]
-      },
-      "ProductListDto": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ProductDto"
-            }
-          }
-        },
-        "required": [
-          "items"
-        ]
-      },
-      "PriceQuoteRequestDto": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "INSTANT",
-              "ONE_STEP",
-              "TWO_STEP"
-            ]
-          },
-          "accountSizeMinor": {
-            "type": "string",
-            "description": "USD minor units, integer string",
-            "example": "3000000"
-          },
-          "maxDrawdownBps": {
-            "type": "number",
-            "enum": [
-              400,
-              600,
-              800
-            ]
-          }
-        },
-        "required": [
-          "type",
-          "accountSizeMinor",
-          "maxDrawdownBps"
-        ]
-      },
-      "PriceQuoteDto": {
-        "type": "object",
-        "properties": {
-          "quoteId": {
-            "type": "string"
-          },
-          "priceMinor": {
-            "type": "string"
-          },
-          "priceCurrency": {
-            "type": "string",
-            "enum": [
-              "EUR"
-            ]
-          },
-          "accountSizeMinor": {
-            "type": "string"
-          },
-          "rules": {
-            "$ref": "#/components/schemas/ProductRulesDto"
-          },
-          "expiresAt": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "quoteId",
-          "priceMinor",
-          "priceCurrency",
-          "accountSizeMinor",
-          "rules",
-          "expiresAt"
-        ]
-      },
-      "PayoutFeedItemDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "countryCode": {
-            "type": "string"
-          },
-          "amountMinor": {
-            "type": "string"
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "USD"
-            ]
-          },
-          "paidAt": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "countryCode",
-          "amountMinor",
-          "currency",
-          "paidAt"
-        ]
-      },
-      "PayoutFeedDto": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PayoutFeedItemDto"
-            }
-          }
-        },
-        "required": [
-          "items"
-        ]
-      },
-      "CheckoutRequestDto": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "string",
-            "description": "Catalogue product (exactly one of productId / quoteId)"
-          },
-          "quoteId": {
-            "type": "string",
-            "description": "Custom-account quote"
-          },
-          "quantity": {
-            "type": "number",
-            "minimum": 1,
-            "maximum": 5
-          },
-          "acceptTerms": {
-            "type": "boolean",
-            "description": "Terms, risk disclosure and refund policy accepted"
-          },
-          "locale": {
-            "type": "string",
-            "enum": [
-              "en",
-              "nl",
-              "es"
-            ]
-          },
-          "offerCode": {
-            "type": "string",
-            "description": "Personal offer code (e.g. from Daily Points)"
-          }
-        },
-        "required": [
-          "quantity",
-          "acceptTerms"
-        ]
-      },
-      "PurchaseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "PENDING",
-              "PAID",
-              "FULFILLED",
-              "FAILED",
-              "CANCELLED"
-            ]
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "INSTANT",
-              "ONE_STEP",
-              "TWO_STEP"
-            ]
-          },
-          "quantity": {
-            "type": "number"
-          },
-          "accountSizeMinor": {
-            "type": "string"
-          },
-          "unitPriceMinor": {
-            "type": "string"
-          },
-          "totalMinor": {
-            "type": "string"
-          },
-          "discountMinor": {
-            "type": "string",
-            "description": "Offer discount, EUR minor units"
-          },
-          "offerCode": {
-            "type": "string",
-            "nullable": true
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "EUR"
-            ]
-          },
-          "provider": {
-            "type": "string"
-          },
-          "isTestPayment": {
-            "type": "boolean",
-            "description": "Test provider: no real money moves"
-          },
-          "paymentUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "failureCode": {
-            "type": "string",
-            "nullable": true
-          },
-          "accountIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "rules": {
-            "$ref": "#/components/schemas/ProductRulesDto"
-          },
-          "createdAt": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "status",
-          "type",
-          "quantity",
-          "accountSizeMinor",
-          "unitPriceMinor",
-          "totalMinor",
-          "discountMinor",
-          "offerCode",
-          "currency",
-          "provider",
-          "isTestPayment",
-          "paymentUrl",
-          "failureCode",
-          "accountIds",
-          "rules",
-          "createdAt"
-        ]
-      },
-      "PurchaseListDto": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PurchaseDto"
-            }
-          }
-        },
-        "required": [
-          "items"
-        ]
-      },
-      "TestPaymentDto": {
-        "type": "object",
-        "properties": {
-          "outcome": {
-            "type": "string",
-            "enum": [
-              "succeeded",
-              "failed",
-              "cancelled"
-            ]
-          }
-        },
-        "required": [
-          "outcome"
-        ]
-      },
       "PointsEntryDto": {
         "type": "object",
         "properties": {
@@ -4174,6 +6397,191 @@
         },
         "required": [
           "items"
+        ]
+      },
+      "InstrumentDto": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "baseAsset": {
+            "type": "string"
+          },
+          "quoteAsset": {
+            "type": "string"
+          },
+          "priceDecimals": {
+            "type": "number"
+          },
+          "qtyDecimals": {
+            "type": "number"
+          },
+          "tickSize": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "minQty": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "qtyStep": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "maxLeverage": {
+            "type": "number"
+          },
+          "commissionBps": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "symbol",
+          "displayName",
+          "baseAsset",
+          "quoteAsset",
+          "priceDecimals",
+          "qtyDecimals",
+          "tickSize",
+          "minQty",
+          "qtyStep",
+          "maxLeverage",
+          "commissionBps"
+        ]
+      },
+      "QuoteDto": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "bid": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "ask": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "markPrice": {
+            "type": "string",
+            "description": "Decimal string",
+            "nullable": true
+          },
+          "fundingRate": {
+            "type": "string",
+            "description": "Funding rate, decimal string",
+            "nullable": true
+          },
+          "ts": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "symbol",
+          "bid",
+          "ask",
+          "markPrice",
+          "fundingRate",
+          "ts"
+        ]
+      },
+      "CandleDto": {
+        "type": "object",
+        "properties": {
+          "t": {
+            "type": "number"
+          },
+          "o": {
+            "type": "string"
+          },
+          "h": {
+            "type": "string"
+          },
+          "l": {
+            "type": "string"
+          },
+          "c": {
+            "type": "string"
+          },
+          "v": {
+            "type": "string"
+          },
+          "closed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "t",
+          "o",
+          "h",
+          "l",
+          "c",
+          "v",
+          "closed"
+        ]
+      },
+      "TickerDto": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "last": {
+            "type": "string",
+            "description": "Last mid price, decimal string",
+            "nullable": true
+          },
+          "open24h": {
+            "type": "string",
+            "description": "Price 24h ago (open of the 24h window), decimal string",
+            "nullable": true
+          },
+          "changeBps": {
+            "type": "number",
+            "description": "24h change in basis points",
+            "nullable": true
+          },
+          "high24h": {
+            "type": "string",
+            "nullable": true
+          },
+          "low24h": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "symbol",
+          "last",
+          "open24h",
+          "changeBps",
+          "high24h",
+          "low24h"
+        ]
+      },
+      "FeedStatusDto": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "connecting",
+              "connected",
+              "down"
+            ]
+          }
+        },
+        "required": [
+          "source",
+          "status"
         ]
       },
       "JournalEntryDto": {

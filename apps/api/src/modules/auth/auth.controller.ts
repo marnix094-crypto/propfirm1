@@ -38,6 +38,7 @@ import {
   UserDto,
 } from './dto.js';
 import { Public } from './public.decorator.js';
+import { FirmsService } from '../firms/firms.service.js';
 import { TokensService, type IssuedTokens } from './tokens.service.js';
 import { TwoFactorService } from './two-factor.service.js';
 
@@ -56,6 +57,7 @@ export class AuthController {
     private readonly twoFactor: TwoFactorService,
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
+    private readonly firms: FirmsService,
   ) {}
 
   private setRefreshCookie(res: Response, t: IssuedTokens) {
@@ -79,7 +81,8 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthResponseDto> {
-    const { user, tokens } = await this.auth.register(dto, req.headers['user-agent']);
+    const firm = await this.firms.activeFromRequest(req);
+    const { user, tokens } = await this.auth.register(dto, firm.id, req.headers['user-agent']);
     this.setRefreshCookie(res, tokens);
     return {
       accessToken: tokens.accessToken,
@@ -101,7 +104,8 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<LoginResponseDto> {
-    const r = await this.auth.login(dto, req.headers['user-agent']);
+    const firm = await this.firms.activeFromRequest(req);
+    const r = await this.auth.login(dto, firm.id, req.headers['user-agent']);
     if ('mfaToken' in r) return { mfaRequired: true, mfaToken: r.mfaToken };
     this.setRefreshCookie(res, r.tokens);
     return {
@@ -188,8 +192,9 @@ export class AuthController {
   @Post('auth/password/forgot')
   @HttpCode(204)
   @ApiNoContentResponse({ description: 'Always 204, whether or not the email exists' })
-  async forgot(@Body() dto: ForgotPasswordDto): Promise<void> {
-    await this.auth.forgotPassword(dto.email);
+  async forgot(@Body() dto: ForgotPasswordDto, @Req() req: Request): Promise<void> {
+    const firm = await this.firms.fromRequest(req);
+    await this.auth.forgotPassword(dto.email, firm.id);
   }
 
   @Public()

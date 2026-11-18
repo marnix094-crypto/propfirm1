@@ -134,6 +134,17 @@ describe('funded account rules', () => {
     );
     expect((await t.app.get(AuditService).verify()).ok).toBe(true);
 
+    // Risk alerts for the firm's admins: warning zone, the breach itself, the large closing loss.
+    await waitFor(
+      async () => (await prisma.riskAlert.count({ where: { accountId: funded } })) >= 3,
+    );
+    const alerts = await prisma.riskAlert.findMany({ where: { accountId: funded } });
+    expect(alerts.map((a) => `${a.type}:${a.severity}`).sort()).toEqual([
+      'BREACH:CRITICAL',
+      'LARGE_LOSS:WARNING',
+      'NEAR_BREACH:WARNING',
+    ]);
+
     // A failed account cannot trade any more.
     const after = await order({ side: 'BUY', type: 'MARKET', qty: '0.010' });
     expect(after.status).toBe(422);

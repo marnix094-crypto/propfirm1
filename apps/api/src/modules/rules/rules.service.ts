@@ -67,8 +67,8 @@ export class RulesService implements OnModuleInit {
 
   private async syncCatalog() {
     for (const def of RULE_SET_CATALOG) {
-      const existing = await this.prisma.ruleSet.findUnique({
-        where: { code_version: { code: def.code, version: def.version } },
+      const existing = await this.prisma.ruleSet.findFirst({
+        where: { firmId: null, code: def.code, version: def.version },
       });
       if (!existing) {
         await this.prisma.ruleSet.create({ data: def });
@@ -84,9 +84,10 @@ export class RulesService implements OnModuleInit {
     }
   }
 
+  /** Latest platform template version of a code. */
   async latest(code: string): Promise<RuleSet> {
     const r = await this.prisma.ruleSet.findFirst({
-      where: { code },
+      where: { code, firmId: null },
       orderBy: { version: 'desc' },
     });
     if (!r) throw Errors.notFound('RuleSet');

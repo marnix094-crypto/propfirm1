@@ -106,7 +106,9 @@ export class TokensService {
   ): Promise<{ userId: string; tokens: IssuedTokens }> {
     const row = await this.prisma.refreshToken.findUnique({
       where: { tokenHash: sha256(presented) },
-      include: { user: { select: { roles: true, status: true } } },
+      include: {
+        user: { select: { roles: true, status: true, firm: { select: { status: true } } } },
+      },
     });
     if (!row) throw Errors.unauthorized('REFRESH_INVALID');
     if (row.revokedAt) {
@@ -116,7 +118,11 @@ export class TokensService {
       });
       throw Errors.unauthorized('REFRESH_REUSED');
     }
-    if (row.expiresAt < new Date() || row.user.status !== 'ACTIVE')
+    if (
+      row.expiresAt < new Date() ||
+      row.user.status !== 'ACTIVE' ||
+      row.user.firm.status !== 'ACTIVE'
+    )
       throw Errors.unauthorized('REFRESH_INVALID');
 
     const tokens = await this.issue(row.userId, row.user.roles, userAgent, row.familyId);

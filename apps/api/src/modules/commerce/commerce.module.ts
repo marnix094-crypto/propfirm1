@@ -24,6 +24,6 @@ import { ProductsService } from './products.service.js';
       },
     },
   ],
-  exports: [CheckoutService],
+  exports: [CheckoutService, ProductsService],
 })
 export class CommerceModule {}

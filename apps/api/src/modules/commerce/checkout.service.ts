@@ -111,8 +111,12 @@ export class CheckoutService {
           return this.toDto(await this.load(tx, id));
         }
 
-        const user = await tx.user.findUniqueOrThrow({ where: { id: userId } });
+        const user = await tx.user.findUniqueOrThrow({
+          where: { id: userId },
+          include: { firm: { select: { status: true } } },
+        });
         if (user.status !== 'ACTIVE') throw Errors.forbidden('ACCOUNT_SUSPENDED');
+        if (user.firm.status !== 'ACTIVE') throw Errors.forbidden('FIRM_SUSPENDED');
         if (!user.emailVerifiedAt) throw Errors.forbidden('EMAIL_NOT_VERIFIED');
         if (BLOCKED_COUNTRIES.has(user.country)) throw Errors.forbidden('COUNTRY_RESTRICTED');
 
@@ -123,7 +127,9 @@ export class CheckoutService {
           ruleSetId: string;
         };
         if (dto.productId) {
-          const p = await tx.product.findFirst({ where: { id: dto.productId, isActive: true } });
+          const p = await tx.product.findFirst({
+            where: { id: dto.productId, firmId: user.firmId, isActive: true },
+          });
           if (!p) throw Errors.notFound('Product');
           item = {
             type: p.type,

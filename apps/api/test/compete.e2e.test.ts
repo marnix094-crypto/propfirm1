@@ -65,7 +65,7 @@ async function joinAndPay(p: Player, roundId: string) {
     .set(as(p))
     .set('Idempotency-Key', key());
   expect(join.status).toBe(201);
-  expect(join.body.paymentUrl).toContain(`/pay/${join.body.entry.id}`);
+  expect(join.body.paymentUrl).toContain(`/compete/pay/${join.body.entry.id}`);
   const pay = await t
     .http()
     .post(`/api/v1/compete/entries/${join.body.entry.id}/test-payment`)

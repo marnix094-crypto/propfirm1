@@ -32,6 +32,7 @@ import {
 import { exampleProducts, exampleQuotePriceMinor, exampleRules } from '@/mocks/data';
 import { CLIENT_MODULES } from '@brand/shared';
 import { bySymbol, DEMO_INSTRUMENTS, DemoMarket } from './market';
+import { createCompeteDemo } from './compete';
 
 const uid = () => crypto.randomUUID();
 const STORE = 'brand-demo-state-v1';
@@ -2508,6 +2509,8 @@ on('POST', '/admin/firms/{id}/admin', (m, b) => {
 on('POST', '/admin/firms/{id}/admin/invite', (m) => (demoFirm(m[1]!), json(204)));
 
 /** Route /api/v1/* requests to the in-browser backend; everything else goes to the network. */
+const handleCompete = createCompeteDemo(market);
+
 export function installDemoBackend() {
   const original = globalThis.fetch.bind(globalThis);
   globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -2524,6 +2527,9 @@ export function installDemoBackend() {
       /* empty */
     }
     await new Promise((r) => setTimeout(r, 60)); // feel like a network
+    // Compete (separate product) has its own in-browser backend.
+    const competeRes = handleCompete(path, req, b);
+    if (competeRes) return competeRes;
     for (const [method, re, h] of routes) {
       const m = path.match(re);
       if (m && method === req.method) {

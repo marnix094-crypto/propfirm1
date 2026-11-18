@@ -1,7 +1,17 @@
 import { Body, Controller, Inject, Post, Req } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsISO8601, IsOptional, IsUUID, Max, Min } from 'class-validator';
+import {
+  IsInt,
+  IsISO8601,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Matches,
+  Max,
+  MaxLength,
+  Min,
+} from 'class-validator';
 import type { Request } from 'express';
 import { hash } from '@node-rs/argon2';
 import { APP_CONFIG, type AppConfig } from '../../config/env.js';
@@ -15,6 +25,10 @@ class DevRoundDto {
   @Type(() => Number) @IsInt() @Min(1) @Max(86_400) startsInSec!: number;
   @IsOptional() @Type(() => Number) @IsInt() @Min(10) @Max(86_400) durationSec?: number;
   @IsOptional() @Type(() => Number) @IsInt() @Min(3) @Max(10_000) minParticipants?: number;
+}
+class DevOperatorDto {
+  @Matches(/^[a-z0-9-]{1,40}$/) slug!: string;
+  @IsOptional() @IsString() @MaxLength(60) name?: string;
 }
 class DevTickDto {
   @IsOptional() @IsISO8601() at?: string;
@@ -38,6 +52,18 @@ export class CompeteDevController {
 
   private guard() {
     if (!this.config.devToolsEnabled) throw Errors.notFound('Route');
+  }
+
+  /** Creates (or returns) an operator, e.g. an isolated tenant per e2e test. */
+  @Post('operators')
+  async operator(@Body() dto: DevOperatorDto) {
+    this.guard();
+    const op = await this.prisma.competeOperator.upsert({
+      where: { slug: dto.slug },
+      create: { slug: dto.slug, name: dto.name ?? dto.slug },
+      update: {},
+    });
+    return { id: op.id, slug: op.slug };
   }
 
   /** Creates a round that starts soon (shorter duration / lower minimum for testing). */

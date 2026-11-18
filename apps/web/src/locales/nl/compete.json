@@ -1,0 +1,239 @@
+{
+  "banner": "Voorbeeld: de dagelijkse tradingcompetitie van {{firm}}, een fictieve klant van Daily Funded. Alleen testbetalingen — geen echt geld.",
+  "bannerLink": "Terug naar Daily Funded",
+  "retry": "Opnieuw proberen",
+  "countdown": {
+    "hours": "uur",
+    "minutes": "min",
+    "seconds": "sec",
+    "sr": "{{h}} uur, {{m}} minuten en {{s}} seconden"
+  },
+  "nav": {
+    "home": "Home van {{firm}}",
+    "label": "Competitie",
+    "how": "Zo werkt het",
+    "prizes": "Prijzen",
+    "results": "Uitslagen",
+    "dashboard": "Mijn dashboard",
+    "login": "Inloggen",
+    "join": "Meedoen",
+    "logout": "Uitloggen"
+  },
+  "footer": {
+    "disclaimer": "Handelen in de competitie is gesimuleerd: posities gebruiken virtueel geld en live marktprijzen; er gaan geen orders naar een markt. De inleg en de prijzen zijn geld; zolang de organisator niet de vereiste vergunning heeft, zijn alleen testbetalingen mogelijk.",
+    "responsible": "Alleen voor 18+. Speel verantwoord: gebruik alleen geld dat je kunt missen. Resultaten uit het verleden zeggen niets over de toekomst.",
+    "poweredBy": "Competitiesoftware van"
+  },
+  "seo": {
+    "title": "{{firm}} — dagelijkse tradingcompetitie",
+    "description": "Eén uur handelen tegen andere spelers. Doe mee voor een vaste inleg; de top 3 deelt de prijzenpot."
+  },
+  "hero": {
+    "eyebrow": "Elke dag op hetzelfde tijdstip",
+    "title1": "Trade één uur.",
+    "title2": "Strijd om de pot.",
+    "body": "Doe mee voor {{fee}}, krijg een virtueel account van {{balance}} en handel een uur lang tegen alle andere spelers. De drie beste rendementen delen {{pool}} van de prijzenpot."
+  },
+  "facts": {
+    "fee": "Inleg",
+    "balance": "Startsaldo",
+    "leverage": "Hefboom",
+    "duration": "Duur",
+    "minutes": "{{n}} min"
+  },
+  "round": {
+    "today": "Volgende ronde",
+    "startsIn": "Start over",
+    "endsIn": "Eindigt over",
+    "pot": "Prijzenpot",
+    "participants": "Spelers",
+    "minimum": "min. {{n}}"
+  },
+  "status": {
+    "OPEN": "Inschrijving open",
+    "LIVE": "Live",
+    "SETTLED": "Afgelopen",
+    "CANCELLED": "Geannuleerd"
+  },
+  "cta": {
+    "join": "Doe mee voor {{fee}}",
+    "toDashboard": "Naar mijn dashboard"
+  },
+  "prizes": {
+    "eyebrow": "Prijzen",
+    "title": "De top 3 deelt {{pool}} van de pot.",
+    "body": "Elke inleg gaat naar de prijzenpot. De overige {{rest}} gaat naar de organisator. De bedragen hangen af van het aantal spelers.",
+    "place1": "1e plaats",
+    "place2": "2e plaats",
+    "place3": "3e plaats",
+    "ofPool": "{{share}} van de pot",
+    "example": "Voorbeeld: {{amount}} bij {{n}} spelers",
+    "current": "Huidige ronde: {{pot}} bij {{n}} spelers."
+  },
+  "how": {
+    "eyebrow": "Zo werkt het",
+    "title": "Vier stappen, één uur.",
+    "step1": {
+      "title": "Doe mee voor {{fee}}",
+      "body": "Maak een account aan en betaal de inleg voor de start van de ronde. Eén inschrijving per ronde."
+    },
+    "step2": {
+      "title": "Wacht op de start",
+      "body": "De ronde begint elke dag op hetzelfde tijdstip. Je dashboard telt af."
+    },
+    "step3": {
+      "title": "Trade {{minutes}} minuten",
+      "body": "Handel in crypto met een virtueel account van {{balance}} en een hefboom tot {{leverage}}."
+    },
+    "step4": {
+      "title": "Hoogste rendement wint",
+      "body": "Na het uur worden alle posities gesloten. De top 3 op rendement deelt de prijzenpot."
+    }
+  },
+  "rules": {
+    "eyebrow": "Regels",
+    "title": "Eenvoudige, gelijke regels voor iedereen.",
+    "body": "Iedere speler begint met hetzelfde saldo en dezelfde grenzen. De regels van een ronde liggen vast zodra die is aangemaakt.",
+    "drawdown": "Maximaal verlies {{pct}}: bereikt je equity {{floor}}, dan worden je posities gesloten en eindigt je inschrijving. Je resultaat telt wel mee.",
+    "minimum": "Een ronde start alleen met minimaal {{n}} betaalde spelers. Anders wordt hij geannuleerd en krijgt iedereen de inleg terug.",
+    "oneEntry": "Eén inschrijving per speler per ronde. Je kunt elke dag opnieuw meedoen.",
+    "orders": "Alleen market orders, hefboom tot {{leverage}}. Open posities worden aan het einde van de ronde tegen de marktprijs gesloten.",
+    "ranking": "Ranglijst op rendement ten opzichte van het startsaldo. Bij een gelijk rendement staat wie het eerst meedeed hoger."
+  },
+  "results": {
+    "title": "Recente rondes",
+    "empty": "Er zijn nog geen rondes afgelopen.",
+    "date": "Datum",
+    "status": "Status"
+  },
+  "auth": {
+    "loginTitle": "Inloggen",
+    "loginSub": "Log in om mee te doen aan de ronde van vandaag.",
+    "registerTitle": "Maak je spelersaccount aan",
+    "registerSub": "Los van elk ander account — alleen voor deze competitie.",
+    "email": "E-mailadres",
+    "password": "Wachtwoord",
+    "passwordHint": "Minimaal 12 tekens.",
+    "nickname": "Bijnaam",
+    "nicknameHint": "Zichtbaar in de ranglijst. 3–20 letters, cijfers of _.",
+    "country": "Woonland",
+    "adult": "Ik ben 18 jaar of ouder.",
+    "terms": "Ik ga akkoord met de competitieregels en voorwaarden.",
+    "createAccount": "Account aanmaken",
+    "login": "Inloggen",
+    "register": "Maak een account aan",
+    "noAccount": "Nog geen account?",
+    "haveAccount": "Heb je al een account?"
+  },
+  "pay": {
+    "title": "Betaal je inleg",
+    "sub": "Rond de betaling af om je plek in de ronde vast te leggen.",
+    "testNotice": "Testbetaling: er wordt geen echt geld afgeschreven.",
+    "amount": "Inleg",
+    "succeed": "Betalen (test)",
+    "fail": "Mislukte betaling simuleren"
+  },
+  "entryStatus": {
+    "PENDING_PAYMENT": "Wacht op betaling",
+    "PAYMENT_FAILED": "Betaling mislukt",
+    "ACTIVE": "Ingeschreven",
+    "BREACHED": "Geëindigd op de verliesgrens",
+    "FINISHED": "Afgelopen",
+    "REFUNDED": "Terugbetaald"
+  },
+  "leaderboard": {
+    "title": "Live ranglijst",
+    "players_one": "{{count}} speler",
+    "players_other": "{{count}} spelers",
+    "empty": "Nog geen spelers.",
+    "rank": "Plaats",
+    "player": "Speler",
+    "return": "Rendement",
+    "prize": "Prijs",
+    "you": "jij",
+    "out": "uit"
+  },
+  "terminal": {
+    "equity": "Equity",
+    "return": "Rendement",
+    "drawdown": "Verliesgrens",
+    "bid": "Bied",
+    "ask": "Laat",
+    "chart": "Koersgrafiek {{symbol}}",
+    "ticket": "Market order",
+    "symbol": "Instrument",
+    "qty": "Hoeveelheid",
+    "leverageHint": "Hefboom tot {{leverage}}. Orders worden tegen de marktprijs uitgevoerd.",
+    "BUY": "Kopen",
+    "SELL": "Verkopen",
+    "LONG": "Long",
+    "SHORT": "Short",
+    "filled": "{{side}} {{qty}} {{symbol}} uitgevoerd.",
+    "positions": "Open posities",
+    "noPositions": "Geen open posities.",
+    "side": "Richting",
+    "entry": "Instap",
+    "pnl": "W&V",
+    "actions": "Acties",
+    "close": "Sluiten",
+    "fills_one": "{{count}} trade",
+    "fills_other": "{{count}} trades",
+    "reason": {
+      "PLAYER": "door jou",
+      "DRAWDOWN": "verliesgrens",
+      "ROUND_END": "einde ronde"
+    }
+  },
+  "meter": {
+    "safe": "Veilig",
+    "warn": "Dicht bij de grens",
+    "breach": "Grens bereikt"
+  },
+  "entry": {
+    "joinTitle": "Doe mee aan de ronde van vandaag voor {{fee}}",
+    "joinBody": "Betaal voor de start om je plek vast te leggen.",
+    "paymentFailed": "Je betaling is mislukt. Je kunt het opnieuw proberen.",
+    "pending": "Je betaling is nog niet afgerond.",
+    "completePayment": "Betaling afronden",
+    "entered": "Je doet mee!",
+    "enteredBody": "Je start met {{balance}} zodra de ronde begint (als er minimaal {{n}} spelers meedoen).",
+    "notInRound": "Je speelt niet mee in deze ronde.",
+    "breachedTitle": "Je inschrijving heeft de verliesgrens bereikt.",
+    "nextRound": "Schrijf je op tijd in voor de volgende ronde om weer mee te spelen.",
+    "startNowDemo": "Start de ronde nu (demo)"
+  },
+  "history": {
+    "title": "Mijn rondes",
+    "empty": "Je hebt nog geen ronde gespeeld.",
+    "rank": "Plaats"
+  },
+  "dashboard": {
+    "docTitle": "Mijn competitiedashboard",
+    "hello": "Hoi {{name}}",
+    "title": "Dagelijkse competitie",
+    "reconnecting": "Verbinding verbroken — opnieuw verbinden…"
+  },
+  "errors": {
+    "generic": "Er ging iets mis. Probeer het opnieuw.",
+    "load": "Dit kon nu niet worden geladen.",
+    "INVALID_CREDENTIALS": "Onjuist e-mailadres of wachtwoord.",
+    "EMAIL_TAKEN": "Er bestaat al een account met dit e-mailadres.",
+    "NICKNAME_TAKEN": "Deze bijnaam is al in gebruik.",
+    "COUNTRY_RESTRICTED": "De competitie is niet beschikbaar in jouw land.",
+    "ROUND_CLOSED": "Inschrijven voor deze ronde is gesloten.",
+    "ALREADY_ENTERED": "Je doet al mee aan deze ronde.",
+    "ROUND_NOT_LIVE": "De ronde loopt niet.",
+    "ENTRY_NOT_ACTIVE": "Met deze inschrijving kun je niet meer handelen.",
+    "INSUFFICIENT_MARGIN": "Onvoldoende marge voor deze order (max. hefboom 1:100).",
+    "INVALID_QTY": "Vul een geldige hoeveelheid in.",
+    "QTY_BELOW_MIN": "De hoeveelheid is lager dan het minimum.",
+    "QTY_STEP": "De hoeveelheid heeft te veel decimalen.",
+    "LEVERAGE_INVALID": "Deze hefboom is niet toegestaan voor dit instrument.",
+    "PAYMENT_NOT_PENDING": "Er staat geen betaling open voor deze inschrijving.",
+    "VALIDATION_ERROR": "Controleer de gemarkeerde velden.",
+    "NETWORK_ERROR": "Geen verbinding. Controleer je internet en probeer het opnieuw.",
+    "OPERATOR_SUSPENDED": "Deze competitie is tijdelijk niet beschikbaar.",
+    "PLAYER_SUSPENDED": "Je account is geschorst.",
+    "QUOTE_STALE": "Geen actuele koers beschikbaar. Probeer het zo opnieuw."
+  }
+}

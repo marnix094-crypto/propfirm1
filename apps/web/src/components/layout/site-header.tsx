@@ -71,6 +71,12 @@ export function SiteHeader() {
           </div>
           <ThemeToggle />
           <Link
+            to={`/${lang}/compete`}
+            className="hidden rounded-sm px-2 py-2 text-sm font-medium text-muted hover:text-fg lg:inline"
+          >
+            {t('site.nav.compete')}
+          </Link>
+          <Link
             to={`/${lang}/admin/login`}
             className="hidden rounded-sm px-2 py-2 text-sm font-medium text-muted hover:text-fg lg:inline"
           >
@@ -123,6 +129,9 @@ export function SiteHeader() {
             <LanguageSwitcher />
             <Button variant="secondary" asChild>
               <Link to={`/${lang}/login`}>{t('site.nav.liveDemo')}</Link>
+            </Button>
+            <Button variant="ghost" asChild>
+              <Link to={`/${lang}/compete`}>{t('site.nav.compete')}</Link>
             </Button>
             <Button variant="ghost" asChild>
               <Link to={`/${lang}/admin/login`}>{t('site.nav.partnerLogin')}</Link>

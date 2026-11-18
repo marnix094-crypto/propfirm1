@@ -1,0 +1,239 @@
+{
+  "banner": "Example: the daily trading competition of {{firm}}, a fictional Daily Funded client. Test payments only — no real money.",
+  "bannerLink": "Back to Daily Funded",
+  "retry": "Try again",
+  "countdown": {
+    "hours": "hrs",
+    "minutes": "min",
+    "seconds": "sec",
+    "sr": "{{h}} hours, {{m}} minutes and {{s}} seconds"
+  },
+  "nav": {
+    "home": "{{firm}} home",
+    "label": "Competition",
+    "how": "How it works",
+    "prizes": "Prizes",
+    "results": "Results",
+    "dashboard": "My dashboard",
+    "login": "Log in",
+    "join": "Join",
+    "logout": "Log out"
+  },
+  "footer": {
+    "disclaimer": "Trading in the competition is simulated: positions use virtual funds and live market prices; no orders are sent to a market. The entry fee and prizes are money; until the operator holds the required licence only test payments are possible.",
+    "responsible": "18+ only. Play responsibly: only use money you can afford to lose. Past results say nothing about future results.",
+    "poweredBy": "Competition software by"
+  },
+  "seo": {
+    "title": "{{firm}} — daily trading competition",
+    "description": "One hour of trading against other players. Join for a fixed fee; the top 3 share the prize pool."
+  },
+  "hero": {
+    "eyebrow": "Every day at the same time",
+    "title1": "Trade for one hour.",
+    "title2": "Compete for the pot.",
+    "body": "Join for {{fee}}, get a virtual {{balance}} account and trade against everyone else for one hour. The three best returns share {{pool}} of the prize pool."
+  },
+  "facts": {
+    "fee": "Entry",
+    "balance": "Start balance",
+    "leverage": "Leverage",
+    "duration": "Duration",
+    "minutes": "{{n}} min"
+  },
+  "round": {
+    "today": "Next round",
+    "startsIn": "Starts in",
+    "endsIn": "Ends in",
+    "pot": "Prize pool",
+    "participants": "Players",
+    "minimum": "min. {{n}}"
+  },
+  "status": {
+    "OPEN": "Registration open",
+    "LIVE": "Live",
+    "SETTLED": "Finished",
+    "CANCELLED": "Cancelled"
+  },
+  "cta": {
+    "join": "Join for {{fee}}",
+    "toDashboard": "Go to my dashboard"
+  },
+  "prizes": {
+    "eyebrow": "Prizes",
+    "title": "The top 3 share {{pool}} of the pot.",
+    "body": "Every entry adds to the prize pool. The remaining {{rest}} goes to the organiser. Amounts depend on the number of players.",
+    "place1": "1st place",
+    "place2": "2nd place",
+    "place3": "3rd place",
+    "ofPool": "{{share}} of the pot",
+    "example": "Example: {{amount}} with {{n}} players",
+    "current": "Current round: {{pot}} with {{n}} players."
+  },
+  "how": {
+    "eyebrow": "How it works",
+    "title": "Four steps, one hour.",
+    "step1": {
+      "title": "Join for {{fee}}",
+      "body": "Create an account and pay the entry fee before the round starts. One entry per round."
+    },
+    "step2": {
+      "title": "Wait for the start",
+      "body": "The round starts at the same time every day. Your dashboard counts down."
+    },
+    "step3": {
+      "title": "Trade {{minutes}} minutes",
+      "body": "Trade crypto with a virtual {{balance}} account and leverage up to {{leverage}}."
+    },
+    "step4": {
+      "title": "Highest return wins",
+      "body": "When the hour ends all positions are closed. The top 3 by return share the prize pool."
+    }
+  },
+  "rules": {
+    "eyebrow": "Rules",
+    "title": "Simple, equal rules for everyone.",
+    "body": "Every player starts with the same balance and the same limits. The rules of a round are fixed when it is created.",
+    "drawdown": "Maximum loss {{pct}}: if your equity reaches {{floor}}, your positions are closed and your entry ends. Your result still counts.",
+    "minimum": "A round only starts with at least {{n}} paid players. Otherwise it is cancelled and everyone gets their entry fee back.",
+    "oneEntry": "One entry per player per round. You can join again every day.",
+    "orders": "Market orders only, leverage up to {{leverage}}. Open positions are closed at market when the round ends.",
+    "ranking": "Ranking by return on the starting balance. With an equal return, the player who joined first ranks higher."
+  },
+  "results": {
+    "title": "Recent rounds",
+    "empty": "No rounds have finished yet.",
+    "date": "Date",
+    "status": "Status"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "loginSub": "Log in to join today's round.",
+    "registerTitle": "Create your player account",
+    "registerSub": "Separate from any other account — only for this competition.",
+    "email": "E-mail",
+    "password": "Password",
+    "passwordHint": "At least 12 characters.",
+    "nickname": "Nickname",
+    "nicknameHint": "Shown on the leaderboard. 3–20 letters, digits or _.",
+    "country": "Country of residence",
+    "adult": "I am 18 years or older.",
+    "terms": "I accept the competition rules and terms.",
+    "createAccount": "Create account",
+    "login": "Log in",
+    "register": "Create an account",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?"
+  },
+  "pay": {
+    "title": "Pay your entry",
+    "sub": "Complete the payment to secure your place in the round.",
+    "testNotice": "Test payment: no real money is charged.",
+    "amount": "Entry fee",
+    "succeed": "Pay (test)",
+    "fail": "Simulate a failed payment"
+  },
+  "entryStatus": {
+    "PENDING_PAYMENT": "Waiting for payment",
+    "PAYMENT_FAILED": "Payment failed",
+    "ACTIVE": "Entered",
+    "BREACHED": "Ended at the loss limit",
+    "FINISHED": "Finished",
+    "REFUNDED": "Refunded"
+  },
+  "leaderboard": {
+    "title": "Live leaderboard",
+    "players_one": "{{count}} player",
+    "players_other": "{{count}} players",
+    "empty": "No players yet.",
+    "rank": "Rank",
+    "player": "Player",
+    "return": "Return",
+    "prize": "Prize",
+    "you": "you",
+    "out": "out"
+  },
+  "terminal": {
+    "equity": "Equity",
+    "return": "Return",
+    "drawdown": "Loss limit",
+    "bid": "Bid",
+    "ask": "Ask",
+    "chart": "{{symbol}} price chart",
+    "ticket": "Market order",
+    "symbol": "Instrument",
+    "qty": "Quantity",
+    "leverageHint": "Leverage up to {{leverage}}. Orders fill at market.",
+    "BUY": "Buy",
+    "SELL": "Sell",
+    "LONG": "Long",
+    "SHORT": "Short",
+    "filled": "{{side}} {{qty}} {{symbol}} filled.",
+    "positions": "Open positions",
+    "noPositions": "No open positions.",
+    "side": "Side",
+    "entry": "Entry",
+    "pnl": "P&L",
+    "actions": "Actions",
+    "close": "Close",
+    "fills_one": "{{count}} trade",
+    "fills_other": "{{count}} trades",
+    "reason": {
+      "PLAYER": "by you",
+      "DRAWDOWN": "loss limit",
+      "ROUND_END": "end of round"
+    }
+  },
+  "meter": {
+    "safe": "Safe",
+    "warn": "Close to the limit",
+    "breach": "Limit reached"
+  },
+  "entry": {
+    "joinTitle": "Join today's round for {{fee}}",
+    "joinBody": "Pay before the start to secure your place.",
+    "paymentFailed": "Your payment failed. You can try again.",
+    "pending": "Your payment has not been completed yet.",
+    "completePayment": "Complete payment",
+    "entered": "You're in!",
+    "enteredBody": "You start with {{balance}} as soon as the round begins (if at least {{n}} players have joined).",
+    "notInRound": "You are not playing in this round.",
+    "breachedTitle": "Your entry reached the loss limit.",
+    "nextRound": "Join the next round in time to play again.",
+    "startNowDemo": "Start the round now (demo)"
+  },
+  "history": {
+    "title": "My rounds",
+    "empty": "You have not played a round yet.",
+    "rank": "Rank"
+  },
+  "dashboard": {
+    "docTitle": "My competition dashboard",
+    "hello": "Hi {{name}}",
+    "title": "Daily competition",
+    "reconnecting": "Connection lost — reconnecting…"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "load": "Could not load this right now.",
+    "INVALID_CREDENTIALS": "Incorrect e-mail or password.",
+    "EMAIL_TAKEN": "An account with this e-mail already exists.",
+    "NICKNAME_TAKEN": "This nickname is already taken.",
+    "COUNTRY_RESTRICTED": "The competition is not available in your country.",
+    "ROUND_CLOSED": "Registration for this round has closed.",
+    "ALREADY_ENTERED": "You already joined this round.",
+    "ROUND_NOT_LIVE": "The round is not running.",
+    "ENTRY_NOT_ACTIVE": "Your entry can no longer trade.",
+    "INSUFFICIENT_MARGIN": "Not enough margin for this order (max. leverage 1:100).",
+    "INVALID_QTY": "Enter a valid quantity.",
+    "QTY_BELOW_MIN": "Quantity is below the minimum.",
+    "QTY_STEP": "Quantity has too many decimals.",
+    "LEVERAGE_INVALID": "Leverage is not allowed for this instrument.",
+    "PAYMENT_NOT_PENDING": "This entry has no open payment.",
+    "VALIDATION_ERROR": "Please check the highlighted fields.",
+    "NETWORK_ERROR": "No connection. Check your internet and try again.",
+    "OPERATOR_SUSPENDED": "This competition is temporarily unavailable.",
+    "PLAYER_SUSPENDED": "Your account is suspended.",
+    "QUOTE_STALE": "No current price available. Try again in a moment."
+  }
+}

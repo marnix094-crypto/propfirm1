@@ -1,0 +1,239 @@
+{
+  "banner": "Ejemplo: la competición diaria de trading de {{firm}}, un cliente ficticio de Daily Funded. Solo pagos de prueba — sin dinero real.",
+  "bannerLink": "Volver a Daily Funded",
+  "retry": "Reintentar",
+  "countdown": {
+    "hours": "h",
+    "minutes": "min",
+    "seconds": "s",
+    "sr": "{{h}} horas, {{m}} minutos y {{s}} segundos"
+  },
+  "nav": {
+    "home": "Inicio de {{firm}}",
+    "label": "Competición",
+    "how": "Cómo funciona",
+    "prizes": "Premios",
+    "results": "Resultados",
+    "dashboard": "Mi panel",
+    "login": "Iniciar sesión",
+    "join": "Participar",
+    "logout": "Cerrar sesión"
+  },
+  "footer": {
+    "disclaimer": "El trading en la competición es simulado: las posiciones usan fondos virtuales y precios de mercado en vivo; no se envían órdenes a ningún mercado. La inscripción y los premios son dinero; mientras el organizador no tenga la licencia necesaria solo son posibles pagos de prueba.",
+    "responsible": "Solo mayores de 18 años. Juega con responsabilidad: usa solo dinero que puedas permitirte perder. Los resultados pasados no garantizan resultados futuros.",
+    "poweredBy": "Software de competición de"
+  },
+  "seo": {
+    "title": "{{firm}} — competición diaria de trading",
+    "description": "Una hora de trading contra otros jugadores. Participa por una cuota fija; el top 3 se reparte el bote."
+  },
+  "hero": {
+    "eyebrow": "Cada día a la misma hora",
+    "title1": "Opera una hora.",
+    "title2": "Compite por el bote.",
+    "body": "Participa por {{fee}}, recibe una cuenta virtual de {{balance}} y opera contra todos durante una hora. Las tres mejores rentabilidades se reparten el {{pool}} del bote."
+  },
+  "facts": {
+    "fee": "Inscripción",
+    "balance": "Saldo inicial",
+    "leverage": "Apalancamiento",
+    "duration": "Duración",
+    "minutes": "{{n}} min"
+  },
+  "round": {
+    "today": "Próxima ronda",
+    "startsIn": "Empieza en",
+    "endsIn": "Termina en",
+    "pot": "Bote",
+    "participants": "Jugadores",
+    "minimum": "mín. {{n}}"
+  },
+  "status": {
+    "OPEN": "Inscripción abierta",
+    "LIVE": "En vivo",
+    "SETTLED": "Finalizada",
+    "CANCELLED": "Cancelada"
+  },
+  "cta": {
+    "join": "Participa por {{fee}}",
+    "toDashboard": "Ir a mi panel"
+  },
+  "prizes": {
+    "eyebrow": "Premios",
+    "title": "El top 3 se reparte el {{pool}} del bote.",
+    "body": "Cada inscripción suma al bote. El {{rest}} restante es para el organizador. Los importes dependen del número de jugadores.",
+    "place1": "1.er puesto",
+    "place2": "2.º puesto",
+    "place3": "3.er puesto",
+    "ofPool": "{{share}} del bote",
+    "example": "Ejemplo: {{amount}} con {{n}} jugadores",
+    "current": "Ronda actual: {{pot}} con {{n}} jugadores."
+  },
+  "how": {
+    "eyebrow": "Cómo funciona",
+    "title": "Cuatro pasos, una hora.",
+    "step1": {
+      "title": "Participa por {{fee}}",
+      "body": "Crea una cuenta y paga la inscripción antes de que empiece la ronda. Una inscripción por ronda."
+    },
+    "step2": {
+      "title": "Espera el inicio",
+      "body": "La ronda empieza cada día a la misma hora. Tu panel hace la cuenta atrás."
+    },
+    "step3": {
+      "title": "Opera {{minutes}} minutos",
+      "body": "Opera cripto con una cuenta virtual de {{balance}} y apalancamiento de hasta {{leverage}}."
+    },
+    "step4": {
+      "title": "Gana la mayor rentabilidad",
+      "body": "Al terminar la hora se cierran todas las posiciones. El top 3 por rentabilidad se reparte el bote."
+    }
+  },
+  "rules": {
+    "eyebrow": "Reglas",
+    "title": "Reglas simples e iguales para todos.",
+    "body": "Todos empiezan con el mismo saldo y los mismos límites. Las reglas de una ronda se fijan al crearla.",
+    "drawdown": "Pérdida máxima {{pct}}: si tu equity llega a {{floor}}, se cierran tus posiciones y termina tu inscripción. Tu resultado sigue contando.",
+    "minimum": "Una ronda solo empieza con al menos {{n}} jugadores que hayan pagado. Si no, se cancela y todos recuperan su inscripción.",
+    "oneEntry": "Una inscripción por jugador y ronda. Puedes volver a participar cada día.",
+    "orders": "Solo órdenes de mercado, apalancamiento hasta {{leverage}}. Las posiciones abiertas se cierran a mercado al final de la ronda.",
+    "ranking": "Clasificación por rentabilidad sobre el saldo inicial. Con la misma rentabilidad, queda por delante quien se inscribió antes."
+  },
+  "results": {
+    "title": "Rondas recientes",
+    "empty": "Todavía no ha terminado ninguna ronda.",
+    "date": "Fecha",
+    "status": "Estado"
+  },
+  "auth": {
+    "loginTitle": "Iniciar sesión",
+    "loginSub": "Inicia sesión para participar en la ronda de hoy.",
+    "registerTitle": "Crea tu cuenta de jugador",
+    "registerSub": "Independiente de cualquier otra cuenta — solo para esta competición.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "passwordHint": "Al menos 12 caracteres.",
+    "nickname": "Apodo",
+    "nicknameHint": "Visible en la clasificación. 3–20 letras, cifras o _.",
+    "country": "País de residencia",
+    "adult": "Tengo 18 años o más.",
+    "terms": "Acepto las reglas y condiciones de la competición.",
+    "createAccount": "Crear cuenta",
+    "login": "Iniciar sesión",
+    "register": "Crea una cuenta",
+    "noAccount": "¿Aún no tienes cuenta?",
+    "haveAccount": "¿Ya tienes cuenta?"
+  },
+  "pay": {
+    "title": "Paga tu inscripción",
+    "sub": "Completa el pago para asegurar tu plaza en la ronda.",
+    "testNotice": "Pago de prueba: no se cobra dinero real.",
+    "amount": "Inscripción",
+    "succeed": "Pagar (prueba)",
+    "fail": "Simular un pago fallido"
+  },
+  "entryStatus": {
+    "PENDING_PAYMENT": "Esperando el pago",
+    "PAYMENT_FAILED": "Pago fallido",
+    "ACTIVE": "Inscrito",
+    "BREACHED": "Terminó en el límite de pérdida",
+    "FINISHED": "Finalizada",
+    "REFUNDED": "Reembolsada"
+  },
+  "leaderboard": {
+    "title": "Clasificación en vivo",
+    "players_one": "{{count}} jugador",
+    "players_other": "{{count}} jugadores",
+    "empty": "Aún no hay jugadores.",
+    "rank": "Puesto",
+    "player": "Jugador",
+    "return": "Rentabilidad",
+    "prize": "Premio",
+    "you": "tú",
+    "out": "fuera"
+  },
+  "terminal": {
+    "equity": "Equity",
+    "return": "Rentabilidad",
+    "drawdown": "Límite de pérdida",
+    "bid": "Compra",
+    "ask": "Venta",
+    "chart": "Gráfico de precio de {{symbol}}",
+    "ticket": "Orden de mercado",
+    "symbol": "Instrumento",
+    "qty": "Cantidad",
+    "leverageHint": "Apalancamiento hasta {{leverage}}. Las órdenes se ejecutan a mercado.",
+    "BUY": "Comprar",
+    "SELL": "Vender",
+    "LONG": "Largo",
+    "SHORT": "Corto",
+    "filled": "{{side}} {{qty}} {{symbol}} ejecutada.",
+    "positions": "Posiciones abiertas",
+    "noPositions": "No hay posiciones abiertas.",
+    "side": "Dirección",
+    "entry": "Entrada",
+    "pnl": "P&G",
+    "actions": "Acciones",
+    "close": "Cerrar",
+    "fills_one": "{{count}} operación",
+    "fills_other": "{{count}} operaciones",
+    "reason": {
+      "PLAYER": "por ti",
+      "DRAWDOWN": "límite de pérdida",
+      "ROUND_END": "fin de la ronda"
+    }
+  },
+  "meter": {
+    "safe": "Seguro",
+    "warn": "Cerca del límite",
+    "breach": "Límite alcanzado"
+  },
+  "entry": {
+    "joinTitle": "Participa en la ronda de hoy por {{fee}}",
+    "joinBody": "Paga antes del inicio para asegurar tu plaza.",
+    "paymentFailed": "Tu pago ha fallado. Puedes intentarlo de nuevo.",
+    "pending": "Tu pago aún no se ha completado.",
+    "completePayment": "Completar el pago",
+    "entered": "¡Estás dentro!",
+    "enteredBody": "Empiezas con {{balance}} en cuanto comience la ronda (si participan al menos {{n}} jugadores).",
+    "notInRound": "No participas en esta ronda.",
+    "breachedTitle": "Tu inscripción alcanzó el límite de pérdida.",
+    "nextRound": "Inscríbete a tiempo en la próxima ronda para volver a jugar.",
+    "startNowDemo": "Empezar la ronda ahora (demo)"
+  },
+  "history": {
+    "title": "Mis rondas",
+    "empty": "Todavía no has jugado ninguna ronda.",
+    "rank": "Puesto"
+  },
+  "dashboard": {
+    "docTitle": "Mi panel de competición",
+    "hello": "Hola, {{name}}",
+    "title": "Competición diaria",
+    "reconnecting": "Conexión perdida — reconectando…"
+  },
+  "errors": {
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "load": "No se pudo cargar en este momento.",
+    "INVALID_CREDENTIALS": "Correo o contraseña incorrectos.",
+    "EMAIL_TAKEN": "Ya existe una cuenta con este correo.",
+    "NICKNAME_TAKEN": "Este apodo ya está en uso.",
+    "COUNTRY_RESTRICTED": "La competición no está disponible en tu país.",
+    "ROUND_CLOSED": "La inscripción para esta ronda está cerrada.",
+    "ALREADY_ENTERED": "Ya participas en esta ronda.",
+    "ROUND_NOT_LIVE": "La ronda no está en curso.",
+    "ENTRY_NOT_ACTIVE": "Tu inscripción ya no puede operar.",
+    "INSUFFICIENT_MARGIN": "Margen insuficiente para esta orden (apalancamiento máx. 1:100).",
+    "INVALID_QTY": "Introduce una cantidad válida.",
+    "QTY_BELOW_MIN": "La cantidad está por debajo del mínimo.",
+    "QTY_STEP": "La cantidad tiene demasiados decimales.",
+    "LEVERAGE_INVALID": "Este apalancamiento no está permitido para este instrumento.",
+    "PAYMENT_NOT_PENDING": "Esta inscripción no tiene un pago pendiente.",
+    "VALIDATION_ERROR": "Revisa los campos marcados.",
+    "NETWORK_ERROR": "Sin conexión. Revisa tu internet e inténtalo de nuevo.",
+    "OPERATOR_SUSPENDED": "Esta competición no está disponible temporalmente.",
+    "PLAYER_SUSPENDED": "Tu cuenta está suspendida.",
+    "QUOTE_STALE": "No hay precio actual. Inténtalo de nuevo en un momento."
+  }
+}

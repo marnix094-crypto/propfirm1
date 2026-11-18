@@ -53,10 +53,24 @@ Na het uur winnen de 3 spelers met het hoogste rendement samen 80% van de prijze
 | `GET entries/:id`, `entries/:id/orders` | speler | saldo, equity, posities, orders |
 | `POST entries/:id/orders`, `entries/:id/positions/:symbol/close` | speler | market order / positie sluiten |
 
+## Frontend (fase C2, D103)
+
+Op de Daily Funded-website, strikt gescheiden in `apps/web/src/features/compete/`:
+
+| Route | Inhoud |
+|---|---|
+| `/{lang}/compete` | home van de voorbeeld-operator: aftelklok, pot, spelregels, prijzen (50/30/20), recente rondes |
+| `/{lang}/compete/register`, `/login` | spelersaccount (18+, bijnaam), eigen sessie (`compete_rt`) |
+| `/{lang}/compete/app` | dashboard: ronde + aftelklok, meedoen, live terminal (grafiek, market order, posities), verliesgrens-meter, live ranglijst (WS + polling), mijn rondes |
+| `/{lang}/compete/pay/:entryId` | testbetaalpagina (fake provider) |
+
+- `api.ts` (eigen openapi-fetch-client, header `X-Compete-Operator` via `?operator=slug` of `VITE_COMPETE_OPERATOR`),
+  `session.ts`, `realtime.ts`, `hooks.ts`; teksten in `locales/*/compete.json`.
+- Demo-preview: `src/demo/compete.ts` (rondes van 10 min, 57 fictieve `example_*`-spelers, knop "Start de ronde nu (demo)").
+- E2E: `apps/web/e2e/compete.spec.ts` (eigen operator per test via `POST /compete/dev/operators`).
+
 ## Volgende fases
 
-- **C2** — frontend-app `apps/compete`: home (eigen stijl, alleen de competitie), login/registratie,
-  dashboard met aftelklok, meedoen + testbetaling, terminal, live ranglijst, uitslag/geschiedenis; EN/NL/ES; demo-modus; e2e.
 - **C3** — productpagina op de Daily Funded-website + apart operator-beheerpanel (merk, inleg, speeltijd,
   deelnemers, uitbetalingen).
 

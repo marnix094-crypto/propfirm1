@@ -30,7 +30,7 @@ export class FakeCompetePaymentProvider implements CompetePaymentProvider {
     const lang = ['en', 'nl', 'es'].includes(input.locale) ? input.locale : 'en';
     return {
       providerRef: `fake_entry_${randomUUID()}`,
-      paymentUrl: `${this.appBaseUrl}/${lang}/pay/${input.entryId}`,
+      paymentUrl: `${this.appBaseUrl}/${lang}/compete/pay/${input.entryId}`,
     };
   }
 

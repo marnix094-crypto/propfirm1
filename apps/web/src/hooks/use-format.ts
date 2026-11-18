@@ -18,6 +18,11 @@ export function useFormat() {
       /** Whole-unit money, e.g. "$25,000" — only for values that are whole by definition. */
       moneyWhole: (minor: bigint | string, currency: string) =>
         formatMoneyMinor(BigInt(minor) / 100n, currency, locale, { decimals: 0 }),
+      /** Whole units when the amount has no cents (e.g. "$10"), otherwise two decimals. */
+      moneyCompact: (minor: bigint | string, currency: string) =>
+        BigInt(minor) % 100n === 0n
+          ? formatMoneyMinor(BigInt(minor) / 100n, currency, locale, { decimals: 0 })
+          : formatMoneyMinor(BigInt(minor), currency, locale),
       bps: (bps: number, maxFractionDigits?: number) => formatBps(bps, locale, maxFractionDigits),
       leverage: formatLeverage,
       relativeTime: (iso: string) => {

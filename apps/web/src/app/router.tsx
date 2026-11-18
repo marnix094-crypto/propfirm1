@@ -24,6 +24,63 @@ const routes: RouteObject[] = [
           import('@/features/landing/landing-page').then((m) => ({ Component: m.LandingPage })),
       },
       {
+        // Compete — separate product (D97/D103): own layout, session and API client.
+        path: 'compete',
+        lazy: () =>
+          import('@/features/compete/layout').then((m) => ({ Component: m.CompeteLayout })),
+        children: [
+          {
+            index: true,
+            lazy: () =>
+              import('@/features/compete/home-page').then((m) => ({
+                Component: m.CompeteHomePage,
+              })),
+          },
+          {
+            path: 'login',
+            lazy: () =>
+              import('@/features/compete/auth-pages').then((m) => ({
+                Component: m.CompeteLoginPage,
+              })),
+          },
+          {
+            path: 'register',
+            lazy: () =>
+              import('@/features/compete/auth-pages').then((m) => ({
+                Component: m.CompeteRegisterPage,
+              })),
+          },
+          {
+            path: 'app',
+            lazy: () =>
+              Promise.all([
+                import('@/features/compete/layout'),
+                import('@/features/compete/dashboard-page'),
+              ]).then(([l, p]) => ({
+                Component: () => (
+                  <l.RequireCompeteAuth>
+                    <p.CompeteDashboardPage />
+                  </l.RequireCompeteAuth>
+                ),
+              })),
+          },
+          {
+            path: 'pay/:entryId',
+            lazy: () =>
+              Promise.all([
+                import('@/features/compete/layout'),
+                import('@/features/compete/pay-page'),
+              ]).then(([l, p]) => ({
+                Component: () => (
+                  <l.RequireCompeteAuth>
+                    <p.CompetePayPage />
+                  </l.RequireCompeteAuth>
+                ),
+              })),
+          },
+        ],
+      },
+      {
         path: 'design',
         lazy: () =>
           import('@/features/design/design-page').then((m) => ({ Component: m.DesignPage })),

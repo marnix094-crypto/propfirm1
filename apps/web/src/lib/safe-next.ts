@@ -2,7 +2,7 @@
 export function safeNext(
   next: string | null,
   lang: string | undefined,
-  area: 'app' | 'admin' = 'app',
+  area: 'app' | 'admin' | 'compete' = 'app',
 ): string {
   const base = `/${lang}/${area}`;
   return next && next.startsWith(base) && !next.startsWith('//') ? next : base;

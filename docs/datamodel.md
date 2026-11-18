@@ -114,3 +114,13 @@ erDiagram
 - `RuleSet` kreeg nullable uitbetalings-/scalingvelden (`payoutIntervalDays`, `minTradingDaysPerPayout`, `minPayoutMinor`, `scalingProfitTargetBps`, `scalingMinPayouts`, `scalingStepBps`, `scalingMaxBalanceMinor`); bestaande versies blijven ongewijzigd (v1 = null).
 - `TradingAccount` kreeg `purchaseId`, `payoutCycleStartedAt`, `cycleTradingDays`, `payoutsCount`, `payoutBaselineMinor`, `paidOutSinceScaleMinor`.
 - Het ERD hierboven gebruikt nog `ChallengeProduct`; in de code heet dit `Product`.
+
+## Multi-tenant & admin (fase 8, geïmplementeerd)
+
+- **Firm** — `id`, `slug` (uniek, `[a-z0-9-]`), `name`, `status` (ACTIVE/SUSPENDED), `domain?` (uniek), `primaryColor?` (`#RRGGBB`), `logoDataUrl?`, `supportEmail?`. Standaardfirma `daily-funded` (migratie) bevat alle bestaande data.
+- `User.firmId` (verplicht) + `User.firmRole?` (OWNER/ADMIN/SUPPORT); uniek `(firmId, email)` i.p.v. globaal uniek e-mailadres.
+- `RuleSet.firmId?`: null = Daily Funded-sjabloon (uniek `(code, version)` via partiële index), anders eigen versie van een firma (uniek `(firmId, code, version)`). Rijen blijven onveranderlijk.
+- `Product.firmId`, `Competition.firmId` (slug uniek per firma).
+- `AuditLog.firmId?`: door de audit-service afgeleid uit actor of entiteit; telt alleen mee in de hash als het gevuld is, zodat oudere rijen blijven verifiëren.
+- **RiskAlert** (vervangt het eerdere ontwerp hierboven) — `firmId`, `accountId`, `userId`, `type` (BREACH/NEAR_BREACH/LARGE_LOSS), `severity` (INFO/WARNING/CRITICAL), `dedupKey` (uniek), `details` jsonb (geen PII), `ackAt?`, `ackById?`.
+- `AdminOverride` (ontwerp) is niet gebouwd: admins passen geen saldi aan (D86).

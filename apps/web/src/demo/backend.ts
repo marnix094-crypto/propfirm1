@@ -276,6 +276,8 @@ const userDto = (u: User) => ({
   country: u.country,
   emailVerified: u.emailVerified,
   twoFactorEnabled: u.twoFactorEnabled,
+  // Preview: every visitor owns the example firm, so the admin panel can be explored.
+  firmRole: 'OWNER' as const,
 });
 const auth = (u: User) => ({ accessToken: `demo.${u.id}`, expiresIn: 3600, user: userDto(u) });
 const me = (): User => {
@@ -1065,7 +1067,26 @@ on('GET', '/accounts/{id}/performance', (m, _b, url) => {
 });
 
 // Landing page catalogue (same example data as the MSW mocks).
-on('GET', '/products', () => json(200, { items: exampleProducts }));
+on('GET', '/products', () =>
+  json(200, {
+    items: adm()
+      .products.filter((p) => p.isActive)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((p) => {
+        const r = adm().ruleSets.find((x) => x.id === p.ruleSetId);
+        return {
+          ...(exampleProducts.find((e) => e.id === p.id) ?? exampleProducts[0]!),
+          id: p.id,
+          slug: p.slug,
+          accountSizeMinor: String(p.size),
+          priceMinor: String(p.price),
+          isRecommended: p.isRecommended,
+          isExample: p.isExample,
+          rules: { ...exampleRules(r?.maxDrawdownBps ?? 600), isExample: r?.template ?? true },
+        };
+      }),
+  }),
+);
 on('GET', '/public/payouts-feed', () => json(200, { items: [] }));
 const QUOTE_ID = /^q_(\d+)_(\d+)$/;
 const quoteDto = (size: bigint, dd: number) => ({
@@ -1717,6 +1738,700 @@ on('GET', '/public/certificates/{id}', (m) => {
 on('POST', '/public/leads', (_m, b) => {
   if (b.consent !== true || !b.email || !b.company) throw new Fail(400, 'VALIDATION_ERROR');
   return json(204);
+});
+
+// ------------------------------------------------------------------ admin panel (preview)
+// In the preview every visitor owns the example firm, so the admin panel can be explored.
+// Example traders below are fictitious (example.com) and only exist in this browser.
+interface DemoFirm {
+  name: string;
+  primaryColor: string | null;
+  logoDataUrl: string | null;
+  domain: string | null;
+  supportEmail: string | null;
+}
+interface ExTrader {
+  id: string;
+  email: string;
+  country: string;
+  status: 'ACTIVE' | 'SUSPENDED';
+  createdAt: number;
+  lastLoginAt: number | null;
+  nickname: string | null;
+}
+interface ExAccount {
+  id: string;
+  userId: string;
+  label: string;
+  kind: 'DEMO' | 'FUNDED' | 'COMPETITION';
+  status: 'ACTIVE' | 'FUNDED_ACTIVE' | 'FAILED';
+  initial: bigint;
+  balance: bigint;
+  ruleSetName: string | null;
+  failReason: string | null;
+  createdAt: number;
+}
+interface ExAlert {
+  id: string;
+  type: 'BREACH' | 'NEAR_BREACH' | 'LARGE_LOSS';
+  severity: 'WARNING' | 'CRITICAL';
+  accountId: string;
+  userId: string;
+  details: Record<string, string>;
+  createdAt: number;
+  ackAt: number | null;
+}
+interface AdminProduct {
+  id: string;
+  slug: string;
+  size: bigint;
+  price: bigint;
+  ruleSetId: string;
+  isActive: boolean;
+  isRecommended: boolean;
+  isExample: boolean;
+  sortOrder: number;
+}
+interface AdminRuleSet {
+  id: string;
+  code: string;
+  version: number;
+  name: string;
+  template: boolean;
+  maxDailyLossBps: number;
+  maxDrawdownBps: number;
+  drawdownType: 'TRAILING' | 'STATIC';
+  maxLeverage: number;
+  profitSplitBps: number | null;
+  payoutIntervalDays: number | null;
+  minTradingDaysPerPayout: number | null;
+  minPayoutMinor: string | null;
+  createdAt: number;
+}
+interface AdminState {
+  firm: DemoFirm;
+  traders: ExTrader[];
+  accounts: ExAccount[];
+  alerts: ExAlert[];
+  products: AdminProduct[];
+  ruleSets: AdminRuleSet[];
+  audit: {
+    id: number;
+    ts: number;
+    action: string;
+    actorType: string;
+    entityType: string;
+    entityId: string;
+    data: Record<string, unknown>;
+  }[];
+  team: { id: string; email: string; role: 'OWNER' | 'ADMIN' | 'SUPPORT'; createdAt: number }[];
+  sales: { at: number; amount: bigint }[];
+}
+type WithAdmin = State & { admin?: AdminState };
+
+function seedAdmin(): AdminState {
+  const now = Date.now();
+  const tpl = (id: string, dd: number, name: string): AdminRuleSet => ({
+    id,
+    code: `INSTANT_${dd / 100}`,
+    version: 1,
+    name,
+    template: true,
+    maxDailyLossBps: 300,
+    maxDrawdownBps: dd,
+    drawdownType: 'TRAILING',
+    maxLeverage: 50,
+    profitSplitBps: 8000,
+    payoutIntervalDays: 14,
+    minTradingDaysPerPayout: 3,
+    minPayoutMinor: '5000',
+    createdAt: now - 60 * DAY,
+  });
+  const ruleSets = [
+    tpl('rs-6', 600, 'Instant funding (example rules)'),
+    tpl('rs-4', 400, 'Instant funding, 4% drawdown (example rules)'),
+    tpl('rs-8', 800, 'Instant funding, 8% drawdown (example rules)'),
+  ];
+  const products: AdminProduct[] = exampleProducts.map((p, i) => ({
+    id: p.id,
+    slug: p.slug,
+    size: BigInt(p.accountSizeMinor),
+    price: BigInt(p.priceMinor),
+    ruleSetId: 'rs-6',
+    isActive: true,
+    isRecommended: p.isRecommended,
+    isExample: true,
+    sortOrder: i,
+  }));
+  const names = ['amira', 'lucas', 'sofia', 'noah', 'emma', 'daan', 'lea', 'mateo'];
+  const countries = ['NL', 'DE', 'ES', 'BE', 'FR', 'NL', 'AT', 'ES'];
+  const traders: ExTrader[] = names.map((n, i) => ({
+    id: `ex-${n}`,
+    email: `${n}.example@example.com`,
+    country: countries[i]!,
+    status: i === 6 ? 'SUSPENDED' : 'ACTIVE',
+    createdAt: now - (40 - i * 4) * DAY,
+    lastLoginAt: i === 6 ? null : now - (i + 1) * 3_600_000,
+    nickname: i % 3 === 0 ? `${n}_trades` : null,
+  }));
+  const accounts: ExAccount[] = [];
+  const sales: AdminState['sales'] = [];
+  traders.forEach((t, i) => {
+    accounts.push({
+      id: `ex-acc-${t.id}-demo`,
+      userId: t.id,
+      label: 'Demo',
+      kind: 'DEMO',
+      status: 'ACTIVE',
+      initial: 10_000_000n,
+      balance: 10_000_000n + BigInt((i - 3) * 41_250),
+      ruleSetName: null,
+      failReason: null,
+      createdAt: t.createdAt,
+    });
+    if (i % 2 === 0 || i === 5) {
+      const p = products[i % products.length]!;
+      const failed = i === 4;
+      accounts.push({
+        id: `ex-acc-${t.id}-funded`,
+        userId: t.id,
+        label: `Instant $${Number(p.size / 100_000n)}K`,
+        kind: 'FUNDED',
+        status: failed ? 'FAILED' : 'FUNDED_ACTIVE',
+        initial: p.size,
+        balance: p.size + (failed ? -(p.size * 7n) / 100n : (p.size * BigInt(2 + i)) / 100n),
+        ruleSetName: ruleSets[0]!.name,
+        failReason: failed ? 'MAX_DRAWDOWN' : null,
+        createdAt: t.createdAt + 2 * DAY,
+      });
+      sales.push({ at: t.createdAt + 2 * DAY, amount: p.price });
+    }
+  });
+  for (let d = 1; d < 30; d += 3)
+    sales.push({ at: now - d * DAY, amount: products[(d % 3) + 1]!.price });
+  const alerts: ExAlert[] = [
+    {
+      id: 'al-1',
+      type: 'BREACH',
+      severity: 'CRITICAL',
+      accountId: 'ex-acc-ex-emma-funded',
+      userId: 'ex-emma',
+      details: { rule: 'MAX_DRAWDOWN' },
+      createdAt: now - 5 * 3_600_000,
+      ackAt: null,
+    },
+    {
+      id: 'al-2',
+      type: 'NEAR_BREACH',
+      severity: 'WARNING',
+      accountId: 'ex-acc-ex-sofia-funded',
+      userId: 'ex-sofia',
+      details: { rule: 'DAILY_LOSS', usedMinor: '58000', limitMinor: '75000' },
+      createdAt: now - 9 * 3_600_000,
+      ackAt: null,
+    },
+    {
+      id: 'al-3',
+      type: 'LARGE_LOSS',
+      severity: 'WARNING',
+      accountId: 'ex-acc-ex-amira-funded',
+      userId: 'ex-amira',
+      details: { realizedPnlMinor: '-14250', symbol: 'ETHUSDT' },
+      createdAt: now - 2 * DAY,
+      ackAt: now - DAY,
+    },
+  ];
+  const audit: AdminState['audit'] = [];
+  let id = 1000;
+  for (const t of traders)
+    audit.push({
+      id: id++,
+      ts: t.createdAt,
+      action: 'user.registered',
+      actorType: 'USER',
+      entityType: 'User',
+      entityId: t.id,
+      data: { country: t.country },
+    });
+  for (const a of accounts)
+    audit.push({
+      id: id++,
+      ts: a.createdAt,
+      action: 'account.created',
+      actorType: 'SYSTEM',
+      entityType: 'TradingAccount',
+      entityId: a.id,
+      data: { kind: a.kind },
+    });
+  audit.push({
+    id,
+    ts: now - 5 * 3_600_000,
+    action: 'rule.breached',
+    actorType: 'SYSTEM',
+    entityType: 'TradingAccount',
+    entityId: 'ex-acc-ex-emma-funded',
+    data: { rule: 'MAX_DRAWDOWN' },
+  });
+  audit.sort((a, b) => a.ts - b.ts);
+  return {
+    firm: {
+      name: 'Daily Funded',
+      primaryColor: null,
+      logoDataUrl: null,
+      domain: null,
+      supportEmail: null,
+    },
+    traders,
+    accounts,
+    alerts,
+    products,
+    ruleSets,
+    audit,
+    team: [],
+    sales,
+  };
+}
+const adm = (): AdminState => ((st as WithAdmin).admin ??= seedAdmin());
+const firmDto = () => {
+  const f = adm().firm;
+  return {
+    id: 'demo-firm',
+    slug: 'daily-funded',
+    name: f.name,
+    status: 'ACTIVE',
+    domain: f.domain,
+    primaryColor: f.primaryColor,
+    logoDataUrl: f.logoDataUrl,
+    supportEmail: f.supportEmail,
+    isDefault: true,
+    createdAt: new Date(Date.now() - 90 * DAY).toISOString(),
+  };
+};
+const logAdmin = (
+  action: string,
+  entityType: string,
+  entityId: string,
+  data: Record<string, unknown> = {},
+) => {
+  const a = adm().audit;
+  a.push({
+    id: (a.at(-1)?.id ?? 1000) + 1,
+    ts: Date.now(),
+    action,
+    actorType: 'ADMIN',
+    entityType,
+    entityId,
+    data,
+  });
+};
+const iso = (t: number | null) => (t === null ? null : new Date(t).toISOString());
+
+/** Real demo user + example traders, in one list. */
+function allTraders() {
+  const u = me();
+  const real = {
+    id: u.id,
+    email: u.email,
+    country: u.country,
+    status: 'ACTIVE' as const,
+    createdAt: st.accounts.find((a) => a.userId === u.id)?.createdAt ?? Date.now(),
+    lastLoginAt: Date.now(),
+    nickname: profiles()[u.id]?.nickname ?? null,
+    firmRole: 'OWNER' as const,
+  };
+  return [real, ...adm().traders.map((t) => ({ ...t, firmRole: null }))];
+}
+function allAccounts() {
+  const u = me();
+  const real = st.accounts
+    .filter((a) => a.userId === u.id)
+    .map((a) => ({
+      id: a.id,
+      userId: u.id,
+      userEmail: u.email,
+      label: a.label,
+      kind: a.kind,
+      status: a.status,
+      currency: 'USD',
+      initialBalanceMinor: String(a.initial),
+      balanceMinor: String(a.balance),
+      pnlMinor: String(a.balance - a.initial),
+      ruleSetName: a.rules ? 'Instant funding (example rules)' : null,
+      failReason: a.failReason,
+      createdAt: iso(a.createdAt)!,
+      endedAt: null,
+    }));
+  const emails = new Map(adm().traders.map((t) => [t.id, t.email]));
+  const ex = adm().accounts.map((a) => ({
+    id: a.id,
+    userId: a.userId,
+    userEmail: emails.get(a.userId) ?? '',
+    label: a.label,
+    kind: a.kind,
+    status: a.status,
+    currency: 'USD',
+    initialBalanceMinor: String(a.initial),
+    balanceMinor: String(a.balance),
+    pnlMinor: String(a.balance - a.initial),
+    ruleSetName: a.ruleSetName,
+    failReason: a.failReason,
+    createdAt: iso(a.createdAt)!,
+    endedAt: null,
+  }));
+  return [...real, ...ex].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+const traderRow = (t: ReturnType<typeof allTraders>[number]) => {
+  const accs = allAccounts().filter((a) => a.userId === t.id);
+  return {
+    id: t.id,
+    email: t.email,
+    country: t.country,
+    status: t.status,
+    emailVerified: true,
+    firmRole: t.firmRole,
+    createdAt: iso(t.createdAt)!,
+    lastLoginAt: iso(t.lastLoginAt),
+    accounts: {
+      total: accs.length,
+      funded: accs.filter((a) => a.kind === 'FUNDED').length,
+      failed: accs.filter((a) => a.status === 'FAILED').length,
+    },
+  };
+};
+
+on('GET', '/public/firm', () => {
+  const f = firmDto();
+  // Preview: once the visitor customises the branding, show it as their own firm.
+  const custom = f.name !== 'Daily Funded' || !!f.primaryColor || !!f.logoDataUrl;
+  return json(200, {
+    slug: f.slug,
+    name: f.name,
+    isDefault: !custom,
+    primaryColor: f.primaryColor,
+    logoDataUrl: f.logoDataUrl,
+    supportEmail: f.supportEmail,
+    status: 'ACTIVE',
+  });
+});
+on('POST', '/dev/firm-owner', () => (me(), json(204)));
+on('GET', '/admin/me', () =>
+  json(200, {
+    role: 'OWNER',
+    superadmin: false,
+    firm: firmDto(),
+    twoFactorEnabled: me().twoFactorEnabled,
+    twoFactorRequired: false,
+  }),
+);
+on('GET', '/admin/overview', () => {
+  const now = Date.now();
+  const a = adm();
+  const accs = allAccounts();
+  const recent = a.sales.filter((s) => s.at >= now - 30 * DAY);
+  const days = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date(now - (29 - i) * DAY);
+    const key = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Amsterdam' }).format(d);
+    const hits = recent.filter(
+      (s) =>
+        new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Amsterdam' }).format(
+          new Date(s.at),
+        ) === key,
+    );
+    return {
+      date: key,
+      salesMinor: String(hits.reduce((x, s) => x + s.amount, 0n)),
+      orders: hits.length,
+    };
+  });
+  const traders = allTraders().filter((t) => !t.firmRole);
+  return json(200, {
+    traders: traders.length,
+    newTraders30d: traders.filter((t) => t.createdAt >= now - 30 * DAY).length,
+    demoAccounts: accs.filter((x) => x.kind === 'DEMO').length,
+    fundedActive: accs.filter((x) => x.status === 'FUNDED_ACTIVE').length,
+    fundedFailed30d: accs.filter((x) => x.kind === 'FUNDED' && x.status === 'FAILED').length,
+    competitionAccounts: accs.filter((x) => x.kind === 'COMPETITION').length,
+    sales30dMinor: String(recent.reduce((x, s) => x + s.amount, 0n)),
+    orders30d: recent.length,
+    salesAllTimeMinor: String(a.sales.reduce((x, s) => x + s.amount, 0n)),
+    openAlerts: a.alerts.filter((x) => !x.ackAt).length,
+    criticalAlerts: a.alerts.filter((x) => !x.ackAt && x.severity === 'CRITICAL').length,
+    salesByDay: days,
+    currency: 'EUR',
+  });
+});
+on('GET', '/admin/traders', (_m, _b, url) => {
+  const q = url.searchParams.get('q')?.toLowerCase() ?? '';
+  const status = url.searchParams.get('status');
+  const items = allTraders()
+    .filter((t) => (!q || t.email.includes(q)) && (!status || t.status === status))
+    .map(traderRow);
+  return json(200, { items, nextCursor: null });
+});
+const traderDetail = (id: string) => {
+  const t = allTraders().find((x) => x.id === id);
+  if (!t) throw new Fail(404, 'TRADER_NOT_FOUND');
+  return {
+    ...traderRow(t),
+    twoFactorEnabled: t.firmRole ? me().twoFactorEnabled : false,
+    nickname: t.nickname,
+    accountList: allAccounts().filter((a) => a.userId === id),
+    purchases: [],
+  };
+};
+on('GET', '/admin/traders/{id}', (m) => json(200, traderDetail(m[1]!)));
+const setStatus = (id: string, status: 'ACTIVE' | 'SUSPENDED', reason: unknown) => {
+  const t = adm().traders.find((x) => x.id === id);
+  if (!t) throw new Fail(422, 'STAFF_PROTECTED');
+  t.status = status;
+  logAdmin(status === 'SUSPENDED' ? 'admin.user_suspended' : 'admin.user_reactivated', 'User', id, {
+    reason,
+  });
+  return json(200, traderDetail(id));
+};
+on('POST', '/admin/traders/{id}/suspend', (m, b) => setStatus(m[1]!, 'SUSPENDED', b.reason));
+on('POST', '/admin/traders/{id}/reactivate', (m, b) => setStatus(m[1]!, 'ACTIVE', b.reason));
+on('GET', '/admin/accounts', (_m, _b, url) => {
+  const kind = url.searchParams.get('kind');
+  const status = url.searchParams.get('status');
+  return json(200, {
+    items: allAccounts().filter(
+      (a) => (!kind || a.kind === kind) && (!status || a.status === status),
+    ),
+    nextCursor: null,
+  });
+});
+on('POST', '/admin/accounts/{id}/fail', (m, b) => {
+  const ex = adm().accounts.find((a) => a.id === m[1]);
+  const real = st.accounts.find((a) => a.id === m[1] && a.userId === me().id);
+  const target = ex ?? real;
+  if (!target) throw new Fail(404, 'ACCOUNT_NOT_FOUND');
+  if (target.status === 'FAILED') throw new Fail(422, 'ACCOUNT_NOT_ACTIVE');
+  target.status = 'FAILED';
+  target.failReason = 'ADMIN';
+  if (real) st.positions = st.positions.filter((p) => p.accountId !== real.id);
+  logAdmin('account.failed_by_admin', 'TradingAccount', m[1]!, { reason: b.reason });
+  return json(
+    200,
+    allAccounts().find((a) => a.id === m[1]),
+  );
+});
+const ruleSetDto = (r: AdminRuleSet) => ({
+  id: r.id,
+  code: r.code,
+  version: r.version,
+  name: r.name,
+  isTemplate: r.template,
+  isExample: r.template,
+  maxDailyLossBps: r.maxDailyLossBps,
+  maxDrawdownBps: r.maxDrawdownBps,
+  drawdownType: r.drawdownType,
+  profitTargetBps: null,
+  minTradingDays: 0,
+  maxLeverage: r.maxLeverage,
+  profitSplitBps: r.profitSplitBps,
+  payoutIntervalDays: r.payoutIntervalDays,
+  minTradingDaysPerPayout: r.minTradingDaysPerPayout,
+  minPayoutMinor: r.minPayoutMinor,
+  accounts: allAccounts().filter((a) => a.ruleSetName === r.name).length,
+  createdAt: iso(r.createdAt)!,
+});
+on('GET', '/admin/rule-sets', () =>
+  json(200, {
+    items: [...adm().ruleSets]
+      .sort((a, b) => Number(a.template) - Number(b.template) || b.createdAt - a.createdAt)
+      .map(ruleSetDto),
+  }),
+);
+on('POST', '/admin/rule-sets', (_m, b) => {
+  const base = adm().ruleSets.find((r) => r.id === b.basedOnId);
+  if (!base) throw new Fail(404, 'RULESET_NOT_FOUND');
+  const daily = Number(b.maxDailyLossBps ?? base.maxDailyLossBps);
+  const dd = Number(b.maxDrawdownBps ?? base.maxDrawdownBps);
+  if (daily >= dd) throw new Fail(422, 'RULES_INCONSISTENT');
+  const version =
+    Math.max(
+      0,
+      ...adm()
+        .ruleSets.filter((r) => !r.template && r.code === base.code)
+        .map((r) => r.version),
+    ) + 1;
+  const r: AdminRuleSet = {
+    ...base,
+    id: uid(),
+    version,
+    name: String(b.name),
+    template: false,
+    maxDailyLossBps: daily,
+    maxDrawdownBps: dd,
+    drawdownType: (b.drawdownType as AdminRuleSet['drawdownType']) ?? base.drawdownType,
+    maxLeverage: Number(b.maxLeverage ?? base.maxLeverage),
+    profitSplitBps: b.profitSplitBps === undefined ? base.profitSplitBps : Number(b.profitSplitBps),
+    payoutIntervalDays:
+      b.payoutIntervalDays === undefined ? base.payoutIntervalDays : Number(b.payoutIntervalDays),
+    minPayoutMinor: b.minPayoutMinor === undefined ? base.minPayoutMinor : String(b.minPayoutMinor),
+    createdAt: Date.now(),
+  };
+  adm().ruleSets.push(r);
+  logAdmin('admin.ruleset_created', 'RuleSet', r.id, { code: r.code, version: r.version });
+  return json(201, ruleSetDto(r));
+});
+const productDto = (p: AdminProduct) => {
+  const r = adm().ruleSets.find((x) => x.id === p.ruleSetId) ?? adm().ruleSets[0]!;
+  return {
+    id: p.id,
+    slug: p.slug,
+    type: 'INSTANT',
+    accountSizeMinor: String(p.size),
+    priceMinor: String(p.price),
+    priceCurrency: 'EUR',
+    ruleSetId: r.id,
+    ruleSetName: r.name,
+    ruleSetVersion: r.version,
+    isActive: p.isActive,
+    isRecommended: p.isRecommended,
+    isExample: p.isExample,
+    sortOrder: p.sortOrder,
+    sold: adm().accounts.filter((a) => a.kind === 'FUNDED' && a.initial === p.size).length,
+  };
+};
+on('GET', '/admin/products', () =>
+  json(200, {
+    items: [...adm().products].sort((a, b) => a.sortOrder - b.sortOrder).map(productDto),
+  }),
+);
+on('POST', '/admin/products', (_m, b) => {
+  if (adm().products.some((p) => p.slug === b.slug)) throw new Fail(409, 'SLUG_TAKEN');
+  const p: AdminProduct = {
+    id: uid(),
+    slug: String(b.slug),
+    size: BigInt(String(b.accountSizeMinor)),
+    price: BigInt(String(b.priceMinor)),
+    ruleSetId: String(b.ruleSetId),
+    isActive: true,
+    isRecommended: b.isRecommended === true,
+    isExample: false,
+    sortOrder: Number(b.sortOrder ?? adm().products.length),
+  };
+  adm().products.push(p);
+  logAdmin('admin.product_created', 'Product', p.id, { slug: p.slug });
+  return json(201, productDto(p));
+});
+on('PATCH', '/admin/products/{id}', (m, b) => {
+  const p = adm().products.find((x) => x.id === m[1]);
+  if (!p) throw new Fail(404, 'PRODUCT_NOT_FOUND');
+  if (b.priceMinor !== undefined) p.price = BigInt(String(b.priceMinor));
+  if (b.ruleSetId !== undefined) p.ruleSetId = String(b.ruleSetId);
+  if (b.isActive !== undefined) p.isActive = b.isActive === true;
+  if (b.isRecommended !== undefined) p.isRecommended = b.isRecommended === true;
+  p.isExample = false;
+  logAdmin('admin.product_updated', 'Product', p.id, { priceMinor: p.price, isActive: p.isActive });
+  return json(200, productDto(p));
+});
+on('GET', '/admin/branding', () => json(200, firmDto()));
+on('PUT', '/admin/branding', (_m, b) => {
+  const f = adm().firm;
+  if (typeof b.name === 'string') f.name = b.name;
+  if (b.primaryColor !== undefined)
+    f.primaryColor = (b.primaryColor as string | null)?.toUpperCase() ?? null;
+  if (b.logoDataUrl !== undefined) f.logoDataUrl = b.logoDataUrl as string | null;
+  if (b.domain !== undefined) f.domain = b.domain as string | null;
+  if (b.supportEmail !== undefined) f.supportEmail = b.supportEmail as string | null;
+  logAdmin('admin.branding_updated', 'Firm', 'demo-firm', { fields: Object.keys(b).sort() });
+  return json(200, firmDto());
+});
+on('GET', '/admin/alerts', (_m, _b, url) => {
+  const open = (url.searchParams.get('state') ?? 'open') === 'open';
+  const accs = allAccounts();
+  return json(200, {
+    items: adm()
+      .alerts.filter((a) => !open || !a.ackAt)
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .map((a) => {
+        const acc = accs.find((x) => x.id === a.accountId);
+        return {
+          ...a,
+          accountLabel: acc?.label ?? '—',
+          userEmail: acc?.userEmail ?? '—',
+          createdAt: iso(a.createdAt),
+          ackAt: iso(a.ackAt),
+        };
+      }),
+    nextCursor: null,
+  });
+});
+on('POST', '/admin/alerts/{id}/ack', (m) => {
+  const a = adm().alerts.find((x) => x.id === m[1]);
+  if (!a) throw new Fail(404, 'ALERT_NOT_FOUND');
+  a.ackAt ??= Date.now();
+  logAdmin('admin.alert_acknowledged', 'RiskAlert', a.id);
+  return json(204);
+});
+on('GET', '/admin/audit', (_m, _b, url) => {
+  const action = url.searchParams.get('action') ?? '';
+  return json(200, {
+    items: [...adm().audit]
+      .reverse()
+      .filter((r) => r.action.startsWith(action))
+      .slice(0, 100)
+      .map((r) => ({
+        id: String(r.id),
+        ts: iso(r.ts),
+        actorType: r.actorType,
+        actorId: null,
+        action: r.action,
+        entityType: r.entityType,
+        entityId: r.entityId,
+        data: r.data,
+        hash: (r.id * 2654435761).toString(16).padStart(16, '0'),
+      })),
+    nextCursor: null,
+  });
+});
+on('GET', '/admin/audit/verify', () =>
+  json(200, { ok: true, checked: adm().audit.length, brokenAtId: null }),
+);
+const teamDto = () => {
+  const u = me();
+  return {
+    items: [
+      {
+        id: u.id,
+        email: u.email,
+        role: 'OWNER',
+        twoFactorEnabled: u.twoFactorEnabled,
+        lastLoginAt: iso(Date.now()),
+        isYou: true,
+      },
+      ...adm().team.map((t) => ({
+        id: t.id,
+        email: t.email,
+        role: t.role,
+        twoFactorEnabled: false,
+        lastLoginAt: null,
+        isYou: false,
+      })),
+    ],
+  };
+};
+on('GET', '/admin/team', () => json(200, teamDto()));
+on('POST', '/admin/team', (_m, b) => {
+  const email = String(b.email).toLowerCase();
+  if (email === me().email || adm().team.some((t) => t.email === email))
+    throw new Fail(409, 'ALREADY_MEMBER');
+  adm().team.push({ id: uid(), email, role: b.role as 'OWNER', createdAt: Date.now() });
+  logAdmin('admin.member_invited', 'User', email, { role: b.role });
+  return json(201, teamDto());
+});
+on('PATCH', '/admin/team/{id}', (m, b) => {
+  const t = adm().team.find((x) => x.id === m[1]);
+  if (!t) throw new Fail(404, 'MEMBER_NOT_FOUND');
+  t.role = b.role as 'OWNER';
+  return json(200, teamDto());
+});
+on('DELETE', '/admin/team/{id}', (m) => {
+  adm().team = adm().team.filter((x) => x.id !== m[1]);
+  return json(200, teamDto());
 });
 
 /** Route /api/v1/* requests to the in-browser backend; everything else goes to the network. */

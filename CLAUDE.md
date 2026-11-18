@@ -7,6 +7,8 @@
 
 **Daily Funded is een white-label softwareplatform voor prop firms (B2B, besluit D74).** Wij zijn zelf géén prop firm: andere bedrijven draaien hun eigen merk op onze software. De website (`/{lang}`) verkoopt het platform; `/{lang}/storefront` is een voorbeeld-prop-firm ("Your Firm") die laat zien wat traders van een klant zien.
 
+**Multi-tenant (D83):** elke klant is een `Firm` met eigen traders, producten, regelversies, huisstijl (naam, kleur, logo, domein) en een **adminpanel** op `/{lang}/admin` (rollen OWNER/ADMIN/SUPPORT; Daily Funded-superadmin beheert alle firma's).
+
 Functionaliteit van het platform (zoals een klant-prop-firm het inzet): prop trading platform + broker-app voor de EU-markt. Talen: **EN (standaard)**, NL, ES (taalprefix in URL, bv. `/en/…`, `/es/…`).
 
 1. **Instant funding** — trader betaalt een fee en krijgt direct een **gesimuleerd** funded account met winstdeling (accountvaluta USD, fee in EUR). Alleen Instant wordt aangeboden; 1-step/2-step blijven technisch mogelijk in engine/datamodel maar zijn niet actief. De UI zegt overal duidelijk dat accounts gesimuleerd zijn, tenzij er ooit echte kapitaalallocatie wordt ingebouwd.
@@ -41,6 +43,7 @@ Functionaliteit van het platform (zoals een klant-prop-firm het inzet): prop tra
 - **Toegankelijkheid**: WCAG 2.2 AA contrast, volledige toetsenbordbediening, zichtbare focus, `prefers-reduced-motion` gerespecteerd. Mobile-first.
 - Partners-strook: alleen echte partners; verborgen zolang er geen zijn.
 - Marktdata: adapter-interface; `MARKET_DATA_SOURCE=binance` (USDⓈ-M) of `simulated` (dev/CI). Binance weigert verbindingen uit geblokkeerde regio's (o.a. deze cloud-omgeving) — bron voor productie nog te bevestigen (D33). Daily reset 00:00 Europe/Amsterdam. Netting-posities.
+- **Tenant-isolatie (D83–D85):** elke query op firmadata is gescoped op `firmId` (via de gebruiker of `AdminGuard`-context); nooit een firma uit de request vertrouwen voor geauthenticeerde data. `X-Firm`/domein bepaalt alleen waar iemand registreert/inlogt en welke catalogus publiek zichtbaar is. Isolatie wordt getest in `apps/api/test/admin.e2e.test.ts`.
 - Landenrestricties: configureerbare blocklist (EU-sancties + FATF), gecontroleerd bij registratie, checkout en uitbetaling.
 - KYC pas bij promotie naar funded en bij uitbetaling.
 
@@ -96,6 +99,7 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - MSW: alleen met `VITE_ENABLE_MSW=true` (dev/test). Productiebuilds bevatten geen mock-code of service worker; een zichtbare "Mock data (dev)"-pil verschijnt zodra mocks actief zijn.
 - Repo: https://github.com/marnix094-crypto/propfirm1 (branch `main`, CI via GitHub Actions)
 - Workspace-pakketten worden als TS-bron geconsumeerd via de `source` export-conditie.
+- Adminpanel: API `apps/api/src/modules/admin` (`AdminGuard`: rol + 2FA + firmakeuze superadmin), firma-resolutie `modules/firms` (`GET /public/firm`), risicomeldingen `modules/risk`. Web: `features/admin/*`, hooks `hooks/use-admin.ts`, huisstijl `components/layout/firm-brand.tsx` + `lib/brand-color.ts` (AA-palet). Nieuwe env: `DEFAULT_FIRM_SLUG` (standaard `daily-funded`), `ADMIN_REQUIRE_2FA` (alleen `false` in dev/e2e). Lokaal proberen: "Maak mij eigenaar van deze firma (dev)" op de Meer-pagina (`POST /dev/firm-owner`). Preview van een andere firma: `?firm=slug` (of `VITE_FIRM_SLUG`).
 - Contrast wordt bewaakt door `apps/web/src/styles/tokens.test.ts` en axe in Playwright.
 
 ## Code-afspraken
@@ -122,6 +126,6 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - [x] Fase 4 — Platform-UI op de echte API: app-shell (mobiel bottom-nav), portfolio/dashboard, trading terminal, login/registratie, account-wissel
 - [x] Fase 5 — 2FA (TOTP + herstelcodes), e-mailverificatie, wachtwoord-reset, sessiebeheer, regelengine (daily loss/drawdown, targets) + realtime equity-controle met automatische FAILED (wacht op akkoord)
 - [x] Fase 6 — Funded-accounts (instant funding): catalogus, checkout met testbetaling, accounts na betaling, winstdeling/uitbetaalbaarheid/scaling-voortgang (wacht op akkoord)
-- [ ] Fase 7 — Pricing-checkout (betaalprovider), facturen
-- [ ] Fase 8 — Admin, audit log, risico-alerts
+- [ ] Fase 7 — Pricing-checkout (betaalprovider), facturen (na fase 8, D90)
+- [x] Fase 8 — Multi-tenant firma's, adminpanel voor prop-firm-eigenaren (overzicht, traders, accounts, producten, regelsets, huisstijl, risicomeldingen, audit log, team, firma's), white-label huisstijl (wacht op akkoord)
 - [ ] Fase 9 — KYC, broker-mock, uitbetalingen, e2e, performance, a11y

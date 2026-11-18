@@ -1,7 +1,6 @@
 import { createBrowserRouter, createMemoryRouter, Navigate, type RouteObject } from 'react-router';
 import { LangLayout } from './lang-layout';
 import { RootRedirect } from './root-redirect';
-import { SOON_FEATURES } from '@/features/app/nav';
 
 const placeholder = (kind: 'legal') => () =>
   import('@/features/placeholder/placeholder-page').then((m) => ({
@@ -53,6 +52,13 @@ const routes: RouteObject[] = [
           import('@/features/auth/recovery-pages').then((m) => ({ Component: m.VerifyEmailPage })),
       },
       { path: 'legal/:doc', lazy: placeholder('legal') },
+      {
+        path: 'verify/:id',
+        lazy: () =>
+          import('@/features/certificates/verify-page').then((m) => ({
+            Component: m.VerifyCertificatePage,
+          })),
+      },
       {
         path: 'app',
         lazy: () =>
@@ -158,13 +164,56 @@ const routes: RouteObject[] = [
                 Component: m.TutorialPage,
               })),
           },
-          ...SOON_FEATURES.map((feature) => ({
-            path: feature,
+          {
+            path: 'points',
             lazy: () =>
-              import('@/features/soon/coming-soon-page').then((m) => ({
-                Component: () => <m.ComingSoonPage feature={feature} />,
+              import('@/features/points/points-page').then((m) => ({ Component: m.PointsPage })),
+          },
+          {
+            path: 'offers',
+            lazy: () =>
+              import('@/features/offers/offers-page').then((m) => ({ Component: m.OffersPage })),
+          },
+          {
+            path: 'leaderboard',
+            lazy: () =>
+              import('@/features/leaderboard/leaderboard-page').then((m) => ({
+                Component: m.LeaderboardPage,
               })),
-          })),
+          },
+          {
+            path: 'competitions',
+            lazy: () =>
+              import('@/features/competitions/competitions-page').then((m) => ({
+                Component: m.CompetitionsPage,
+              })),
+          },
+          {
+            path: 'transparency',
+            lazy: () =>
+              import('@/features/transparency/transparency-page').then((m) => ({
+                Component: m.TransparencyPage,
+              })),
+          },
+          {
+            path: 'copier',
+            lazy: () =>
+              import('@/features/copier/copier-page').then((m) => ({ Component: m.CopierPage })),
+          },
+          {
+            path: 'backtesting',
+            lazy: () =>
+              import('@/features/backtesting/backtesting-page').then((m) => ({
+                Component: m.BacktestingPage,
+              })),
+          },
+          {
+            path: 'certificates',
+            lazy: () =>
+              import('@/features/certificates/certificates-page').then((m) => ({
+                Component: m.CertificatesPage,
+              })),
+          },
           // Unknown app routes fall back to the portfolio instead of rendering nothing.
           { path: '*', element: <Navigate to="portfolio" replace /> },
         ],

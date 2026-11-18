@@ -47,7 +47,7 @@ export function TrackRecordPage() {
         ) : (accounts.data?.length ?? 0) === 0 ? (
           <EmptyState title={t('trackRecord.empty')} />
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" tabIndex={0}>
             <table className="w-full min-w-[820px] text-sm" data-testid="track-record">
               <thead>
                 <tr className="text-left text-xs text-muted">

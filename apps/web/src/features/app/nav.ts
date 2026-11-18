@@ -19,19 +19,6 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
-/** Features that are announced but not built yet: they open an honest "coming soon" page. */
-export const SOON_FEATURES = [
-  'points',
-  'leaderboard',
-  'competitions',
-  'offers',
-  'transparency',
-  'copier',
-  'backtesting',
-  'certificates',
-] as const;
-export type SoonFeature = (typeof SOON_FEATURES)[number];
-
 export interface NavItem {
   /** Path below /:lang/app. */
   to: string;
@@ -55,19 +42,19 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { to: 'portfolio', key: 'home', icon: House },
       { to: 'trade', key: 'trade', icon: CandlestickChart },
-      { to: 'points', key: 'points', icon: Star, soon: true },
+      { to: 'points', key: 'points', icon: Star },
       { to: 'withdrawal', key: 'withdrawal', icon: Wallet, lockable: true },
-      { to: 'leaderboard', key: 'leaderboard', icon: Trophy, soon: true },
-      { to: 'competitions', key: 'competitions', icon: Medal, soon: true },
-      { to: 'offers', key: 'offers', icon: Tag, soon: true },
-      { to: 'transparency', key: 'transparency', icon: Eye, soon: true },
+      { to: 'leaderboard', key: 'leaderboard', icon: Trophy },
+      { to: 'competitions', key: 'competitions', icon: Medal },
+      { to: 'offers', key: 'offers', icon: Tag },
+      { to: 'transparency', key: 'transparency', icon: Eye },
       { to: 'orders', key: 'orders', icon: ReceiptText },
-      { to: 'copier', key: 'copier', icon: Repeat2, soon: true },
+      { to: 'copier', key: 'copier', icon: Repeat2 },
     ],
   },
   {
     key: 'backtesting',
-    items: [{ to: 'backtesting', key: 'backtesting', icon: FlaskConical, soon: true }],
+    items: [{ to: 'backtesting', key: 'backtesting', icon: FlaskConical }],
   },
   {
     key: 'performance',
@@ -75,7 +62,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { to: 'stats', key: 'stats', icon: ChartColumn },
       { to: 'track-record', key: 'trackRecord', icon: Award },
       { to: 'notebook', key: 'notebook', icon: NotebookPen },
-      { to: 'certificates', key: 'certificates', icon: BadgeCheck, soon: true },
+      { to: 'certificates', key: 'certificates', icon: BadgeCheck },
     ],
   },
 ];

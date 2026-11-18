@@ -33,6 +33,7 @@
   --glow-aqua: #22d3ee; /* gradients/glows only */
   --glow-lavender: #a5b4fc; /* gradients/glows only */
   --brand-lime: #afe604; /* logo "FUNDED" — fills/logo only, never text on light */
+  --brand-ink: #0a0a0a; /* logo mark background */
   --chart-line: #0284c7;
 
   /* Text */

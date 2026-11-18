@@ -246,7 +246,7 @@ export function PortfolioPage() {
                 body={t('app.portfolio.noPositionsBody')}
               />
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto" tabIndex={0}>
                 <table className="w-full min-w-[560px] text-sm">
                   <thead>
                     <tr className="text-left text-xs text-muted">

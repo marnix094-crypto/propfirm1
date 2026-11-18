@@ -111,14 +111,14 @@ function MarketRow({
         onClick={() => void navigate(`/${lang}/app/trade/${inst.symbol}`)}
         className="flex min-w-0 flex-1 items-center gap-3 py-3 pr-1 text-left"
       >
-        <AssetAvatar asset={inst.baseAsset} />
-        <span className="min-w-0 flex-1">
-          <span className="block font-semibold">{inst.baseAsset}</span>
+        <AssetAvatar asset={inst.baseAsset} className="hidden min-[400px]:inline-flex" />
+        <span className="min-w-0 flex-1 overflow-hidden">
+          <span className="block truncate font-semibold">{inst.baseAsset}</span>
           <span className="block truncate text-sm text-muted">
             {inst.displayName} · {inst.quoteAsset}
           </span>
         </span>
-        <span className="text-right font-semibold tabular-nums">
+        <span className="shrink-0 text-right font-semibold tabular-nums">
           {formatDecimal(price, inst.priceDecimals, f.locale)}
         </span>
         <ChangeBadge bps={ticker?.changeBps} />

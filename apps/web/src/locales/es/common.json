@@ -18,7 +18,8 @@
     "optional": "opcional",
     "demoPreview": "Vista previa demo · datos simulados en tu navegador",
     "mockData": "Datos simulados (dev)",
-    "simulatedNote": "Todas las cuentas son simuladas. No se opera con capital real."
+    "simulatedNote": "Todas las cuentas son simuladas. No se opera con capital real.",
+    "backHome": "Volver al inicio"
   },
   "nav": {
     "main": "Navegación principal",
@@ -480,7 +481,22 @@
     "CHECKOUT_ITEM_INVALID": "Elige una cuenta para comprar.",
     "ACCOUNT_SUSPENDED": "Tu cuenta está suspendida. Contacta con soporte.",
     "IDEMPOTENCY_KEY_REUSED": "Esta solicitud ya se envió con otros datos. Inténtalo de nuevo.",
-    "JOURNALENTRY_NOT_FOUND": "Nota no encontrada."
+    "JOURNALENTRY_NOT_FOUND": "Nota no encontrada.",
+    "POINTS_INSUFFICIENT": "No tienes suficientes Daily Points.",
+    "OFFER_INVALID": "Este código no es válido para tu cuenta.",
+    "OFFER_USED": "Este código ya se ha usado.",
+    "OFFER_EXPIRED": "Este código ha caducado.",
+    "NICKNAME_TAKEN": "Este apodo ya está en uso.",
+    "NICKNAME_REQUIRED": "Elige primero un apodo.",
+    "COMPETITION_NOT_ACTIVE": "La competición no está en curso.",
+    "COPIER_SAME_ACCOUNT": "Elige dos cuentas diferentes.",
+    "COPIER_CONFLICT": "Una de estas cuentas ya forma parte de un enlace de copia.",
+    "COPY_SIZE_TOO_SMALL": "Tamaño copiado por debajo del mínimo",
+    "COPY_ERROR": "No se pudo copiar",
+    "REWARD_NOT_FOUND": "Recompensa no encontrada.",
+    "COMPETITION_NOT_FOUND": "Competición no encontrada.",
+    "COPIERLINK_NOT_FOUND": "Enlace de copia no encontrado.",
+    "CERTIFICATE_NOT_FOUND": "Certificado no encontrado."
   },
   "app": {
     "nav": {
@@ -526,7 +542,8 @@
         "DEMO": "Demo",
         "CHALLENGE": "Challenge",
         "FUNDED": "Financiada",
-        "LIVE_BROKER": "Bróker"
+        "LIVE_BROKER": "Bróker",
+        "COMPETITION": "Competición"
       },
       "virtual": "Fondos virtuales",
       "getFunded": "Consigue financiación",
@@ -795,7 +812,10 @@
         "title": "Pago cancelado",
         "body": "No se ha cobrado dinero ni se ha creado ninguna cuenta."
       }
-    }
+    },
+    "offerCode": "Código de descuento (opcional)",
+    "offerApplied": "Descuento del {{discount}} aplicado",
+    "offerHint": "¿Tienes un código de Daily Points? Introdúcelo aquí."
   },
   "funding": {
     "title": "Reparto de beneficios y pagos",
@@ -861,72 +881,6 @@
       "entry": "Entrada",
       "mark": "Mercado",
       "pnl": "Resultado abierto"
-    }
-  },
-  "soon": {
-    "note": "Solo mostramos datos reales. Esta página se activará cuando la función esté lista.",
-    "back": "Volver al inicio",
-    "points": {
-      "body": "Gana Daily Points por tu actividad y tus hitos y canjéalos por recompensas.",
-      "points": [
-        "Puntos por días de trading, hitos y referidos",
-        "Canjéalos por descuentos en nuevas cuentas",
-        "Reglas claras, visibles en tu cuenta"
-      ]
-    },
-    "leaderboard": {
-      "body": "Mira cómo rinden los mejores traders de Daily Funded, con resultados reales y anonimizados.",
-      "points": [
-        "Clasificación por rentabilidad y consistencia",
-        "Participación con apodo; sin datos personales",
-        "Vistas diarias, semanales y mensuales"
-      ]
-    },
-    "competitions": {
-      "body": "Opera en competiciones de duración fija en igualdad de condiciones.",
-      "points": [
-        "Mismo saldo inicial para todos",
-        "Reglas claras y clasificación en vivo",
-        "Premios anunciados por competición"
-      ]
-    },
-    "offers": {
-      "body": "Ofertas personales y códigos de descuento para nuevas cuentas.",
-      "points": [
-        "Descuentos en cuentas de financiación instantánea",
-        "Ofertas vinculadas a tus Daily Points"
-      ]
-    },
-    "transparency": {
-      "body": "Cifras públicas y verificables sobre pagos y cuentas.",
-      "points": [
-        "Total pagado (solo pagos reales)",
-        "Número de traders financiados",
-        "Tiempo medio hasta el pago"
-      ]
-    },
-    "copier": {
-      "body": "Copia operaciones automáticamente entre tus propias cuentas.",
-      "points": [
-        "De una cuenta maestra a varias cuentas",
-        "Multiplicador de tamaño por cuenta",
-        "Respeta las reglas de cada cuenta"
-      ]
-    },
-    "backtesting": {
-      "body": "Prueba tu estrategia con datos históricos antes de operarla.",
-      "points": [
-        "Reproduce velas históricas",
-        "Coloca órdenes simuladas vela a vela",
-        "Estadísticas como en My Stats"
-      ]
-    },
-    "certificates": {
-      "body": "Certificados descargables de cuentas financiadas y pagos.",
-      "points": [
-        "Certificado al conseguir financiación",
-        "Certificados de pago con enlace de verificación"
-      ]
     }
   },
   "stats": {
@@ -1067,5 +1021,186 @@
         "cta": "Abrir Mis estadísticas"
       }
     }
+  },
+  "points": {
+    "subtitle": "Gana puntos con actividad real y canjéalos por descuentos.",
+    "example": "Valores de ejemplo",
+    "balance": "Saldo de puntos",
+    "earned": "Ganados",
+    "spent": "Canjeados",
+    "rewards": "Recompensas",
+    "off": "{{value}} de descuento",
+    "rewardBody": "Código de descuento para una nueva cuenta, válido {{days}} días.",
+    "cost": "{{points}} puntos",
+    "redeem": "Canjear",
+    "missing": "Faltan {{points}}",
+    "redeemed": "Código {{code}} añadido a Mis ofertas",
+    "offersHint": "Los códigos canjeados aparecen en",
+    "howToEarn": "Cómo ganar puntos",
+    "history": "Historial",
+    "noHistory": "Aún no tienes puntos",
+    "noHistoryBody": "Opera, verifica tu correo o activa 2FA para ganar tus primeros puntos.",
+    "reason": {
+      "TRADING_DAY": "Día de trading",
+      "EMAIL_VERIFIED": "Correo verificado",
+      "TWO_FACTOR": "Verificación en dos pasos activada",
+      "FUNDED_ACCOUNT": "Cuenta financiada",
+      "REDEEM": "Recompensa canjeada"
+    }
+  },
+  "offers": {
+    "subtitle": "Tus códigos de descuento personales. Cada código funciona una vez.",
+    "codes": "Códigos",
+    "empty": "Aún no hay ofertas",
+    "emptyBody": "Canjea Daily Points por un código de descuento.",
+    "status": {
+      "AVAILABLE": "Disponible",
+      "USED": "Usado",
+      "EXPIRED": "Caducado"
+    },
+    "line_valid": "{{discount}} de descuento en una nueva cuenta · válido hasta {{date}}",
+    "line_used": "{{discount}} de descuento · usado el {{date}}",
+    "copy": "Copiar código {{code}}",
+    "copied": "Código copiado",
+    "use": "Usar código"
+  },
+  "ranking": {
+    "col": {
+      "rank": "#",
+      "trader": "Trader",
+      "return": "Rentabilidad",
+      "pnl": "Resultado",
+      "size": "Tamaño",
+      "trades": "Operaciones"
+    },
+    "you": "tú",
+    "profile": "Perfil público",
+    "nickname": "Apodo",
+    "nicknameHint": "3–20 letras, números o _. Nunca tu nombre real.",
+    "saveNickname": "Guardar",
+    "saved": "Perfil guardado",
+    "optIn": "Mostrarme en la clasificación",
+    "optInHint": "Solo se muestran tu apodo y tus resultados.",
+    "subtitle": "Cuentas financiadas activas por rentabilidad — solo traders que participan.",
+    "top": "Clasificación",
+    "empty": "Aún no hay traders en la clasificación",
+    "emptyBody": "Elige un apodo y participa el primero.",
+    "yourRank": "Tu posición",
+    "yourPrivateRank": "Tu posición (privada)",
+    "noFunded": "Necesitas una cuenta financiada activa.",
+    "disclaimer": "Cuentas simuladas. Los resultados pasados no garantizan resultados futuros."
+  },
+  "competitions": {
+    "status": {
+      "UPCOMING": "Próxima",
+      "RUNNING": "En curso",
+      "ENDED": "Finalizada"
+    },
+    "starts": "Inicio",
+    "ends": "Fin",
+    "balance": "Saldo inicial",
+    "prize": "Premio",
+    "noPrize": "Sin premio — solo clasificación",
+    "entrants_one": "{{count}} participante",
+    "entrants_other": "{{count}} participantes",
+    "yourRank": "vas #{{rank}}",
+    "trade": "Operar con la cuenta de competición",
+    "join": "Participar gratis",
+    "joined": "Te has inscrito — tu cuenta de competición está lista",
+    "noEntrants": "Aún no hay participantes. ¡Sé el primero!",
+    "subtitle": "Todos empiezan con el mismo saldo simulado. Gana la mayor rentabilidad.",
+    "empty": "No hay competiciones ahora",
+    "rulesTitle": "Cómo funciona",
+    "rules": [
+      "Participar es gratis y abre una cuenta de competición aparte.",
+      "Todos empiezan con $100.000 (simulados) y apalancamiento 1:50.",
+      "Clasificación por rentabilidad; tras el final aún puedes cerrar posiciones.",
+      "Apareces con tu apodo o como trader anónimo."
+    ]
+  },
+  "transparency": {
+    "subtitle": "Cifras en vivo directamente de nuestra base de datos — sin estimaciones ni ejemplos.",
+    "traders": "Traders registrados",
+    "funded": "Cuentas financiadas vendidas",
+    "active": "Cuentas financiadas activas",
+    "closed": "Cuentas financiadas cerradas",
+    "payouts": "Pagos realizados",
+    "paidOut": "Total pagado",
+    "updated": "Actualizado a las {{time}}",
+    "feed": "Pagos recientes",
+    "noPayouts": "Aún no hay pagos. Empezarán cuando los primeros traders financiados cumplan los requisitos.",
+    "howTitle": "Qué significan estas cifras",
+    "how": [
+      "Todas las cuentas son simuladas; los pagos son una parte del beneficio simulado.",
+      "Solo cuentan pagos reales y completados — nunca ejemplos.",
+      "Las cifras se actualizan automáticamente."
+    ]
+  },
+  "copier": {
+    "subtitle": "Copia tus operaciones automáticamente de una cuenta a tus otras cuentas.",
+    "new": "Nuevo enlace de copia",
+    "needTwo": "Necesitas al menos dos cuentas activas para copiar operaciones.",
+    "master": "Copiar desde (maestra)",
+    "follower": "Copiar a (seguidora)",
+    "choose": "Elige una cuenta",
+    "multiplier": "Tamaño",
+    "create": "Empezar a copiar",
+    "created": "Copia iniciada",
+    "note": "Cada cuenta seguidora mantiene sus propias reglas y controles de margen. Solo se copian las operaciones que haces en la maestra.",
+    "links": "Enlaces de copia",
+    "noLinks": "Aún no hay enlaces",
+    "noLinksBody": "Crea un enlace para empezar a copiar.",
+    "on": "Activado",
+    "off": "Desactivado",
+    "delete": "Eliminar enlace",
+    "activity": "Actividad",
+    "noActivity": "Aquí aparecerán las operaciones copiadas.",
+    "status": {
+      "COPIED": "Copiada",
+      "SKIPPED": "Omitida",
+      "FAILED": "Fallida"
+    }
+  },
+  "backtest": {
+    "subtitle": "Reproduce velas históricas y practica con $10.000 virtuales. No se guarda nada.",
+    "market": "Mercado",
+    "equity": "Equity",
+    "result": "Resultado",
+    "position": "Posición",
+    "progress": "Vela",
+    "reset": "Reiniciar",
+    "step": "Siguiente vela",
+    "play": "Reproducir",
+    "pause": "Pausa",
+    "speed": "Velocidad",
+    "entry": "Entrada",
+    "chartLabel": "Gráfico de backtest {{symbol}}",
+    "trades": "Operaciones cerradas",
+    "noTrades": "Compra o vende para empezar y reproduce las velas.",
+    "order": "Orden",
+    "buy": "Comprar / Largo",
+    "sell": "Vender / Corto",
+    "close": "Cerrar posición",
+    "note": "Ejecución al cierre de la vela, con comisión. Solo práctica.",
+    "invalidSize": "Introduce un tamaño válido."
+  },
+  "certificates": {
+    "simulated": "Cuenta simulada",
+    "title": "Certificado de financiación",
+    "awardedTo": "Otorgado a",
+    "for": "por una cuenta financiada de",
+    "issued": "Emitido",
+    "id": "ID del certificado",
+    "verifyAt": "Verificar en",
+    "subtitle": "Certificados de tus cuentas financiadas, con enlace público de verificación.",
+    "print": "Imprimir",
+    "empty": "Aún no hay certificados",
+    "emptyBody": "Recibes un certificado por cada cuenta financiada.",
+    "copied": "Enlace copiado",
+    "copyLink": "Copiar enlace de verificación",
+    "verifyTitle": "Verificar un certificado",
+    "invalid": "Este certificado no existe.",
+    "valid": "Este certificado es válido.",
+    "verifyNote": "Las cuentas de Daily Funded son simuladas. El titular solo se muestra con su apodo."
   }
 }

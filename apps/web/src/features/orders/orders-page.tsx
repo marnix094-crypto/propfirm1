@@ -54,7 +54,7 @@ export function OrdersPage() {
         ) : (q.data?.length ?? 0) === 0 ? (
           <EmptyState title={t('history.empty')} body={t('history.emptyBody')} />
         ) : tab === 'orders' ? (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" tabIndex={0}>
             <table className="w-full min-w-[720px] text-sm" data-testid="orders-table">
               <thead>
                 <tr className="text-left text-xs text-muted">
@@ -104,7 +104,7 @@ export function OrdersPage() {
             </table>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" tabIndex={0}>
             <table className="w-full min-w-[720px] text-sm" data-testid="fills-table">
               <thead>
                 <tr className="text-left text-xs text-muted">

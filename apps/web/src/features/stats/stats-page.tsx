@@ -27,7 +27,7 @@ function GroupTable({
   if (rows.length === 0)
     return <p className="px-5 py-8 text-center text-sm text-muted">{t('stats.noTrades')}</p>;
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto" tabIndex={0}>
       <table className="w-full min-w-[440px] text-sm">
         <thead>
           <tr className="text-left text-xs text-muted">

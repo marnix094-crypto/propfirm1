@@ -31,6 +31,8 @@ const purchase: Purchase = {
   accountSizeMinor: product.accountSizeMinor,
   unitPriceMinor: product.priceMinor,
   totalMinor: '39800',
+  discountMinor: '0',
+  offerCode: null,
   currency: 'EUR',
   provider: 'fake',
   isTestPayment: true,

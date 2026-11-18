@@ -1487,6 +1487,88 @@
         ]
       }
     },
+    "/api/v1/points": {
+      "get": {
+        "operationId": "RewardsController_points",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PointsSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rewards"
+        ]
+      }
+    },
+    "/api/v1/points/redeem": {
+      "post": {
+        "operationId": "RewardsController_redeem",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RedeemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rewards"
+        ]
+      }
+    },
+    "/api/v1/offers": {
+      "get": {
+        "operationId": "RewardsController_offers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rewards"
+        ]
+      }
+    },
     "/api/v1/journal": {
       "get": {
         "operationId": "JournalController_list",
@@ -1615,6 +1697,313 @@
         },
         "tags": [
           "journal"
+        ]
+      }
+    },
+    "/api/v1/me/profile": {
+      "get": {
+        "operationId": "CommunityController_profile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TraderProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "community"
+        ]
+      },
+      "patch": {
+        "operationId": "CommunityController_updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTraderProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TraderProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "community"
+        ]
+      }
+    },
+    "/api/v1/leaderboard": {
+      "get": {
+        "operationId": "CommunityController_leaderboard",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaderboardDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "community"
+        ]
+      }
+    },
+    "/api/v1/competitions": {
+      "get": {
+        "operationId": "CommunityController_competitions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompetitionListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "community"
+        ]
+      }
+    },
+    "/api/v1/competitions/{id}/join": {
+      "post": {
+        "operationId": "CommunityController_join",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompetitionDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "community"
+        ]
+      }
+    },
+    "/api/v1/public/transparency": {
+      "get": {
+        "operationId": "CommunityController_transparency",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransparencyDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "community"
+        ]
+      }
+    },
+    "/api/v1/copier": {
+      "get": {
+        "operationId": "CopierController_overview",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CopierOverviewDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "copier"
+        ]
+      }
+    },
+    "/api/v1/copier/links": {
+      "post": {
+        "operationId": "CopierController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCopierLinkDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CopierLinkDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "copier"
+        ]
+      }
+    },
+    "/api/v1/copier/links/{id}": {
+      "patch": {
+        "operationId": "CopierController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCopierLinkDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CopierLinkDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "copier"
+        ]
+      },
+      "delete": {
+        "operationId": "CopierController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "copier"
+        ]
+      }
+    },
+    "/api/v1/certificates": {
+      "get": {
+        "operationId": "CertificatesController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertificateListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "certificates"
+        ]
+      }
+    },
+    "/api/v1/public/certificates/{id}": {
+      "get": {
+        "operationId": "CertificatesController_verify",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertificateDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "certificates"
         ]
       }
     },
@@ -3421,6 +3810,10 @@
               "nl",
               "es"
             ]
+          },
+          "offerCode": {
+            "type": "string",
+            "description": "Personal offer code (e.g. from Daily Points)"
           }
         },
         "required": [
@@ -3464,6 +3857,14 @@
           "totalMinor": {
             "type": "string"
           },
+          "discountMinor": {
+            "type": "string",
+            "description": "Offer discount, EUR minor units"
+          },
+          "offerCode": {
+            "type": "string",
+            "nullable": true
+          },
           "currency": {
             "type": "string",
             "enum": [
@@ -3506,6 +3907,8 @@
           "accountSizeMinor",
           "unitPriceMinor",
           "totalMinor",
+          "discountMinor",
+          "offerCode",
           "currency",
           "provider",
           "isTestPayment",
@@ -3544,6 +3947,209 @@
         },
         "required": [
           "outcome"
+        ]
+      },
+      "PointsEntryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "TRADING_DAY",
+              "EMAIL_VERIFIED",
+              "TWO_FACTOR",
+              "FUNDED_ACCOUNT",
+              "REDEEM"
+            ]
+          },
+          "refKey": {
+            "type": "string",
+            "description": "Date, account id or reward id the entry belongs to"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "reason",
+          "refKey",
+          "amount",
+          "createdAt"
+        ]
+      },
+      "RewardDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "points": {
+            "type": "number"
+          },
+          "discountBps": {
+            "type": "number"
+          },
+          "validDays": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "points",
+          "discountBps",
+          "validDays"
+        ]
+      },
+      "EarnRuleDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "TRADING_DAY",
+              "EMAIL_VERIFIED",
+              "TWO_FACTOR",
+              "FUNDED_ACCOUNT"
+            ]
+          },
+          "points": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "reason",
+          "points"
+        ]
+      },
+      "PointsSummaryDto": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number"
+          },
+          "earned": {
+            "type": "number"
+          },
+          "spent": {
+            "type": "number"
+          },
+          "history": {
+            "description": "Latest 50 entries",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PointsEntryDto"
+            }
+          },
+          "rewards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RewardDto"
+            }
+          },
+          "earnRules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EarnRuleDto"
+            }
+          },
+          "isExample": {
+            "type": "boolean",
+            "description": "Values are examples, not final"
+          }
+        },
+        "required": [
+          "balance",
+          "earned",
+          "spent",
+          "history",
+          "rewards",
+          "earnRules",
+          "isExample"
+        ]
+      },
+      "RedeemDto": {
+        "type": "object",
+        "properties": {
+          "rewardId": {
+            "type": "string",
+            "enum": [
+              "discount-5",
+              "discount-10",
+              "discount-20"
+            ]
+          }
+        },
+        "required": [
+          "rewardId"
+        ]
+      },
+      "OfferDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "discountBps": {
+            "type": "number"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "POINTS"
+            ]
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "usedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "USED",
+              "EXPIRED"
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "discountBps",
+          "source",
+          "expiresAt",
+          "usedAt",
+          "status",
+          "createdAt"
+        ]
+      },
+      "OfferListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OfferDto"
+            }
+          }
+        },
+        "required": [
+          "items"
         ]
       },
       "JournalEntryDto": {
@@ -3661,6 +4267,421 @@
             }
           }
         }
+      },
+      "TraderProfileDto": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string",
+            "nullable": true
+          },
+          "leaderboardOptIn": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "nickname",
+          "leaderboardOptIn"
+        ]
+      },
+      "UpdateTraderProfileDto": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string",
+            "description": "3–20 letters, digits or _",
+            "example": "lime_trader"
+          },
+          "leaderboardOptIn": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RankingRowDto": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string",
+            "description": "Public nickname or an anonymous label"
+          },
+          "isYou": {
+            "type": "boolean"
+          },
+          "returnBps": {
+            "type": "number",
+            "description": "Return on the starting balance, basis points"
+          },
+          "accountSizeMinor": {
+            "type": "string"
+          },
+          "pnlMinor": {
+            "type": "string"
+          },
+          "trades": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "rank",
+          "name",
+          "isYou",
+          "returnBps",
+          "accountSizeMinor",
+          "pnlMinor",
+          "trades"
+        ]
+      },
+      "LeaderboardDto": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RankingRowDto"
+            }
+          },
+          "you": {
+            "nullable": true,
+            "description": "Your best funded account, even if not public",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RankingRowDto"
+              }
+            ]
+          },
+          "youArePublic": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "rows",
+          "you",
+          "youArePublic",
+          "updatedAt"
+        ]
+      },
+      "CompetitionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string"
+          },
+          "endsAt": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "UPCOMING",
+              "RUNNING",
+              "ENDED"
+            ]
+          },
+          "startingBalanceMinor": {
+            "type": "string"
+          },
+          "maxLeverage": {
+            "type": "number"
+          },
+          "prize": {
+            "type": "string",
+            "nullable": true
+          },
+          "entrants": {
+            "type": "number"
+          },
+          "yourAccountId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Your competition account"
+          },
+          "standings": {
+            "description": "Top 50 by return",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RankingRowDto"
+            }
+          },
+          "you": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RankingRowDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "startsAt",
+          "endsAt",
+          "status",
+          "startingBalanceMinor",
+          "maxLeverage",
+          "prize",
+          "entrants",
+          "yourAccountId",
+          "standings",
+          "you"
+        ]
+      },
+      "CompetitionListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompetitionDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "TransparencyDto": {
+        "type": "object",
+        "properties": {
+          "traders": {
+            "type": "number"
+          },
+          "fundedAccounts": {
+            "type": "number",
+            "description": "Funded accounts sold (paid purchases)"
+          },
+          "activeFundedAccounts": {
+            "type": "number"
+          },
+          "closedFundedAccounts": {
+            "type": "number"
+          },
+          "payouts": {
+            "type": "number",
+            "description": "Real payouts only (none before payouts launch)"
+          },
+          "payoutsTotalMinor": {
+            "type": "string"
+          },
+          "competitions": {
+            "type": "number"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "traders",
+          "fundedAccounts",
+          "activeFundedAccounts",
+          "closedFundedAccounts",
+          "payouts",
+          "payoutsTotalMinor",
+          "competitions",
+          "updatedAt"
+        ]
+      },
+      "CopierLinkDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "masterAccountId": {
+            "type": "string"
+          },
+          "followerAccountId": {
+            "type": "string"
+          },
+          "multiplierBps": {
+            "type": "number",
+            "description": "Size factor in bps (10000 = 1×)"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "masterAccountId",
+          "followerAccountId",
+          "multiplierBps",
+          "active",
+          "createdAt"
+        ]
+      },
+      "CopyEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "linkId": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "qty": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "COPIED",
+              "SKIPPED",
+              "FAILED"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "linkId",
+          "symbol",
+          "side",
+          "qty",
+          "status",
+          "code",
+          "createdAt"
+        ]
+      },
+      "CopierOverviewDto": {
+        "type": "object",
+        "properties": {
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CopierLinkDto"
+            }
+          },
+          "events": {
+            "description": "Latest 50 copy results",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CopyEventDto"
+            }
+          }
+        },
+        "required": [
+          "links",
+          "events"
+        ]
+      },
+      "CreateCopierLinkDto": {
+        "type": "object",
+        "properties": {
+          "masterAccountId": {
+            "type": "string"
+          },
+          "followerAccountId": {
+            "type": "string"
+          },
+          "multiplierBps": {
+            "type": "number",
+            "minimum": 1000,
+            "maximum": 50000,
+            "example": 10000
+          }
+        },
+        "required": [
+          "masterAccountId",
+          "followerAccountId",
+          "multiplierBps"
+        ]
+      },
+      "UpdateCopierLinkDto": {
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "multiplierBps": {
+            "type": "number",
+            "minimum": 1000,
+            "maximum": 50000
+          }
+        }
+      },
+      "CertificateDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "FUNDED"
+            ]
+          },
+          "accountSizeMinor": {
+            "type": "string"
+          },
+          "issuedAt": {
+            "type": "string"
+          },
+          "holder": {
+            "type": "string",
+            "description": "Public nickname or anonymous label (never a real name)"
+          },
+          "simulated": {
+            "type": "boolean",
+            "description": "The account is simulated"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "accountSizeMinor",
+          "issuedAt",
+          "holder",
+          "simulated"
+        ]
+      },
+      "CertificateListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CertificateDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
       },
       "WatchlistDto": {
         "type": "object",

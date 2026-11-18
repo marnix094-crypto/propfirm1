@@ -30,7 +30,7 @@ function Row({ label, value, hint }: { label: string; value: string; hint?: stri
   );
 }
 
-export function PricingCard({ product }: { product: Product }) {
+export function PricingCard({ product, offerCode }: { product: Product; offerCode?: string }) {
   const { t } = useTranslation();
   const { lang } = useParams();
   const f = useFormat();
@@ -95,7 +95,9 @@ export function PricingCard({ product }: { product: Product }) {
       </div>
       <div className="mt-auto pt-5">
         <Button asChild fullWidth variant={product.isRecommended ? 'primary' : 'secondary'}>
-          <Link to={`/${lang}/app/checkout?product=${encodeURIComponent(product.id)}&qty=${qty}`}>
+          <Link
+            to={`/${lang}/app/checkout?product=${encodeURIComponent(product.id)}&qty=${qty}${offerCode ? `&offer=${encodeURIComponent(offerCode)}` : ''}`}
+          >
             {t('landing.pricing.buy')}
           </Link>
         </Button>

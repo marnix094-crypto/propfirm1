@@ -255,6 +255,8 @@ export function TradePage() {
         )}
       </aside>
 
+      {/* Space so the floating order button never covers the last rows on mobile. */}
+      <div aria-hidden="true" className="h-16 lg:hidden" />
       {/* Mobile: sticky button opens the order sheet. */}
       {account && isTradable(account) && (
         <div className="fixed inset-x-0 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-30 px-4 lg:hidden">

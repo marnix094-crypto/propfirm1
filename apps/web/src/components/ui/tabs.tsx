@@ -36,7 +36,7 @@ export function Tabs({
           <div
             role="radiogroup"
             aria-label={label}
-            className="inline-flex gap-1 rounded-btn border border-border bg-card p-1 shadow-card"
+            className="inline-flex max-w-full gap-1 overflow-x-auto rounded-btn border border-border bg-card p-1 shadow-card"
           >
             {items.map((item) => (
               <button
@@ -46,7 +46,7 @@ export function Tabs({
                 aria-checked={value === item.value}
                 onClick={() => onValueChange(item.value)}
                 className={cn(
-                  'relative rounded-[10px] px-4 py-2 text-sm font-semibold text-muted transition-colors hover:text-fg',
+                  'relative shrink-0 rounded-[10px] px-3 py-2 text-sm font-semibold text-muted transition-colors hover:text-fg sm:px-4',
                   value === item.value && 'text-fg',
                 )}
               >
@@ -71,14 +71,14 @@ export function Tabs({
         {header}
         <TabsPrimitive.List
           aria-label={label}
-          className="inline-flex gap-1 rounded-btn border border-border bg-card p-1 shadow-card"
+          className="inline-flex max-w-full gap-1 overflow-x-auto rounded-btn border border-border bg-card p-1 shadow-card"
         >
           {items.map((item) => (
             <TabsPrimitive.Trigger
               key={item.value}
               value={item.value}
               className={cn(
-                'relative rounded-[10px] px-4 py-2 text-sm font-semibold text-muted transition-colors hover:text-fg',
+                'relative shrink-0 rounded-[10px] px-3 py-2 text-sm font-semibold text-muted transition-colors hover:text-fg sm:px-4',
                 'data-[state=active]:text-fg',
               )}
             >

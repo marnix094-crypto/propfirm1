@@ -36,6 +36,8 @@ interface Props {
   lines: PriceLineSpec[];
   label: string;
   className?: string;
+  /** false = static history only (e.g. backtesting replay); no live candles. */
+  live?: boolean;
 }
 
 interface Bar {
@@ -47,7 +49,16 @@ interface Bar {
 }
 
 /** Candlestick chart; history from REST, live 1m candles from the WebSocket aggregated into the timeframe. */
-export function PriceChart({ symbol, tf, candles, priceDecimals, lines, label, className }: Props) {
+export function PriceChart({
+  symbol,
+  tf,
+  candles,
+  priceDecimals,
+  lines,
+  label,
+  className,
+  live = true,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const chart = useRef<IChartApi | null>(null);
   const series = useRef<ISeriesApi<'Candlestick'> | null>(null);
@@ -120,6 +131,7 @@ export function PriceChart({ symbol, tf, candles, priceDecimals, lines, label, c
 
   // Live updates.
   useEffect(() => {
+    if (!live) return;
     const step = TF_MS[tf] ?? 60_000;
     return realtime.onCandle((k) => {
       if (k.s !== symbol || k.tf !== '1m' || !series.current) return;
@@ -140,7 +152,7 @@ export function PriceChart({ symbol, tf, candles, priceDecimals, lines, label, c
       last.current = bar;
       series.current.update(bar);
     });
-  }, [symbol, tf]);
+  }, [symbol, tf, live]);
 
   // Position / order price lines.
   useEffect(() => {

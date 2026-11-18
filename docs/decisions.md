@@ -66,3 +66,12 @@
 | D62 | Nu werkend: Home, Trade, Uitbetaling (op slot tot uitbetaalbaar; aanvragen in fase 9), Ordergeschiedenis, Mijn statistieken (per symbool, long/short), Track record, Notitieboek, Tutorial. "Binnenkort"-pagina's zonder nepdata: Daily Points, Ranglijst, Competities, Mijn aanbiedingen, Transparantie, Trade Copier, Backtesting, Certificaten | besloten |
 | D63 | Puntenprogramma heet **Daily Points** | besloten |
 | D64 | Notitieboek op de server (`JournalEntry`, privé per gebruiker, cursor-paginatie, wordt met de gebruiker verwijderd; kan persoonlijke tekst bevatten → valt onder GDPR-export/-verwijdering) | besloten |
+| D65 | Daily Points — VOORBEELDwaarden: handelsdag +10 (max 1×/dag), e-mail bevestigd +50, 2FA aan +100, gekocht funded account +250. Beloningen: 300/600/1200 punten → 5/10/20% kortingscode (30 dagen). Toekenning idempotent uit echte data; puntenledger is append-only (DB-trigger) | besloten (waarden voorlopig) |
+| D66 | Kortingscodes (My Offers): persoonlijk, één keer bruikbaar, in de checkout-transactie gereserveerd; mislukte/geannuleerde betaling geeft de code terug. Purchase legt `discountMinor` vast (DB-check: totaal = stuk × aantal − korting) | besloten |
+| D67 | Ranglijst: alleen actieve, gekochte funded accounts van traders die zelf meedoen (opt-in), getoond met bijnaam (nooit naam/e-mail); eigen positie zichtbaar ook zonder opt-in | besloten |
+| D68 | Competities: maandelijkse competitie per Amsterdam-maand, gratis, apart `COMPETITION`-account met $100K en 1:50, ranglijst op rendement, géén prijs (voorbeeld); openen van posities alleen tijdens de looptijd | besloten (prijzen open) |
+| D69 | Transparantie: alleen echte tellingen uit de database; uitbetalingen 0 tot fase 9 | besloten |
+| D70 | Trade Copier: tussen eigen accounts, master → volger met factor 0,25–3×; alleen door de trader geplaatste orders (incl. sluiten) worden gespiegeld, één keer per koppeling; geen ketens; volger houdt eigen regels; resultaat per kopie gelogd | besloten |
+| D71 | Backtesting in de browser met de engine (`engine/backtest`): uitvoering op slotkoers van de candle + commissie, $10K virtueel, niets opgeslagen | besloten |
+| D72 | Certificaten per gekocht funded account, openbaar verifieerbaar via `/{lang}/verify/:id` (bijnaam of anoniem label, nooit persoonsgegevens) | besloten |
+| D73 | Mobiel: getest op 320–390 px zonder horizontaal scrollen; scrollbare tabellen zijn toetsenbord-focusbaar; compact merkteken in de app-header op smalle schermen | besloten |

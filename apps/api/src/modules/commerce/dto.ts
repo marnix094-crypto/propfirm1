@@ -90,6 +90,11 @@ export class CheckoutRequestDto {
   @IsOptional()
   @IsIn(['en', 'nl', 'es'])
   locale?: 'en' | 'nl' | 'es';
+
+  @ApiPropertyOptional({ description: 'Personal offer code (e.g. from Daily Points)' })
+  @IsOptional()
+  @Matches(/^[A-Za-z0-9-]{4,24}$/)
+  offerCode?: string;
 }
 
 export class PurchaseDto {
@@ -101,6 +106,8 @@ export class PurchaseDto {
   @ApiProperty() accountSizeMinor!: string;
   @ApiProperty() unitPriceMinor!: string;
   @ApiProperty() totalMinor!: string;
+  @ApiProperty({ description: 'Offer discount, EUR minor units' }) discountMinor!: string;
+  @ApiProperty({ type: String, nullable: true }) offerCode!: string | null;
   @ApiProperty({ enum: ['EUR'] }) currency!: 'EUR';
   @ApiProperty() provider!: string;
   @ApiProperty({ description: 'Test provider: no real money moves' }) isTestPayment!: boolean;

@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { APP_CONFIG, type AppConfig } from '../../config/env.js';
 import { TradingModule } from '../trading/trading.module.js';
+import { RewardsModule } from '../rewards/rewards.module.js';
 import { CheckoutService } from './checkout.service.js';
 import { CheckoutController, ProductsController } from './commerce.controller.js';
 import { FakePaymentProvider, PAYMENT_PROVIDER } from './payment-provider.js';
 import { ProductsService } from './products.service.js';
 
 @Module({
-  imports: [TradingModule],
+  imports: [TradingModule, RewardsModule],
   controllers: [ProductsController, CheckoutController],
   providers: [
     ProductsService,

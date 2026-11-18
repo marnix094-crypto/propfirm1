@@ -18,7 +18,8 @@
     "optional": "optioneel",
     "demoPreview": "Demo-preview · gesimuleerde data in je browser",
     "mockData": "Mockdata (dev)",
-    "simulatedNote": "Alle accounts zijn gesimuleerd. Er wordt geen echt kapitaal verhandeld."
+    "simulatedNote": "Alle accounts zijn gesimuleerd. Er wordt geen echt kapitaal verhandeld.",
+    "backHome": "Terug naar home"
   },
   "nav": {
     "main": "Hoofdnavigatie",
@@ -480,7 +481,22 @@
     "CHECKOUT_ITEM_INVALID": "Kies een account om te kopen.",
     "ACCOUNT_SUSPENDED": "Je account is geschorst. Neem contact op met support.",
     "IDEMPOTENCY_KEY_REUSED": "Dit verzoek is al met andere gegevens verstuurd. Probeer het opnieuw.",
-    "JOURNALENTRY_NOT_FOUND": "Notitie niet gevonden."
+    "JOURNALENTRY_NOT_FOUND": "Notitie niet gevonden.",
+    "POINTS_INSUFFICIENT": "Niet genoeg Daily Points.",
+    "OFFER_INVALID": "Deze kortingscode is niet geldig voor jouw account.",
+    "OFFER_USED": "Deze kortingscode is al gebruikt.",
+    "OFFER_EXPIRED": "Deze kortingscode is verlopen.",
+    "NICKNAME_TAKEN": "Deze bijnaam is al bezet.",
+    "NICKNAME_REQUIRED": "Kies eerst een bijnaam.",
+    "COMPETITION_NOT_ACTIVE": "De competitie loopt niet.",
+    "COPIER_SAME_ACCOUNT": "Kies twee verschillende accounts.",
+    "COPIER_CONFLICT": "Een van deze accounts zit al in een kopieerkoppeling.",
+    "COPY_SIZE_TOO_SMALL": "Gekopieerde grootte onder het minimum",
+    "COPY_ERROR": "Kopiëren mislukt",
+    "REWARD_NOT_FOUND": "Beloning niet gevonden.",
+    "COMPETITION_NOT_FOUND": "Competitie niet gevonden.",
+    "COPIERLINK_NOT_FOUND": "Kopieerkoppeling niet gevonden.",
+    "CERTIFICATE_NOT_FOUND": "Certificaat niet gevonden."
   },
   "app": {
     "nav": {
@@ -526,7 +542,8 @@
         "DEMO": "Demo",
         "CHALLENGE": "Challenge",
         "FUNDED": "Funded",
-        "LIVE_BROKER": "Broker"
+        "LIVE_BROKER": "Broker",
+        "COMPETITION": "Competitie"
       },
       "virtual": "Virtueel saldo",
       "getFunded": "Krijg een funded account",
@@ -795,7 +812,10 @@
         "title": "Betaling geannuleerd",
         "body": "Er is geen geld afgeschreven en geen account aangemaakt."
       }
-    }
+    },
+    "offerCode": "Kortingscode (optioneel)",
+    "offerApplied": "{{discount}} korting toegepast",
+    "offerHint": "Heb je een code van Daily Points? Vul hem hier in."
   },
   "funding": {
     "title": "Winstdeling & uitbetalingen",
@@ -861,69 +881,6 @@
       "entry": "Instap",
       "mark": "Markt",
       "pnl": "Open resultaat"
-    }
-  },
-  "soon": {
-    "note": "We tonen alleen echte gegevens. Deze pagina gaat live zodra de functie klaar is.",
-    "back": "Terug naar home",
-    "points": {
-      "body": "Verdien Daily Points met handelsactiviteit en mijlpalen en wissel ze in voor beloningen.",
-      "points": [
-        "Punten voor handelsdagen, mijlpalen en doorverwijzingen",
-        "Inwisselen voor korting op nieuwe accounts",
-        "Duidelijke regels, zichtbaar in je account"
-      ]
-    },
-    "leaderboard": {
-      "body": "Zie hoe de beste Daily Funded-traders presteren — op basis van echte, geanonimiseerde resultaten.",
-      "points": [
-        "Ranglijst op rendement en consistentie",
-        "Meedoen met een bijnaam; geen persoonsgegevens",
-        "Dag-, week- en maandoverzicht"
-      ]
-    },
-    "competitions": {
-      "body": "Handel in competities met een vaste looptijd en gelijke startpositie.",
-      "points": [
-        "Iedereen hetzelfde startsaldo",
-        "Duidelijke regels en live tussenstand",
-        "Prijzen per competitie aangekondigd"
-      ]
-    },
-    "offers": {
-      "body": "Persoonlijke aanbiedingen en kortingscodes voor nieuwe accounts.",
-      "points": [
-        "Korting op instant funding-accounts",
-        "Aanbiedingen gekoppeld aan je Daily Points"
-      ]
-    },
-    "transparency": {
-      "body": "Openbare, controleerbare cijfers over uitbetalingen en accounts.",
-      "points": [
-        "Totaal uitbetaald (alleen echte uitbetalingen)",
-        "Aantal funded traders",
-        "Gemiddelde tijd tot uitbetaling"
-      ]
-    },
-    "copier": {
-      "body": "Kopieer trades automatisch tussen je eigen accounts.",
-      "points": [
-        "Van één hoofdaccount naar meerdere accounts",
-        "Groottefactor per account",
-        "Respecteert de regels van elk account"
-      ]
-    },
-    "backtesting": {
-      "body": "Test je strategie op historische koersdata voordat je ermee handelt.",
-      "points": [
-        "Historische candles afspelen",
-        "Gesimuleerde orders per candle plaatsen",
-        "Statistieken zoals bij My Stats"
-      ]
-    },
-    "certificates": {
-      "body": "Downloadbare certificaten voor funded accounts en uitbetalingen.",
-      "points": ["Certificaat zodra je funded bent", "Uitbetalingscertificaten met verificatielink"]
     }
   },
   "stats": {
@@ -1064,5 +1021,186 @@
         "cta": "Open Mijn statistieken"
       }
     }
+  },
+  "points": {
+    "subtitle": "Verdien punten met echte activiteit en wissel ze in voor korting.",
+    "example": "Voorbeeldwaarden",
+    "balance": "Puntensaldo",
+    "earned": "Verdiend",
+    "spent": "Ingewisseld",
+    "rewards": "Beloningen",
+    "off": "{{value}} korting",
+    "rewardBody": "Kortingscode voor een nieuw account, {{days}} dagen geldig.",
+    "cost": "{{points}} punten",
+    "redeem": "Inwisselen",
+    "missing": "Nog {{points}} nodig",
+    "redeemed": "Code {{code}} staat bij Mijn aanbiedingen",
+    "offersHint": "Ingewisselde codes staan bij",
+    "howToEarn": "Zo verdien je punten",
+    "history": "Geschiedenis",
+    "noHistory": "Nog geen punten",
+    "noHistoryBody": "Handel, bevestig je e-mail of zet 2FA aan voor je eerste punten.",
+    "reason": {
+      "TRADING_DAY": "Handelsdag",
+      "EMAIL_VERIFIED": "E-mail bevestigd",
+      "TWO_FACTOR": "Tweestapsverificatie aan",
+      "FUNDED_ACCOUNT": "Funded account",
+      "REDEEM": "Beloning ingewisseld"
+    }
+  },
+  "offers": {
+    "subtitle": "Je persoonlijke kortingscodes. Elke code werkt één keer.",
+    "codes": "Codes",
+    "empty": "Nog geen aanbiedingen",
+    "emptyBody": "Wissel Daily Points in voor een kortingscode.",
+    "status": {
+      "AVAILABLE": "Beschikbaar",
+      "USED": "Gebruikt",
+      "EXPIRED": "Verlopen"
+    },
+    "line_valid": "{{discount}} korting op een nieuw account · geldig tot {{date}}",
+    "line_used": "{{discount}} korting · gebruikt op {{date}}",
+    "copy": "Code {{code}} kopiëren",
+    "copied": "Code gekopieerd",
+    "use": "Code gebruiken"
+  },
+  "ranking": {
+    "col": {
+      "rank": "#",
+      "trader": "Trader",
+      "return": "Rendement",
+      "pnl": "Resultaat",
+      "size": "Grootte",
+      "trades": "Trades"
+    },
+    "you": "jij",
+    "profile": "Openbaar profiel",
+    "nickname": "Bijnaam",
+    "nicknameHint": "3–20 letters, cijfers of _. Nooit je echte naam.",
+    "saveNickname": "Opslaan",
+    "saved": "Profiel opgeslagen",
+    "optIn": "Toon mij op de ranglijst",
+    "optInHint": "Alleen je bijnaam en resultaten worden getoond.",
+    "subtitle": "Actieve funded accounts op rendement — alleen traders die meedoen.",
+    "top": "Ranglijst",
+    "empty": "Nog geen traders op de ranglijst",
+    "emptyBody": "Kies een bijnaam en doe mee als eerste.",
+    "yourRank": "Jouw positie",
+    "yourPrivateRank": "Jouw positie (privé)",
+    "noFunded": "Je hebt een actief funded account nodig.",
+    "disclaimer": "Gesimuleerde accounts. Resultaten uit het verleden bieden geen garantie voor de toekomst."
+  },
+  "competitions": {
+    "status": {
+      "UPCOMING": "Binnenkort",
+      "RUNNING": "Loopt",
+      "ENDED": "Afgelopen"
+    },
+    "starts": "Start",
+    "ends": "Einde",
+    "balance": "Startsaldo",
+    "prize": "Prijs",
+    "noPrize": "Geen prijs — alleen de ranglijst",
+    "entrants_one": "{{count}} deelnemer",
+    "entrants_other": "{{count}} deelnemers",
+    "yourRank": "jij staat #{{rank}}",
+    "trade": "Handel met competitie-account",
+    "join": "Gratis meedoen",
+    "joined": "Je doet mee — je competitie-account staat klaar",
+    "noEntrants": "Nog geen deelnemers. Wees de eerste!",
+    "subtitle": "Iedereen start met hetzelfde gesimuleerde saldo. Het hoogste rendement wint.",
+    "empty": "Er lopen nu geen competities",
+    "rulesTitle": "Zo werkt het",
+    "rules": [
+      "Meedoen is gratis en opent een apart competitie-account.",
+      "Iedereen start met $100.000 (gesimuleerd) en hefboom 1:50.",
+      "Ranglijst op rendement; na het einde kun je posities nog sluiten.",
+      "Je staat erin met je bijnaam of als anonieme trader."
+    ]
+  },
+  "transparency": {
+    "subtitle": "Live cijfers rechtstreeks uit onze database — geen schattingen, geen voorbeelden.",
+    "traders": "Geregistreerde traders",
+    "funded": "Verkochte funded accounts",
+    "active": "Actieve funded accounts",
+    "closed": "Gesloten funded accounts",
+    "payouts": "Uitbetalingen gedaan",
+    "paidOut": "Totaal uitbetaald",
+    "updated": "Bijgewerkt om {{time}}",
+    "feed": "Recente uitbetalingen",
+    "noPayouts": "Nog geen uitbetalingen. Die starten zodra de eerste funded traders in aanmerking komen.",
+    "howTitle": "Wat deze cijfers betekenen",
+    "how": [
+      "Alle accounts zijn gesimuleerd; uitbetalingen zijn een deel van gesimuleerde winst.",
+      "Alleen echte, voltooide uitbetalingen tellen mee — nooit voorbeelden.",
+      "De cijfers worden automatisch bijgewerkt."
+    ]
+  },
+  "copier": {
+    "subtitle": "Kopieer je trades automatisch van één account naar je andere accounts.",
+    "new": "Nieuwe kopieerkoppeling",
+    "needTwo": "Je hebt minstens twee actieve accounts nodig om trades te kopiëren.",
+    "master": "Kopieer van (master)",
+    "follower": "Kopieer naar (volger)",
+    "choose": "Kies een account",
+    "multiplier": "Grootte",
+    "create": "Start kopiëren",
+    "created": "Kopiëren gestart",
+    "note": "Elke volger houdt zijn eigen regels en margincontroles. Alleen trades die jij op de master plaatst worden gekopieerd.",
+    "links": "Kopieerkoppelingen",
+    "noLinks": "Nog geen kopieerkoppelingen",
+    "noLinksBody": "Maak een koppeling om te starten.",
+    "on": "Aan",
+    "off": "Uit",
+    "delete": "Koppeling verwijderen",
+    "activity": "Activiteit",
+    "noActivity": "Gekopieerde trades verschijnen hier.",
+    "status": {
+      "COPIED": "Gekopieerd",
+      "SKIPPED": "Overgeslagen",
+      "FAILED": "Mislukt"
+    }
+  },
+  "backtest": {
+    "subtitle": "Speel historische candles af en oefen met $10.000 virtueel. Er wordt niets opgeslagen.",
+    "market": "Markt",
+    "equity": "Equity",
+    "result": "Resultaat",
+    "position": "Positie",
+    "progress": "Candle",
+    "reset": "Opnieuw",
+    "step": "Volgende candle",
+    "play": "Afspelen",
+    "pause": "Pauze",
+    "speed": "Snelheid",
+    "entry": "Instap",
+    "chartLabel": "Backtest-grafiek {{symbol}}",
+    "trades": "Gesloten trades",
+    "noTrades": "Koop of verkoop om te starten en speel dan de candles af.",
+    "order": "Order",
+    "buy": "Koop / Long",
+    "sell": "Verkoop / Short",
+    "close": "Positie sluiten",
+    "note": "Uitvoering op de slotkoers van de candle, inclusief commissie. Alleen oefenen.",
+    "invalidSize": "Vul een geldige grootte in."
+  },
+  "certificates": {
+    "simulated": "Gesimuleerd account",
+    "title": "Funding-certificaat",
+    "awardedTo": "Uitgereikt aan",
+    "for": "voor een funded account van",
+    "issued": "Uitgegeven",
+    "id": "Certificaat-ID",
+    "verifyAt": "Verifieer op",
+    "subtitle": "Certificaten voor je funded accounts, met een openbare verificatielink.",
+    "print": "Afdrukken",
+    "empty": "Nog geen certificaten",
+    "emptyBody": "Je krijgt een certificaat voor elk funded account.",
+    "copied": "Link gekopieerd",
+    "copyLink": "Verificatielink kopiëren",
+    "verifyTitle": "Certificaat verifiëren",
+    "invalid": "Dit certificaat bestaat niet.",
+    "valid": "Dit certificaat is geldig.",
+    "verifyNote": "Daily Funded-accounts zijn gesimuleerd. De houder wordt alleen met bijnaam getoond."
   }
 }

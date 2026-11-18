@@ -4,6 +4,7 @@
  * margin and rule evaluation. Data is simulated and kept in this browser only.
  */
 import {
+  applyBps,
   accountMetrics,
   applyFill,
   closePrice,
@@ -71,6 +72,8 @@ interface Purchase {
   status: 'PENDING' | 'FULFILLED' | 'FAILED' | 'CANCELLED';
   accountIds: string[];
   createdAt: number;
+  discount?: bigint;
+  offerCode?: string;
 }
 
 interface User {
@@ -85,7 +88,7 @@ interface User {
 interface Acc {
   id: string;
   userId: string;
-  kind: 'DEMO' | 'FUNDED';
+  kind: 'DEMO' | 'FUNDED' | 'COMPETITION';
   label: string;
   status: 'ACTIVE' | 'FUNDED_ACTIVE' | 'FAILED';
   initial: bigint;
@@ -151,6 +154,45 @@ interface State {
   }[];
   watchlist: Record<string, string[]>;
   purchases?: Purchase[];
+  offers?: {
+    id: string;
+    userId: string;
+    code: string;
+    discountBps: number;
+    expiresAt: number;
+    usedAt: number | null;
+    purchaseId: string | null;
+    createdAt: number;
+    points: number;
+  }[];
+  profiles?: Record<string, { nickname: string; leaderboardOptIn: boolean }>;
+  compEntries?: { competitionId: string; userId: string; accountId: string }[];
+  copier?: {
+    id: string;
+    userId: string;
+    master: string;
+    follower: string;
+    mult: number;
+    active: boolean;
+    createdAt: number;
+  }[];
+  copyEvents?: {
+    id: string;
+    linkId: string;
+    symbol: string;
+    side: string;
+    qty: string;
+    status: string;
+    code: string | null;
+    at: number;
+  }[];
+  certificates?: {
+    id: string;
+    userId: string;
+    accountId: string;
+    size: bigint;
+    issuedAt: number;
+  }[];
   journal?: {
     id: string;
     userId: string;
@@ -268,16 +310,21 @@ function marked(accountId: string): MarkedPosition[] {
 const metrics = (a: Acc) => accountMetrics(a.balance, marked(a.id));
 const tradable = (a: Acc) => a.status === 'ACTIVE' || a.status === 'FUNDED_ACTIVE';
 
-function newAccount(userId: string, kind: 'DEMO' | 'FUNDED', initial: bigint, label: string): Acc {
+function newAccount(
+  userId: string,
+  kind: 'DEMO' | 'FUNDED' | 'COMPETITION',
+  initial: bigint,
+  label: string,
+): Acc {
   const a: Acc = {
     id: uid(),
     userId,
     kind,
     label,
-    status: kind === 'DEMO' ? 'ACTIVE' : 'FUNDED_ACTIVE',
+    status: kind === 'FUNDED' ? 'FUNDED_ACTIVE' : 'ACTIVE',
     initial,
     balance: initial,
-    maxLeverage: kind === 'DEMO' ? 50 : RULES.maxLeverage,
+    maxLeverage: kind === 'FUNDED' ? RULES.maxLeverage : 50,
     rules: kind === 'FUNDED',
     hwm: initial,
     dayStartBalance: initial,
@@ -843,7 +890,12 @@ on('GET', '/accounts/{id}/rules', (m) => {
     tradingDays: a.tradingDays,
   });
 });
-on('POST', '/accounts/{id}/orders', (m, b) => json(201, orderDto(placeOrder(ownAcc(m[1]!), b))));
+on('POST', '/accounts/{id}/orders', (m, b) => {
+  const a = ownAcc(m[1]!);
+  const o = placeOrder(a, b);
+  mirror(a, o);
+  return json(201, orderDto(o));
+});
 on('DELETE', '/accounts/{id}/orders/{oid}', (m) => {
   const a = ownAcc(m[1]!);
   const o = st.orders.find((x) => x.id === m[2] && x.accountId === a.id);
@@ -875,7 +927,9 @@ on('POST', '/accounts/{id}/positions/{pid}/close', (m, b) => {
   const p = st.positions.find((x) => x.id === m[2] && x.accountId === a.id);
   if (!p) throw new Fail(404, 'POSITION_NOT_FOUND');
   const q = b.qty ? fromDecimalString(String(b.qty), spec(p.symbol).qtyDecimals) : undefined;
-  return json(200, orderDto(closePosition(a, p, q)));
+  const o = closePosition(a, p, q);
+  mirror(a, o);
+  return json(200, orderDto(o));
 });
 on('POST', '/accounts/{id}/positions/close-all', (m) => {
   const a = ownAcc(m[1]!);
@@ -1048,7 +1102,9 @@ const purchaseDto = (p: Purchase) => ({
   quantity: p.quantity,
   accountSizeMinor: String(p.size),
   unitPriceMinor: String(p.unitPrice),
-  totalMinor: String(p.unitPrice * BigInt(p.quantity)),
+  totalMinor: String(p.unitPrice * BigInt(p.quantity) - (p.discount ?? 0n)),
+  discountMinor: String(p.discount ?? 0n),
+  offerCode: p.offerCode ?? null,
   currency: 'EUR',
   provider: 'fake',
   isTestPayment: true,
@@ -1089,7 +1145,20 @@ on('POST', '/checkout', (_m, b) => {
     dd = Number(q[2]);
     price = exampleQuotePriceMinor(size, dd);
   }
+  let discount = 0n;
+  let offer: NonNullable<State['offers']>[number] | undefined;
+  if (b.offerCode) {
+    offer = offers().find(
+      (o) => o.userId === u.id && o.code === String(b.offerCode).trim().toUpperCase(),
+    );
+    if (!offer) throw new Fail(422, 'OFFER_INVALID');
+    if (offer.usedAt) throw new Fail(422, 'OFFER_USED');
+    if (offer.expiresAt < Date.now()) throw new Fail(422, 'OFFER_EXPIRED');
+    discount = applyBps(price * BigInt(quantity), offer.discountBps);
+  }
   const p: Purchase = {
+    discount,
+    offerCode: offer?.code,
     id: uid(),
     userId: u.id,
     quantity,
@@ -1101,6 +1170,10 @@ on('POST', '/checkout', (_m, b) => {
     createdAt: Date.now(),
   };
   purchases().push(p);
+  if (offer) {
+    offer.usedAt = Date.now();
+    offer.purchaseId = p.id;
+  }
   return json(201, purchaseDto(p));
 });
 on('GET', '/checkout', () =>
@@ -1120,7 +1193,13 @@ on('POST', '/checkout/{id}/test-payment', (m, b) => {
         p.accountIds.push(newAccount(p.userId, 'FUNDED', p.size, label).id);
       }
       p.status = 'FULFILLED';
-    } else p.status = b.outcome === 'failed' ? 'FAILED' : 'CANCELLED';
+    } else {
+      p.status = b.outcome === 'failed' ? 'FAILED' : 'CANCELLED';
+      for (const o of offers().filter((x) => x.purchaseId === p.id)) {
+        o.usedAt = null;
+        o.purchaseId = null;
+      }
+    }
   }
   return json(200, purchaseDto(p));
 });
@@ -1244,6 +1323,394 @@ on('DELETE', '/journal/{id}', (m) => {
   const e = ownNote(m[1]!);
   st.journal = journal().filter((x) => x !== e);
   return json(204);
+});
+
+// ------------------------------------------------------------------ Daily Points & offers
+const offers = () => (st.offers ??= []);
+const POINTS = { TRADING_DAY: 10, EMAIL_VERIFIED: 50, TWO_FACTOR: 100, FUNDED_ACCOUNT: 250 };
+const REWARD_LIST = [
+  { id: 'discount-5', points: 300, discountBps: 500, validDays: 30 },
+  { id: 'discount-10', points: 600, discountBps: 1000, validDays: 30 },
+  { id: 'discount-20', points: 1200, discountBps: 2000, validDays: 30 },
+];
+function pointsOf(u: User) {
+  const history: {
+    id: string;
+    reason: string;
+    refKey: string;
+    amount: number;
+    createdAt: string;
+  }[] = [];
+  const add = (reason: string, refKey: string, amount: number, at: number) =>
+    history.push({
+      id: `${reason}-${refKey}`,
+      reason,
+      refKey,
+      amount,
+      createdAt: new Date(at).toISOString(),
+    });
+  const firstAcc = st.accounts.find((a) => a.userId === u.id);
+  if (u.emailVerified)
+    add('EMAIL_VERIFIED', 'email', POINTS.EMAIL_VERIFIED, firstAcc?.createdAt ?? Date.now());
+  if (u.twoFactorEnabled) add('TWO_FACTOR', '2fa', POINTS.TWO_FACTOR, Date.now());
+  for (const p of purchases().filter((x) => x.userId === u.id && x.status === 'FULFILLED'))
+    for (const id of p.accountIds) add('FUNDED_ACCOUNT', id, POINTS.FUNDED_ACCOUNT, p.createdAt);
+  const days = new Map<string, number>();
+  for (const f of st.fills) {
+    const a = st.accounts.find((x) => x.id === f.accountId);
+    if (a?.userId === u.id && !days.has(dayKey(f.at))) days.set(dayKey(f.at), f.at);
+  }
+  for (const [d, at] of days) add('TRADING_DAY', d, POINTS.TRADING_DAY, at);
+  for (const o of offers().filter((x) => x.userId === u.id))
+    add('REDEEM', o.id, -o.points, o.createdAt);
+  history.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const earned = history.filter((h) => h.amount > 0).reduce((s2, h) => s2 + h.amount, 0);
+  const spent = -history.filter((h) => h.amount < 0).reduce((s2, h) => s2 + h.amount, 0);
+  return { balance: earned - spent, earned, spent, history: history.slice(0, 50) };
+}
+const offerDto = (o: NonNullable<State['offers']>[number]) => ({
+  id: o.id,
+  code: o.code,
+  discountBps: o.discountBps,
+  source: 'POINTS',
+  expiresAt: new Date(o.expiresAt).toISOString(),
+  usedAt: o.usedAt ? new Date(o.usedAt).toISOString() : null,
+  status: o.usedAt ? 'USED' : o.expiresAt < Date.now() ? 'EXPIRED' : 'AVAILABLE',
+  createdAt: new Date(o.createdAt).toISOString(),
+});
+on('GET', '/points', () =>
+  json(200, {
+    ...pointsOf(me()),
+    rewards: REWARD_LIST,
+    earnRules: Object.entries(POINTS).map(([reason, points]) => ({ reason, points })),
+    isExample: true,
+  }),
+);
+on('POST', '/points/redeem', (_m, b) => {
+  const u = me();
+  const r = REWARD_LIST.find((x) => x.id === b.rewardId);
+  if (!r) throw new Fail(404, 'REWARD_NOT_FOUND');
+  if (pointsOf(u).balance < r.points) throw new Fail(422, 'POINTS_INSUFFICIENT');
+  const B32 = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const code =
+    'DF-' +
+    Array.from(crypto.getRandomValues(new Uint8Array(8)))
+      .map((x) => B32[x % B32.length])
+      .join('');
+  const o = {
+    id: uid(),
+    userId: u.id,
+    code,
+    discountBps: r.discountBps,
+    expiresAt: Date.now() + r.validDays * DAY,
+    usedAt: null,
+    purchaseId: null,
+    createdAt: Date.now(),
+    points: r.points,
+  };
+  offers().push(o);
+  return json(201, offerDto(o));
+});
+on('GET', '/offers', () =>
+  json(200, {
+    items: offers()
+      .filter((o) => o.userId === me().id)
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .map(offerDto),
+  }),
+);
+
+// ------------------------------------------------------------------ profile, leaderboard, competitions
+const profiles = () => (st.profiles ??= {});
+const anon = (id: string) => `Trader ${id.replace(/-/g, '').slice(-4).toUpperCase()}`;
+on('GET', '/me/profile', () => {
+  const p = profiles()[me().id];
+  return json(200, {
+    nickname: p?.nickname ?? null,
+    leaderboardOptIn: p?.leaderboardOptIn ?? false,
+  });
+});
+on('PATCH', '/me/profile', (_m, b) => {
+  const u = me();
+  const cur = profiles()[u.id];
+  const nickname = typeof b.nickname === 'string' ? b.nickname : cur?.nickname;
+  if (!nickname) throw new Fail(422, 'NICKNAME_REQUIRED');
+  if (!/^[A-Za-z0-9_]{3,20}$/.test(nickname)) throw new Fail(400, 'VALIDATION_ERROR');
+  if (Object.entries(profiles()).some(([id, p]) => id !== u.id && p.nickname === nickname))
+    throw new Fail(409, 'NICKNAME_TAKEN');
+  profiles()[u.id] = {
+    nickname,
+    leaderboardOptIn:
+      typeof b.leaderboardOptIn === 'boolean'
+        ? b.leaderboardOptIn
+        : (cur?.leaderboardOptIn ?? false),
+  };
+  return json(200, profiles()[u.id]);
+});
+const tradesOf = (accountId: string) =>
+  st.fills.filter((f) => f.accountId === accountId && f.realized !== 0n).length;
+function row(a: Acc, initial: bigint, userId: string) {
+  const pnl = metrics(a).equityMinor - initial;
+  return {
+    name: profiles()[a.userId]?.nickname ?? anon(a.userId),
+    isYou: a.userId === userId,
+    returnBps: initial > 0n ? Number((pnl * 10_000n) / initial) : 0,
+    accountSizeMinor: String(initial),
+    pnlMinor: String(pnl),
+    trades: tradesOf(a.id),
+  };
+}
+const ranked = <T extends { returnBps: number; trades: number }>(rows: T[]) =>
+  rows
+    .sort((x, y) => y.returnBps - x.returnBps || y.trades - x.trades)
+    .map((r, i) => ({ ...r, rank: i + 1 }));
+on('GET', '/leaderboard', () => {
+  const u = me();
+  const funded = st.accounts.filter(
+    (a) =>
+      a.kind === 'FUNDED' &&
+      a.status === 'FUNDED_ACTIVE' &&
+      purchases().some((p) => p.accountIds.includes(a.id)),
+  );
+  const best = new Map<string, ReturnType<typeof row>>();
+  for (const a of funded) {
+    const r = row(a, a.initial, u.id);
+    const prev = best.get(a.userId);
+    if (!prev || r.returnBps > prev.returnBps) best.set(a.userId, r);
+  }
+  const isPublic = (id: string) => !!profiles()[id]?.leaderboardOptIn;
+  const pub = ranked([...best.entries()].filter(([id]) => isPublic(id)).map(([, r]) => r));
+  const mine = best.get(u.id);
+  const you = mine
+    ? isPublic(u.id)
+      ? pub.find((r) => r.isYou)!
+      : { ...mine, rank: pub.filter((r) => r.returnBps > mine.returnBps).length + 1 }
+    : null;
+  return json(200, {
+    rows: pub,
+    you,
+    youArePublic: isPublic(u.id),
+    updatedAt: new Date().toISOString(),
+  });
+});
+function monthly() {
+  const ym = today().slice(0, 7);
+  const [y, m] = ym.split('-').map(Number) as [number, number];
+  const start = Date.UTC(y, m - 1, 1) - 3_600_000;
+  const end = Date.UTC(y, m, 1) - 3_600_000;
+  const label = new Intl.DateTimeFormat('en-GB', {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(Date.UTC(y, m - 1, 1)));
+  return {
+    id: `00000000-0000-7000-8000-${ym.replace('-', '').padStart(12, '0')}`,
+    name: `Daily Funded Monthly — ${label}`,
+    start,
+    end,
+  };
+}
+const compEntries = () => (st.compEntries ??= []);
+function competitionDto() {
+  const c = monthly();
+  const u = me();
+  const entries = compEntries().filter((e) => e.competitionId === c.id);
+  const rows = ranked(
+    entries
+      .map((e) => st.accounts.find((a) => a.id === e.accountId))
+      .filter((a): a is Acc => !!a)
+      .map((a) => row(a, 10_000_000n, u.id)),
+  );
+  const mine = entries.find((e) => e.userId === u.id);
+  const now = Date.now();
+  return {
+    id: c.id,
+    name: c.name,
+    startsAt: new Date(c.start).toISOString(),
+    endsAt: new Date(c.end).toISOString(),
+    status: now < c.start ? 'UPCOMING' : now < c.end ? 'RUNNING' : 'ENDED',
+    startingBalanceMinor: '10000000',
+    maxLeverage: 50,
+    prize: null,
+    entrants: entries.length,
+    yourAccountId: mine?.accountId ?? null,
+    standings: rows.slice(0, 50),
+    you: rows.find((r) => r.isYou) ?? null,
+  };
+}
+on('GET', '/competitions', () => json(200, { items: [competitionDto()] }));
+on('POST', '/competitions/{id}/join', (m) => {
+  const c = monthly();
+  if (m[1] !== c.id) throw new Fail(404, 'COMPETITION_NOT_FOUND');
+  const u = me();
+  if (!compEntries().some((e) => e.competitionId === c.id && e.userId === u.id)) {
+    const a = newAccount(
+      u.id,
+      'COMPETITION',
+      10_000_000n,
+      c.name.replace('Daily Funded Monthly — ', 'Competition '),
+    );
+    compEntries().push({ competitionId: c.id, userId: u.id, accountId: a.id });
+  }
+  return json(200, competitionDto());
+});
+on('GET', '/public/transparency', () => {
+  const funded = st.accounts.filter(
+    (a) => a.kind === 'FUNDED' && purchases().some((p) => p.accountIds.includes(a.id)),
+  );
+  return json(200, {
+    traders: st.users.length,
+    fundedAccounts: funded.length,
+    activeFundedAccounts: funded.filter((a) => a.status === 'FUNDED_ACTIVE').length,
+    closedFundedAccounts: funded.filter((a) => a.status === 'FAILED').length,
+    payouts: 0,
+    payoutsTotalMinor: '0',
+    competitions: 1,
+    updatedAt: new Date().toISOString(),
+  });
+});
+
+// ------------------------------------------------------------------ trade copier
+const copier = () => (st.copier ??= []);
+const copyEvents = () => (st.copyEvents ??= []);
+function mirror(master: Acc, o: Ord) {
+  if (o.status !== 'FILLED' || o.source !== 'USER') return;
+  for (const l of copier().filter((x) => x.master === master.id && x.active)) {
+    const f = st.accounts.find((a) => a.id === l.follower);
+    if (!f) continue;
+    const sp = spec(o.symbol);
+    let q = applyBps(o.qty, l.mult);
+    q -= q % sp.qtyStep;
+    if (o.reduceOnly) {
+      const pos = st.positions.find(
+        (p) =>
+          p.accountId === f.id &&
+          p.symbol === o.symbol &&
+          p.state.side === (o.side === 'SELL' ? 'LONG' : 'SHORT'),
+      );
+      q = pos ? (pos.state.qty < q || q === 0n ? pos.state.qty : q) : 0n;
+    }
+    const ev = {
+      id: uid(),
+      linkId: l.id,
+      symbol: o.symbol,
+      side: o.side,
+      qty: qty(q, o.symbol),
+      status: 'COPIED',
+      code: null as string | null,
+      at: Date.now(),
+    };
+    if (q < sp.minQty) {
+      ev.status = 'SKIPPED';
+      ev.code = 'COPY_SIZE_TOO_SMALL';
+    } else {
+      try {
+        placeOrder(f, {
+          clientOrderId: uid(),
+          symbol: o.symbol,
+          side: o.side,
+          type: 'MARKET',
+          qty: qty(q, o.symbol),
+          leverage: Math.min(o.leverage, f.maxLeverage),
+          reduceOnly: o.reduceOnly,
+        });
+      } catch (e) {
+        ev.status = 'FAILED';
+        ev.code = e instanceof Fail ? e.code : 'COPY_ERROR';
+      }
+    }
+    copyEvents().push(ev);
+  }
+}
+const linkDto = (l: NonNullable<State['copier']>[number]) => ({
+  id: l.id,
+  masterAccountId: l.master,
+  followerAccountId: l.follower,
+  multiplierBps: l.mult,
+  active: l.active,
+  createdAt: new Date(l.createdAt).toISOString(),
+});
+on('GET', '/copier', () => {
+  const mine = copier().filter((l) => l.userId === me().id);
+  const ids = new Set(mine.map((l) => l.id));
+  return json(200, {
+    links: mine.map(linkDto),
+    events: copyEvents()
+      .filter((e) => ids.has(e.linkId))
+      .sort((a, b) => b.at - a.at)
+      .slice(0, 50)
+      .map((e) => ({ ...e, createdAt: new Date(e.at).toISOString() })),
+  });
+});
+on('POST', '/copier/links', (_m, b) => {
+  const u = me();
+  const master = ownAcc(String(b.masterAccountId));
+  const follower = ownAcc(String(b.followerAccountId));
+  if (master.id === follower.id) throw new Fail(422, 'COPIER_SAME_ACCOUNT');
+  if (
+    copier().some(
+      (l) => l.follower === master.id || l.master === follower.id || l.follower === follower.id,
+    )
+  )
+    throw new Fail(409, 'COPIER_CONFLICT');
+  const l = {
+    id: uid(),
+    userId: u.id,
+    master: master.id,
+    follower: follower.id,
+    mult: Number(b.multiplierBps) || 10000,
+    active: true,
+    createdAt: Date.now(),
+  };
+  copier().push(l);
+  return json(201, linkDto(l));
+});
+const ownLink = (id: string) => {
+  const l = copier().find((x) => x.id === id && x.userId === me().id);
+  if (!l) throw new Fail(404, 'COPIERLINK_NOT_FOUND');
+  return l;
+};
+on('PATCH', '/copier/links/{id}', (m, b) => {
+  const l = ownLink(m[1]!);
+  if (typeof b.active === 'boolean') l.active = b.active;
+  if (typeof b.multiplierBps === 'number') l.mult = b.multiplierBps;
+  return json(200, linkDto(l));
+});
+on('DELETE', '/copier/links/{id}', (m) => {
+  const l = ownLink(m[1]!);
+  st.copier = copier().filter((x) => x !== l);
+  return json(204);
+});
+
+// ------------------------------------------------------------------ certificates
+const certs = () => (st.certificates ??= []);
+function syncCerts(userId: string) {
+  for (const p of purchases().filter((x) => x.userId === userId && x.status === 'FULFILLED'))
+    for (const id of p.accountIds)
+      if (!certs().some((c) => c.accountId === id))
+        certs().push({ id: uid(), userId, accountId: id, size: p.size, issuedAt: p.createdAt });
+}
+const certDto = (c: NonNullable<State['certificates']>[number]) => ({
+  id: c.id,
+  type: 'FUNDED',
+  accountSizeMinor: String(c.size),
+  issuedAt: new Date(c.issuedAt).toISOString(),
+  holder: profiles()[c.userId]?.nickname ?? anon(c.userId),
+  simulated: true,
+});
+on('GET', '/certificates', () => {
+  const u = me();
+  syncCerts(u.id);
+  return json(200, {
+    items: certs()
+      .filter((c) => c.userId === u.id)
+      .map(certDto),
+  });
+});
+on('GET', '/public/certificates/{id}', (m) => {
+  const c = certs().find((x) => x.id === m[1]);
+  if (!c) throw new Fail(404, 'CERTIFICATE_NOT_FOUND');
+  return json(200, certDto(c));
 });
 
 /** Route /api/v1/* requests to the in-browser backend; everything else goes to the network. */

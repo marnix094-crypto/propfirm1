@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router';
 import { SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ErrorState, Skeleton } from '@/components/ui/feedback';
@@ -13,6 +14,8 @@ export function NewAccountPage() {
   const { t } = useTranslation();
   const products = useProducts('INSTANT');
   const [custom, setCustom] = useState(false);
+  const [params] = useSearchParams();
+  const offer = params.get('offer') ?? undefined;
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
@@ -35,7 +38,7 @@ export function NewAccountPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 pt-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
           {products.data.items.map((p) => (
-            <PricingCard key={p.id} product={p} />
+            <PricingCard key={p.id} product={p} offerCode={offer} />
           ))}
         </div>
       )}

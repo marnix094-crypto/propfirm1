@@ -87,7 +87,7 @@ test.describe('trading platform (real API)', () => {
     await expect(page.getByRole('alert')).toHaveText('Incorrect email or password.');
   });
 
-  test('menu pages: notebook is saved on the server, coming-soon pages show no data', async ({
+  test('menu pages: notebook is saved on the server; empty states show no fake data', async ({
     page,
     isMobile,
   }) => {
@@ -110,7 +110,7 @@ test.describe('trading platform (real API)', () => {
     await expect(list).toContainText('#patience');
 
     await page.goto('/en/app/leaderboard');
-    await expect(page.getByTestId('coming-soon')).toContainText('Soon');
+    await expect(page.getByText('No traders on the leaderboard yet')).toBeVisible();
     await page.goto('/en/app/withdrawal');
     await expect(page.getByText('Withdrawals need a funded account')).toBeVisible();
     await page.goto('/en/app/stats');
@@ -138,6 +138,13 @@ test.describe('trading platform (real API)', () => {
         '/en/app/tutorial',
         '/en/app/new-account',
         '/en/app/leaderboard',
+        '/en/app/points',
+        '/en/app/offers',
+        '/en/app/competitions',
+        '/en/app/transparency',
+        '/en/app/copier',
+        '/en/app/backtesting',
+        '/en/app/certificates',
       ]) {
         await page.goto(path);
         await page.waitForLoadState('networkidle');

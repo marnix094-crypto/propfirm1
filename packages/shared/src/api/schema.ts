@@ -788,6 +788,54 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/points': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['RewardsController_points'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/points/redeem': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['RewardsController_redeem'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/offers': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['RewardsController_offers'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/journal': {
     parameters: {
       query?: never;
@@ -818,6 +866,166 @@ export interface paths {
     options?: never;
     head?: never;
     patch: operations['JournalController_update'];
+    trace?: never;
+  };
+  '/api/v1/me/profile': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CommunityController_profile'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations['CommunityController_updateProfile'];
+    trace?: never;
+  };
+  '/api/v1/leaderboard': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CommunityController_leaderboard'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/competitions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CommunityController_competitions'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/competitions/{id}/join': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CommunityController_join'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/public/transparency': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CommunityController_transparency'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/copier': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CopierController_overview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/copier/links': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CopierController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/copier/links/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations['CopierController_remove'];
+    options?: never;
+    head?: never;
+    patch: operations['CopierController_update'];
+    trace?: never;
+  };
+  '/api/v1/certificates': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CertificatesController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/public/certificates/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CertificatesController_verify'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   '/api/v1/me/watchlist': {
@@ -1320,6 +1528,8 @@ export interface components {
       acceptTerms: boolean;
       /** @enum {string} */
       locale?: 'en' | 'nl' | 'es';
+      /** @description Personal offer code (e.g. from Daily Points) */
+      offerCode?: string;
     };
     PurchaseDto: {
       id: string;
@@ -1331,6 +1541,9 @@ export interface components {
       accountSizeMinor: string;
       unitPriceMinor: string;
       totalMinor: string;
+      /** @description Offer discount, EUR minor units */
+      discountMinor: string;
+      offerCode: string | null;
       /** @enum {string} */
       currency: 'EUR';
       provider: string;
@@ -1348,6 +1561,56 @@ export interface components {
     TestPaymentDto: {
       /** @enum {string} */
       outcome: 'succeeded' | 'failed' | 'cancelled';
+    };
+    PointsEntryDto: {
+      id: string;
+      /** @enum {string} */
+      reason: 'TRADING_DAY' | 'EMAIL_VERIFIED' | 'TWO_FACTOR' | 'FUNDED_ACCOUNT' | 'REDEEM';
+      /** @description Date, account id or reward id the entry belongs to */
+      refKey: string;
+      amount: number;
+      createdAt: string;
+    };
+    RewardDto: {
+      id: string;
+      points: number;
+      discountBps: number;
+      validDays: number;
+    };
+    EarnRuleDto: {
+      /** @enum {string} */
+      reason: 'TRADING_DAY' | 'EMAIL_VERIFIED' | 'TWO_FACTOR' | 'FUNDED_ACCOUNT';
+      points: number;
+    };
+    PointsSummaryDto: {
+      balance: number;
+      earned: number;
+      spent: number;
+      /** @description Latest 50 entries */
+      history: components['schemas']['PointsEntryDto'][];
+      rewards: components['schemas']['RewardDto'][];
+      earnRules: components['schemas']['EarnRuleDto'][];
+      /** @description Values are examples, not final */
+      isExample: boolean;
+    };
+    RedeemDto: {
+      /** @enum {string} */
+      rewardId: 'discount-5' | 'discount-10' | 'discount-20';
+    };
+    OfferDto: {
+      id: string;
+      code: string;
+      discountBps: number;
+      /** @enum {string} */
+      source: 'POINTS';
+      expiresAt: string;
+      usedAt: string | null;
+      /** @enum {string} */
+      status: 'AVAILABLE' | 'USED' | 'EXPIRED';
+      createdAt: string;
+    };
+    OfferListDto: {
+      items: components['schemas']['OfferDto'][];
     };
     JournalEntryDto: {
       id: string;
@@ -1378,6 +1641,118 @@ export interface components {
       title?: string;
       body?: string;
       tags?: string[];
+    };
+    TraderProfileDto: {
+      nickname: string | null;
+      leaderboardOptIn: boolean;
+    };
+    UpdateTraderProfileDto: {
+      /**
+       * @description 3–20 letters, digits or _
+       * @example lime_trader
+       */
+      nickname?: string;
+      leaderboardOptIn?: boolean;
+    };
+    RankingRowDto: {
+      rank: number;
+      /** @description Public nickname or an anonymous label */
+      name: string;
+      isYou: boolean;
+      /** @description Return on the starting balance, basis points */
+      returnBps: number;
+      accountSizeMinor: string;
+      pnlMinor: string;
+      trades: number;
+    };
+    LeaderboardDto: {
+      rows: components['schemas']['RankingRowDto'][];
+      /** @description Your best funded account, even if not public */
+      you: components['schemas']['RankingRowDto'] | null;
+      youArePublic: boolean;
+      updatedAt: string;
+    };
+    CompetitionDto: {
+      id: string;
+      name: string;
+      startsAt: string;
+      endsAt: string;
+      /** @enum {string} */
+      status: 'UPCOMING' | 'RUNNING' | 'ENDED';
+      startingBalanceMinor: string;
+      maxLeverage: number;
+      prize: string | null;
+      entrants: number;
+      /** @description Your competition account */
+      yourAccountId: string | null;
+      /** @description Top 50 by return */
+      standings: components['schemas']['RankingRowDto'][];
+      you: components['schemas']['RankingRowDto'] | null;
+    };
+    CompetitionListDto: {
+      items: components['schemas']['CompetitionDto'][];
+    };
+    TransparencyDto: {
+      traders: number;
+      /** @description Funded accounts sold (paid purchases) */
+      fundedAccounts: number;
+      activeFundedAccounts: number;
+      closedFundedAccounts: number;
+      /** @description Real payouts only (none before payouts launch) */
+      payouts: number;
+      payoutsTotalMinor: string;
+      competitions: number;
+      updatedAt: string;
+    };
+    CopierLinkDto: {
+      id: string;
+      masterAccountId: string;
+      followerAccountId: string;
+      /** @description Size factor in bps (10000 = 1×) */
+      multiplierBps: number;
+      active: boolean;
+      createdAt: string;
+    };
+    CopyEventDto: {
+      id: string;
+      linkId: string;
+      symbol: string;
+      /** @enum {string} */
+      side: 'BUY' | 'SELL';
+      qty: string;
+      /** @enum {string} */
+      status: 'COPIED' | 'SKIPPED' | 'FAILED';
+      code: string | null;
+      createdAt: string;
+    };
+    CopierOverviewDto: {
+      links: components['schemas']['CopierLinkDto'][];
+      /** @description Latest 50 copy results */
+      events: components['schemas']['CopyEventDto'][];
+    };
+    CreateCopierLinkDto: {
+      masterAccountId: string;
+      followerAccountId: string;
+      /** @example 10000 */
+      multiplierBps: number;
+    };
+    UpdateCopierLinkDto: {
+      active?: boolean;
+      multiplierBps?: number;
+    };
+    CertificateDto: {
+      id: string;
+      /** @enum {string} */
+      type: 'FUNDED';
+      accountSizeMinor: string;
+      issuedAt: string;
+      /** @description Public nickname or anonymous label (never a real name) */
+      holder: string;
+      /** @description The account is simulated */
+      simulated: boolean;
+    };
+    CertificateListDto: {
+      items: components['schemas']['CertificateDto'][];
     };
     WatchlistDto: {
       /**
@@ -2469,6 +2844,69 @@ export interface operations {
       };
     };
   };
+  RewardsController_points: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PointsSummaryDto'];
+        };
+      };
+    };
+  };
+  RewardsController_redeem: {
+    parameters: {
+      query?: never;
+      header: {
+        'Idempotency-Key': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RedeemDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OfferDto'];
+        };
+      };
+    };
+  };
+  RewardsController_offers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OfferListDto'];
+        };
+      };
+    };
+  };
   JournalController_list: {
     parameters: {
       query?: {
@@ -2554,6 +2992,252 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['JournalEntryDto'];
+        };
+      };
+    };
+  };
+  CommunityController_profile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TraderProfileDto'];
+        };
+      };
+    };
+  };
+  CommunityController_updateProfile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateTraderProfileDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TraderProfileDto'];
+        };
+      };
+    };
+  };
+  CommunityController_leaderboard: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LeaderboardDto'];
+        };
+      };
+    };
+  };
+  CommunityController_competitions: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompetitionListDto'];
+        };
+      };
+    };
+  };
+  CommunityController_join: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompetitionDto'];
+        };
+      };
+    };
+  };
+  CommunityController_transparency: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TransparencyDto'];
+        };
+      };
+    };
+  };
+  CopierController_overview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CopierOverviewDto'];
+        };
+      };
+    };
+  };
+  CopierController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCopierLinkDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CopierLinkDto'];
+        };
+      };
+    };
+  };
+  CopierController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CopierController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateCopierLinkDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CopierLinkDto'];
+        };
+      };
+    };
+  };
+  CertificatesController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CertificateListDto'];
+        };
+      };
+    };
+  };
+  CertificatesController_verify: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CertificateDto'];
         };
       };
     };

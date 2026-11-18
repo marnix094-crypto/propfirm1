@@ -305,6 +305,20 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
           );
         return idem.responseBody as unknown as OrderDto;
       }
+      if (account.kind === 'COMPETITION' && !dto.reduceOnly) {
+        // Competition accounts can only open positions while the competition runs.
+        const entry = await tx.competitionEntry.findUnique({
+          where: { accountId },
+          include: { competition: true },
+        });
+        const now = Date.now();
+        if (
+          !entry ||
+          entry.competition.startsAt.getTime() > now ||
+          entry.competition.endsAt.getTime() <= now
+        )
+          throw Errors.unprocessable('COMPETITION_NOT_ACTIVE', 'The competition is not running');
+      }
       const inst = this.md.instrumentBySymbol(dto.symbol);
       const dup = await tx.order.findUnique({
         where: { accountId_clientOrderId: { accountId, clientOrderId: dto.clientOrderId } },
@@ -854,6 +868,54 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
    */
   async openRuleAccount(args: OpenRuleAccountArgs): Promise<string> {
     const id = await this.prisma.$transaction((tx) => this.openRuleAccountTx(tx, args));
+    await this.state.reload(id);
+    return id;
+  }
+
+  /** Competition account: same simulated starting balance for every entrant, no rule set. */
+  async openCompetitionAccount(args: {
+    userId: string;
+    initialBalanceMinor: bigint;
+    maxLeverage: number;
+    label: string;
+  }): Promise<string> {
+    const today = tradingDateKey();
+    const id = await this.prisma.$transaction(async (tx) => {
+      const acc = await tx.tradingAccount.create({
+        data: {
+          userId: args.userId,
+          kind: 'COMPETITION',
+          status: 'ACTIVE',
+          label: args.label,
+          initialBalanceMinor: args.initialBalanceMinor,
+          balanceMinor: args.initialBalanceMinor,
+          highWaterMarkMinor: args.initialBalanceMinor,
+          maxLeverage: args.maxLeverage,
+          dayStartBalanceMinor: args.initialBalanceMinor,
+          dayStartEquityMinor: args.initialBalanceMinor,
+          dayStartDate: today,
+        },
+      });
+      await tx.ledgerEntry.create({
+        data: {
+          accountId: acc.id,
+          type: 'INITIAL_CAPITAL',
+          amountMinor: args.initialBalanceMinor,
+          balanceAfterMinor: args.initialBalanceMinor,
+          refType: 'account',
+          refId: acc.id,
+        },
+      });
+      await this.audit.append(tx, {
+        actorType: 'USER',
+        actorId: args.userId,
+        action: 'account.created',
+        entityType: 'TradingAccount',
+        entityId: acc.id,
+        data: { kind: 'COMPETITION', initialBalanceMinor: args.initialBalanceMinor },
+      });
+      return acc.id;
+    });
     await this.state.reload(id);
     return id;
   }

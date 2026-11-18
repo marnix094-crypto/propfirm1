@@ -8,6 +8,9 @@ import { Stepper } from '@/components/ui/stepper';
 import { ErrorState, Skeleton } from '@/components/ui/feedback';
 import { SectionLink } from '@/components/layout/section-link';
 import { useProduct, useQuote } from '@/hooks/use-catalog';
+import { useOffers } from '@/hooks/use-features';
+import { applyBps } from '@brand/engine';
+import { Input } from '@/components/ui/field';
 import { newCheckoutKey, useCreateCheckout } from '@/hooks/use-checkout';
 import { useFormat } from '@/hooks/use-format';
 import { call, client } from '@/lib/api-client';
@@ -29,6 +32,8 @@ export function CheckoutPage() {
   const initialQty = Math.min(MAX_QTY, Math.max(1, Number(params.get('qty')) || 1));
   const [qty, setQty] = useState(initialQty);
   const [accepted, setAccepted] = useState(false);
+  const [offerCode, setOfferCode] = useState(params.get('offer') ?? '');
+  const offers = useOffers();
   // One key per checkout attempt: double clicks and retries never create two purchases.
   const [key, setKey] = useState(newCheckoutKey);
   const user = useSession((s) => s.user);
@@ -51,6 +56,11 @@ export function CheckoutPage() {
       };
     return null;
   }, [product.data, quote.data]);
+  const subtotal = item ? BigInt(item.priceMinor) * BigInt(qty) : 0n;
+  const matchedOffer = (offers.data?.items ?? []).find(
+    (o) => o.status === 'AVAILABLE' && o.code === offerCode.trim().toUpperCase(),
+  );
+  const discount = matchedOffer ? applyBps(subtotal, matchedOffer.discountBps) : 0n;
   const loading = (productId && product.isPending) || (quoteId && quote.isPending);
   const failed = product.isError || quote.isError || (!productId && !quoteId);
 
@@ -60,6 +70,7 @@ export function CheckoutPage() {
         key,
         body: {
           ...(productId ? { productId } : { quoteId: quoteId! }),
+          ...(offerCode.trim() ? { offerCode: offerCode.trim().toUpperCase() } : {}),
           quantity: qty,
           acceptTerms: true,
           locale: (['en', 'nl', 'es'] as const).find((l) => l === i18n.language) ?? 'en',
@@ -104,8 +115,13 @@ export function CheckoutPage() {
               />
               <div className="text-right">
                 <p className="text-sm text-muted">{t('checkout.total')}</p>
+                {discount > 0n && (
+                  <p className="text-sm text-muted tabular-nums line-through">
+                    {f.money(subtotal, 'EUR')}
+                  </p>
+                )}
                 <p className="text-2xl font-bold tabular-nums" data-testid="checkout-total">
-                  {f.money(BigInt(item.priceMinor) * BigInt(qty), 'EUR')}
+                  {f.money(subtotal - discount, 'EUR')}
                 </p>
                 <p className="text-xs text-muted">{t('landing.pricing.oneTimeFee')}</p>
               </div>
@@ -113,6 +129,18 @@ export function CheckoutPage() {
           </Card>
 
           <Card padding="lg" className="flex flex-col gap-4">
+            <Input
+              label={t('checkout.offerCode')}
+              hint={
+                matchedOffer
+                  ? t('checkout.offerApplied', { discount: f.bps(matchedOffer.discountBps) })
+                  : t('checkout.offerHint')
+              }
+              value={offerCode}
+              autoCapitalize="characters"
+              placeholder="DF-XXXXXXXX"
+              onChange={(e) => setOfferCode(e.target.value)}
+            />
             <p className="flex gap-3 text-sm">
               <ShieldAlert className="size-5 shrink-0 text-accent" aria-hidden="true" />
               <span>{t('checkout.simulatedNotice')}</span>

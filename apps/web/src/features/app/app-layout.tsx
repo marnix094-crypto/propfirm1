@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Link, NavLink, Outlet, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Lock, Plus } from 'lucide-react';
-import { Logo } from '@/components/layout/logo';
+import { Logo, LogoMark } from '@/components/layout/logo';
 import { SkipLink } from '@/components/layout/skip-link';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useActiveAccount } from '@/hooks/use-trading';
@@ -117,8 +117,13 @@ export function AppLayout() {
       </aside>
 
       <header className="glass sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border px-4 sm:px-6">
-        <NavLink to={`/${lang}/app`} className="rounded-sm text-fg lg:hidden" aria-label="Home">
-          <Logo className="h-3.5" />
+        <NavLink
+          to={`/${lang}/app`}
+          className="shrink-0 rounded-sm text-fg lg:hidden"
+          aria-label="Home"
+        >
+          <LogoMark className="size-8 sm:hidden" />
+          <Logo className="hidden h-3.5 sm:block" />
         </NavLink>
         <AccountSwitcher className="min-w-0" />
         <div className="ml-auto flex items-center gap-3">

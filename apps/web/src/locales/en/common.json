@@ -18,7 +18,8 @@
     "optional": "optional",
     "demoPreview": "Demo preview · simulated data in your browser",
     "mockData": "Mock data (dev)",
-    "simulatedNote": "All accounts are simulated. No real capital is traded."
+    "simulatedNote": "All accounts are simulated. No real capital is traded.",
+    "backHome": "Back to home"
   },
   "nav": {
     "main": "Main navigation",
@@ -480,7 +481,22 @@
     "CHECKOUT_ITEM_INVALID": "Choose an account to buy.",
     "ACCOUNT_SUSPENDED": "Your account is suspended. Please contact support.",
     "IDEMPOTENCY_KEY_REUSED": "This request was already sent with different details. Please try again.",
-    "JOURNALENTRY_NOT_FOUND": "Note not found."
+    "JOURNALENTRY_NOT_FOUND": "Note not found.",
+    "POINTS_INSUFFICIENT": "Not enough Daily Points.",
+    "OFFER_INVALID": "This offer code is not valid for your account.",
+    "OFFER_USED": "This offer code has already been used.",
+    "OFFER_EXPIRED": "This offer code has expired.",
+    "NICKNAME_TAKEN": "This nickname is taken.",
+    "NICKNAME_REQUIRED": "Choose a nickname first.",
+    "COMPETITION_NOT_ACTIVE": "The competition is not running.",
+    "COPIER_SAME_ACCOUNT": "Choose two different accounts.",
+    "COPIER_CONFLICT": "One of these accounts is already part of a copy link.",
+    "COPY_SIZE_TOO_SMALL": "Copied size below the minimum",
+    "COPY_ERROR": "Could not copy",
+    "REWARD_NOT_FOUND": "Reward not found.",
+    "COMPETITION_NOT_FOUND": "Competition not found.",
+    "COPIERLINK_NOT_FOUND": "Copy link not found.",
+    "CERTIFICATE_NOT_FOUND": "Certificate not found."
   },
   "app": {
     "nav": {
@@ -526,7 +542,8 @@
         "DEMO": "Demo",
         "CHALLENGE": "Challenge",
         "FUNDED": "Funded",
-        "LIVE_BROKER": "Broker"
+        "LIVE_BROKER": "Broker",
+        "COMPETITION": "Competition"
       },
       "virtual": "Virtual funds",
       "getFunded": "Get funded",
@@ -795,7 +812,10 @@
         "title": "Payment cancelled",
         "body": "No money was charged and no account was created."
       }
-    }
+    },
+    "offerCode": "Offer code (optional)",
+    "offerApplied": "{{discount}} discount applied",
+    "offerHint": "Have a code from Daily Points? Enter it here."
   },
   "funding": {
     "title": "Profit split & payouts",
@@ -861,66 +881,6 @@
       "entry": "Entry",
       "mark": "Mark",
       "pnl": "Unrealized P&L"
-    }
-  },
-  "soon": {
-    "note": "We only show real data. This page goes live when the feature is ready.",
-    "back": "Back to home",
-    "points": {
-      "body": "Earn Daily Points for trading activity and milestones, and redeem them for rewards.",
-      "points": [
-        "Points for trading days, milestones and referrals",
-        "Redeem for discounts on new accounts",
-        "Transparent rules, visible in your account"
-      ]
-    },
-    "leaderboard": {
-      "body": "See how the best Daily Funded traders perform — based on real, anonymised results.",
-      "points": [
-        "Ranking by return and consistency",
-        "Opt-in with a nickname; no personal data",
-        "Daily, weekly and monthly views"
-      ]
-    },
-    "competitions": {
-      "body": "Trade in time-boxed competitions on a level playing field.",
-      "points": [
-        "Same starting balance for everyone",
-        "Clear rules and live standings",
-        "Prizes announced per competition"
-      ]
-    },
-    "offers": {
-      "body": "Personal offers and discount codes for new accounts.",
-      "points": ["Discounts on instant funding accounts", "Offers linked to your Daily Points"]
-    },
-    "transparency": {
-      "body": "Public, verifiable figures about payouts and accounts.",
-      "points": [
-        "Total paid out (real payouts only)",
-        "Number of funded traders",
-        "Average time to payout"
-      ]
-    },
-    "copier": {
-      "body": "Copy trades automatically between your own accounts.",
-      "points": [
-        "Copy from one master to several accounts",
-        "Size multiplier per account",
-        "Respects each account's rules"
-      ]
-    },
-    "backtesting": {
-      "body": "Test your strategy on historical price data before you trade it.",
-      "points": [
-        "Replay historical candles",
-        "Place simulated orders bar by bar",
-        "Statistics like on My Stats"
-      ]
-    },
-    "certificates": {
-      "body": "Downloadable certificates for funded accounts and payouts.",
-      "points": ["Certificate when you get funded", "Payout certificates with a verification link"]
     }
   },
   "stats": {
@@ -1061,5 +1021,186 @@
         "cta": "Open My Stats"
       }
     }
+  },
+  "points": {
+    "subtitle": "Earn points for real activity and redeem them for discounts.",
+    "example": "Example values",
+    "balance": "Points balance",
+    "earned": "Earned",
+    "spent": "Spent",
+    "rewards": "Rewards",
+    "off": "{{value}} off",
+    "rewardBody": "Discount code for a new account, valid {{days}} days.",
+    "cost": "{{points}} points",
+    "redeem": "Redeem",
+    "missing": "{{points}} more needed",
+    "redeemed": "Code {{code}} added to My Offers",
+    "offersHint": "Redeemed codes appear under",
+    "howToEarn": "How to earn",
+    "history": "History",
+    "noHistory": "No points yet",
+    "noHistoryBody": "Trade, verify your email or turn on 2FA to earn your first points.",
+    "reason": {
+      "TRADING_DAY": "Trading day",
+      "EMAIL_VERIFIED": "Email verified",
+      "TWO_FACTOR": "Two-step verification on",
+      "FUNDED_ACCOUNT": "Funded account",
+      "REDEEM": "Reward redeemed"
+    }
+  },
+  "offers": {
+    "subtitle": "Your personal discount codes. Each code works once.",
+    "codes": "Codes",
+    "empty": "No offers yet",
+    "emptyBody": "Redeem Daily Points for a discount code.",
+    "status": {
+      "AVAILABLE": "Available",
+      "USED": "Used",
+      "EXPIRED": "Expired"
+    },
+    "line_valid": "{{discount}} off a new account · valid until {{date}}",
+    "line_used": "{{discount}} off · used on {{date}}",
+    "copy": "Copy code {{code}}",
+    "copied": "Code copied",
+    "use": "Use code"
+  },
+  "ranking": {
+    "col": {
+      "rank": "#",
+      "trader": "Trader",
+      "return": "Return",
+      "pnl": "P&L",
+      "size": "Size",
+      "trades": "Trades"
+    },
+    "you": "you",
+    "profile": "Public profile",
+    "nickname": "Nickname",
+    "nicknameHint": "3–20 letters, digits or _. Never your real name.",
+    "saveNickname": "Save",
+    "saved": "Profile saved",
+    "optIn": "Show me on the leaderboard",
+    "optInHint": "Only your nickname and results are shown.",
+    "subtitle": "Active funded accounts ranked by return — only traders who opted in.",
+    "top": "Ranking",
+    "empty": "No traders on the leaderboard yet",
+    "emptyBody": "Set a nickname and opt in to be the first.",
+    "yourRank": "Your rank",
+    "yourPrivateRank": "Your rank (private)",
+    "noFunded": "You need an active funded account.",
+    "disclaimer": "Simulated accounts. Past results are no guarantee of future results."
+  },
+  "competitions": {
+    "status": {
+      "UPCOMING": "Upcoming",
+      "RUNNING": "Running",
+      "ENDED": "Ended"
+    },
+    "starts": "Starts",
+    "ends": "Ends",
+    "balance": "Starting balance",
+    "prize": "Prize",
+    "noPrize": "No prize — ranking only",
+    "entrants_one": "{{count}} entrant",
+    "entrants_other": "{{count}} entrants",
+    "yourRank": "you are #{{rank}}",
+    "trade": "Trade competition account",
+    "join": "Join for free",
+    "joined": "You joined — your competition account is ready",
+    "noEntrants": "No entrants yet. Be the first!",
+    "subtitle": "Everyone starts with the same simulated balance. Highest return wins.",
+    "empty": "No competitions right now",
+    "rulesTitle": "How it works",
+    "rules": [
+      "Joining is free and opens a separate competition account.",
+      "Everyone starts with $100,000 (simulated) and 1:50 leverage.",
+      "Ranking by return; positions can still be closed after the end.",
+      "You appear with your nickname, or as an anonymous trader."
+    ]
+  },
+  "transparency": {
+    "subtitle": "Live figures straight from our database — no estimates, no examples.",
+    "traders": "Registered traders",
+    "funded": "Funded accounts sold",
+    "active": "Active funded accounts",
+    "closed": "Closed funded accounts",
+    "payouts": "Payouts made",
+    "paidOut": "Total paid out",
+    "updated": "Updated at {{time}}",
+    "feed": "Recent payouts",
+    "noPayouts": "No payouts yet. Payouts start once the first funded traders qualify.",
+    "howTitle": "What these figures mean",
+    "how": [
+      "All accounts are simulated; payouts are a share of simulated profit.",
+      "Only real, completed payouts are counted — never examples.",
+      "Figures update automatically."
+    ]
+  },
+  "copier": {
+    "subtitle": "Copy your trades automatically from one account to your other accounts.",
+    "new": "New copy link",
+    "needTwo": "You need at least two active accounts to copy trades.",
+    "master": "Copy from (master)",
+    "follower": "Copy to (follower)",
+    "choose": "Choose an account",
+    "multiplier": "Size",
+    "create": "Start copying",
+    "created": "Copier started",
+    "note": "Each follower keeps its own rules and margin checks. Only trades you place on the master are copied.",
+    "links": "Copy links",
+    "noLinks": "No copy links yet",
+    "noLinksBody": "Create a link to start copying.",
+    "on": "On",
+    "off": "Off",
+    "delete": "Delete link",
+    "activity": "Activity",
+    "noActivity": "Copied trades appear here.",
+    "status": {
+      "COPIED": "Copied",
+      "SKIPPED": "Skipped",
+      "FAILED": "Failed"
+    }
+  },
+  "backtest": {
+    "subtitle": "Replay historical candles and practise with $10,000 virtual. Nothing is saved.",
+    "market": "Market",
+    "equity": "Equity",
+    "result": "Result",
+    "position": "Position",
+    "progress": "Candle",
+    "reset": "Restart",
+    "step": "Next candle",
+    "play": "Play",
+    "pause": "Pause",
+    "speed": "Speed",
+    "entry": "Entry",
+    "chartLabel": "Backtest chart {{symbol}}",
+    "trades": "Closed trades",
+    "noTrades": "Buy or sell to start, then play the candles.",
+    "order": "Order",
+    "buy": "Buy / Long",
+    "sell": "Sell / Short",
+    "close": "Close position",
+    "note": "Fills at the candle close, including commission. Practice only.",
+    "invalidSize": "Enter a valid size."
+  },
+  "certificates": {
+    "simulated": "Simulated account",
+    "title": "Certificate of funding",
+    "awardedTo": "Awarded to",
+    "for": "for a funded account of",
+    "issued": "Issued",
+    "id": "Certificate ID",
+    "verifyAt": "Verify at",
+    "subtitle": "Certificates for your funded accounts, with a public verification link.",
+    "print": "Print",
+    "empty": "No certificates yet",
+    "emptyBody": "You receive a certificate for every funded account.",
+    "copied": "Link copied",
+    "copyLink": "Copy verification link",
+    "verifyTitle": "Verify a certificate",
+    "invalid": "This certificate does not exist.",
+    "valid": "This certificate is valid.",
+    "verifyNote": "Daily Funded accounts are simulated. The holder is shown by nickname only."
   }
 }

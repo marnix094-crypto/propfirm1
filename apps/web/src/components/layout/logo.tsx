@@ -26,3 +26,32 @@ export function Logo({ className }: { className?: string }) {
     </svg>
   );
 }
+
+/** Compact brand mark (lime "D" on black) for very narrow headers. */
+export function LogoMark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      role="img"
+      aria-label={brand.name}
+      className={cn('size-8 shrink-0', className)}
+    >
+      <rect
+        x="1"
+        y="1"
+        width="62"
+        height="62"
+        rx="14"
+        fill="var(--brand-ink)"
+        stroke="var(--border)"
+        strokeWidth="2"
+      />
+      <path
+        fill="var(--brand-lime)"
+        fillRule="evenodd"
+        transform="translate(12.00 17.05) scale(0.2151)"
+        d="M1.7 138.4C1.3 138.0 1.0 118.6 1.0 95.3L1.0 53.0L22.0 53.0L43.0 53.0L43.0 77.5L43.0 102.0L76.8 102.0C114.3 102.0 118.1 101.5 127.8 95.7C138.0 89.6 143.3 80.2 143.4 68.0C143.5 62.2 143.0 59.4 141.2 55.5C138.3 49.2 131.9 42.6 125.8 39.4C115.7 34.3 112.7 34.0 54.2 34.0L0.0 34.0L0.0 25.2C0.0 20.4 0.3 12.8 0.7 8.2L1.3 0.0L58.5 0.0C121.2 0.0 124.1 0.2 139.3 5.9C143.7 7.5 149.7 10.4 152.8 12.2C160.2 16.5 174.7 31.1 178.3 37.7C185.0 50.3 187.0 69.3 183.1 84.3C176.7 108.8 157.5 126.9 128.5 135.7L119.5 138.4L61.0 138.8C28.8 139.0 2.1 138.8 1.7 138.4Z"
+      />
+    </svg>
+  );
+}

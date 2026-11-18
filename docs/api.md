@@ -151,3 +151,7 @@ Catalogus (publiek): `GET /products?type=INSTANT`, `GET /products/:id`, `POST /p
 
 `GET /accounts/:id/performance?month=YYYY-MM` → `{ stats: { trades, wins, losses, winRateBps, profitFactorBps, avgWinMinor, avgLossMinor, expectancyMinor, bestTradeMinor, worstTradeMinor, … }, calendar: { month, days[{ date, pnlMinor, trades }], netMinor, greenDays, redDays, bestDayMinor, worstDayMinor } }`. Dev-only: `POST /dev/verify-email`.
 `GET /accounts/:id/performance` geeft ook `bySymbol[]` en `byDirection[]` (LONG/SHORT). Notitieboek: `GET /journal?cursor&limit`, `POST /journal`, `PATCH /journal/:id`, `DELETE /journal/:id`. `AccountDto` bevat `createdAt`/`endedAt`.
+
+## Platformfuncties (na fase 6)
+
+Daily Points: `GET /points`, `POST /points/redeem` (🔑). Aanbiedingen: `GET /offers`; checkout accepteert `offerCode`. Profiel: `GET|PATCH /me/profile` (bijnaam, opt-in). `GET /leaderboard`. Competities: `GET /competitions`, `POST /competitions/:id/join`. Publiek: `GET /public/transparency`, `GET /public/certificates/:id`. Trade Copier: `GET /copier`, `POST /copier/links`, `PATCH|DELETE /copier/links/:id`. `GET /certificates`. Nieuwe foutcodes: `POINTS_INSUFFICIENT`, `OFFER_INVALID|USED|EXPIRED`, `NICKNAME_TAKEN|REQUIRED`, `COMPETITION_NOT_ACTIVE`, `COPIER_SAME_ACCOUNT`, `COPIER_CONFLICT`.

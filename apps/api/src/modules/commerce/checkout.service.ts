@@ -16,11 +16,17 @@ import {
   type PaymentProvider,
 } from './payment-provider.js';
 import { toProductRulesDto } from './products.service.js';
+import { RewardsService, offerStatus } from '../rewards/rewards.service.js';
+import { applyBps } from '@brand/engine';
 
 const sha256 = (s: string) => createHash('sha256').update(s).digest('hex');
 const ROUTE = 'POST /checkout';
 
-type PurchaseWithRefs = Purchase & { ruleSet: RuleSet; accounts: { id: string }[] };
+type PurchaseWithRefs = Purchase & {
+  ruleSet: RuleSet;
+  accounts: { id: string }[];
+  offer?: { code: string } | null;
+};
 
 /** "$25K" style size label used in account names (data, not UI copy). */
 export function sizeLabel(sizeMinor: bigint): string {
@@ -37,6 +43,7 @@ export class CheckoutService {
     private readonly trading: TradingService,
     private readonly state: AccountStateService,
     @Inject(PAYMENT_PROVIDER) private readonly provider: PaymentProvider,
+    private readonly rewards: RewardsService,
   ) {}
 
   toDto(p: PurchaseWithRefs): PurchaseDto {
@@ -48,6 +55,8 @@ export class CheckoutService {
       accountSizeMinor: p.accountSizeMinor.toString(),
       unitPriceMinor: p.unitPriceMinor.toString(),
       totalMinor: p.totalMinor.toString(),
+      discountMinor: p.discountMinor.toString(),
+      offerCode: p.offer?.code ?? null,
       currency: 'EUR',
       provider: p.provider,
       isTestPayment: p.provider === 'fake',
@@ -62,7 +71,11 @@ export class CheckoutService {
   private load(tx: Tx | PrismaService, id: string) {
     return tx.purchase.findUniqueOrThrow({
       where: { id },
-      include: { ruleSet: true, accounts: { select: { id: true }, orderBy: { createdAt: 'asc' } } },
+      include: {
+        ruleSet: true,
+        accounts: { select: { id: true }, orderBy: { createdAt: 'asc' } },
+        offer: { select: { code: true } },
+      },
     });
   }
 
@@ -133,6 +146,22 @@ export class CheckoutService {
         if (item.type !== 'INSTANT')
           throw Errors.unprocessable('PRODUCT_TYPE_UNAVAILABLE', 'Only instant funding is offered');
 
+        const subtotal = item.priceMinor * BigInt(dto.quantity);
+        let discount = 0n;
+        if (dto.offerCode) {
+          const offer = await tx.offer.findFirst({
+            where: { code: dto.offerCode.trim().toUpperCase(), userId },
+          });
+          if (!offer) throw Errors.unprocessable('OFFER_INVALID', 'Unknown offer code');
+          const st = offerStatus(offer);
+          if (st !== 'AVAILABLE')
+            throw Errors.unprocessable(
+              st === 'USED' ? 'OFFER_USED' : 'OFFER_EXPIRED',
+              'Offer code not usable',
+            );
+          discount = applyBps(subtotal, offer.discountBps);
+        }
+
         const purchase = await tx.purchase.create({
           data: {
             userId,
@@ -142,13 +171,15 @@ export class CheckoutService {
             quantity: dto.quantity,
             accountSizeMinor: item.sizeMinor,
             unitPriceMinor: item.priceMinor,
-            totalMinor: item.priceMinor * BigInt(dto.quantity),
+            totalMinor: subtotal - discount,
+            discountMinor: discount,
             currency: 'EUR',
             ruleSetId: item.ruleSetId,
             provider: this.provider.name,
             termsAcceptedAt: new Date(),
           },
         });
+        if (dto.offerCode) await this.rewards.reserveOffer(tx, userId, dto.offerCode, purchase.id);
         let payment;
         try {
           payment = await this.provider.createPayment({
@@ -177,6 +208,7 @@ export class CheckoutService {
             quoteId: purchase.quoteId,
             quantity: purchase.quantity,
             totalMinor: purchase.totalMinor,
+            discountMinor: purchase.discountMinor,
             currency: purchase.currency,
             ruleSetId: purchase.ruleSetId,
             provider: purchase.provider,
@@ -210,7 +242,11 @@ export class CheckoutService {
       where: { userId },
       orderBy: { createdAt: 'desc' },
       take: 50,
-      include: { ruleSet: true, accounts: { select: { id: true }, orderBy: { createdAt: 'asc' } } },
+      include: {
+        ruleSet: true,
+        accounts: { select: { id: true }, orderBy: { createdAt: 'asc' } },
+        offer: { select: { code: true } },
+      },
     });
     return rows.map((p) => this.toDto(p));
   }
@@ -274,6 +310,7 @@ export class CheckoutService {
 
       if (ev.type !== 'payment.succeeded') {
         const status = ev.type === 'payment.failed' ? 'FAILED' : 'CANCELLED';
+        await this.rewards.releaseOffer(tx, current.id);
         await tx.purchase.update({
           where: { id: current.id },
           data: {

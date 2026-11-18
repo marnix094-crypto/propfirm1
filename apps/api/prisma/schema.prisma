@@ -29,6 +29,7 @@ enum AccountKind {
   CHALLENGE
   FUNDED
   LIVE_BROKER
+  COMPETITION
 }
 
 enum AccountStatus {
@@ -137,25 +138,31 @@ enum ActorType {
 }
 
 model User {
-  id              String           @id @default(uuid(7)) @db.Uuid
-  email           String           @unique
-  emailVerifiedAt DateTime?
-  passwordHash    String
-  roles           Role[]           @default([TRADER])
-  status          UserStatus       @default(ACTIVE)
-  locale          String           @default("en")
-  country         String           @db.Char(2)
-  termsAcceptedAt DateTime
-  termsVersion    String
-  createdAt       DateTime         @default(now())
-  lastLoginAt     DateTime?
-  refreshTokens   RefreshToken[]
-  accounts        TradingAccount[]
-  watchlist       Watchlist?
-  purchases       Purchase[]
-  journalEntries  JournalEntry[]
-  twoFactor       TwoFactor?
-  emailTokens     EmailToken[]
+  id                 String             @id @default(uuid(7)) @db.Uuid
+  email              String             @unique
+  emailVerifiedAt    DateTime?
+  passwordHash       String
+  roles              Role[]             @default([TRADER])
+  status             UserStatus         @default(ACTIVE)
+  locale             String             @default("en")
+  country            String             @db.Char(2)
+  termsAcceptedAt    DateTime
+  termsVersion       String
+  createdAt          DateTime           @default(now())
+  lastLoginAt        DateTime?
+  refreshTokens      RefreshToken[]
+  accounts           TradingAccount[]
+  watchlist          Watchlist?
+  purchases          Purchase[]
+  journalEntries     JournalEntry[]
+  pointsEntries      PointsEntry[]
+  traderProfile      TraderProfile?
+  competitionEntries CompetitionEntry[]
+  copierLinks        CopierLink[]
+  certificates       Certificate[]
+  offers             Offer[]
+  twoFactor          TwoFactor?
+  emailTokens        EmailToken[]
 }
 
 /// TOTP secret is encrypted (AES-256-GCM, FIELD_ENCRYPTION_KEY); recovery codes are hashed.
@@ -278,42 +285,46 @@ model Instrument {
 }
 
 model TradingAccount {
-  id                     String           @id @default(uuid(7)) @db.Uuid
-  userId                 String           @db.Uuid
-  user                   User             @relation(fields: [userId], references: [id])
+  id                     String            @id @default(uuid(7)) @db.Uuid
+  userId                 String            @db.Uuid
+  user                   User              @relation(fields: [userId], references: [id])
   kind                   AccountKind
-  isSimulated            Boolean          @default(true)
-  status                 AccountStatus    @default(ACTIVE)
+  isSimulated            Boolean           @default(true)
+  status                 AccountStatus     @default(ACTIVE)
   label                  String
-  currency               String           @default("USD")
+  currency               String            @default("USD")
   initialBalanceMinor    BigInt
   balanceMinor           BigInt
   highWaterMarkMinor     BigInt
-  maxLeverage            Int              @default(50)
-  stopOutLevelBps        Int              @default(5000)
-  seq                    BigInt           @default(0)
-  ruleSetId              String?          @db.Uuid
-  ruleSet                RuleSet?         @relation(fields: [ruleSetId], references: [id])
+  maxLeverage            Int               @default(50)
+  stopOutLevelBps        Int               @default(5000)
+  seq                    BigInt            @default(0)
+  ruleSetId              String?           @db.Uuid
+  ruleSet                RuleSet?          @relation(fields: [ruleSetId], references: [id])
   /// Peak used by trailing drawdown (equity or balance per rule set).
   ruleHighWaterMarkMinor BigInt?
   dayStartBalanceMinor   BigInt?
   dayStartEquityMinor    BigInt?
   /// Trading day (YYYY-MM-DD, Europe/Amsterdam) the day-start values belong to.
   dayStartDate           String?
-  tradingDaysCount       Int              @default(0)
+  tradingDaysCount       Int               @default(0)
   lastTradingDate        String?
   failReason             String?
   /// Funded accounts: payout cycle and scaling bookkeeping.
   payoutCycleStartedAt   DateTime?
-  cycleTradingDays       Int              @default(0)
-  payoutsCount           Int              @default(0)
+  cycleTradingDays       Int               @default(0)
+  payoutsCount           Int               @default(0)
   payoutBaselineMinor    BigInt?
-  paidOutSinceScaleMinor BigInt           @default(0)
-  purchaseId             String?          @db.Uuid
-  purchase               Purchase?        @relation(fields: [purchaseId], references: [id])
+  paidOutSinceScaleMinor BigInt            @default(0)
+  purchaseId             String?           @db.Uuid
+  purchase               Purchase?         @relation(fields: [purchaseId], references: [id])
   journalEntries         JournalEntry[]
+  competitionEntry       CompetitionEntry?
+  copierAsMaster         CopierLink[]      @relation("CopierMaster")
+  copierAsFollower       CopierLink?       @relation("CopierFollower")
+  certificate            Certificate?
   violations             RuleViolation[]
-  createdAt              DateTime         @default(now())
+  createdAt              DateTime          @default(now())
   endedAt                DateTime?
   orders                 Order[]
   positions              Position[]
@@ -522,6 +533,9 @@ model Purchase {
   paidAt           DateTime?
   fulfilledAt      DateTime?
   failureCode      String?
+  /// Discount from an offer code (EUR minor units); totalMinor = unit × quantity − discount.
+  discountMinor    BigInt           @default(0)
+  offer            Offer?
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
   accounts         TradingAccount[]
@@ -560,4 +574,129 @@ model JournalEntry {
   updatedAt DateTime        @updatedAt
 
   @@index([userId, id])
+}
+
+enum PointsReason {
+  TRADING_DAY
+  EMAIL_VERIFIED
+  TWO_FACTOR
+  FUNDED_ACCOUNT
+  REDEEM
+}
+
+/// Daily Points ledger: append-only, one row per (user, reason, refKey) — awards are idempotent.
+model PointsEntry {
+  id        String       @id @default(uuid(7)) @db.Uuid
+  userId    String       @db.Uuid
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reason    PointsReason
+  refKey    String
+  amount    Int
+  createdAt DateTime     @default(now())
+
+  @@unique([userId, reason, refKey])
+  @@index([userId, id])
+}
+
+/// Personal discount code (e.g. redeemed with Daily Points). Used once, by its owner.
+model Offer {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  userId      String    @db.Uuid
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code        String    @unique
+  discountBps Int
+  source      String
+  rewardId    String?
+  expiresAt   DateTime
+  usedAt      DateTime?
+  purchaseId  String?   @unique @db.Uuid
+  purchase    Purchase? @relation(fields: [purchaseId], references: [id])
+  createdAt   DateTime  @default(now())
+
+  @@index([userId, id])
+}
+
+/// Public trader identity: a nickname only (never name or email). Leaderboard is opt-in.
+model TraderProfile {
+  userId           String   @id @db.Uuid
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nickname         String   @unique @db.VarChar(20)
+  leaderboardOptIn Boolean  @default(false)
+  updatedAt        DateTime @updatedAt
+}
+
+/// Time-boxed trading competition: every entrant gets the same simulated starting balance.
+model Competition {
+  id                   String             @id @default(uuid(7)) @db.Uuid
+  slug                 String             @unique
+  name                 String
+  startsAt             DateTime
+  endsAt               DateTime
+  startingBalanceMinor BigInt
+  maxLeverage          Int                @default(50)
+  /// Prize description; null = no prize.
+  prize                String?
+  createdAt            DateTime           @default(now())
+  entries              CompetitionEntry[]
+}
+
+model CompetitionEntry {
+  id            String         @id @default(uuid(7)) @db.Uuid
+  competitionId String         @db.Uuid
+  competition   Competition    @relation(fields: [competitionId], references: [id])
+  userId        String         @db.Uuid
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId     String         @unique @db.Uuid
+  account       TradingAccount @relation(fields: [accountId], references: [id])
+  joinedAt      DateTime       @default(now())
+
+  @@unique([competitionId, userId])
+}
+
+/// Trade copier: user-placed fills on the master are mirrored to the follower (same user).
+model CopierLink {
+  id                String         @id @default(uuid(7)) @db.Uuid
+  userId            String         @db.Uuid
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  masterAccountId   String         @db.Uuid
+  masterAccount     TradingAccount @relation("CopierMaster", fields: [masterAccountId], references: [id])
+  followerAccountId String         @unique @db.Uuid
+  followerAccount   TradingAccount @relation("CopierFollower", fields: [followerAccountId], references: [id])
+  /// Size factor in basis points (10000 = same size).
+  multiplierBps     Int
+  active            Boolean        @default(true)
+  createdAt         DateTime       @default(now())
+  events            CopyEvent[]
+
+  @@index([masterAccountId])
+}
+
+/// Outcome of copying one master order to one follower (exactly once per pair).
+model CopyEvent {
+  id              String     @id @default(uuid(7)) @db.Uuid
+  linkId          String     @db.Uuid
+  link            CopierLink @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  masterOrderId   String     @db.Uuid
+  followerOrderId String?    @db.Uuid
+  symbol          String
+  side            Side
+  qty             String
+  status          String
+  code            String?
+  createdAt       DateTime   @default(now())
+
+  @@unique([linkId, masterOrderId])
+  @@index([linkId, id])
+}
+
+/// Certificate for a funded account; publicly verifiable by id (no personal data).
+model Certificate {
+  id               String         @id @default(uuid(7)) @db.Uuid
+  userId           String         @db.Uuid
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId        String         @unique @db.Uuid
+  account          TradingAccount @relation(fields: [accountId], references: [id])
+  type             String
+  accountSizeMinor BigInt
+  issuedAt         DateTime       @default(now())
 }

@@ -2447,6 +2447,20 @@
         ]
       }
     },
+    "/api/v1/dev/firm-owner": {
+      "post": {
+        "operationId": "DevToolsController_firmOwner",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "config"
+        ]
+      }
+    },
     "/api/v1/dev/example-funded-account": {
       "post": {
         "operationId": "DevToolsController_exampleFunded",

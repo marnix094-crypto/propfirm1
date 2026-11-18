@@ -152,7 +152,7 @@ export function ProfileCard({
       <div className="flex items-center gap-3">
         <span
           aria-hidden="true"
-          className="inline-flex size-12 items-center justify-center rounded-full bg-[var(--brand-ink)] text-sm font-semibold text-[var(--brand-lime)]"
+          className="inline-flex size-12 items-center justify-center rounded-full bg-[var(--brand-ink)] text-sm font-semibold text-[var(--brand-on-ink)]"
         >
           {name.slice(0, 2).toUpperCase()}
         </span>

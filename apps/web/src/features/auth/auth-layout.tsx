@@ -3,7 +3,7 @@ import { useThemeStore } from '@/stores/theme';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck } from 'lucide-react';
-import { Logo } from '@/components/layout/logo';
+import { FirmLogo, useFirmTheme } from '@/components/layout/firm-brand';
 import { LanguageSwitcher } from '@/components/layout/language-switcher';
 import { SkipLink } from '@/components/layout/skip-link';
 import { Card } from '@/components/ui/card';
@@ -20,6 +20,7 @@ export function AuthLayout({
   const { t } = useTranslation();
   const { lang } = useParams();
   const setSurface = useThemeStore((s) => s.setSurface);
+  useFirmTheme();
   // Login and sign-up belong to the (light) platform.
   useEffect(() => {
     setSurface('platform');
@@ -31,7 +32,7 @@ export function AuthLayout({
       <SkipLink />
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <Link to={`/${lang}`} className="rounded-sm" aria-label={t('nav.home')}>
-          <Logo className="h-4 sm:h-5" />
+          <FirmLogo className="h-4 sm:h-5" />
         </Link>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />

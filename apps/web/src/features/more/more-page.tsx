@@ -16,6 +16,8 @@ import { LanguageSwitcher } from '@/components/layout/language-switcher';
 import { brand } from '@/config/brand';
 import { realtime } from '@/lib/realtime';
 import { useSession } from '@/stores/session';
+import { useClientConfig } from '@/hooks/use-trading';
+import { call, client } from '@/lib/api-client';
 import { LEGAL_DOCS } from '@/components/layout/storefront-footer';
 import { NAV_SECTIONS } from '@/features/app/nav';
 
@@ -29,6 +31,8 @@ export function MorePage() {
   const qc = useQueryClient();
   const user = useSession((s) => s.user);
   const logout = useSession((s) => s.logout);
+  const updateUser = useSession((s) => s.updateUser);
+  const config = useClientConfig();
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-5">
@@ -67,6 +71,27 @@ export function MorePage() {
         >
           {t('app.nav.newAccount')}
         </Link>
+        {config.data?.devTools && !user?.firmRole && (
+          <button
+            type="button"
+            className={`${row} border-t border-dashed border-border-strong text-muted`}
+            onClick={async () => {
+              await call(() => client.POST('/api/v1/dev/firm-owner'));
+              updateUser({ firmRole: 'OWNER' });
+              void navigate(`/${lang}/admin`);
+            }}
+          >
+            <ShieldCheck className="size-5" aria-hidden="true" />
+            <span className="flex-1">{t('admin.devOwner')}</span>
+          </button>
+        )}
+        {(user?.firmRole || user?.roles.includes('ADMIN')) && (
+          <Link to={`/${lang}/admin`} className={`${row} border-t border-border`}>
+            <ShieldCheck className="size-5 text-accent" aria-hidden="true" />
+            <span className="flex-1">{t('admin.open')}</span>
+            <ChevronRight className="size-4 text-muted" aria-hidden="true" />
+          </Link>
+        )}
       </Card>
 
       {/* Full menu on mobile (the desktop sidebar already shows it). */}

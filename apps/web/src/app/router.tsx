@@ -223,6 +223,99 @@ const routes: RouteObject[] = [
           { path: '*', element: <Navigate to="portfolio" replace /> },
         ],
       },
+      {
+        path: 'admin',
+        lazy: () =>
+          Promise.all([
+            import('@/features/admin/admin-layout'),
+            import('@/features/auth/require-auth'),
+          ]).then(([layout, guard]) => ({
+            Component: () => (
+              <guard.RequireAuth>
+                <layout.AdminLayout />
+              </guard.RequireAuth>
+            ),
+          })),
+        children: [
+          {
+            index: true,
+            lazy: () =>
+              import('@/features/admin/overview-page').then((m) => ({
+                Component: m.AdminOverviewPage,
+              })),
+          },
+          {
+            path: 'traders',
+            lazy: () =>
+              import('@/features/admin/traders-page').then((m) => ({
+                Component: m.AdminTradersPage,
+              })),
+          },
+          {
+            path: 'traders/:id',
+            lazy: () =>
+              import('@/features/admin/traders-page').then((m) => ({
+                Component: m.AdminTraderPage,
+              })),
+          },
+          {
+            path: 'accounts',
+            lazy: () =>
+              import('@/features/admin/accounts-page').then((m) => ({
+                Component: m.AdminAccountsPage,
+              })),
+          },
+          {
+            path: 'products',
+            lazy: () =>
+              import('@/features/admin/products-page').then((m) => ({
+                Component: m.AdminProductsPage,
+              })),
+          },
+          {
+            path: 'rule-sets',
+            lazy: () =>
+              import('@/features/admin/rule-sets-page').then((m) => ({
+                Component: m.AdminRuleSetsPage,
+              })),
+          },
+          {
+            path: 'branding',
+            lazy: () =>
+              import('@/features/admin/branding-page').then((m) => ({
+                Component: m.AdminBrandingPage,
+              })),
+          },
+          {
+            path: 'alerts',
+            lazy: () =>
+              import('@/features/admin/alerts-page').then((m) => ({
+                Component: m.AdminAlertsPage,
+              })),
+          },
+          {
+            path: 'audit',
+            lazy: () =>
+              import('@/features/admin/audit-page').then((m) => ({ Component: m.AdminAuditPage })),
+          },
+          {
+            path: 'team',
+            lazy: () =>
+              import('@/features/admin/team-page').then((m) => ({ Component: m.AdminTeamPage })),
+          },
+          {
+            path: 'firms',
+            lazy: () =>
+              import('@/features/admin/firms-page').then((m) => ({ Component: m.AdminFirmsPage })),
+          },
+          {
+            path: 'menu',
+            lazy: () =>
+              import('@/features/admin/admin-layout').then((m) => ({ Component: m.AdminMenuPage })),
+          },
+          { path: '*', element: <Navigate to="." replace /> },
+        ],
+      },
       { path: '*', element: <Navigate to="." replace /> },
     ],
   },

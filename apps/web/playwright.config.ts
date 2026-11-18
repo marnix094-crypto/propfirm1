@@ -32,6 +32,8 @@ export default defineConfig({
         FIELD_ENCRYPTION_KEY:
           process.env.FIELD_ENCRYPTION_KEY ?? Buffer.alloc(32, 3).toString('base64'),
         DEV_TOOLS_ENABLED: 'true',
+        // e2e only: the admin panel's 2FA requirement is covered by the API tests.
+        ADMIN_REQUIRE_2FA: 'false',
       },
     },
     {

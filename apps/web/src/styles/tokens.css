@@ -32,6 +32,7 @@
   --glow-lavender: #d9f99d; /* gradients/glows only */
   --brand-lime: #afe604; /* logo "FUNDED" — fills/logo only, never text on light */
   --brand-ink: #0a0a0a; /* logo mark background */
+  --brand-on-ink: #afe604; /* brand-coloured text/icons on --brand-ink (AA, firm-adjusted) */
   /* Brand builder preview canvas (website): a neutral mini-platform in dark / light. */
   --builder-dark-bg: #0b0b0c;
   --builder-dark-card: #141416;

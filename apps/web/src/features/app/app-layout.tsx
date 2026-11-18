@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ChevronRight, Lock, PanelLeft, Plus } from 'lucide-react';
-import { Logo, LogoMark } from '@/components/layout/logo';
+import { ChevronRight, Lock, PanelLeft, Plus, ShieldCheck } from 'lucide-react';
+import { FirmLogo, useFirmTheme } from '@/components/layout/firm-brand';
 import { SkipLink } from '@/components/layout/skip-link';
 import { LanguageSwitcher } from '@/components/layout/language-switcher';
 import { useActiveAccount } from '@/hooks/use-trading';
@@ -110,7 +110,7 @@ function UserChip() {
       </div>
       <span
         aria-hidden="true"
-        className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-[var(--brand-ink)] text-sm font-bold text-[var(--brand-lime)]"
+        className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-[var(--brand-ink)] text-sm font-bold text-[var(--brand-on-ink)]"
       >
         {initials}
       </span>
@@ -125,6 +125,8 @@ export function AppLayout() {
   const { account } = useActiveAccount();
   const setSurface = useThemeStore((s) => s.setSurface);
   const meta = usePageMeta();
+  const sessionUser = useSession((s) => s.user);
+  const isStaff = !!sessionUser?.firmRole || !!sessionUser?.roles.includes('ADMIN');
   const [collapsed, setCollapsed] = useState(() => {
     try {
       return localStorage.getItem(COLLAPSE_KEY) === '1';
@@ -133,6 +135,7 @@ export function AppLayout() {
     }
   });
   useLiveAccount(account?.id);
+  useFirmTheme();
   const funding = useFunding(account?.id, account?.kind === 'FUNDED');
   const payoutEligible = account?.kind === 'FUNDED' && !!funding.data?.payout?.eligible;
 
@@ -169,7 +172,7 @@ export function AppLayout() {
         >
           {!collapsed && (
             <NavLink to={`/${lang}/app`} className="rounded-sm text-fg" aria-label="Home">
-              <Logo className="h-4" />
+              <FirmLogo className="h-4" />
             </NavLink>
           )}
           <button
@@ -209,6 +212,21 @@ export function AppLayout() {
             </ul>
           </div>
         </nav>
+        {isStaff && (
+          <div className={cn('border-t border-border px-3 pt-3', collapsed && 'px-2')}>
+            <Link
+              to={`/${lang}/admin`}
+              title={collapsed ? t('admin.open') : undefined}
+              className={cn(
+                'flex items-center gap-3 rounded-[14px] px-3 py-2.5 text-sm font-semibold text-fg hover:bg-card-muted',
+                collapsed && 'justify-center px-0',
+              )}
+            >
+              <ShieldCheck className="size-[18px] shrink-0 text-accent" aria-hidden="true" />
+              <span className={cn(collapsed && 'sr-only')}>{t('admin.open')}</span>
+            </Link>
+          </div>
+        )}
         {!collapsed && (
           <div className="border-t border-border p-4">
             <LanguageSwitcher />
@@ -222,7 +240,7 @@ export function AppLayout() {
       <header className="glass sticky top-0 z-30 border-b border-border">
         <div className="flex h-16 items-center gap-3 px-4 sm:px-6 lg:h-[72px] lg:px-8">
           <NavLink to={`/${lang}/app`} className="shrink-0 rounded-sm lg:hidden" aria-label="Home">
-            <LogoMark className="size-8" />
+            <FirmLogo compact className="size-8" />
           </NavLink>
           <div className="hidden min-w-0 lg:block">
             <p className="truncate text-lg font-bold tracking-tight">{meta.title}</p>
@@ -239,7 +257,7 @@ export function AppLayout() {
               to={`/${lang}/app/new-account`}
               className="btn-primary hidden h-10 shrink-0 items-center gap-2 rounded-full pr-4 pl-1.5 text-sm font-semibold md:inline-flex"
             >
-              <span className="inline-flex size-7 items-center justify-center rounded-full bg-[var(--brand-ink)] text-[var(--brand-lime)]">
+              <span className="inline-flex size-7 items-center justify-center rounded-full bg-[var(--brand-ink)] text-[var(--brand-on-ink)]">
                 <Plus className="size-4" aria-hidden="true" strokeWidth={2.5} />
               </span>
               {t('app.nav.newAccount')}

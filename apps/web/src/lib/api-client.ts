@@ -2,6 +2,7 @@ import createClient from 'openapi-fetch';
 import type { components, paths } from '@brand/shared/api';
 import { ApiError } from './api';
 import { useSession } from '@/stores/session';
+import { useFirmStore } from '@/stores/firm';
 
 export type Schemas = components['schemas'];
 export type Account = Schemas['AccountDto'];
@@ -26,6 +27,10 @@ client.use({
   onRequest({ request }) {
     const token = useSession.getState().accessToken;
     if (token) request.headers.set('Authorization', `Bearer ${token}`);
+    const { slug, adminFirmId } = useFirmStore.getState();
+    if (slug) request.headers.set('X-Firm', slug);
+    if (adminFirmId && new URL(request.url).pathname.startsWith('/api/v1/admin/'))
+      request.headers.set('X-Admin-Firm', adminFirmId);
     return request;
   },
 });

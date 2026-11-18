@@ -45,6 +45,14 @@ export class DevToolsController {
     });
   }
 
+  /** DEV ONLY: make yourself OWNER of your firm, to try the admin panel locally. */
+  @Post('dev/firm-owner')
+  @HttpCode(204)
+  async firmOwner(@CurrentUser() u: AuthUser): Promise<void> {
+    if (!this.config.devToolsEnabled) throw Errors.notFound('Route');
+    await this.prisma.user.update({ where: { id: u.id }, data: { firmRole: 'OWNER' } });
+  }
+
   /** DEV ONLY: open an example $25,000 funded account with the example rule set. */
   @Post('dev/example-funded-account')
   @HttpCode(201)

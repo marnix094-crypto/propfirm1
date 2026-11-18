@@ -10,3 +10,12 @@ export function countryOptions(locale: string): { code: string; name: string }[]
     a.name.localeCompare(b.name, locale),
   );
 }
+
+/** Localised country name for an ISO 3166-1 alpha-2 code (falls back to the code). */
+export function countryName(code: string, locale: string): string {
+  try {
+    return new Intl.DisplayNames([locale], { type: 'region' }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+}

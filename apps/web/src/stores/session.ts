@@ -8,6 +8,8 @@ export interface SessionUser {
   country: string;
   emailVerified: boolean;
   twoFactorEnabled: boolean;
+  /** Admin-panel role in the firm (null = trader only). */
+  firmRole?: 'OWNER' | 'ADMIN' | 'SUPPORT' | null;
 }
 
 interface AuthPayload {

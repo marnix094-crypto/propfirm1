@@ -104,7 +104,11 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<LoginResponseDto> {
-    const firm = await this.firms.activeFromRequest(req);
+    // Admin logins are not tied to the domain's firm (staff email is unique across firms).
+    const firm =
+      dto.audience === 'admin'
+        ? await this.firms.defaultFirm()
+        : await this.firms.activeFromRequest(req);
     const r = await this.auth.login(dto, firm.id, req.headers['user-agent']);
     if ('mfaToken' in r) return { mfaRequired: true, mfaToken: r.mfaToken };
     this.setRefreshCookie(res, r.tokens);
@@ -194,7 +198,7 @@ export class AuthController {
   @ApiNoContentResponse({ description: 'Always 204, whether or not the email exists' })
   async forgot(@Body() dto: ForgotPasswordDto, @Req() req: Request): Promise<void> {
     const firm = await this.firms.fromRequest(req);
-    await this.auth.forgotPassword(dto.email, firm.id);
+    await this.auth.forgotPassword(dto.email, firm.id, dto.audience);
   }
 
   @Public()

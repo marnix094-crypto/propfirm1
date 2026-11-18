@@ -90,9 +90,26 @@ export class FirmsService implements OnModuleInit {
     return firm;
   }
 
+  private readonly byUser = new Map<string, { firm: Firm | null; at: number }>();
+
+  /** Firm of a signed-in user (cached briefly; used per request by ModuleGuard). */
+  async ofUser(userId: string): Promise<Firm | null> {
+    const hit = this.byUser.get(userId);
+    if (hit && Date.now() - hit.at < CACHE_MS) return hit.firm;
+    const u = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { firm: true },
+    });
+    const firm = u?.firm ?? null;
+    if (this.byUser.size > 10_000) this.byUser.clear();
+    this.byUser.set(userId, { firm, at: Date.now() });
+    return firm;
+  }
+
   /** Drop cached rows after an admin change (branding, domain, status). */
   invalidate(): void {
     this.bySlug.clear();
     this.byDomain.clear();
+    this.byUser.clear();
   }
 }

@@ -8,6 +8,7 @@ import {
 import { call, client, type Schemas } from '@/lib/api-client';
 import { useSession } from '@/stores/session';
 import { useFirmStore } from '@/stores/firm';
+import type { ClientModule } from '@brand/shared';
 
 export type AdminMe = Schemas['AdminMeDto'];
 export type AdminFirm = Schemas['AdminFirmDto'];
@@ -20,8 +21,6 @@ export type AdminProduct = Schemas['AdminProductDto'];
 export type AdminRuleSet = Schemas['AdminRuleSetDto'];
 export type AdminAlert = Schemas['AdminAlertDto'];
 export type AdminAudit = Schemas['AdminAuditDto'];
-export type TeamMember = Schemas['TeamMemberDto'];
-export type FirmRole = TeamMember['role'];
 export type CreateProduct = Schemas['CreateProductDto'];
 export type UpdateProduct = Schemas['UpdateProductDto'];
 export type CreateRuleSet = Schemas['CreateRuleSetDto'];
@@ -258,33 +257,27 @@ export function useAdminAudit(action: string) {
 export const useVerifyAudit = () =>
   useMutation({ mutationFn: () => call(() => client.GET('/api/v1/admin/audit/verify')) });
 
-// ---------------------------------------------------------------- team
-export function useTeam() {
+// ---------------------------------------------------------------- client dashboard
+export function useModules() {
   const ak = useAk();
   return useQuery({
-    queryKey: ak('team'),
-    queryFn: () => call(() => client.GET('/api/v1/admin/team')),
+    queryKey: ak('modules'),
+    queryFn: () => call(() => client.GET('/api/v1/admin/modules')),
     enabled: useReady(),
-    select: (d) => d.items,
   });
 }
 
-export const useInvite = () =>
-  useAdminMutation((body: { email: string; role: FirmRole }) =>
-    call(() => client.POST('/api/v1/admin/team', { body })),
-  );
-
-export const useChangeRole = () =>
-  useAdminMutation(({ id, role }: { id: string; role: FirmRole }) =>
-    call(() =>
-      client.PATCH('/api/v1/admin/team/{id}', { params: { path: { id } }, body: { role } }),
-    ),
-  );
-
-export const useRemoveMember = () =>
-  useAdminMutation((id: string) =>
-    call(() => client.DELETE('/api/v1/admin/team/{id}', { params: { path: { id } } })),
-  );
+export function useUpdateModules() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (disabled: ClientModule[]) =>
+      call(() => client.PUT('/api/v1/admin/modules', { body: { disabled } })),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['admin'] });
+      void qc.invalidateQueries({ queryKey: ['firm-branding'] });
+    },
+  });
+}
 
 // ---------------------------------------------------------------- firms (superadmin)
 export function useFirms(enabled: boolean) {
@@ -320,3 +313,25 @@ export function useFirmStatus() {
     onSuccess: () => void qc.invalidateQueries({ queryKey: ['admin-firms'] }),
   });
 }
+
+export function useSetFirmAdmin() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, email }: { id: string; email: string }) =>
+      call(() =>
+        client.POST('/api/v1/admin/firms/{id}/admin', {
+          params: { path: { id } },
+          body: { email },
+        }),
+      ),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ['admin-firms'] }),
+  });
+}
+
+export const useResendInvite = () =>
+  useMutation({
+    mutationFn: (id: string) =>
+      call(() =>
+        client.POST('/api/v1/admin/firms/{id}/admin/invite', { params: { path: { id } } }),
+      ),
+  });

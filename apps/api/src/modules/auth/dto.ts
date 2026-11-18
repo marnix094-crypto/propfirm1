@@ -56,6 +56,15 @@ export class LoginDto {
   @IsString()
   @MaxLength(128)
   password!: string;
+
+  @ApiPropertyOptional({
+    enum: ['client', 'admin'],
+    description:
+      'client (default) = trading platform; admin = firm admin / Daily Funded staff (D91)',
+  })
+  @IsOptional()
+  @IsIn(['client', 'admin'])
+  audience?: 'client' | 'admin';
 }
 
 export class UserDto {
@@ -109,6 +118,10 @@ export class TokenDto {
 
 export class ForgotPasswordDto {
   @ApiProperty() @Transform(lower) @IsEmail() email!: string;
+  @ApiPropertyOptional({ enum: ['client', 'admin'], description: 'client (default) or admin' })
+  @IsOptional()
+  @IsIn(['client', 'admin'])
+  audience?: 'client' | 'admin';
 }
 
 export class ResetPasswordDto {

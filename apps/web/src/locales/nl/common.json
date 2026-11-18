@@ -517,7 +517,10 @@
     "MEMBER_NOT_FOUND": "Teamlid niet gevonden.",
     "ALERT_NOT_FOUND": "Melding niet gevonden.",
     "RULESET_NOT_FOUND": "Regelset niet gevonden.",
-    "ACCOUNT_NOT_FOUND": "Account niet gevonden."
+    "ACCOUNT_NOT_FOUND": "Account niet gevonden.",
+    "STAFF_EMAIL_TAKEN": "Dit e-mailadres is al admin van een firma.",
+    "MODULE_NOT_FOUND": "Dit onderdeel van het platform is niet beschikbaar.",
+    "ADMIN_NOT_FOUND": "Deze firma heeft nog geen admin."
   },
   "app": {
     "nav": {
@@ -1262,7 +1265,8 @@
       "security": "Beveiliging",
       "faq": "FAQ",
       "liveDemo": "Live demo",
-      "bookDemo": "Plan een demo"
+      "bookDemo": "Plan een demo",
+      "partnerLogin": "Partner-login"
     },
     "hero": {
       "eyebrow": "White-label software voor prop firms",
@@ -1537,8 +1541,6 @@
   "admin": {
     "title": "Adminpanel",
     "badge": "Admin",
-    "open": "Adminpanel",
-    "backToPlatform": "Terug naar het platform",
     "firmSwitcher": "Firma om te beheren",
     "firmSuspended": "Deze firma is geschorst: traders kunnen niet inloggen, registreren of kopen.",
     "loadMore": "Meer laden",
@@ -1563,16 +1565,17 @@
       "ruleSets": "Regelsets",
       "branding": "Huisstijl",
       "audit": "Audit log",
-      "team": "Team",
       "firms": "Firma's",
       "sections": {
         "manage": "Beheren",
         "offer": "Jouw aanbod",
         "control": "Controle"
-      }
+      },
+      "clientDashboard": "Klantdashboard",
+      "security": "Inloggen & beveiliging"
     },
     "role": {
-      "OWNER": "Eigenaar",
+      "OWNER": "Firma-admin",
       "ADMIN": "Admin",
       "SUPPORT": "Support",
       "SUPERADMIN": "Daily Funded-team"
@@ -1610,7 +1613,8 @@
     "gate": {
       "forbidden": {
         "title": "Geen toegang tot het adminpanel",
-        "body": "Het adminpanel is voor het team van dit platform. Vraag een eigenaar van je firma om je toe te voegen."
+        "body": "Het adminpanel is alleen voor de admin van een prop firm en Daily Funded. Klantaccounts hebben geen toegang.",
+        "cta": "Naar het klantdashboard"
       },
       "2fa": {
         "title": "Zet eerst tweestapsverificatie aan",
@@ -1821,28 +1825,13 @@
         "SYSTEM": "Systeem"
       }
     },
-    "team": {
-      "subtitle": "Wie dit adminpanel mag gebruiken.",
-      "email": "E-mail",
-      "role": "Rol",
-      "roleFor": "Rol van {{email}}",
-      "invite": "Uitnodigen",
-      "invited": "Uitnodiging verstuurd",
-      "inviteHint": "Nieuwe mensen krijgen een e-mail om een wachtwoord in te stellen. Bestaande traders van je platform krijgen de rol meteen.",
-      "members": "Teamleden",
-      "twoFactor": "2FA",
-      "no2fa": "Niet ingesteld",
-      "you": "jij",
-      "remove": "Verwijderen",
-      "rolesNote": "Eigenaar: alles, ook het team. Admin: traders, accounts, producten en huisstijl; kan support toevoegen. Support: alleen lezen en meldingen bevestigen."
-    },
     "firms": {
       "subtitle": "Alle prop firms die op Daily Funded draaien.",
       "new": "Nieuwe firma",
-      "newHint": "De firma start met de voorbeeldcatalogus; de eigenaar krijgt een uitnodiging per e-mail.",
+      "newHint": "De firma start met de voorbeeldcatalogus; de admin krijgt een e-mail om een wachtwoord in te stellen (2FA verplicht).",
       "name": "Naam",
       "slug": "Code",
-      "ownerEmail": "E-mail eigenaar",
+      "ownerEmail": "E-mail admin",
       "create": "Firma aanmaken",
       "created": "Firma aangemaakt en eigenaar uitgenodigd",
       "list": "Firma's",
@@ -1851,8 +1840,48 @@
       "default": "Standaard",
       "manage": "Beheren",
       "suspend": "Schorsen",
-      "activate": "Activeren"
+      "activate": "Activeren",
+      "admin": "Admin",
+      "adminActive": "Actief · 2FA aan",
+      "adminNo2fa": "Actief · 2FA nog niet ingesteld",
+      "adminInvited": "Uitgenodigd (nog geen wachtwoord)",
+      "noAdmin": "Geen admin",
+      "changeAdmin": "Admin wijzigen",
+      "changeAdminTitle": "Nieuwe admin voor {{name}}",
+      "changeAdminBody": "De huidige admin wordt gedeactiveerd en uitgelogd. De nieuwe admin krijgt een e-mail om een wachtwoord in te stellen.",
+      "adminEmail": "E-mail van de nieuwe admin",
+      "sendInvite": "Uitnodiging versturen",
+      "resendInvite": "Uitnodiging opnieuw sturen",
+      "inviteSent": "Uitnodiging verstuurd",
+      "ownFirm": "Daily Funded-team"
     },
-    "devOwner": "Maak mij eigenaar van deze firma (dev)"
+    "logout": "Uitloggen",
+    "login": {
+      "title": "Partner-login",
+      "subtitle": "Adminpanel voor prop firms op Daily Funded.",
+      "note": "Adminaccounts worden aangemaakt door Daily Funded. Nog geen account? Neem contact op met je contactpersoon bij Daily Funded.",
+      "demoHint": "Preview: log in als Daily Funded met"
+    },
+    "modules": {
+      "subtitle": "Kies wat je klanten in hun dashboard zien. Uitgeschakelde onderdelen verdwijnen uit het menu en zijn niet te openen.",
+      "switchable": "Onderdelen",
+      "on": "Aan",
+      "off": "Uit",
+      "preview": "Voorbeeld klantmenu",
+      "coreNote": "Home, Handelen, Opnemen, Orderhistorie, Mijn statistieken en Instellingen staan altijd aan.",
+      "desc": {
+        "points": "Klanten verdienen punten met activiteit en wisselen ze in voor korting.",
+        "offers": "Persoonlijke kortingscodes voor nieuwe accounts.",
+        "leaderboard": "Openbare ranglijst van funded traders (opt-in, alleen bijnaam).",
+        "competitions": "Gratis maandelijkse handelscompetitie met een apart account.",
+        "transparency": "Openbare cijfers over je platform.",
+        "copier": "Trades kopiëren van het ene eigen account naar het andere.",
+        "backtesting": "Een strategie testen op historische koersen in de browser.",
+        "trackRecord": "Overzicht van resultaten per account.",
+        "notebook": "Privé handelsdagboek.",
+        "certificates": "Verifieerbare certificaten voor funded accounts.",
+        "tutorial": "Korte introductie van het platform."
+      }
+    }
   }
 }

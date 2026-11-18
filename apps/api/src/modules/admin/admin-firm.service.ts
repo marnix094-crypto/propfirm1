@@ -4,9 +4,10 @@ import { hash } from '@node-rs/argon2';
 import { APP_CONFIG, type AppConfig } from '../../config/env.js';
 import { PrismaService } from '../../infra/prisma.service.js';
 import { Errors } from '../../common/errors.js';
-import { Prisma, type FirmRole } from '../../generated/prisma/client.js';
+import { Prisma } from '../../generated/prisma/client.js';
+import { CLIENT_MODULES, isClientModule, type ClientModule } from '@brand/shared';
+import type { Tx } from '../../infra/prisma.service.js';
 import { AuditService } from '../audit/audit.service.js';
-import { openDemoAccount } from '../auth/auth.service.js';
 import { EmailTokensService } from '../auth/email-tokens.service.js';
 import { FirmsService } from '../firms/firms.service.js';
 import { ProductsService } from '../commerce/products.service.js';
@@ -18,17 +19,9 @@ import type {
   AdminFirmDto,
   AdminFirmSummaryDto,
   CreateFirmDto,
-  InviteMemberDto,
-  TeamMemberDto,
+  ModulesDto,
   UpdateBrandingDto,
 } from './dto.js';
-
-/** Which roles a member may hand out: owners anything, admins only support staff. */
-const CAN_GRANT: Record<FirmRole, FirmRole[]> = {
-  OWNER: ['OWNER', 'ADMIN', 'SUPPORT'],
-  ADMIN: ['SUPPORT'],
-  SUPPORT: [],
-};
 
 @Injectable()
 export class AdminFirmService {
@@ -80,156 +73,160 @@ export class AdminFirmService {
     }
   }
 
-  // ---------------------------------------------------------------- team
-  async team(ctx: AdminContext): Promise<TeamMemberDto[]> {
-    const rows = await this.prisma.user.findMany({
-      where: { firmId: ctx.firmId, firmRole: { not: null } },
-      orderBy: { createdAt: 'asc' },
-      include: { twoFactor: { select: { enabledAt: true } } },
+  // ---------------------------------------------------------------- client dashboard
+  async modules(ctx: AdminContext): Promise<ModulesDto> {
+    const f = await this.prisma.firm.findUniqueOrThrow({ where: { id: ctx.firmId } });
+    return { available: [...CLIENT_MODULES], disabled: f.disabledModules.filter(isClientModule) };
+  }
+
+  /** Switch client-dashboard modules on/off (D92). Enforced by ModuleGuard on the API. */
+  async updateModules(ctx: AdminContext, disabled: ClientModule[]): Promise<ModulesDto> {
+    const unique = [...new Set(disabled)].filter(isClientModule).sort();
+    await this.prisma.$transaction(async (tx) => {
+      await tx.firm.update({ where: { id: ctx.firmId }, data: { disabledModules: unique } });
+      await this.audit.append(tx, {
+        actorType: 'ADMIN',
+        actorId: ctx.userId,
+        firmId: ctx.firmId,
+        action: 'admin.modules_updated',
+        entityType: 'Firm',
+        entityId: ctx.firmId,
+        data: { disabled: unique },
+      });
     });
-    return rows.map((u) => ({
-      id: u.id,
-      email: u.email,
-      role: u.firmRole!,
-      twoFactorEnabled: !!u.twoFactor?.enabledAt,
-      lastLoginAt: u.lastLoginAt?.toISOString() ?? null,
-      isYou: u.id === ctx.userId,
-    }));
+    this.firms.invalidate();
+    return this.modules(ctx);
   }
 
-  private assertCanGrant(ctx: AdminContext, role: FirmRole) {
-    if (!CAN_GRANT[ctx.role].includes(role)) throw Errors.forbidden('ADMIN_ROLE_INSUFFICIENT');
-  }
-
+  // ---------------------------------------------------------------- firm admin
   /**
-   * Adds someone to the firm's team. An existing user of this firm gets the role; otherwise an
-   * account is created (with the usual free demo account) and an invitation to set a password
-   * is emailed.
+   * Creates the firm's admin account (D91): a staff-only user (no trading account) that can
+   * only sign in on the admin login. Staff emails are unique across all firms.
    */
-  async invite(ctx: AdminContext, dto: InviteMemberDto): Promise<TeamMemberDto[]> {
-    this.assertCanGrant(ctx, dto.role);
-    await this.addMember(ctx.firmId, dto.email.toLowerCase(), dto.role, ctx.userId);
-    return this.team(ctx);
-  }
-
-  private async addMember(
-    firmId: string,
-    email: string,
-    role: FirmRole,
-    actorId: string,
-  ): Promise<void> {
-    const { userId, created, locale } = await this.prisma.$transaction(async (tx) => {
-      const existing = await tx.user.findUnique({ where: { firmId_email: { firmId, email } } });
-      if (existing) {
-        if (existing.firmRole)
-          throw Errors.conflict('ALREADY_MEMBER', 'This person is already on the team');
-        await tx.user.update({ where: { id: existing.id }, data: { firmRole: role } });
-        await this.audit.append(tx, {
-          actorType: 'ADMIN',
-          actorId,
-          firmId,
-          action: 'admin.member_added',
-          entityType: 'User',
-          entityId: existing.id,
-          data: { role },
-        });
-        return { userId: existing.id, created: false, locale: existing.locale };
-      }
-      const inviter = await tx.user.findUnique({
-        where: { id: actorId },
-        select: { country: true, locale: true },
-      });
-      // Unusable random password until the invitation link is used.
-      const passwordHash = await hash(randomBytes(32).toString('base64url'));
-      const u = await tx.user.create({
-        data: {
-          firmId,
-          email,
-          firmRole: role,
-          passwordHash,
-          country: inviter?.country ?? 'NL',
-          locale: inviter?.locale ?? 'en',
-          termsAcceptedAt: new Date(),
-          termsVersion: 'staff-invite',
-        },
-      });
-      await openDemoAccount(tx, this.audit, u.id, this.config.demoInitialBalanceMinor);
+  private async createAdmin(tx: Tx, firmId: string, email: string, actorId: string) {
+    const staff = await tx.user.findMany({
+      where: { email, OR: [{ firmRole: { not: null } }, { roles: { has: 'ADMIN' } }] },
+    });
+    // A former admin of this same firm is reactivated instead of duplicated.
+    const former = staff.find((u) => u.firmId === firmId && u.status === 'SUSPENDED');
+    if (staff.some((u) => u !== former))
+      throw Errors.conflict('STAFF_EMAIL_TAKEN', 'This email is already an admin');
+    if (former) {
+      const u = await tx.user.update({ where: { id: former.id }, data: { status: 'ACTIVE' } });
       await this.audit.append(tx, {
         actorType: 'ADMIN',
         actorId,
         firmId,
-        action: 'admin.member_invited',
+        action: 'platform.firm_admin_created',
         entityType: 'User',
         entityId: u.id,
-        data: { role },
+        data: { reactivated: true },
       });
-      return { userId: u.id, created: true, locale: u.locale };
-    });
-    if (created) {
-      const token = await this.emailTokens.issue(userId, 'RESET_PASSWORD');
-      const link = `${this.config.appBaseUrl}/${locale}/reset-password?token=${token}`;
-      await this.mailer
-        .send({ to: email, ...renderMail('invite', locale, link) })
-        .catch((e: Error) => this.logger.warn(`invite mail failed: ${e.message}`));
+      return u;
     }
-  }
-
-  private async memberOf(ctx: AdminContext, id: string) {
-    const u = await this.prisma.user.findFirst({
-      where: { id, firmId: ctx.firmId, firmRole: { not: null } },
+    const actor = await tx.user.findUnique({ where: { id: actorId }, select: { locale: true } });
+    // Unusable random password until the invitation link is used.
+    const passwordHash = await hash(randomBytes(32).toString('base64url'));
+    const u = await tx.user.create({
+      data: {
+        firmId,
+        email,
+        firmRole: 'OWNER',
+        passwordHash,
+        country: 'NL',
+        locale: actor?.locale ?? 'en',
+        termsAcceptedAt: new Date(),
+        termsVersion: 'staff',
+        emailVerifiedAt: null,
+      },
     });
-    if (!u) throw Errors.notFound('Member');
+    await this.audit.append(tx, {
+      actorType: 'ADMIN',
+      actorId,
+      firmId,
+      action: 'platform.firm_admin_created',
+      entityType: 'User',
+      entityId: u.id,
+      data: {},
+    });
     return u;
   }
 
-  /** A firm must always keep at least one owner. */
-  private async assertNotLastOwner(firmId: string, userId: string) {
-    const owners = await this.prisma.user.count({
-      where: { firmId, firmRole: 'OWNER', status: 'ACTIVE', id: { not: userId } },
-    });
-    if (owners === 0)
-      throw Errors.unprocessable('LAST_OWNER', 'A firm needs at least one other owner first');
+  private async sendInvite(user: { id: string; email: string; locale: string }) {
+    const token = await this.emailTokens.issue(user.id, 'RESET_PASSWORD');
+    const link = `${this.config.appBaseUrl}/${user.locale}/reset-password?token=${token}&for=admin`;
+    await this.mailer
+      .send({ to: user.email, ...renderMail('invite', user.locale, link) })
+      .catch((e: Error) => this.logger.warn(`invite mail failed: ${e.message}`));
   }
 
-  async changeRole(ctx: AdminContext, id: string, role: FirmRole): Promise<TeamMemberDto[]> {
-    const m = await this.memberOf(ctx, id);
-    // Changing someone's role requires being allowed to grant both the old and the new one.
-    this.assertCanGrant(ctx, role);
-    this.assertCanGrant(ctx, m.firmRole!);
-    if (m.firmRole === 'OWNER' && role !== 'OWNER') await this.assertNotLastOwner(ctx.firmId, id);
-    await this.prisma.$transaction(async (tx) => {
-      await tx.user.update({ where: { id }, data: { firmRole: role } });
-      await this.audit.append(tx, {
-        actorType: 'ADMIN',
-        actorId: ctx.userId,
-        firmId: ctx.firmId,
-        action: 'admin.member_role_changed',
-        entityType: 'User',
-        entityId: id,
-        data: { from: m.firmRole, to: role },
-      });
+  private currentAdmin(firmId: string) {
+    return this.prisma.user.findFirst({
+      where: { firmId, firmRole: 'OWNER', status: 'ACTIVE' },
+      orderBy: { createdAt: 'desc' },
     });
-    return this.team(ctx);
   }
 
-  async removeMember(ctx: AdminContext, id: string): Promise<TeamMemberDto[]> {
-    const m = await this.memberOf(ctx, id);
-    this.assertCanGrant(ctx, m.firmRole!);
-    if (m.firmRole === 'OWNER') await this.assertNotLastOwner(ctx.firmId, id);
-    await this.prisma.$transaction(async (tx) => {
-      await tx.user.update({ where: { id }, data: { firmRole: null } });
-      await this.audit.append(tx, {
+  /** One admin per firm: a new admin replaces (deactivates) the previous one. */
+  async setFirmAdmin(
+    ctx: AdminContext,
+    firmId: string,
+    email: string,
+  ): Promise<AdminFirmSummaryDto[]> {
+    const firm = await this.prisma.firm.findUnique({ where: { id: firmId } });
+    if (!firm) throw Errors.notFound('Firm');
+    const lower = email.toLowerCase();
+    let created;
+    try {
+      created = await this.prisma.$transaction(async (tx) => {
+        const previous = await tx.user.findMany({
+          where: { firmId, firmRole: { not: null }, status: 'ACTIVE', email: { not: lower } },
+          select: { id: true },
+        });
+        for (const p of previous) {
+          // Stays marked as staff (never becomes a client account), but can no longer sign in.
+          await tx.user.update({ where: { id: p.id }, data: { status: 'SUSPENDED' } });
+          await this.audit.append(tx, {
+            actorType: 'ADMIN',
+            actorId: ctx.userId,
+            firmId,
+            action: 'platform.firm_admin_removed',
+            entityType: 'User',
+            entityId: p.id,
+            data: {},
+          });
+        }
+        return { user: await this.createAdmin(tx, firmId, lower, ctx.userId), previous };
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002')
+        throw Errors.conflict('EMAIL_TAKEN', 'This email is already used on this platform');
+      throw e;
+    }
+    // Previous admins are signed out everywhere.
+    await this.prisma.refreshToken.updateMany({
+      where: { userId: { in: created.previous.map((p) => p.id) }, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+    await this.sendInvite(created.user);
+    return this.listFirms();
+  }
+
+  async resendInvite(ctx: AdminContext, firmId: string): Promise<void> {
+    const admin = await this.currentAdmin(firmId);
+    if (!admin) throw Errors.notFound('Admin');
+    await this.prisma.$transaction((tx) =>
+      this.audit.append(tx, {
         actorType: 'ADMIN',
         actorId: ctx.userId,
-        firmId: ctx.firmId,
-        action: 'admin.member_removed',
+        firmId,
+        action: 'platform.firm_admin_invited',
         entityType: 'User',
-        entityId: id,
-        data: { role: m.firmRole },
-      });
-    });
-    // Sessions keep working for the trading platform; admin access is checked per request.
-    return this.team(ctx);
+        entityId: admin.id,
+        data: {},
+      }),
+    );
+    await this.sendInvite(admin);
   }
 
   // ---------------------------------------------------------------- firms (superadmin)
@@ -238,7 +235,7 @@ export class AdminFirmService {
     const [traders, funded] = await Promise.all([
       this.prisma.user.groupBy({
         by: ['firmId'],
-        where: { firmRole: null },
+        where: { firmRole: null, NOT: { roles: { has: 'ADMIN' } } },
         _count: { _all: true },
       }),
       this.prisma.$queryRaw<{ firmId: string; n: bigint }[]>`
@@ -247,20 +244,37 @@ export class AdminFirmService {
         WHERE a.kind = 'FUNDED' AND a.status = 'FUNDED_ACTIVE'
         GROUP BY u."firmId"`,
     ]);
+    const admins = await this.prisma.user.findMany({
+      where: { firmRole: 'OWNER', status: 'ACTIVE' },
+      select: {
+        firmId: true,
+        email: true,
+        lastLoginAt: true,
+        twoFactor: { select: { enabledAt: true } },
+      },
+    });
+    const adminBy = new Map(admins.map((a) => [a.firmId, a]));
     const t = new Map(traders.map((r) => [r.firmId, r._count._all]));
     const fa = new Map(funded.map((r) => [r.firmId, Number(r.n)]));
     return firms.map((f) => ({
       ...toAdminFirmDto(f, this.config.defaultFirmSlug),
       traders: t.get(f.id) ?? 0,
       fundedActive: fa.get(f.id) ?? 0,
+      admin: adminBy.has(f.id)
+        ? {
+            email: adminBy.get(f.id)!.email,
+            activated: adminBy.get(f.id)!.lastLoginAt !== null,
+            twoFactorEnabled: !!adminBy.get(f.id)!.twoFactor?.enabledAt,
+          }
+        : null,
     }));
   }
 
-  /** New tenant with the example catalogue; the owner is invited by email. */
+  /** New tenant with the example catalogue; its admin is invited by email (D91). */
   async createFirm(ctx: AdminContext, dto: CreateFirmDto): Promise<AdminFirmSummaryDto[]> {
-    let firmId: string;
+    let admin;
     try {
-      firmId = await this.prisma.$transaction(async (tx) => {
+      admin = await this.prisma.$transaction(async (tx) => {
         const f = await tx.firm.create({ data: { name: dto.name.trim(), slug: dto.slug } });
         await this.audit.append(tx, {
           actorType: 'ADMIN',
@@ -271,15 +285,15 @@ export class AdminFirmService {
           entityId: f.id,
           data: { slug: f.slug },
         });
-        return f.id;
+        return this.createAdmin(tx, f.id, dto.ownerEmail.toLowerCase(), ctx.userId);
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002')
         throw Errors.conflict('SLUG_TAKEN', 'A firm with this slug already exists');
       throw e;
     }
-    await this.products.seedCatalog(firmId);
-    await this.addMember(firmId, dto.ownerEmail.toLowerCase(), 'OWNER', ctx.userId);
+    await this.products.seedCatalog(admin.firmId);
+    await this.sendInvite(admin);
     this.firms.invalidate();
     return this.listFirms();
   }

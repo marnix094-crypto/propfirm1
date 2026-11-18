@@ -11,7 +11,8 @@
     "test": "vitest run",
     "db:migrate": "prisma migrate deploy",
     "db:migrate:dev": "prisma migrate dev",
-    "openapi:export": "node dist/scripts/export-openapi.js"
+    "openapi:export": "node dist/scripts/export-openapi.js",
+    "superadmin:create": "node --env-file-if-exists=.env dist/scripts/create-superadmin.js"
   },
   "dependencies": {
     "@brand/engine": "workspace:*",

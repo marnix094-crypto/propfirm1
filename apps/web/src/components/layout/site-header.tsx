@@ -70,6 +70,12 @@ export function SiteHeader() {
             <LanguageSwitcher />
           </div>
           <ThemeToggle />
+          <Link
+            to={`/${lang}/admin/login`}
+            className="hidden rounded-sm px-2 py-2 text-sm font-medium text-muted hover:text-fg lg:inline"
+          >
+            {t('site.nav.partnerLogin')}
+          </Link>
           <Button size="sm" variant="secondary" className="hidden sm:inline-flex" asChild>
             <Link to={`/${lang}/login`}>{t('site.nav.liveDemo')}</Link>
           </Button>
@@ -117,6 +123,9 @@ export function SiteHeader() {
             <LanguageSwitcher />
             <Button variant="secondary" asChild>
               <Link to={`/${lang}/login`}>{t('site.nav.liveDemo')}</Link>
+            </Button>
+            <Button variant="ghost" asChild>
+              <Link to={`/${lang}/admin/login`}>{t('site.nav.partnerLogin')}</Link>
             </Button>
             <Button asChild>
               <a href={`/${lang}#contact`} onClick={go('contact')}>

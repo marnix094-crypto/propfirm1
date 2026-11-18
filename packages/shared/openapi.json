@@ -881,9 +881,9 @@
         ]
       }
     },
-    "/api/v1/admin/team": {
+    "/api/v1/admin/modules": {
       "get": {
-        "operationId": "AdminController_team",
+        "operationId": "AdminController_modules",
         "parameters": [
           {
             "name": "x-admin-firm",
@@ -901,7 +901,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TeamListDto"
+                  "$ref": "#/components/schemas/ModulesDto"
                 }
               }
             }
@@ -911,8 +911,8 @@
           "admin"
         ]
       },
-      "post": {
-        "operationId": "AdminController_invite",
+      "put": {
+        "operationId": "AdminController_updateModules",
         "parameters": [
           {
             "name": "x-admin-firm",
@@ -929,56 +929,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InviteMemberDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TeamListDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "admin"
-        ]
-      }
-    },
-    "/api/v1/admin/team/{id}": {
-      "patch": {
-        "operationId": "AdminController_changeRole",
-        "parameters": [
-          {
-            "name": "x-admin-firm",
-            "in": "header",
-            "description": "Superadmins only: id of the firm to administer",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateMemberDto"
+                "$ref": "#/components/schemas/UpdateModulesDto"
               }
             }
           }
@@ -989,44 +940,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TeamListDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "admin"
-        ]
-      },
-      "delete": {
-        "operationId": "AdminController_removeMember",
-        "parameters": [
-          {
-            "name": "x-admin-firm",
-            "in": "header",
-            "description": "Superadmins only: id of the firm to administer",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TeamListDto"
+                  "$ref": "#/components/schemas/ModulesDto"
                 }
               }
             }
@@ -1153,6 +1067,118 @@
         },
         "tags": [
           "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/firms/{id}/admin": {
+      "post": {
+        "operationId": "AdminController_setFirmAdmin",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FirmAdminDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminFirmListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/firms/{id}/admin/invite": {
+      "post": {
+        "operationId": "AdminController_resendInvite",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/dev/staff": {
+      "post": {
+        "operationId": "DevStaffController_devStaff",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DevStaffRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DevStaffDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "config"
         ]
       }
     },
@@ -2447,20 +2473,6 @@
         ]
       }
     },
-    "/api/v1/dev/firm-owner": {
-      "post": {
-        "operationId": "DevToolsController_firmOwner",
-        "parameters": [],
-        "responses": {
-          "204": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "config"
-        ]
-      }
-    },
     "/api/v1/dev/example-funded-account": {
       "post": {
         "operationId": "DevToolsController_exampleFunded",
@@ -3287,6 +3299,26 @@
               "ACTIVE",
               "SUSPENDED"
             ]
+          },
+          "disabledModules": {
+            "type": "array",
+            "description": "Client-dashboard modules switched off by the firm",
+            "items": {
+              "type": "string",
+              "enum": [
+                "points",
+                "offers",
+                "leaderboard",
+                "competitions",
+                "transparency",
+                "copier",
+                "backtesting",
+                "trackRecord",
+                "notebook",
+                "certificates",
+                "tutorial"
+              ]
+            }
           }
         },
         "required": [
@@ -3296,7 +3328,8 @@
           "primaryColor",
           "logoDataUrl",
           "supportEmail",
-          "status"
+          "status",
+          "disabledModules"
         ]
       },
       "AdminFirmDto": {
@@ -3337,6 +3370,25 @@
           "isDefault": {
             "type": "boolean"
           },
+          "disabledModules": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "points",
+                "offers",
+                "leaderboard",
+                "competitions",
+                "transparency",
+                "copier",
+                "backtesting",
+                "trackRecord",
+                "notebook",
+                "certificates",
+                "tutorial"
+              ]
+            }
+          },
           "createdAt": {
             "type": "string"
           }
@@ -3351,6 +3403,7 @@
           "logoDataUrl",
           "supportEmail",
           "isDefault",
+          "disabledModules",
           "createdAt"
         ]
       },
@@ -4308,91 +4361,100 @@
           "brokenAtId"
         ]
       },
-      "TeamMemberDto": {
+      "ModulesDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "role": {
-            "type": "string",
-            "enum": [
-              "OWNER",
-              "ADMIN",
-              "SUPPORT"
-            ]
-          },
-          "twoFactorEnabled": {
-            "type": "boolean"
-          },
-          "lastLoginAt": {
-            "type": "string",
-            "nullable": true
-          },
-          "isYou": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "id",
-          "email",
-          "role",
-          "twoFactorEnabled",
-          "lastLoginAt",
-          "isYou"
-        ]
-      },
-      "TeamListDto": {
-        "type": "object",
-        "properties": {
-          "items": {
+          "available": {
             "type": "array",
+            "description": "All switchable modules",
             "items": {
-              "$ref": "#/components/schemas/TeamMemberDto"
+              "type": "string",
+              "enum": [
+                "points",
+                "offers",
+                "leaderboard",
+                "competitions",
+                "transparency",
+                "copier",
+                "backtesting",
+                "trackRecord",
+                "notebook",
+                "certificates",
+                "tutorial"
+              ]
+            }
+          },
+          "disabled": {
+            "type": "array",
+            "description": "Modules switched off",
+            "items": {
+              "type": "string",
+              "enum": [
+                "points",
+                "offers",
+                "leaderboard",
+                "competitions",
+                "transparency",
+                "copier",
+                "backtesting",
+                "trackRecord",
+                "notebook",
+                "certificates",
+                "tutorial"
+              ]
             }
           }
         },
         "required": [
-          "items"
+          "available",
+          "disabled"
         ]
       },
-      "InviteMemberDto": {
+      "UpdateModulesDto": {
+        "type": "object",
+        "properties": {
+          "disabled": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "points",
+                "offers",
+                "leaderboard",
+                "competitions",
+                "transparency",
+                "copier",
+                "backtesting",
+                "trackRecord",
+                "notebook",
+                "certificates",
+                "tutorial"
+              ]
+            }
+          }
+        },
+        "required": [
+          "disabled"
+        ]
+      },
+      "FirmAdminInfoDto": {
         "type": "object",
         "properties": {
           "email": {
             "type": "string"
           },
-          "role": {
-            "type": "string",
-            "enum": [
-              "OWNER",
-              "ADMIN",
-              "SUPPORT"
-            ]
+          "activated": {
+            "type": "boolean",
+            "description": "Has set a password and logged in at least once"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
           }
         },
         "required": [
           "email",
-          "role"
-        ]
-      },
-      "UpdateMemberDto": {
-        "type": "object",
-        "properties": {
-          "role": {
-            "type": "string",
-            "enum": [
-              "OWNER",
-              "ADMIN",
-              "SUPPORT"
-            ]
-          }
-        },
-        "required": [
-          "role"
+          "activated",
+          "twoFactorEnabled"
         ]
       },
       "AdminFirmSummaryDto": {
@@ -4433,6 +4495,25 @@
           "isDefault": {
             "type": "boolean"
           },
+          "disabledModules": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "points",
+                "offers",
+                "leaderboard",
+                "competitions",
+                "transparency",
+                "copier",
+                "backtesting",
+                "trackRecord",
+                "notebook",
+                "certificates",
+                "tutorial"
+              ]
+            }
+          },
           "createdAt": {
             "type": "string"
           },
@@ -4441,6 +4522,15 @@
           },
           "fundedActive": {
             "type": "number"
+          },
+          "admin": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FirmAdminInfoDto"
+              }
+            ]
           }
         },
         "required": [
@@ -4453,9 +4543,11 @@
           "logoDataUrl",
           "supportEmail",
           "isDefault",
+          "disabledModules",
           "createdAt",
           "traders",
-          "fundedActive"
+          "fundedActive",
+          "admin"
         ]
       },
       "AdminFirmListDto": {
@@ -4486,7 +4578,7 @@
           },
           "ownerEmail": {
             "type": "string",
-            "description": "Receives an invitation as OWNER"
+            "description": "The firm admin; receives an email to set a password"
           }
         },
         "required": [
@@ -4508,6 +4600,52 @@
         },
         "required": [
           "status"
+        ]
+      },
+      "FirmAdminDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "New admin of the firm (replaces the current one)"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "DevStaffRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "superadmin": {
+            "type": "boolean",
+            "description": "Create a Daily Funded superadmin instead of a firm admin"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "DevStaffDto": {
+        "type": "object",
+        "properties": {
+          "firmId": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "firmId",
+          "slug"
         ]
       },
       "RegisterDto": {
@@ -4625,6 +4763,14 @@
           },
           "password": {
             "type": "string"
+          },
+          "audience": {
+            "type": "string",
+            "enum": [
+              "client",
+              "admin"
+            ],
+            "description": "client (default) = trading platform; admin = firm admin / Daily Funded staff (D91)"
           }
         },
         "required": [
@@ -4690,6 +4836,14 @@
         "properties": {
           "email": {
             "type": "string"
+          },
+          "audience": {
+            "type": "string",
+            "enum": [
+              "client",
+              "admin"
+            ],
+            "description": "client (default) or admin"
           }
         },
         "required": [

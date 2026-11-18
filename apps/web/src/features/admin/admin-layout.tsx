@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router';
+import { Link, NavLink, Outlet, useLocation, useNavigate, useParams } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ChevronRight, KeyRound, Lock } from 'lucide-react';
+import { ChevronRight, KeyRound, Lock, LogOut } from 'lucide-react';
 import { FirmLogo, useFirmTheme } from '@/components/layout/firm-brand';
 import { SkipLink } from '@/components/layout/skip-link';
 import { LanguageSwitcher } from '@/components/layout/language-switcher';
@@ -103,6 +104,28 @@ function SideLinks({ superadmin, onNavigate }: { superadmin: boolean; onNavigate
   );
 }
 
+/** Signs out and returns to the admin login. */
+function LogoutButton({ className }: { className?: string }) {
+  const { t } = useTranslation();
+  const { lang } = useParams();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const logout = useSession((s) => s.logout);
+  return (
+    <Button
+      variant="secondary"
+      className={className}
+      onClick={async () => {
+        await logout();
+        qc.clear();
+        void navigate(`/${lang}/admin/login`, { replace: true });
+      }}
+    >
+      <LogOut aria-hidden="true" /> {t('admin.logout')}
+    </Button>
+  );
+}
+
 /** Full-page notice when the user may not (yet) use the admin panel. */
 function Gate({ kind }: { kind: 'forbidden' | '2fa' }) {
   const { t } = useTranslation();
@@ -121,14 +144,16 @@ function Gate({ kind }: { kind: 'forbidden' | '2fa' }) {
         <h1 className="text-xl font-bold tracking-tight">{t(`admin.gate.${kind}.title`)}</h1>
         <p className="text-sm text-muted">{t(`admin.gate.${kind}.body`)}</p>
         <div className="flex flex-wrap gap-3">
-          {kind === '2fa' && (
+          {kind === '2fa' ? (
             <Button asChild>
-              <Link to={`/${lang}/app/security`}>{t('admin.gate.2fa.cta')}</Link>
+              <Link to={`/${lang}/admin/security`}>{t('admin.gate.2fa.cta')}</Link>
+            </Button>
+          ) : (
+            <Button asChild>
+              <Link to={`/${lang}/app`}>{t('admin.gate.forbidden.cta')}</Link>
             </Button>
           )}
-          <Button variant="secondary" asChild>
-            <Link to={`/${lang}/app`}>{t('admin.backToPlatform')}</Link>
-          </Button>
+          <LogoutButton />
         </div>
       </Card>
     </main>
@@ -143,6 +168,7 @@ export function AdminLayout() {
   const user = useSession((s) => s.user);
   const me = useAdminMe();
   const meta = useAdminTitle();
+  const { pathname } = useLocation();
   useFirmTheme();
 
   useEffect(() => {
@@ -170,7 +196,15 @@ export function AdminLayout() {
     );
   }
   const data = me.data;
-  if (data.twoFactorRequired && !data.twoFactorEnabled) return <Gate kind="2fa" />;
+  if (data.twoFactorRequired && !data.twoFactorEnabled) {
+    // Before 2FA is on, only the security page (to set it up) is reachable.
+    if (!pathname.endsWith('/admin/security')) return <Gate kind="2fa" />;
+    return (
+      <main id="main" className="mx-auto w-full max-w-3xl px-4 py-10">
+        <Outlet />
+      </main>
+    );
+  }
 
   return (
     <div className="min-h-dvh lg:pl-64">
@@ -185,14 +219,9 @@ export function AdminLayout() {
         <nav aria-label={t('admin.nav.main')} className="flex-1 overflow-y-auto px-3 py-4">
           <SideLinks superadmin={data.superadmin} />
         </nav>
-        <div className="border-t border-border p-4">
-          <Link
-            to={`/${lang}/app`}
-            className="mb-3 flex items-center gap-2 text-sm font-semibold text-link hover:underline"
-          >
-            <ArrowLeft className="size-4" aria-hidden="true" /> {t('admin.backToPlatform')}
-          </Link>
+        <div className="flex flex-col gap-3 border-t border-border p-4">
           <LanguageSwitcher />
+          <LogoutButton className="w-full" />
         </div>
       </aside>
 
@@ -296,6 +325,7 @@ export function AdminMenuPage() {
         </nav>
       </Card>
       <LanguageSwitcher />
+      <LogoutButton />
     </div>
   );
 }

@@ -39,7 +39,7 @@ export const ADMIN_FIRM_HEADER = 'x-admin-firm';
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * Admin panel access (D85): staff of a firm (OWNER/ADMIN/SUPPORT) see only that firm;
+ * Admin panel access (D85, D91): the firm's admin (OWNER) sees only that firm;
  * platform superadmins may pick any firm via `X-Admin-Firm`. Requires 2FA unless
  * ADMIN_REQUIRE_2FA=false (dev/e2e only). Suspended users and firms are refused.
  */
@@ -71,7 +71,8 @@ export class AdminGuard implements CanActivate {
     });
     if (!user || user.status !== 'ACTIVE') throw Errors.forbidden('ADMIN_FORBIDDEN');
     const superadmin = user.roles.includes('ADMIN');
-    if (!superadmin && (!user.firmRole || user.firm.status !== 'ACTIVE'))
+    // Only the firm's own admin (OWNER) or Daily Funded staff — never other roles (D91).
+    if (!superadmin && (user.firmRole !== 'OWNER' || user.firm.status !== 'ACTIVE'))
       throw Errors.forbidden('ADMIN_FORBIDDEN');
 
     const twoFactorEnabled = !!user.twoFactor?.enabledAt;

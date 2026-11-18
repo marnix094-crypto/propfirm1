@@ -517,7 +517,10 @@
     "MEMBER_NOT_FOUND": "Miembro no encontrado.",
     "ALERT_NOT_FOUND": "Alerta no encontrada.",
     "RULESET_NOT_FOUND": "Reglas no encontradas.",
-    "ACCOUNT_NOT_FOUND": "Cuenta no encontrada."
+    "ACCOUNT_NOT_FOUND": "Cuenta no encontrada.",
+    "STAFF_EMAIL_TAKEN": "Este correo ya es admin de una empresa.",
+    "MODULE_NOT_FOUND": "Esta parte de la plataforma no está disponible.",
+    "ADMIN_NOT_FOUND": "Esta empresa aún no tiene admin."
   },
   "app": {
     "nav": {
@@ -1262,7 +1265,8 @@
       "security": "Seguridad",
       "faq": "FAQ",
       "liveDemo": "Demo en vivo",
-      "bookDemo": "Reservar una demo"
+      "bookDemo": "Reservar una demo",
+      "partnerLogin": "Acceso partners"
     },
     "hero": {
       "eyebrow": "Software de marca blanca para prop firms",
@@ -1537,8 +1541,6 @@
   "admin": {
     "title": "Panel de administración",
     "badge": "Admin",
-    "open": "Panel de administración",
-    "backToPlatform": "Volver a la plataforma",
     "firmSwitcher": "Empresa a gestionar",
     "firmSuspended": "Esta empresa está suspendida: los traders no pueden iniciar sesión, registrarse ni comprar.",
     "loadMore": "Cargar más",
@@ -1563,16 +1565,17 @@
       "ruleSets": "Reglas",
       "branding": "Marca",
       "audit": "Registro de auditoría",
-      "team": "Equipo",
       "firms": "Empresas",
       "sections": {
         "manage": "Gestionar",
         "offer": "Tu oferta",
         "control": "Control"
-      }
+      },
+      "clientDashboard": "Panel de clientes",
+      "security": "Acceso y seguridad"
     },
     "role": {
-      "OWNER": "Propietario",
+      "OWNER": "Admin de la empresa",
       "ADMIN": "Admin",
       "SUPPORT": "Soporte",
       "SUPERADMIN": "Equipo de Daily Funded"
@@ -1610,7 +1613,8 @@
     "gate": {
       "forbidden": {
         "title": "Sin acceso al panel de administración",
-        "body": "El panel es para el equipo de esta plataforma. Pide a un propietario de tu empresa que te añada."
+        "body": "El panel de administración es solo para el admin de una prop firm y Daily Funded. Las cuentas de cliente no tienen acceso.",
+        "cta": "Ir al panel de clientes"
       },
       "2fa": {
         "title": "Activa primero la verificación en dos pasos",
@@ -1821,28 +1825,13 @@
         "SYSTEM": "Sistema"
       }
     },
-    "team": {
-      "subtitle": "Quién puede usar este panel.",
-      "email": "Correo",
-      "role": "Rol",
-      "roleFor": "Rol de {{email}}",
-      "invite": "Invitar",
-      "invited": "Invitación enviada",
-      "inviteHint": "Las personas nuevas reciben un correo para crear una contraseña. Los traders existentes de tu plataforma reciben el rol al momento.",
-      "members": "Miembros del equipo",
-      "twoFactor": "2FA",
-      "no2fa": "Sin configurar",
-      "you": "tú",
-      "remove": "Quitar",
-      "rolesNote": "Propietario: todo, incluido el equipo. Admin: traders, cuentas, productos y marca; puede añadir soporte. Soporte: solo lectura y confirmar alertas."
-    },
     "firms": {
       "subtitle": "Todas las prop firms que funcionan con Daily Funded.",
       "new": "Nueva empresa",
-      "newHint": "La empresa empieza con el catálogo de ejemplo; el propietario recibe una invitación por correo.",
+      "newHint": "La empresa empieza con el catálogo de ejemplo; su admin recibe un correo para crear una contraseña (2FA obligatoria).",
       "name": "Nombre",
       "slug": "Código",
-      "ownerEmail": "Correo del propietario",
+      "ownerEmail": "Correo del admin",
       "create": "Crear empresa",
       "created": "Empresa creada y propietario invitado",
       "list": "Empresas",
@@ -1851,8 +1840,48 @@
       "default": "Predeterminada",
       "manage": "Gestionar",
       "suspend": "Suspender",
-      "activate": "Activar"
+      "activate": "Activar",
+      "admin": "Admin",
+      "adminActive": "Activo · 2FA activada",
+      "adminNo2fa": "Activo · 2FA sin configurar",
+      "adminInvited": "Invitado (sin contraseña aún)",
+      "noAdmin": "Sin admin",
+      "changeAdmin": "Cambiar admin",
+      "changeAdminTitle": "Nuevo admin para {{name}}",
+      "changeAdminBody": "El admin actual se desactiva y se cierra su sesión. El nuevo admin recibe un correo para crear una contraseña.",
+      "adminEmail": "Correo del nuevo admin",
+      "sendInvite": "Enviar invitación",
+      "resendInvite": "Reenviar invitación",
+      "inviteSent": "Invitación enviada",
+      "ownFirm": "Equipo de Daily Funded"
     },
-    "devOwner": "Hazme propietario de esta empresa (dev)"
+    "logout": "Cerrar sesión",
+    "login": {
+      "title": "Acceso partners",
+      "subtitle": "Panel de administración para prop firms en Daily Funded.",
+      "note": "Las cuentas de administrador las crea Daily Funded. ¿Aún no tienes cuenta? Contacta con tu persona de contacto en Daily Funded.",
+      "demoHint": "Vista previa: entra como Daily Funded con"
+    },
+    "modules": {
+      "subtitle": "Elige qué ven tus clientes en su panel. Los módulos desactivados desaparecen del menú y no se pueden abrir.",
+      "switchable": "Módulos",
+      "on": "Activado",
+      "off": "Desactivado",
+      "preview": "Vista previa del menú del cliente",
+      "coreNote": "Inicio, Operar, Retiro, Historial de órdenes, Mis estadísticas y Ajustes siempre están activos.",
+      "desc": {
+        "points": "Los clientes ganan puntos por actividad y los canjean por descuentos.",
+        "offers": "Códigos de descuento personales para cuentas nuevas.",
+        "leaderboard": "Clasificación pública de traders financiados (opcional, solo apodo).",
+        "competitions": "Competición mensual gratuita con una cuenta aparte.",
+        "transparency": "Cifras públicas sobre tu plataforma.",
+        "copier": "Copiar operaciones de una cuenta propia a otra.",
+        "backtesting": "Probar una estrategia con precios históricos en el navegador.",
+        "trackRecord": "Resumen de resultados por cuenta.",
+        "notebook": "Diario de trading privado.",
+        "certificates": "Certificados verificables para cuentas financiadas.",
+        "tutorial": "Breve introducción a la plataforma."
+      }
+    }
   }
 }

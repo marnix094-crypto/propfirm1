@@ -1,6 +1,11 @@
 /** Only allow in-app redirects (prevents open redirects via ?next=). */
-export function safeNext(next: string | null, lang: string | undefined): string {
-  return next && next.startsWith(`/${lang}/app`) && !next.startsWith('//') ? next : `/${lang}/app`;
+export function safeNext(
+  next: string | null,
+  lang: string | undefined,
+  area: 'app' | 'admin' = 'app',
+): string {
+  const base = `/${lang}/${area}`;
+  return next && next.startsWith(base) && !next.startsWith('//') ? next : base;
 }
 
 /** `?next=…` suffix to carry a pending in-app destination between login and register. */

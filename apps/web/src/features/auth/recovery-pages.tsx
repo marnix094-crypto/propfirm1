@@ -26,6 +26,8 @@ function Notice({ ok, children }: { ok: boolean; children: React.ReactNode }) {
 export function ForgotPasswordPage() {
   const { t } = useTranslation();
   const { lang } = useParams();
+  const [params] = useSearchParams();
+  const forAdmin = params.get('for') === 'admin';
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +39,10 @@ export function ForgotPasswordPage() {
     try {
       await call(() =>
         client.POST('/api/v1/auth/password/forgot', {
-          body: { email: String(new FormData(e.currentTarget).get('email')) },
+          body: {
+            email: String(new FormData(e.currentTarget).get('email')),
+            ...(forAdmin ? { audience: 'admin' as const } : {}),
+          },
         }),
       );
       setSent(true);
@@ -78,7 +83,10 @@ export function ForgotPasswordPage() {
         </form>
       )}
       <p className="mt-6 text-center text-sm">
-        <Link to={`/${lang}/login`} className="font-semibold text-link hover:underline">
+        <Link
+          to={`/${lang}/${forAdmin ? 'admin/login' : 'login'}`}
+          className="font-semibold text-link hover:underline"
+        >
           {t('auth.forgot.back')}
         </Link>
       </p>
@@ -119,7 +127,9 @@ export function ResetPasswordPage() {
         <div className="flex flex-col gap-5">
           <Notice ok>{t('auth.reset.done')}</Notice>
           <Button asChild size="lg" fullWidth>
-            <Link to={`/${lang}/login`}>{t('auth.login.submit')}</Link>
+            <Link to={`/${lang}/${params.get('for') === 'admin' ? 'admin/login' : 'login'}`}>
+              {t('auth.login.submit')}
+            </Link>
           </Button>
         </div>
       ) : (

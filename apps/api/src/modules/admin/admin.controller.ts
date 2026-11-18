@@ -8,7 +8,6 @@ import {
   Patch,
   Post,
   Put,
-  Delete,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -23,7 +22,6 @@ import {
   Admin,
   ADMIN_FIRM_HEADER,
   AdminGuard,
-  AdminRoles,
   AllowWithout2fa,
   SuperadminOnly,
   type AdminContext,
@@ -53,13 +51,13 @@ import {
   CreateFirmDto,
   CreateProductDto,
   CreateRuleSetDto,
+  FirmAdminDto,
   FirmStatusDto,
-  InviteMemberDto,
+  ModulesDto,
+  UpdateModulesDto,
   ReasonDto,
-  TeamListDto,
   TraderQuery,
   UpdateBrandingDto,
-  UpdateMemberDto,
   UpdateProductDto,
 } from './dto.js';
 
@@ -107,7 +105,6 @@ export class AdminController {
     return this.admin.trader(ctx, id);
   }
 
-  @AdminRoles('OWNER', 'ADMIN')
   @Post('traders/:id/suspend')
   @HttpCode(200)
   @ApiOkResponse({ type: AdminTraderDetailDto })
@@ -115,7 +112,6 @@ export class AdminController {
     return this.admin.setTraderStatus(ctx, id, 'SUSPENDED', dto.reason);
   }
 
-  @AdminRoles('OWNER', 'ADMIN')
   @Post('traders/:id/reactivate')
   @HttpCode(200)
   @ApiOkResponse({ type: AdminTraderDetailDto })
@@ -130,7 +126,6 @@ export class AdminController {
     return this.admin.accounts(ctx, q);
   }
 
-  @AdminRoles('OWNER', 'ADMIN')
   @Post('accounts/:id/fail')
   @HttpCode(200)
   @ApiOkResponse({ type: AdminAccountDto })
@@ -145,14 +140,12 @@ export class AdminController {
     return { items: await this.catalog.products(ctx) };
   }
 
-  @AdminRoles('OWNER', 'ADMIN')
   @Post('products')
   @ApiCreatedResponse({ type: AdminProductDto })
   createProduct(@Admin() ctx: AdminContext, @Body() dto: CreateProductDto) {
     return this.catalog.createProduct(ctx, dto);
   }
 
-  @AdminRoles('OWNER', 'ADMIN')
   @Patch('products/:id')
   @ApiOkResponse({ type: AdminProductDto })
   updateProduct(
@@ -169,7 +162,6 @@ export class AdminController {
     return { items: await this.catalog.ruleSets(ctx) };
   }
 
-  @AdminRoles('OWNER', 'ADMIN')
   @Post('rule-sets')
   @ApiCreatedResponse({ type: AdminRuleSetDto })
   createRuleSet(@Admin() ctx: AdminContext, @Body() dto: CreateRuleSetDto) {
@@ -183,7 +175,6 @@ export class AdminController {
     return this.firm.branding(ctx);
   }
 
-  @AdminRoles('OWNER', 'ADMIN')
   @Put('branding')
   @ApiOkResponse({ type: AdminFirmDto })
   updateBranding(@Admin() ctx: AdminContext, @Body() dto: UpdateBrandingDto) {
@@ -210,46 +201,23 @@ export class AdminController {
     return this.admin.auditLog(ctx, q);
   }
 
-  @AdminRoles('OWNER', 'ADMIN')
   @Get('audit/verify')
   @ApiOkResponse({ type: AuditVerifyDto })
   verifyAudit() {
     return this.admin.verifyAudit();
   }
 
-  // -------------------------------------------------------------- team
-  @Get('team')
-  @ApiOkResponse({ type: TeamListDto })
-  async team(@Admin() ctx: AdminContext): Promise<TeamListDto> {
-    return { items: await this.firm.team(ctx) };
+  // -------------------------------------------------------------- client dashboard
+  @Get('modules')
+  @ApiOkResponse({ type: ModulesDto })
+  modules(@Admin() ctx: AdminContext) {
+    return this.firm.modules(ctx);
   }
 
-  @AdminRoles('OWNER', 'ADMIN')
-  @Post('team')
-  @ApiCreatedResponse({ type: TeamListDto })
-  async invite(@Admin() ctx: AdminContext, @Body() dto: InviteMemberDto): Promise<TeamListDto> {
-    return { items: await this.firm.invite(ctx, dto) };
-  }
-
-  @AdminRoles('OWNER', 'ADMIN')
-  @Patch('team/:id')
-  @ApiOkResponse({ type: TeamListDto })
-  async changeRole(
-    @Admin() ctx: AdminContext,
-    @Param('id', UUID) id: string,
-    @Body() dto: UpdateMemberDto,
-  ): Promise<TeamListDto> {
-    return { items: await this.firm.changeRole(ctx, id, dto.role) };
-  }
-
-  @AdminRoles('OWNER', 'ADMIN')
-  @Delete('team/:id')
-  @ApiOkResponse({ type: TeamListDto })
-  async removeMember(
-    @Admin() ctx: AdminContext,
-    @Param('id', UUID) id: string,
-  ): Promise<TeamListDto> {
-    return { items: await this.firm.removeMember(ctx, id) };
+  @Put('modules')
+  @ApiOkResponse({ type: ModulesDto })
+  updateModules(@Admin() ctx: AdminContext, @Body() dto: UpdateModulesDto) {
+    return this.firm.updateModules(ctx, dto.disabled);
   }
 
   // -------------------------------------------------------------- firms (superadmin)
@@ -277,5 +245,27 @@ export class AdminController {
     @Body() dto: FirmStatusDto,
   ) {
     return { items: await this.firm.setFirmStatus(ctx, id, dto.status) };
+  }
+
+  /** Daily Funded: give the firm a (new) admin. The previous admin is deactivated. */
+  @SuperadminOnly()
+  @Post('firms/:id/admin')
+  @HttpCode(200)
+  @ApiOkResponse({ type: AdminFirmListDto })
+  async setFirmAdmin(
+    @Admin() ctx: AdminContext,
+    @Param('id', UUID) id: string,
+    @Body() dto: FirmAdminDto,
+  ) {
+    return { items: await this.firm.setFirmAdmin(ctx, id, dto.email) };
+  }
+
+  /** Daily Funded: send the firm admin a new link to set a password. */
+  @SuperadminOnly()
+  @Post('firms/:id/admin/invite')
+  @HttpCode(204)
+  @ApiNoContentResponse()
+  async resendInvite(@Admin() ctx: AdminContext, @Param('id', UUID) id: string): Promise<void> {
+    await this.firm.resendInvite(ctx, id);
   }
 }

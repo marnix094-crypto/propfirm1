@@ -30,6 +30,7 @@ import {
   type RuleParams,
 } from '@brand/engine';
 import { exampleProducts, exampleQuotePriceMinor, exampleRules } from '@/mocks/data';
+import { CLIENT_MODULES } from '@brand/shared';
 import { bySymbol, DEMO_INSTRUMENTS, DemoMarket } from './market';
 
 const uid = () => crypto.randomUUID();
@@ -84,6 +85,8 @@ interface User {
   country: string;
   emailVerified: boolean;
   twoFactorEnabled: boolean;
+  /** Preview admin (Daily Funded staff): admin login only, no trading account. */
+  staff?: boolean;
 }
 interface Acc {
   id: string;
@@ -271,13 +274,12 @@ const today = () =>
 const userDto = (u: User) => ({
   id: u.id,
   email: u.email,
-  roles: ['TRADER'],
+  roles: u.staff ? ['ADMIN'] : ['TRADER'],
   locale: u.locale,
   country: u.country,
   emailVerified: u.emailVerified,
   twoFactorEnabled: u.twoFactorEnabled,
-  // Preview: every visitor owns the example firm, so the admin panel can be explored.
-  firmRole: 'OWNER' as const,
+  firmRole: null,
 });
 const auth = (u: User) => ({ accessToken: `demo.${u.id}`, expiresIn: 3600, user: userDto(u) });
 const me = (): User => {
@@ -635,9 +637,25 @@ on('POST', '/auth/register', (_m, b) => {
   st.sessionUserId = u.id;
   return json(201, auth(u));
 });
+/** Preview-only admin credentials (also shown on the partner login in preview builds). */
+const DEMO_ADMIN = { email: 'admin@dailyfunded.demo', password: 'demo-admin-2026' };
 on('POST', '/auth/login', (_m, b) => {
+  const email = String(b.email).trim().toLowerCase();
+  const admin = b.audience === 'admin';
+  if (admin && email === DEMO_ADMIN.email && !st.users.some((x) => x.email === email))
+    st.users.push({
+      id: 'demo-admin',
+      email,
+      password: DEMO_ADMIN.password,
+      locale: 'en',
+      country: 'NL',
+      emailVerified: true,
+      twoFactorEnabled: false,
+      staff: true,
+    });
+  // Admins only on the admin login, clients only on the client login (D91).
   const u = st.users.find(
-    (x) => x.email === String(b.email).trim().toLowerCase() && x.password === b.password,
+    (x) => x.email === email && x.password === b.password && !!x.staff === admin,
   );
   if (!u) throw new Fail(401, 'INVALID_CREDENTIALS');
   if (u.twoFactorEnabled) return json(200, { mfaRequired: true, mfaToken: `mfa.${u.id}` });
@@ -2004,6 +2022,7 @@ const firmDto = () => {
     logoDataUrl: f.logoDataUrl,
     supportEmail: f.supportEmail,
     isDefault: true,
+    disabledModules: disabledModules(),
     createdAt: new Date(Date.now() - 90 * DAY).toISOString(),
   };
 };
@@ -2026,10 +2045,10 @@ const logAdmin = (
 };
 const iso = (t: number | null) => (t === null ? null : new Date(t).toISOString());
 
-/** Real demo user + example traders, in one list. */
+const clients = () => st.users.filter((u) => !u.staff);
+/** Clients registered in this browser + example traders, in one list. */
 function allTraders() {
-  const u = me();
-  const real = {
+  const real = clients().map((u) => ({
     id: u.id,
     email: u.email,
     country: u.country,
@@ -2037,18 +2056,18 @@ function allTraders() {
     createdAt: st.accounts.find((a) => a.userId === u.id)?.createdAt ?? Date.now(),
     lastLoginAt: Date.now(),
     nickname: profiles()[u.id]?.nickname ?? null,
-    firmRole: 'OWNER' as const,
-  };
-  return [real, ...adm().traders.map((t) => ({ ...t, firmRole: null }))];
+    firmRole: null,
+  }));
+  return [...real, ...adm().traders.map((t) => ({ ...t, firmRole: null }))];
 }
 function allAccounts() {
-  const u = me();
+  const byId = new Map(clients().map((u) => [u.id, u]));
   const real = st.accounts
-    .filter((a) => a.userId === u.id)
+    .filter((a) => byId.has(a.userId))
     .map((a) => ({
       id: a.id,
-      userId: u.id,
-      userEmail: u.email,
+      userId: a.userId,
+      userEmail: byId.get(a.userId)!.email,
       label: a.label,
       kind: a.kind,
       status: a.status,
@@ -2111,13 +2130,18 @@ on('GET', '/public/firm', () => {
     logoDataUrl: f.logoDataUrl,
     supportEmail: f.supportEmail,
     status: 'ACTIVE',
+    disabledModules: disabledModules(),
   });
 });
-on('POST', '/dev/firm-owner', () => (me(), json(204)));
+const staffMe = () => {
+  const u = me();
+  if (!u.staff) throw new Fail(403, 'ADMIN_FORBIDDEN');
+  return u;
+};
 on('GET', '/admin/me', () =>
   json(200, {
-    role: 'OWNER',
-    superadmin: false,
+    role: (staffMe(), 'OWNER'),
+    superadmin: true,
     firm: firmDto(),
     twoFactorEnabled: me().twoFactorEnabled,
     twoFactorRequired: false,
@@ -2391,48 +2415,97 @@ on('GET', '/admin/audit', (_m, _b, url) => {
 on('GET', '/admin/audit/verify', () =>
   json(200, { ok: true, checked: adm().audit.length, brokenAtId: null }),
 );
-const teamDto = () => {
-  const u = me();
+// Client-dashboard modules (D92).
+const disabledModules = () => ((adm().firm as DemoFirm & { disabled?: string[] }).disabled ??= []);
+on('GET', '/admin/modules', () =>
+  json(200, { available: [...CLIENT_MODULES], disabled: [...disabledModules()].sort() }),
+);
+on('PUT', '/admin/modules', (_m, b) => {
+  staffMe();
+  const list = Array.isArray(b.disabled) ? (b.disabled as string[]) : [];
+  if (list.some((x) => !(CLIENT_MODULES as readonly string[]).includes(x)))
+    throw new Fail(400, 'VALIDATION_ERROR');
+  (adm().firm as DemoFirm & { disabled?: string[] }).disabled = [...new Set(list)].sort();
+  logAdmin('admin.modules_updated', 'Firm', 'demo-firm', { disabled: list });
+  return json(200, { available: [...CLIENT_MODULES], disabled: disabledModules() });
+});
+
+// Firms on the platform (preview: the visitor is Daily Funded staff).
+interface DemoFirmRow {
+  id: string;
+  slug: string;
+  name: string;
+  status: 'ACTIVE' | 'SUSPENDED';
+  admin: { email: string; activated: boolean; twoFactorEnabled: boolean } | null;
+  createdAt: number;
+}
+const firms = (): DemoFirmRow[] =>
+  ((adm() as AdminState & { firms?: DemoFirmRow[] }).firms ??= [
+    {
+      id: 'example-firm-acme',
+      slug: 'acme-prop',
+      name: 'Acme Prop (example)',
+      status: 'ACTIVE',
+      admin: { email: 'owner@acme.example', activated: true, twoFactorEnabled: true },
+      createdAt: Date.now() - 20 * DAY,
+    },
+  ]);
+const firmRows = () => {
+  const own = firmDto();
   return {
     items: [
-      {
-        id: u.id,
-        email: u.email,
-        role: 'OWNER',
-        twoFactorEnabled: u.twoFactorEnabled,
-        lastLoginAt: iso(Date.now()),
-        isYou: true,
-      },
-      ...adm().team.map((t) => ({
-        id: t.id,
-        email: t.email,
-        role: t.role,
-        twoFactorEnabled: false,
-        lastLoginAt: null,
-        isYou: false,
+      { ...own, traders: allTraders().length, fundedActive: 4, admin: null },
+      ...firms().map((f) => ({
+        id: f.id,
+        slug: f.slug,
+        name: f.name,
+        status: f.status,
+        domain: null,
+        primaryColor: null,
+        logoDataUrl: null,
+        supportEmail: null,
+        isDefault: false,
+        disabledModules: [],
+        createdAt: iso(f.createdAt),
+        traders: 0,
+        fundedActive: 0,
+        admin: f.admin,
       })),
     ],
   };
 };
-on('GET', '/admin/team', () => json(200, teamDto()));
-on('POST', '/admin/team', (_m, b) => {
-  const email = String(b.email).toLowerCase();
-  if (email === me().email || adm().team.some((t) => t.email === email))
-    throw new Fail(409, 'ALREADY_MEMBER');
-  adm().team.push({ id: uid(), email, role: b.role as 'OWNER', createdAt: Date.now() });
-  logAdmin('admin.member_invited', 'User', email, { role: b.role });
-  return json(201, teamDto());
+on('GET', '/admin/firms', () => (staffMe(), json(200, firmRows())));
+on('POST', '/admin/firms', (_m, b) => {
+  staffMe();
+  if (firms().some((f) => f.slug === b.slug)) throw new Fail(409, 'SLUG_TAKEN');
+  firms().push({
+    id: uid(),
+    slug: String(b.slug),
+    name: String(b.name),
+    status: 'ACTIVE',
+    admin: { email: String(b.ownerEmail).toLowerCase(), activated: false, twoFactorEnabled: false },
+    createdAt: Date.now(),
+  });
+  return json(201, firmRows());
 });
-on('PATCH', '/admin/team/{id}', (m, b) => {
-  const t = adm().team.find((x) => x.id === m[1]);
-  if (!t) throw new Fail(404, 'MEMBER_NOT_FOUND');
-  t.role = b.role as 'OWNER';
-  return json(200, teamDto());
+const demoFirm = (id: string) => {
+  const f = firms().find((x) => x.id === id);
+  if (!f) throw new Fail(404, 'FIRM_NOT_FOUND');
+  return f;
+};
+on('POST', '/admin/firms/{id}/status', (m, b) => {
+  demoFirm(m[1]!).status = b.status === 'SUSPENDED' ? 'SUSPENDED' : 'ACTIVE';
+  return json(200, firmRows());
 });
-on('DELETE', '/admin/team/{id}', (m) => {
-  adm().team = adm().team.filter((x) => x.id !== m[1]);
-  return json(200, teamDto());
+on('POST', '/admin/firms/{id}/admin', (m, b) => {
+  demoFirm(m[1]!).admin = {
+    email: String(b.email).toLowerCase(),
+    activated: false,
+    twoFactorEnabled: false,
+  };
+  return json(200, firmRows());
 });
+on('POST', '/admin/firms/{id}/admin/invite', (m) => (demoFirm(m[1]!), json(204)));
 
 /** Route /api/v1/* requests to the in-browser backend; everything else goes to the network. */
 export function installDemoBackend() {

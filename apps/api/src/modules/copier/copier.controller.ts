@@ -1,3 +1,4 @@
+import { RequiresModule } from '../firms/module.guard.js';
 import {
   Body,
   Controller,
@@ -22,6 +23,7 @@ import {
 const UUID = new ParseUUIDPipe({ version: '7' });
 
 @ApiTags('copier')
+@RequiresModule('copier')
 @Controller('copier')
 export class CopierController {
   constructor(private readonly copier: CopierService) {}

@@ -163,24 +163,26 @@ enum ActorType {
 
 /// A prop firm running its own brand on the platform (tenant, D83).
 model Firm {
-  id           String        @id @default(uuid(7)) @db.Uuid
-  slug         String        @unique @db.VarChar(40)
-  name         String        @db.VarChar(80)
-  status       FirmStatus    @default(ACTIVE)
+  id              String        @id @default(uuid(7)) @db.Uuid
+  slug            String        @unique @db.VarChar(40)
+  name            String        @db.VarChar(80)
+  status          FirmStatus    @default(ACTIVE)
   /// Custom domain (hostname only), resolves traders to this firm.
-  domain       String?       @unique @db.VarChar(253)
+  domain          String?       @unique @db.VarChar(253)
   /// Brand colour as #RRGGBB; null = Daily Funded lime.
-  primaryColor String?       @db.Char(7)
+  primaryColor    String?       @db.Char(7)
   /// PNG/JPEG/WebP as data URL (max ~200 KB); null = default logo.
-  logoDataUrl  String?
-  supportEmail String?       @db.VarChar(254)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @default(now()) @updatedAt
-  users        User[]
-  products     Product[]
-  ruleSets     RuleSet[]
-  competitions Competition[]
-  riskAlerts   RiskAlert[]
+  logoDataUrl     String?
+  supportEmail    String?       @db.VarChar(254)
+  /// Client-dashboard modules switched off by the firm admin (keys from @brand/shared CLIENT_MODULES).
+  disabledModules String[]      @default([])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @default(now()) @updatedAt
+  users           User[]
+  products        Product[]
+  ruleSets        RuleSet[]
+  competitions    Competition[]
+  riskAlerts      RiskAlert[]
 }
 
 model User {

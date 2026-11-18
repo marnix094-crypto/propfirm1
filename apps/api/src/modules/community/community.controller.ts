@@ -1,3 +1,4 @@
+import { RequiresModule } from '../firms/module.guard.js';
 import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Req } from '@nestjs/common';
 import type { Request } from 'express';
 import { FirmsService } from '../firms/firms.service.js';
@@ -36,18 +37,21 @@ export class CommunityController {
     return this.community.updateProfile(u.id, dto);
   }
 
+  @RequiresModule('leaderboard')
   @Get('leaderboard')
   @ApiOkResponse({ type: LeaderboardDto })
   leaderboard(@CurrentUser() u: AuthUser) {
     return this.community.leaderboard(u.id);
   }
 
+  @RequiresModule('competitions')
   @Get('competitions')
   @ApiOkResponse({ type: CompetitionListDto })
   async competitions(@CurrentUser() u: AuthUser): Promise<CompetitionListDto> {
     return { items: await this.community.competitions(u.id) };
   }
 
+  @RequiresModule('competitions')
   @Post('competitions/:id/join')
   @ApiOkResponse({ type: CompetitionDto })
   join(@CurrentUser() u: AuthUser, @Param('id', UUID) id: string) {
@@ -55,6 +59,7 @@ export class CommunityController {
   }
 
   @Public()
+  @RequiresModule('transparency')
   @Get('public/transparency')
   @ApiOkResponse({ type: TransparencyDto })
   async transparency(@Req() req: Request) {

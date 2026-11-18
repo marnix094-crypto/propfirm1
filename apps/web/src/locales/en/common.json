@@ -517,7 +517,10 @@
     "MEMBER_NOT_FOUND": "Team member not found.",
     "ALERT_NOT_FOUND": "Alert not found.",
     "RULESET_NOT_FOUND": "Rule set not found.",
-    "ACCOUNT_NOT_FOUND": "Account not found."
+    "ACCOUNT_NOT_FOUND": "Account not found.",
+    "STAFF_EMAIL_TAKEN": "This email is already the admin of a firm.",
+    "MODULE_NOT_FOUND": "This part of the platform is not available.",
+    "ADMIN_NOT_FOUND": "This firm has no admin yet."
   },
   "app": {
     "nav": {
@@ -1262,7 +1265,8 @@
       "security": "Security",
       "faq": "FAQ",
       "liveDemo": "Live demo",
-      "bookDemo": "Book a demo"
+      "bookDemo": "Book a demo",
+      "partnerLogin": "Partner login"
     },
     "hero": {
       "eyebrow": "White-label prop firm software",
@@ -1537,8 +1541,6 @@
   "admin": {
     "title": "Admin panel",
     "badge": "Admin",
-    "open": "Admin panel",
-    "backToPlatform": "Back to the platform",
     "firmSwitcher": "Firm to manage",
     "firmSuspended": "This firm is suspended: traders cannot log in, register or buy.",
     "loadMore": "Load more",
@@ -1563,16 +1565,17 @@
       "ruleSets": "Rule sets",
       "branding": "Branding",
       "audit": "Audit log",
-      "team": "Team",
       "firms": "Firms",
       "sections": {
         "manage": "Manage",
         "offer": "Your offer",
         "control": "Control"
-      }
+      },
+      "clientDashboard": "Client dashboard",
+      "security": "Login & security"
     },
     "role": {
-      "OWNER": "Owner",
+      "OWNER": "Firm admin",
       "ADMIN": "Admin",
       "SUPPORT": "Support",
       "SUPERADMIN": "Daily Funded staff"
@@ -1610,7 +1613,8 @@
     "gate": {
       "forbidden": {
         "title": "No access to the admin panel",
-        "body": "The admin panel is for the team of this platform. Ask an owner of your firm to add you."
+        "body": "The admin panel is only for the admin of a prop firm and Daily Funded. Client accounts have no access.",
+        "cta": "Go to the client dashboard"
       },
       "2fa": {
         "title": "Turn on two-step verification first",
@@ -1821,28 +1825,13 @@
         "SYSTEM": "System"
       }
     },
-    "team": {
-      "subtitle": "Who can use this admin panel.",
-      "email": "Email",
-      "role": "Role",
-      "roleFor": "Role of {{email}}",
-      "invite": "Invite",
-      "invited": "Invitation sent",
-      "inviteHint": "New people receive an email to set a password. Existing traders of your platform get the role straight away.",
-      "members": "Team members",
-      "twoFactor": "2FA",
-      "no2fa": "Not set up",
-      "you": "you",
-      "remove": "Remove",
-      "rolesNote": "Owner: everything incl. team. Admin: traders, accounts, products and branding; can add support staff. Support: read-only and acknowledge alerts."
-    },
     "firms": {
       "subtitle": "All prop firms running on Daily Funded.",
       "new": "New firm",
-      "newHint": "The firm starts with the example catalogue; the owner receives an invitation by email.",
+      "newHint": "The firm starts with the example catalogue; its admin receives an email to set a password (2FA is required).",
       "name": "Name",
       "slug": "Code",
-      "ownerEmail": "Owner email",
+      "ownerEmail": "Admin email",
       "create": "Create firm",
       "created": "Firm created and owner invited",
       "list": "Firms",
@@ -1851,8 +1840,48 @@
       "default": "Default",
       "manage": "Manage",
       "suspend": "Suspend",
-      "activate": "Activate"
+      "activate": "Activate",
+      "admin": "Admin",
+      "adminActive": "Active · 2FA on",
+      "adminNo2fa": "Active · 2FA not set up yet",
+      "adminInvited": "Invited (no password yet)",
+      "noAdmin": "No admin",
+      "changeAdmin": "Change admin",
+      "changeAdminTitle": "New admin for {{name}}",
+      "changeAdminBody": "The current admin is deactivated and signed out. The new admin receives an email to set a password.",
+      "adminEmail": "Email of the new admin",
+      "sendInvite": "Send invitation",
+      "resendInvite": "Resend invitation",
+      "inviteSent": "Invitation sent",
+      "ownFirm": "Daily Funded staff"
     },
-    "devOwner": "Make me owner of this firm (dev)"
+    "logout": "Log out",
+    "login": {
+      "title": "Partner login",
+      "subtitle": "Admin panel for prop firms on Daily Funded.",
+      "note": "Admin accounts are created by Daily Funded. No account yet? Contact your Daily Funded contact person.",
+      "demoHint": "Preview: sign in as Daily Funded with"
+    },
+    "modules": {
+      "subtitle": "Choose what your clients see in their dashboard. Switched-off modules disappear from the menu and cannot be opened.",
+      "switchable": "Modules",
+      "on": "On",
+      "off": "Off",
+      "preview": "Client menu preview",
+      "coreNote": "Home, Trade, Withdrawal, Order history, My stats and Settings are always on.",
+      "desc": {
+        "points": "Clients earn points for activity and redeem them for discounts.",
+        "offers": "Personal discount codes for new accounts.",
+        "leaderboard": "Public ranking of funded traders (opt-in, nickname only).",
+        "competitions": "Free monthly trading competition with a separate account.",
+        "transparency": "Public figures about your platform.",
+        "copier": "Copy trades from one own account to another.",
+        "backtesting": "Test a strategy on historical prices in the browser.",
+        "trackRecord": "Overview of results per account.",
+        "notebook": "Private trading journal.",
+        "certificates": "Verifiable certificates for funded accounts.",
+        "tutorial": "Short introduction to the platform."
+      }
+    }
   }
 }

@@ -65,6 +65,10 @@ export async function openDemoAccount(
   });
 }
 
+/** Firm admins and Daily Funded staff: they use the admin login only (D91). */
+export const isStaff = (u: Pick<User, 'firmRole' | 'roles'>) =>
+  u.firmRole !== null || u.roles.includes('ADMIN');
+
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -108,13 +112,16 @@ export class AuthService {
   }
 
   /** Always succeeds from the caller's view (no account enumeration). */
-  async forgotPassword(email: string, firmId: string): Promise<void> {
-    const user = await this.prisma.user.findUnique({
-      where: { firmId_email: { firmId, email } },
-    });
+  async forgotPassword(
+    email: string,
+    firmId: string,
+    audience: 'client' | 'admin' = 'client',
+  ): Promise<void> {
+    const user = await this.findForLogin(email, firmId, audience);
     if (!user || user.status !== 'ACTIVE') return;
     const token = await this.emailTokens.issue(user.id, 'RESET_PASSWORD');
-    const link = `${this.config.appBaseUrl}/${user.locale}/reset-password?token=${token}`;
+    // Staff land back on the admin login after setting a new password.
+    const link = `${this.config.appBaseUrl}/${user.locale}/reset-password?token=${token}${isStaff(user) ? '&for=admin' : ''}`;
     await this.mailer
       .send({ to: user.email, ...renderMail('reset', user.locale, link) })
       .catch((e: Error) => this.logger.warn(`reset mail failed: ${e.message}`));
@@ -220,17 +227,38 @@ export class AuthService {
     return { user, tokens: await this.tokens.issue(user.id, user.roles, userAgent) };
   }
 
+  /**
+   * Client logins are per firm and never match staff; admin logins match staff only (their
+   * email is unique among staff across firms). A wrong audience looks like a wrong password.
+   */
+  private async findForLogin(
+    email: string,
+    firmId: string,
+    audience: 'client' | 'admin',
+  ): Promise<User | null> {
+    if (audience === 'admin')
+      return this.prisma.user.findFirst({
+        where: { email, OR: [{ firmRole: { not: null } }, { roles: { has: 'ADMIN' } }] },
+        orderBy: { createdAt: 'asc' },
+      });
+    const u = await this.prisma.user.findUnique({ where: { firmId_email: { firmId, email } } });
+    return u && !isStaff(u) ? u : null;
+  }
+
   async login(
     dto: LoginDto,
     firmId: string,
     userAgent?: string,
   ): Promise<{ user: User; tokens: IssuedTokens } | { mfaToken: string }> {
-    const user = await this.prisma.user.findUnique({
-      where: { firmId_email: { firmId, email: dto.email } },
-    });
+    const audience = dto.audience ?? 'client';
+    const user = await this.findForLogin(dto.email, firmId, audience);
     const ok = await verify(user?.passwordHash ?? DUMMY_HASH, dto.password);
     if (!user || !ok) throw Errors.unauthorized('INVALID_CREDENTIALS');
     if (user.status !== 'ACTIVE') throw Errors.forbidden('ACCOUNT_SUSPENDED');
+    if (audience === 'admin' && !user.roles.includes('ADMIN')) {
+      const firm = await this.prisma.firm.findUnique({ where: { id: user.firmId } });
+      if (firm?.status !== 'ACTIVE') throw Errors.forbidden('FIRM_SUSPENDED');
+    }
     if (await this.twoFactor.isEnabled(user.id))
       return { mfaToken: await this.tokens.signMfa(user.id) };
     await this.prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });

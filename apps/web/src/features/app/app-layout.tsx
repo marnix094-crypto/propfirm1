@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router';
+import { Link, Navigate, NavLink, Outlet, useLocation, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ChevronRight, Lock, PanelLeft, Plus, ShieldCheck } from 'lucide-react';
+import { ChevronRight, Lock, PanelLeft, Plus } from 'lucide-react';
 import { FirmLogo, useFirmTheme } from '@/components/layout/firm-brand';
 import { SkipLink } from '@/components/layout/skip-link';
 import { LanguageSwitcher } from '@/components/layout/language-switcher';
@@ -15,7 +15,15 @@ import { cn } from '@/lib/cn';
 import { AccountSwitcher } from './account-switcher';
 import { ConnectionBanner, LiveDot } from './connection-banner';
 import { VerifyEmailBanner } from './verify-email-banner';
-import { NAV_FOOTER, NAV_MOBILE, NAV_SECTIONS, type NavItem } from './nav';
+import {
+  NAV_FOOTER,
+  NAV_MOBILE,
+  NAV_SECTIONS,
+  navKeyOf,
+  visibleSections,
+  type NavItem,
+} from './nav';
+import { useDisabledModules } from '@/hooks/use-firm';
 
 const COLLAPSE_KEY = 'df-sidebar-collapsed';
 
@@ -125,8 +133,10 @@ export function AppLayout() {
   const { account } = useActiveAccount();
   const setSurface = useThemeStore((s) => s.setSurface);
   const meta = usePageMeta();
-  const sessionUser = useSession((s) => s.user);
-  const isStaff = !!sessionUser?.firmRole || !!sessionUser?.roles.includes('ADMIN');
+  const disabledModules = useDisabledModules();
+  const { pathname } = useLocation();
+  const segment = pathname.split('/')[3] ?? '';
+  const moduleKey = navKeyOf(segment);
   const [collapsed, setCollapsed] = useState(() => {
     try {
       return localStorage.getItem(COLLAPSE_KEY) === '1';
@@ -154,6 +164,10 @@ export function AppLayout() {
       }
       return !c;
     });
+
+  // A module the firm switched off is not reachable by URL either.
+  if (moduleKey && disabledModules.has(moduleKey))
+    return <Navigate to={`/${lang}/app/portfolio`} replace />;
 
   return (
     <div className={cn('min-h-dvh', collapsed ? 'lg:pl-20' : 'lg:pl-64')}>
@@ -186,7 +200,7 @@ export function AppLayout() {
           </button>
         </div>
         <nav aria-label={t('app.nav.main')} className="flex-1 overflow-y-auto px-3 py-4">
-          {NAV_SECTIONS.map((section) => (
+          {visibleSections(disabledModules).map((section) => (
             <div key={section.key} className="pb-4">
               {!collapsed && (
                 <p className="px-3 pb-2 text-[11px] font-semibold tracking-[0.08em] text-muted uppercase">
@@ -204,7 +218,7 @@ export function AppLayout() {
           ))}
           <div className="border-t border-border pt-4">
             <ul className="flex flex-col gap-1">
-              {NAV_FOOTER.map((item) => (
+              {NAV_FOOTER.filter((i) => !disabledModules.has(i.key)).map((item) => (
                 <li key={item.to}>
                   <SideLink item={item} locked={false} collapsed={collapsed} />
                 </li>
@@ -212,21 +226,6 @@ export function AppLayout() {
             </ul>
           </div>
         </nav>
-        {isStaff && (
-          <div className={cn('border-t border-border px-3 pt-3', collapsed && 'px-2')}>
-            <Link
-              to={`/${lang}/admin`}
-              title={collapsed ? t('admin.open') : undefined}
-              className={cn(
-                'flex items-center gap-3 rounded-[14px] px-3 py-2.5 text-sm font-semibold text-fg hover:bg-card-muted',
-                collapsed && 'justify-center px-0',
-              )}
-            >
-              <ShieldCheck className="size-[18px] shrink-0 text-accent" aria-hidden="true" />
-              <span className={cn(collapsed && 'sr-only')}>{t('admin.open')}</span>
-            </Link>
-          </div>
-        )}
         {!collapsed && (
           <div className="border-t border-border p-4">
             <LanguageSwitcher />

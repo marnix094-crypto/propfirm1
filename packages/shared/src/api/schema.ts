@@ -292,36 +292,20 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/admin/team': {
+  '/api/v1/admin/modules': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['AdminController_team'];
-    put?: never;
-    post: operations['AdminController_invite'];
+    get: operations['AdminController_modules'];
+    put: operations['AdminController_updateModules'];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/team/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations['AdminController_removeMember'];
-    options?: never;
-    head?: never;
-    patch: operations['AdminController_changeRole'];
     trace?: never;
   };
   '/api/v1/admin/firms': {
@@ -350,6 +334,54 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations['AdminController_firmStatus'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/firms/{id}/admin': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AdminController_setFirmAdmin'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/firms/{id}/admin/invite': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AdminController_resendInvite'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/dev/staff': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['DevStaffController_devStaff'];
     delete?: never;
     options?: never;
     head?: never;
@@ -1028,22 +1060,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/dev/firm-owner': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['DevToolsController_firmOwner'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/api/v1/dev/example-funded-account': {
     parameters: {
       query?: never;
@@ -1428,6 +1444,20 @@ export interface components {
       supportEmail: string | null;
       /** @enum {string} */
       status: 'ACTIVE' | 'SUSPENDED';
+      /** @description Client-dashboard modules switched off by the firm */
+      disabledModules: (
+        | 'points'
+        | 'offers'
+        | 'leaderboard'
+        | 'competitions'
+        | 'transparency'
+        | 'copier'
+        | 'backtesting'
+        | 'trackRecord'
+        | 'notebook'
+        | 'certificates'
+        | 'tutorial'
+      )[];
     };
     AdminFirmDto: {
       id: string;
@@ -1440,6 +1470,19 @@ export interface components {
       logoDataUrl: string | null;
       supportEmail: string | null;
       isDefault: boolean;
+      disabledModules: (
+        | 'points'
+        | 'offers'
+        | 'leaderboard'
+        | 'competitions'
+        | 'transparency'
+        | 'copier'
+        | 'backtesting'
+        | 'trackRecord'
+        | 'notebook'
+        | 'certificates'
+        | 'tutorial'
+      )[];
       createdAt: string;
     };
     AdminMeDto: {
@@ -1695,26 +1738,56 @@ export interface components {
       checked: number;
       brokenAtId: string | null;
     };
-    TeamMemberDto: {
-      id: string;
+    ModulesDto: {
+      /** @description All switchable modules */
+      available: (
+        | 'points'
+        | 'offers'
+        | 'leaderboard'
+        | 'competitions'
+        | 'transparency'
+        | 'copier'
+        | 'backtesting'
+        | 'trackRecord'
+        | 'notebook'
+        | 'certificates'
+        | 'tutorial'
+      )[];
+      /** @description Modules switched off */
+      disabled: (
+        | 'points'
+        | 'offers'
+        | 'leaderboard'
+        | 'competitions'
+        | 'transparency'
+        | 'copier'
+        | 'backtesting'
+        | 'trackRecord'
+        | 'notebook'
+        | 'certificates'
+        | 'tutorial'
+      )[];
+    };
+    UpdateModulesDto: {
+      disabled: (
+        | 'points'
+        | 'offers'
+        | 'leaderboard'
+        | 'competitions'
+        | 'transparency'
+        | 'copier'
+        | 'backtesting'
+        | 'trackRecord'
+        | 'notebook'
+        | 'certificates'
+        | 'tutorial'
+      )[];
+    };
+    FirmAdminInfoDto: {
       email: string;
-      /** @enum {string} */
-      role: 'OWNER' | 'ADMIN' | 'SUPPORT';
+      /** @description Has set a password and logged in at least once */
+      activated: boolean;
       twoFactorEnabled: boolean;
-      lastLoginAt: string | null;
-      isYou: boolean;
-    };
-    TeamListDto: {
-      items: components['schemas']['TeamMemberDto'][];
-    };
-    InviteMemberDto: {
-      email: string;
-      /** @enum {string} */
-      role: 'OWNER' | 'ADMIN' | 'SUPPORT';
-    };
-    UpdateMemberDto: {
-      /** @enum {string} */
-      role: 'OWNER' | 'ADMIN' | 'SUPPORT';
     };
     AdminFirmSummaryDto: {
       id: string;
@@ -1727,9 +1800,23 @@ export interface components {
       logoDataUrl: string | null;
       supportEmail: string | null;
       isDefault: boolean;
+      disabledModules: (
+        | 'points'
+        | 'offers'
+        | 'leaderboard'
+        | 'competitions'
+        | 'transparency'
+        | 'copier'
+        | 'backtesting'
+        | 'trackRecord'
+        | 'notebook'
+        | 'certificates'
+        | 'tutorial'
+      )[];
       createdAt: string;
       traders: number;
       fundedActive: number;
+      admin: components['schemas']['FirmAdminInfoDto'] | null;
     };
     AdminFirmListDto: {
       items: components['schemas']['AdminFirmSummaryDto'][];
@@ -1738,12 +1825,26 @@ export interface components {
       name: string;
       /** @example acme-trading */
       slug: string;
-      /** @description Receives an invitation as OWNER */
+      /** @description The firm admin; receives an email to set a password */
       ownerEmail: string;
     };
     FirmStatusDto: {
       /** @enum {string} */
       status: 'ACTIVE' | 'SUSPENDED';
+    };
+    FirmAdminDto: {
+      /** @description New admin of the firm (replaces the current one) */
+      email: string;
+    };
+    DevStaffRequestDto: {
+      email: string;
+      password: string;
+      /** @description Create a Daily Funded superadmin instead of a firm admin */
+      superadmin?: boolean;
+    };
+    DevStaffDto: {
+      firmId: string;
+      slug: string;
     };
     RegisterDto: {
       /** @example trader@example.com */
@@ -1782,6 +1883,11 @@ export interface components {
     LoginDto: {
       email: string;
       password: string;
+      /**
+       * @description client (default) = trading platform; admin = firm admin / Daily Funded staff (D91)
+       * @enum {string}
+       */
+      audience?: 'client' | 'admin';
     };
     LoginResponseDto: {
       accessToken?: string;
@@ -1805,6 +1911,11 @@ export interface components {
     };
     ForgotPasswordDto: {
       email: string;
+      /**
+       * @description client (default) or admin
+       * @enum {string}
+       */
+      audience?: 'client' | 'admin';
     };
     ResetPasswordDto: {
       token: string;
@@ -3008,7 +3119,7 @@ export interface operations {
       };
     };
   };
-  AdminController_team: {
+  AdminController_modules: {
     parameters: {
       query?: never;
       header?: {
@@ -3025,12 +3136,12 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['TeamListDto'];
+          'application/json': components['schemas']['ModulesDto'];
         };
       };
     };
   };
-  AdminController_invite: {
+  AdminController_updateModules: {
     parameters: {
       query?: never;
       header?: {
@@ -3042,59 +3153,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['InviteMemberDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TeamListDto'];
-        };
-      };
-    };
-  };
-  AdminController_removeMember: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Superadmins only: id of the firm to administer */
-        'x-admin-firm'?: string;
-      };
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TeamListDto'];
-        };
-      };
-    };
-  };
-  AdminController_changeRole: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Superadmins only: id of the firm to administer */
-        'x-admin-firm'?: string;
-      };
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateMemberDto'];
+        'application/json': components['schemas']['UpdateModulesDto'];
       };
     };
     responses: {
@@ -3103,7 +3162,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['TeamListDto'];
+          'application/json': components['schemas']['ModulesDto'];
         };
       };
     };
@@ -3180,6 +3239,79 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['AdminFirmListDto'];
+        };
+      };
+    };
+  };
+  AdminController_setFirmAdmin: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FirmAdminDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminFirmListDto'];
+        };
+      };
+    };
+  };
+  AdminController_resendInvite: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  DevStaffController_devStaff: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DevStaffRequestDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DevStaffDto'];
         };
       };
     };
@@ -4102,23 +4234,6 @@ export interface operations {
     };
   };
   DevToolsController_verifyEmail: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  DevToolsController_firmOwner: {
     parameters: {
       query?: never;
       header?: never;

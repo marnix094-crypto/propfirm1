@@ -79,3 +79,17 @@ export const NAV_MOBILE: NavItem[] = [
   { to: 'stats', key: 'stats', icon: ChartColumn },
   { to: 'more', key: 'more', icon: Settings },
 ];
+
+/** Nav sections without the modules the firm switched off (D92); empty sections dropped. */
+export function visibleSections(disabled: ReadonlySet<string>): NavSection[] {
+  return NAV_SECTIONS.map((s) => ({
+    ...s,
+    items: s.items.filter((i) => !disabled.has(i.key)),
+  })).filter((s) => s.items.length > 0);
+}
+
+/** The module (nav key) a path segment below /:lang/app belongs to, if any. */
+export function navKeyOf(segment: string): string | undefined {
+  return [...NAV_SECTIONS.flatMap((s) => s.items), ...NAV_FOOTER].find((i) => i.to === segment)
+    ?.key;
+}

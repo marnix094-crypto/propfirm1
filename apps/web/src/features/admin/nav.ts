@@ -7,7 +7,8 @@ import {
   ScrollText,
   ShieldAlert,
   SlidersHorizontal,
-  UserCog,
+  KeyRound,
+  LayoutGrid,
   Users,
   WalletCards,
   type LucideIcon,
@@ -37,6 +38,7 @@ export const ADMIN_NAV: { key: string; items: AdminNavItem[] }[] = [
     items: [
       { to: 'products', key: 'products', icon: Package },
       { to: 'rule-sets', key: 'ruleSets', icon: SlidersHorizontal },
+      { to: 'dashboard', key: 'clientDashboard', icon: LayoutGrid },
       { to: 'branding', key: 'branding', icon: Palette },
     ],
   },
@@ -44,7 +46,7 @@ export const ADMIN_NAV: { key: string; items: AdminNavItem[] }[] = [
     key: 'control',
     items: [
       { to: 'audit', key: 'audit', icon: ScrollText },
-      { to: 'team', key: 'team', icon: UserCog },
+      { to: 'security', key: 'security', icon: KeyRound },
       { to: 'firms', key: 'firms', icon: Building2, superadminOnly: true },
     ],
   },

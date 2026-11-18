@@ -1,6 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { CLIENT_MODULES, type ClientModule } from '@brand/shared';
 import {
+  ArrayMaxSize,
+  IsArray,
   IsBoolean,
   IsEmail,
   IsIn,
@@ -62,6 +65,7 @@ export class AdminFirmDto {
   @ApiProperty({ type: String, nullable: true }) logoDataUrl!: string | null;
   @ApiProperty({ type: String, nullable: true }) supportEmail!: string | null;
   @ApiProperty() isDefault!: boolean;
+  @ApiProperty({ enum: CLIENT_MODULES, isArray: true }) disabledModules!: ClientModule[];
   @ApiProperty() createdAt!: string;
 }
 
@@ -440,35 +444,36 @@ export class AuditVerifyDto {
   @ApiProperty({ type: String, nullable: true }) brokenAtId!: string | null;
 }
 
-// ------------------------------------------------------------------ team
+// ------------------------------------------------------------------ client dashboard
 
-export class TeamMemberDto {
-  @ApiProperty() id!: string;
-  @ApiProperty() email!: string;
-  @ApiProperty({ enum: FIRM_ROLES }) role!: FirmRoleT;
-  @ApiProperty() twoFactorEnabled!: boolean;
-  @ApiProperty({ type: String, nullable: true }) lastLoginAt!: string | null;
-  @ApiProperty() isYou!: boolean;
+export class ModulesDto {
+  @ApiProperty({ enum: CLIENT_MODULES, isArray: true, description: 'All switchable modules' })
+  available!: ClientModule[];
+  @ApiProperty({ enum: CLIENT_MODULES, isArray: true, description: 'Modules switched off' })
+  disabled!: ClientModule[];
 }
 
-export class TeamListDto {
-  @ApiProperty({ type: [TeamMemberDto] }) items!: TeamMemberDto[];
-}
-
-export class InviteMemberDto {
-  @ApiProperty() @IsEmail() @MaxLength(254) email!: string;
-  @ApiProperty({ enum: FIRM_ROLES }) @IsIn(FIRM_ROLES) role!: FirmRoleT;
-}
-
-export class UpdateMemberDto {
-  @ApiProperty({ enum: FIRM_ROLES }) @IsIn(FIRM_ROLES) role!: FirmRoleT;
+export class UpdateModulesDto {
+  @ApiProperty({ enum: CLIENT_MODULES, isArray: true })
+  @IsArray()
+  @ArrayMaxSize(CLIENT_MODULES.length)
+  @IsIn(CLIENT_MODULES, { each: true })
+  disabled!: ClientModule[];
 }
 
 // ------------------------------------------------------------------ firms (superadmin)
 
+export class FirmAdminInfoDto {
+  @ApiProperty() email!: string;
+  @ApiProperty({ description: 'Has set a password and logged in at least once' })
+  activated!: boolean;
+  @ApiProperty() twoFactorEnabled!: boolean;
+}
+
 export class AdminFirmSummaryDto extends AdminFirmDto {
   @ApiProperty() traders!: number;
   @ApiProperty() fundedActive!: number;
+  @ApiProperty({ type: FirmAdminInfoDto, nullable: true }) admin!: FirmAdminInfoDto | null;
 }
 
 export class AdminFirmListDto {
@@ -484,10 +489,17 @@ export class CreateFirmDto {
 
   @ApiProperty({ example: 'acme-trading' }) @Matches(SLUG) slug!: string;
 
-  @ApiProperty({ description: 'Receives an invitation as OWNER' })
+  @ApiProperty({ description: 'The firm admin; receives an email to set a password' })
   @IsEmail()
   @MaxLength(254)
   ownerEmail!: string;
+}
+
+export class FirmAdminDto {
+  @ApiProperty({ description: 'New admin of the firm (replaces the current one)' })
+  @IsEmail()
+  @MaxLength(254)
+  email!: string;
 }
 
 export class FirmStatusDto {

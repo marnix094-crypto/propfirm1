@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { isClientModule } from '@brand/shared';
 import { APP_CONFIG, type AppConfig } from '../../config/env.js';
 import { PrismaService } from '../../infra/prisma.service.js';
 import { Errors } from '../../common/errors.js';
@@ -27,6 +28,8 @@ import type {
 } from './dto.js';
 
 const DAY_MS = 86_400_000;
+/** Client (trader) accounts only — firm admins and Daily Funded staff are never listed. */
+const CLIENTS = { firmRole: null, NOT: { roles: { has: 'ADMIN' as const } } };
 const PAID = ['PAID', 'FULFILLED'] as const;
 
 export const toAdminFirmDto = (f: Firm, defaultSlug: string): AdminFirmDto => ({
@@ -39,6 +42,7 @@ export const toAdminFirmDto = (f: Firm, defaultSlug: string): AdminFirmDto => ({
   logoDataUrl: f.logoDataUrl,
   supportEmail: f.supportEmail,
   isDefault: f.slug === defaultSlug,
+  disabledModules: f.disabledModules.filter(isClientModule),
   createdAt: f.createdAt.toISOString(),
 });
 
@@ -118,8 +122,8 @@ export class AdminService {
       criticalAlerts,
       recentSales,
     ] = await Promise.all([
-      this.prisma.user.count({ where: { firmId, firmRole: null } }),
-      this.prisma.user.count({ where: { firmId, firmRole: null, createdAt: { gte: since } } }),
+      this.prisma.user.count({ where: { firmId, ...CLIENTS } }),
+      this.prisma.user.count({ where: { firmId, ...CLIENTS, createdAt: { gte: since } } }),
       this.prisma.tradingAccount.count({ where: { ...ofFirm, kind: 'DEMO' } }),
       this.prisma.tradingAccount.count({
         where: { ...ofFirm, kind: 'FUNDED', status: 'FUNDED_ACTIVE' },
@@ -207,6 +211,7 @@ export class AdminService {
     const rows = await this.traderRows(
       {
         firmId: ctx.firmId,
+        ...CLIENTS,
         ...(q.q ? { email: { contains: q.q.trim(), mode: 'insensitive' } } : {}),
         ...(q.status ? { status: q.status } : {}),
         ...(cursor ? { id: { lt: cursor } } : {}),
@@ -217,7 +222,7 @@ export class AdminService {
   }
 
   private async userOfFirm(ctx: AdminContext, id: string) {
-    const u = await this.prisma.user.findFirst({ where: { id, firmId: ctx.firmId } });
+    const u = await this.prisma.user.findFirst({ where: { id, firmId: ctx.firmId, ...CLIENTS } });
     if (!u) throw Errors.notFound('Trader');
     return u;
   }

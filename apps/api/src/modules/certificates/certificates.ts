@@ -1,3 +1,4 @@
+import { RequiresModule } from '../firms/module.guard.js';
 import { Controller, Get, Injectable, Module, Param, ParseUUIDPipe } from '@nestjs/common';
 import { ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from '../../infra/prisma.service.js';
@@ -83,6 +84,7 @@ export class CertificatesService {
 export class CertificatesController {
   constructor(private readonly certs: CertificatesService) {}
 
+  @RequiresModule('certificates')
   @Get('certificates')
   @ApiOkResponse({ type: CertificateListDto })
   async list(@CurrentUser() u: AuthUser): Promise<CertificateListDto> {

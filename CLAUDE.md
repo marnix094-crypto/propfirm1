@@ -7,7 +7,7 @@
 
 **Daily Funded is een white-label softwareplatform voor prop firms (B2B, besluit D74).** Wij zijn zelf géén prop firm: andere bedrijven draaien hun eigen merk op onze software. De website (`/{lang}`) verkoopt het platform; `/{lang}/storefront` is een voorbeeld-prop-firm ("Your Firm") die laat zien wat traders van een klant zien.
 
-**Multi-tenant (D83):** elke klant is een `Firm` met eigen traders, producten, regelversies, huisstijl (naam, kleur, logo, domein) en een **adminpanel** op `/{lang}/admin` (rollen OWNER/ADMIN/SUPPORT; Daily Funded-superadmin beheert alle firma's).
+**Multi-tenant (D83):** elke klant is een `Firm` met eigen traders, producten, regelversies, huisstijl (naam, kleur, logo, domein) en een **adminpanel** op `/{lang}/admin`. Alleen de admin van die firma (één, aangemaakt door Daily Funded) en Daily Funded zelf (superadmin) komen erin, via de aparte partner-login `/{lang}/admin/login` (D91). Het adminpanel is nooit bereikbaar of gelinkt vanuit het klantdashboard; de admin stelt daar het klantdashboard samen (huisstijl, producten/regels, modules aan/uit, D92).
 
 Functionaliteit van het platform (zoals een klant-prop-firm het inzet): prop trading platform + broker-app voor de EU-markt. Talen: **EN (standaard)**, NL, ES (taalprefix in URL, bv. `/en/…`, `/es/…`).
 
@@ -99,7 +99,7 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - MSW: alleen met `VITE_ENABLE_MSW=true` (dev/test). Productiebuilds bevatten geen mock-code of service worker; een zichtbare "Mock data (dev)"-pil verschijnt zodra mocks actief zijn.
 - Repo: https://github.com/marnix094-crypto/propfirm1 (branch `main`, CI via GitHub Actions)
 - Workspace-pakketten worden als TS-bron geconsumeerd via de `source` export-conditie.
-- Adminpanel: API `apps/api/src/modules/admin` (`AdminGuard`: rol + 2FA + firmakeuze superadmin), firma-resolutie `modules/firms` (`GET /public/firm`), risicomeldingen `modules/risk`. Web: `features/admin/*`, hooks `hooks/use-admin.ts`, huisstijl `components/layout/firm-brand.tsx` + `lib/brand-color.ts` (AA-palet). Nieuwe env: `DEFAULT_FIRM_SLUG` (standaard `daily-funded`), `ADMIN_REQUIRE_2FA` (alleen `false` in dev/e2e). Lokaal proberen: "Maak mij eigenaar van deze firma (dev)" op de Meer-pagina (`POST /dev/firm-owner`). Preview van een andere firma: `?firm=slug` (of `VITE_FIRM_SLUG`).
+- Adminpanel: API `apps/api/src/modules/admin` (`AdminGuard`: alleen firma-admin (OWNER) of superadmin + 2FA + firmakeuze superadmin), firma-resolutie + `ModuleGuard` (`@RequiresModule`) in `modules/firms`, risicomeldingen `modules/risk`. Modules-lijst gedeeld: `@brand/shared` `CLIENT_MODULES`. Superadmin aanmaken: `pnpm --filter @brand/api build && pnpm --filter @brand/api superadmin:create <email>` (print link om wachtwoord in te stellen). Web: `features/admin/*`, hooks `hooks/use-admin.ts`, huisstijl `components/layout/firm-brand.tsx` + `lib/brand-color.ts` (AA-palet). Nieuwe env: `DEFAULT_FIRM_SLUG` (standaard `daily-funded`), `ADMIN_REQUIRE_2FA` (alleen `false` in dev/e2e). Lokaal/e2e: `POST /dev/staff` (alleen `DEV_TOOLS_ENABLED`) maakt een firma + admin met wachtwoord; preview-admin: `admin@dailyfunded.demo` / `demo-admin-2026` (alleen in preview-builds). Preview van een andere firma: `?firm=slug` (of `VITE_FIRM_SLUG`).
 - Contrast wordt bewaakt door `apps/web/src/styles/tokens.test.ts` en axe in Playwright.
 
 ## Code-afspraken
@@ -127,5 +127,5 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - [x] Fase 5 — 2FA (TOTP + herstelcodes), e-mailverificatie, wachtwoord-reset, sessiebeheer, regelengine (daily loss/drawdown, targets) + realtime equity-controle met automatische FAILED (wacht op akkoord)
 - [x] Fase 6 — Funded-accounts (instant funding): catalogus, checkout met testbetaling, accounts na betaling, winstdeling/uitbetaalbaarheid/scaling-voortgang (wacht op akkoord)
 - [ ] Fase 7 — Pricing-checkout (betaalprovider), facturen (na fase 8, D90)
-- [x] Fase 8 — Multi-tenant firma's, adminpanel voor prop-firm-eigenaren (overzicht, traders, accounts, producten, regelsets, huisstijl, risicomeldingen, audit log, team, firma's), white-label huisstijl (wacht op akkoord)
+- [x] Fase 8 — Multi-tenant firma's, gescheiden adminpanel voor firma-admins + Daily Funded (overzicht, traders, accounts, producten, regelsets, klantdashboard samenstellen, huisstijl, risicomeldingen, audit log, beveiliging, firma's), white-label huisstijl (wacht op akkoord)
 - [ ] Fase 9 — KYC, broker-mock, uitbetalingen, e2e, performance, a11y

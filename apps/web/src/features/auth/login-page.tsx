@@ -25,7 +25,10 @@ export function ErrorNote({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function LoginPage() {
+/** Client login (trading platform) or, with audience="admin", the separate admin login (D91). */
+export function LoginPage({ audience = 'client' }: { audience?: 'client' | 'admin' }) {
+  const area = audience === 'admin' ? 'admin' : 'app';
+  const tk = audience === 'admin' ? 'admin.login' : 'auth.login';
   const { t } = useTranslation();
   const { lang } = useParams();
   const [params] = useSearchParams();
@@ -38,7 +41,7 @@ export function LoginPage() {
 
   const done = (res: Parameters<typeof setSession>[0]) => {
     setSession(res);
-    void navigate(safeNext(params.get('next'), lang), { replace: true });
+    void navigate(safeNext(params.get('next'), lang, area), { replace: true });
   };
 
   async function onLogin(e: FormEvent<HTMLFormElement>) {
@@ -49,7 +52,11 @@ export function LoginPage() {
     try {
       const res = await call(() =>
         client.POST('/api/v1/auth/login', {
-          body: { email: String(form.get('email')), password: String(form.get('password')) },
+          body: {
+            email: String(form.get('email')),
+            password: String(form.get('password')),
+            ...(audience === 'admin' ? { audience } : {}),
+          },
         }),
       );
       if (res.mfaRequired && res.mfaToken) setMfaToken(res.mfaToken);
@@ -87,7 +94,7 @@ export function LoginPage() {
 
   if (mfaToken) {
     return (
-      <GuestOnly>
+      <GuestOnly area={area}>
         <AuthLayout title={t('auth.mfa.title')} subtitle={t('auth.mfa.subtitle')}>
           <form
             onSubmit={(e) => void onMfa(e)}
@@ -136,8 +143,8 @@ export function LoginPage() {
   }
 
   return (
-    <GuestOnly>
-      <AuthLayout title={t('auth.login.title')} subtitle={t('auth.login.subtitle')}>
+    <GuestOnly area={area}>
+      <AuthLayout title={t(`${tk}.title`)} subtitle={t(`${tk}.subtitle`)}>
         <form onSubmit={(e) => void onLogin(e)} className="flex flex-col gap-4">
           <Input
             label={t('auth.email')}
@@ -156,7 +163,7 @@ export function LoginPage() {
               required
             />
             <Link
-              to={`/${lang}/forgot-password`}
+              to={`/${lang}/forgot-password${audience === 'admin' ? '?for=admin' : ''}`}
               className="mt-2 inline-block text-sm font-semibold text-link hover:underline"
             >
               {t('auth.forgotLink')}
@@ -168,15 +175,32 @@ export function LoginPage() {
             {t('auth.login.submit')}
           </Button>
         </form>
-        <p className="mt-6 text-center text-sm text-muted">
-          {t('auth.login.noAccount')}{' '}
-          <Link
-            to={`/${lang}/register${nextQuery(params.get('next'))}`}
-            className="font-semibold text-link hover:underline"
-          >
-            {t('auth.login.registerLink')}
-          </Link>
-        </p>
+        {audience === 'client' ? (
+          <p className="mt-6 text-center text-sm text-muted">
+            {t('auth.login.noAccount')}{' '}
+            <Link
+              to={`/${lang}/register${nextQuery(params.get('next'))}`}
+              className="font-semibold text-link hover:underline"
+            >
+              {t('auth.login.registerLink')}
+            </Link>
+          </p>
+        ) : (
+          <>
+            <p className="mt-6 text-center text-sm text-muted">{t('admin.login.note')}</p>
+            {/* Preview build only (removed from production builds by Vite). */}
+            {import.meta.env.VITE_DEMO_MODE === 'true' && (
+              <p
+                role="note"
+                className="mt-4 rounded-[14px] border border-dashed border-border-strong p-3 text-center text-sm"
+              >
+                {t('admin.login.demoHint')}{' '}
+                <span className="font-mono font-semibold">admin@dailyfunded.demo</span> /{' '}
+                <span className="font-mono font-semibold">demo-admin-2026</span>
+              </p>
+            )}
+          </>
+        )}
       </AuthLayout>
     </GuestOnly>
   );

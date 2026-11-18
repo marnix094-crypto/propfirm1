@@ -37,6 +37,11 @@ export function SiteFooter() {
                   {t('site.nav.liveDemo')}
                 </Link>
               </li>
+              <li>
+                <Link to={`/${lang}/admin/login`} className={link}>
+                  {t('site.nav.partnerLogin')}
+                </Link>
+              </li>
             </ul>
           </div>
           <div>

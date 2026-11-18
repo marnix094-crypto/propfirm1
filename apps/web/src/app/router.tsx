@@ -224,6 +224,14 @@ const routes: RouteObject[] = [
         ],
       },
       {
+        // Separate login for firm admins and Daily Funded staff (D91).
+        path: 'admin/login',
+        lazy: () =>
+          import('@/features/auth/login-page').then((m) => ({
+            Component: () => <m.LoginPage audience="admin" />,
+          })),
+      },
+      {
         path: 'admin',
         lazy: () =>
           Promise.all([
@@ -231,7 +239,7 @@ const routes: RouteObject[] = [
             import('@/features/auth/require-auth'),
           ]).then(([layout, guard]) => ({
             Component: () => (
-              <guard.RequireAuth>
+              <guard.RequireAuth area="admin">
                 <layout.AdminLayout />
               </guard.RequireAuth>
             ),
@@ -299,9 +307,18 @@ const routes: RouteObject[] = [
               import('@/features/admin/audit-page').then((m) => ({ Component: m.AdminAuditPage })),
           },
           {
-            path: 'team',
+            path: 'dashboard',
             lazy: () =>
-              import('@/features/admin/team-page').then((m) => ({ Component: m.AdminTeamPage })),
+              import('@/features/admin/client-dashboard-page').then((m) => ({
+                Component: m.AdminClientDashboardPage,
+              })),
+          },
+          {
+            path: 'security',
+            lazy: () =>
+              import('@/features/security/security-page').then((m) => ({
+                Component: m.SecurityPage,
+              })),
           },
           {
             path: 'firms',

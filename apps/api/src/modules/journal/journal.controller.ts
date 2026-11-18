@@ -1,3 +1,4 @@
+import { RequiresModule } from '../firms/module.guard.js';
 import {
   Body,
   Controller,
@@ -24,6 +25,7 @@ import { JournalService } from './journal.service.js';
 const UUID = new ParseUUIDPipe({ version: '7' });
 
 @ApiTags('journal')
+@RequiresModule('notebook')
 @Controller('journal')
 export class JournalController {
   constructor(private readonly journal: JournalService) {}

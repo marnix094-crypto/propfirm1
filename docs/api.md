@@ -89,26 +89,26 @@ Legenda rol: P = publiek, T = trader (ingelogd), S = support, A = admin, ⚡ = s
 |---|---|---|---|
 | GET | `/health` · `/ready` | P | |
 
-### Admin (`/admin/*`) — geïmplementeerd (D83–D89)
-Toegang: teamlid van de firma (OWNER/ADMIN/SUPPORT) of Daily Funded-superadmin (`Role.ADMIN`, kiest firma met header `X-Admin-Firm`). 2FA verplicht (behalve `GET /admin/me`). Alle acties gelogd als `ADMIN` in de audit log.
+### Admin (`/admin/*`) — geïmplementeerd (D83–D92)
+Toegang: alleen de admin van de firma (rol OWNER, apart adminaccount) of Daily Funded-superadmin (`Role.ADMIN`, kiest firma met header `X-Admin-Firm`). Inloggen via `POST /auth/login` met `audience: 'admin'` (partner-login); klantlogin weigert adminaccounts en andersom. 2FA verplicht (behalve `GET /admin/me`). Alle acties gelogd als `ADMIN`.
 
-| Methode | Pad | Rollen | Opmerking |
+| Methode | Pad | Wie | Opmerking |
 |---|---|---|---|
-| GET | `/admin/me` | alle | rol, firma, 2FA-status |
-| GET | `/admin/overview` | alle | kerncijfers + omzet per dag (30 d) |
-| GET | `/admin/traders?q=&status=&cursor=` · `/admin/traders/:id` | alle | |
-| POST | `/admin/traders/:id/suspend` · `/reactivate` | O, A | `{ reason }`; schorsen = overal uitloggen |
-| GET | `/admin/accounts?kind=&status=&cursor=` | alle | |
-| POST | `/admin/accounts/:id/fail` | O, A | `{ reason }`; posities sluiten, FAILED |
-| GET / POST | `/admin/products` · PATCH `/admin/products/:id` | lezen alle; wijzigen O, A | prijs/regelset/zichtbaar/aanbevolen |
-| GET / POST | `/admin/rule-sets` (POST = nieuwe versie op basis van `basedOnId`) | lezen alle; maken O, A | |
-| GET / PUT | `/admin/branding` | lezen alle; wijzigen O, A | naam, kleur, logo, domein, support-e-mail |
-| GET | `/admin/alerts?state=open\|all&cursor=` · POST `/admin/alerts/:id/ack` | alle | |
-| GET | `/admin/audit?action=&cursor=` · `/admin/audit/verify` | alle · O, A | |
-| GET / POST | `/admin/team` · PATCH / DELETE `/admin/team/:id` | lezen alle; O alles, A alleen support | uitnodiging per e-mail |
-| GET / POST | `/admin/firms` · POST `/admin/firms/:id/status` | superadmin | nieuwe firma = voorbeeldcatalogus + uitnodiging eigenaar |
+| GET | `/admin/me` | admin, superadmin | rol, firma, 2FA-status |
+| GET | `/admin/overview` | admin, superadmin | kerncijfers + omzet per dag (30 d) |
+| GET | `/admin/traders?q=&status=&cursor=` · `/admin/traders/:id` | admin, superadmin | alleen klanten (nooit admins) |
+| POST | `/admin/traders/:id/suspend` · `/reactivate` | admin, superadmin | `{ reason }` |
+| GET | `/admin/accounts?kind=&status=&cursor=` · POST `/admin/accounts/:id/fail` | admin, superadmin | |
+| GET / POST / PATCH | `/admin/products` · `/admin/products/:id` | admin, superadmin | |
+| GET / POST | `/admin/rule-sets` | admin, superadmin | POST = nieuwe versie |
+| GET / PUT | `/admin/modules` | admin, superadmin | klantdashboard samenstellen (D92) |
+| GET / PUT | `/admin/branding` | admin, superadmin | |
+| GET | `/admin/alerts` · POST `/admin/alerts/:id/ack` | admin, superadmin | |
+| GET | `/admin/audit` · `/admin/audit/verify` | admin, superadmin | |
+| GET / POST | `/admin/firms` · POST `/admin/firms/:id/status` | superadmin | nieuwe firma + admin-uitnodiging |
+| POST | `/admin/firms/:id/admin` · `/admin/firms/:id/admin/invite` | superadmin | admin vervangen · uitnodiging opnieuw |
 
-Publiek: `GET /public/firm` (huisstijl van de firma van dit domein / `X-Firm`). Dev: `POST /dev/firm-owner` (alleen `DEV_TOOLS_ENABLED`).
+Publiek: `GET /public/firm` (huisstijl + uitgeschakelde modules). Dev: `POST /dev/staff` (alleen `DEV_TOOLS_ENABLED`: firma + admin, of superadmin).
 
 ## WebSockets (Socket.IO)
 

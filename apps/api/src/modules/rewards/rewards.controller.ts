@@ -1,3 +1,4 @@
+import { RequiresModule } from '../firms/module.guard.js';
 import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Errors } from '../../common/errors.js';
@@ -10,12 +11,14 @@ import { RewardsService } from './rewards.service.js';
 export class RewardsController {
   constructor(private readonly rewards: RewardsService) {}
 
+  @RequiresModule('points')
   @Get('points')
   @ApiOkResponse({ type: PointsSummaryDto })
   points(@CurrentUser() u: AuthUser) {
     return this.rewards.summary(u.id);
   }
 
+  @RequiresModule('points')
   @Post('points/redeem')
   @ApiHeader({ name: 'Idempotency-Key', required: true })
   @ApiCreatedResponse({ type: OfferDto })
@@ -29,6 +32,7 @@ export class RewardsController {
     return this.rewards.redeem(u.id, dto.rewardId, key);
   }
 
+  @RequiresModule('offers')
   @Get('offers')
   @ApiOkResponse({ type: OfferListDto })
   async offers(@CurrentUser() u: AuthUser): Promise<OfferListDto> {

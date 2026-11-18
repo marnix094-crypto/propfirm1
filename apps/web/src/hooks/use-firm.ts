@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { call, client, type Schemas } from '@/lib/api-client';
 import { useFirmStore } from '@/stores/firm';
@@ -13,4 +14,10 @@ export function useFirmBranding() {
     staleTime: 5 * 60_000,
     retry: 1,
   });
+}
+
+/** Client modules the firm switched off (empty while loading: the API enforces it anyway). */
+export function useDisabledModules(): ReadonlySet<string> {
+  const firm = useFirmBranding();
+  return useMemo(() => new Set<string>(firm.data?.disabledModules ?? []), [firm.data]);
 }

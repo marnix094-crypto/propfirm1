@@ -87,6 +87,37 @@ test.describe('trading platform (real API)', () => {
     await expect(page.getByRole('alert')).toHaveText('Incorrect email or password.');
   });
 
+  test('menu pages: notebook is saved on the server, coming-soon pages show no data', async ({
+    page,
+    isMobile,
+  }) => {
+    await register(page);
+    if (isMobile) {
+      await page.getByRole('link', { name: 'More' }).last().click();
+      await page.getByRole('link', { name: 'Notebook' }).click();
+    } else {
+      await page.getByRole('complementary').getByRole('link', { name: 'Notebook' }).click();
+    }
+    await expect(page).toHaveURL(/\/en\/app\/notebook$/);
+    await page.getByLabel('Title').fill('Patient breakout');
+    await page.getByLabel('Note').fill('Waited for the retest.');
+    await page.getByLabel('Tags').fill('btc, patience');
+    await page.getByRole('button', { name: 'Save note' }).click();
+    await expect(page.getByRole('status').filter({ hasText: 'Note saved' })).toBeVisible();
+    await page.reload();
+    const list = page.getByTestId('notebook-list');
+    await expect(list).toContainText('Patient breakout');
+    await expect(list).toContainText('#patience');
+
+    await page.goto('/en/app/leaderboard');
+    await expect(page.getByTestId('coming-soon')).toContainText('Soon');
+    await page.goto('/en/app/withdrawal');
+    await expect(page.getByText('Withdrawals need a funded account')).toBeVisible();
+    await page.goto('/en/app/stats');
+    await expect(page.getByTestId('pnl-calendar')).toBeVisible();
+    await expect(page.getByTestId('stats-by-symbol')).toContainText('No closed trades yet.');
+  });
+
   for (const theme of ['light', 'dark'] as const) {
     test(`portfolio and trade have no axe violations (${theme})`, async ({ page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -95,7 +126,19 @@ test.describe('trading platform (real API)', () => {
         localStorage.setItem('df-platform-theme', t);
       }, theme);
       await register(page);
-      for (const path of ['/en/app/portfolio', '/en/app/trade/BTCUSDT', '/en/app/more']) {
+      for (const path of [
+        '/en/app/portfolio',
+        '/en/app/trade/BTCUSDT',
+        '/en/app/more',
+        '/en/app/stats',
+        '/en/app/orders',
+        '/en/app/withdrawal',
+        '/en/app/track-record',
+        '/en/app/notebook',
+        '/en/app/tutorial',
+        '/en/app/new-account',
+        '/en/app/leaderboard',
+      ]) {
         await page.goto(path);
         await page.waitForLoadState('networkidle');
         const results = await new AxeBuilder({ page })

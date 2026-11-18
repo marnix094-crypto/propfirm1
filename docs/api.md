@@ -150,3 +150,4 @@ Catalogus (publiek): `GET /products?type=INSTANT`, `GET /products/:id`, `POST /p
 ## Dashboard (na fase 6)
 
 `GET /accounts/:id/performance?month=YYYY-MM` → `{ stats: { trades, wins, losses, winRateBps, profitFactorBps, avgWinMinor, avgLossMinor, expectancyMinor, bestTradeMinor, worstTradeMinor, … }, calendar: { month, days[{ date, pnlMinor, trades }], netMinor, greenDays, redDays, bestDayMinor, worstDayMinor } }`. Dev-only: `POST /dev/verify-email`.
+`GET /accounts/:id/performance` geeft ook `bySymbol[]` en `byDirection[]` (LONG/SHORT). Notitieboek: `GET /journal?cursor&limit`, `POST /journal`, `PATCH /journal/:id`, `DELETE /journal/:id`. `AccountDto` bevat `createdAt`/`endedAt`.

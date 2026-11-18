@@ -153,6 +153,7 @@ model User {
   accounts        TradingAccount[]
   watchlist       Watchlist?
   purchases       Purchase[]
+  journalEntries  JournalEntry[]
   twoFactor       TwoFactor?
   emailTokens     EmailToken[]
 }
@@ -310,6 +311,7 @@ model TradingAccount {
   paidOutSinceScaleMinor BigInt           @default(0)
   purchaseId             String?          @db.Uuid
   purchase               Purchase?        @relation(fields: [purchaseId], references: [id])
+  journalEntries         JournalEntry[]
   violations             RuleViolation[]
   createdAt              DateTime         @default(now())
   endedAt                DateTime?
@@ -540,4 +542,22 @@ model PaymentEvent {
   receivedAt DateTime @default(now())
 
   @@unique([provider, eventId])
+}
+
+/// Trading journal ("Notebook"). User-written content; deleted with the user.
+model JournalEntry {
+  id        String          @id @default(uuid(7)) @db.Uuid
+  userId    String          @db.Uuid
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId String?         @db.Uuid
+  account   TradingAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  /// Trading day the note is about (YYYY-MM-DD, Europe/Amsterdam).
+  date      String          @db.Char(10)
+  title     String          @db.VarChar(120)
+  body      String
+  tags      String[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([userId, id])
 }

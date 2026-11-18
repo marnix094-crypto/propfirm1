@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { daysInMonth, monthCalendar, tradeStats } from './performance.js';
+import { daysInMonth, monthCalendar, tradeStats, tradeStatsBy } from './performance.js';
 
 const t = (netPnlMinor: bigint, day = '2026-11-03') => ({ netPnlMinor, day });
 
@@ -75,5 +75,18 @@ describe('monthCalendar', () => {
       bestDayMinor: null,
       worstDayMinor: null,
     });
+  });
+});
+
+describe('tradeStatsBy', () => {
+  it('groups trades and orders by size', () => {
+    const trades = [
+      { netPnlMinor: 5n, day: '2026-11-03', symbol: 'ETH' },
+      { netPnlMinor: -2n, day: '2026-11-03', symbol: 'BTC' },
+      { netPnlMinor: 3n, day: '2026-11-04', symbol: 'BTC' },
+    ];
+    const g = tradeStatsBy(trades, (t) => t.symbol);
+    expect(g.map((x) => x.key)).toEqual(['BTC', 'ETH']);
+    expect(g[0]!.stats).toMatchObject({ trades: 2, wins: 1, losses: 1, netPnlMinor: 1n });
   });
 });

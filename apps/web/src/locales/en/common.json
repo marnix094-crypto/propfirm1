@@ -479,7 +479,8 @@
     "PRODUCT_TYPE_UNAVAILABLE": "This account type is not offered.",
     "CHECKOUT_ITEM_INVALID": "Choose an account to buy.",
     "ACCOUNT_SUSPENDED": "Your account is suspended. Please contact support.",
-    "IDEMPOTENCY_KEY_REUSED": "This request was already sent with different details. Please try again."
+    "IDEMPOTENCY_KEY_REUSED": "This request was already sent with different details. Please try again.",
+    "JOURNALENTRY_NOT_FOUND": "Note not found."
   },
   "app": {
     "nav": {
@@ -487,7 +488,32 @@
       "portfolio": "Portfolio",
       "trade": "Trade",
       "more": "More",
-      "platform": "Platform"
+      "platform": "Platform",
+      "home": "Home",
+      "points": "Daily Points",
+      "withdrawal": "Withdrawal",
+      "leaderboard": "Leaderboard",
+      "competitions": "Competitions",
+      "offers": "My Offers",
+      "transparency": "Transparency",
+      "orders": "Order History",
+      "copier": "Trade Copier",
+      "backtesting": "Back Testing",
+      "stats": "My Stats",
+      "trackRecord": "Track Record",
+      "notebook": "Notebook",
+      "certificates": "Certificates",
+      "tutorial": "Tutorial",
+      "settings": "Settings",
+      "newAccount": "New account",
+      "soon": "Soon",
+      "new": "New",
+      "locked": "Locked",
+      "sections": {
+        "main": "Main menu",
+        "backtesting": "Back testing",
+        "performance": "Performance"
+      }
     },
     "connection": {
       "lost": "Connection lost — reconnecting…",
@@ -835,6 +861,205 @@
       "entry": "Entry",
       "mark": "Mark",
       "pnl": "Unrealized P&L"
+    }
+  },
+  "soon": {
+    "note": "We only show real data. This page goes live when the feature is ready.",
+    "back": "Back to home",
+    "points": {
+      "body": "Earn Daily Points for trading activity and milestones, and redeem them for rewards.",
+      "points": [
+        "Points for trading days, milestones and referrals",
+        "Redeem for discounts on new accounts",
+        "Transparent rules, visible in your account"
+      ]
+    },
+    "leaderboard": {
+      "body": "See how the best Daily Funded traders perform — based on real, anonymised results.",
+      "points": [
+        "Ranking by return and consistency",
+        "Opt-in with a nickname; no personal data",
+        "Daily, weekly and monthly views"
+      ]
+    },
+    "competitions": {
+      "body": "Trade in time-boxed competitions on a level playing field.",
+      "points": [
+        "Same starting balance for everyone",
+        "Clear rules and live standings",
+        "Prizes announced per competition"
+      ]
+    },
+    "offers": {
+      "body": "Personal offers and discount codes for new accounts.",
+      "points": ["Discounts on instant funding accounts", "Offers linked to your Daily Points"]
+    },
+    "transparency": {
+      "body": "Public, verifiable figures about payouts and accounts.",
+      "points": [
+        "Total paid out (real payouts only)",
+        "Number of funded traders",
+        "Average time to payout"
+      ]
+    },
+    "copier": {
+      "body": "Copy trades automatically between your own accounts.",
+      "points": [
+        "Copy from one master to several accounts",
+        "Size multiplier per account",
+        "Respects each account's rules"
+      ]
+    },
+    "backtesting": {
+      "body": "Test your strategy on historical price data before you trade it.",
+      "points": [
+        "Replay historical candles",
+        "Place simulated orders bar by bar",
+        "Statistics like on My Stats"
+      ]
+    },
+    "certificates": {
+      "body": "Downloadable certificates for funded accounts and payouts.",
+      "points": ["Certificate when you get funded", "Payout certificates with a verification link"]
+    }
+  },
+  "stats": {
+    "subtitle": "All-time statistics of {{account}}",
+    "bySymbol": "By symbol",
+    "byDirection": "Long vs short",
+    "noTrades": "No closed trades yet."
+  },
+  "history": {
+    "orders": "Orders",
+    "fills": "Fills",
+    "empty": "No history yet",
+    "emptyBody": "Closed, cancelled and filled orders appear here.",
+    "col": {
+      "time": "Time",
+      "symbol": "Symbol",
+      "side": "Side",
+      "type": "Type",
+      "qty": "Size",
+      "price": "Price",
+      "status": "Status",
+      "fee": "Fee",
+      "realized": "Realized P&L"
+    },
+    "side": {
+      "BUY": "Buy",
+      "SELL": "Sell"
+    },
+    "type": {
+      "MARKET": "Market",
+      "LIMIT": "Limit",
+      "STOP": "Stop"
+    },
+    "source": {
+      "SYSTEM_SL": "stop loss",
+      "SYSTEM_TP": "take profit",
+      "SYSTEM_STOPOUT": "stop-out",
+      "SYSTEM_BREACH": "rule breach",
+      "ADMIN": "admin"
+    }
+  },
+  "withdrawal": {
+    "demoTitle": "Withdrawals need a funded account",
+    "demoBody": "Demo accounts trade with virtual money and cannot pay out. Get a funded account to earn a profit share.",
+    "request": "Request payout",
+    "available": "Your share (simulated)",
+    "status": "Status",
+    "requestButton": "Request payout",
+    "lockedNote": "Payout requests open in a later release. Identity verification (KYC) is required before the first payout."
+  },
+  "trackRecord": {
+    "subtitle": "Every account you have traded, with its result.",
+    "accounts": "Accounts",
+    "empty": "No accounts yet",
+    "col": {
+      "account": "Account",
+      "status": "Status",
+      "started": "Started",
+      "size": "Size",
+      "equity": "Equity",
+      "return": "Return",
+      "trades": "Trades",
+      "winRate": "Win rate"
+    }
+  },
+  "notebook": {
+    "subtitle": "Your private trading journal — synced to your account.",
+    "new": "New note",
+    "entries": "Notes",
+    "empty": "No notes yet",
+    "emptyBody": "Write down your plan, emotions and lessons after each session.",
+    "more": "Load more",
+    "edit": "Edit note",
+    "date": "Trading day",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g. Patient BTC breakout",
+    "body": "Note",
+    "bodyPlaceholder": "What was the plan? What happened? What will you do differently?",
+    "tags": "Tags",
+    "tagsHint": "Comma-separated, max 8 (e.g. btc, patience)",
+    "delete": "Delete",
+    "save": "Save note",
+    "saved": "Note saved",
+    "deleted": "Note deleted",
+    "deleteTitle": "Delete this note?",
+    "deleteBody": "This cannot be undone."
+  },
+  "newAccount": {
+    "subtitle": "Choose an instant funding account. Accounts are simulated; you pay a one-time fee."
+  },
+  "tutorial": {
+    "subtitle": "Get started with Daily Funded in six short steps.",
+    "steps": {
+      "start": {
+        "title": "Your free demo account",
+        "body": [
+          "Every trader gets a demo account with $100,000 in virtual money. Use it to get to know the platform — no real money is involved.",
+          "Switch between accounts with the account switcher at the top."
+        ]
+      },
+      "trade": {
+        "title": "Place your first trade",
+        "body": [
+          "Open Trade, pick a market and choose Buy or Sell. Set the size and leverage, and optionally a stop loss and take profit.",
+          "Open positions and orders appear below the chart; you can close them at any time."
+        ],
+        "cta": "Open the trading screen"
+      },
+      "rules": {
+        "title": "Understand the account rules",
+        "body": [
+          "Funded accounts have a daily loss limit and a maximum drawdown. The meters on Home show how much room you have left.",
+          "If a limit is reached, positions are closed and the account ends. The daily limit resets at 00:00 Amsterdam time."
+        ],
+        "cta": "View your rule meters"
+      },
+      "funded": {
+        "title": "Get a funded account",
+        "body": [
+          "Choose an account size and pay a one-time fee. Your simulated funded account is ready immediately after payment."
+        ],
+        "cta": "Choose an account"
+      },
+      "payouts": {
+        "title": "Profit split and payouts",
+        "body": [
+          "You keep a share of the profit you make on a funded account. Withdrawal shows when you may request a payout and which conditions are still open.",
+          "Identity verification (KYC) is required before your first payout."
+        ],
+        "cta": "View withdrawal status"
+      },
+      "review": {
+        "title": "Review and improve",
+        "body": [
+          "My Stats shows your win rate, profit factor and a calendar with every trading day. Track Record lists all your accounts.",
+          "Use the Notebook to write down your plan and lessons after each session."
+        ],
+        "cta": "Open My Stats"
+      }
     }
   }
 }

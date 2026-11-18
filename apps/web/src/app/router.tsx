@@ -1,6 +1,7 @@
 import { createBrowserRouter, createMemoryRouter, Navigate, type RouteObject } from 'react-router';
 import { LangLayout } from './lang-layout';
 import { RootRedirect } from './root-redirect';
+import { SOON_FEATURES } from '@/features/app/nav';
 
 const placeholder = (kind: 'legal') => () =>
   import('@/features/placeholder/placeholder-page').then((m) => ({
@@ -112,6 +113,58 @@ const routes: RouteObject[] = [
                 Component: m.TestPaymentPage,
               })),
           },
+          {
+            path: 'new-account',
+            lazy: () =>
+              import('@/features/checkout/new-account-page').then((m) => ({
+                Component: m.NewAccountPage,
+              })),
+          },
+          {
+            path: 'stats',
+            lazy: () =>
+              import('@/features/stats/stats-page').then((m) => ({ Component: m.StatsPage })),
+          },
+          {
+            path: 'orders',
+            lazy: () =>
+              import('@/features/orders/orders-page').then((m) => ({ Component: m.OrdersPage })),
+          },
+          {
+            path: 'withdrawal',
+            lazy: () =>
+              import('@/features/withdrawal/withdrawal-page').then((m) => ({
+                Component: m.WithdrawalPage,
+              })),
+          },
+          {
+            path: 'track-record',
+            lazy: () =>
+              import('@/features/track-record/track-record-page').then((m) => ({
+                Component: m.TrackRecordPage,
+              })),
+          },
+          {
+            path: 'notebook',
+            lazy: () =>
+              import('@/features/notebook/notebook-page').then((m) => ({
+                Component: m.NotebookPage,
+              })),
+          },
+          {
+            path: 'tutorial',
+            lazy: () =>
+              import('@/features/tutorial/tutorial-page').then((m) => ({
+                Component: m.TutorialPage,
+              })),
+          },
+          ...SOON_FEATURES.map((feature) => ({
+            path: feature,
+            lazy: () =>
+              import('@/features/soon/coming-soon-page').then((m) => ({
+                Component: () => <m.ComingSoonPage feature={feature} />,
+              })),
+          })),
           // Unknown app routes fall back to the portfolio instead of rendering nothing.
           { path: '*', element: <Navigate to="portfolio" replace /> },
         ],

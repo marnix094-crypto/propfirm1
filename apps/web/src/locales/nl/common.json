@@ -479,7 +479,8 @@
     "PRODUCT_TYPE_UNAVAILABLE": "Dit accounttype wordt niet aangeboden.",
     "CHECKOUT_ITEM_INVALID": "Kies een account om te kopen.",
     "ACCOUNT_SUSPENDED": "Je account is geschorst. Neem contact op met support.",
-    "IDEMPOTENCY_KEY_REUSED": "Dit verzoek is al met andere gegevens verstuurd. Probeer het opnieuw."
+    "IDEMPOTENCY_KEY_REUSED": "Dit verzoek is al met andere gegevens verstuurd. Probeer het opnieuw.",
+    "JOURNALENTRY_NOT_FOUND": "Notitie niet gevonden."
   },
   "app": {
     "nav": {
@@ -487,7 +488,32 @@
       "portfolio": "Portfolio",
       "trade": "Trade",
       "more": "Meer",
-      "platform": "Platform"
+      "platform": "Platform",
+      "home": "Home",
+      "points": "Daily Points",
+      "withdrawal": "Uitbetaling",
+      "leaderboard": "Ranglijst",
+      "competitions": "Competities",
+      "offers": "Mijn aanbiedingen",
+      "transparency": "Transparantie",
+      "orders": "Ordergeschiedenis",
+      "copier": "Trade Copier",
+      "backtesting": "Backtesting",
+      "stats": "Mijn statistieken",
+      "trackRecord": "Track record",
+      "notebook": "Notitieboek",
+      "certificates": "Certificaten",
+      "tutorial": "Tutorial",
+      "settings": "Instellingen",
+      "newAccount": "Nieuw account",
+      "soon": "Binnenkort",
+      "new": "Nieuw",
+      "locked": "Op slot",
+      "sections": {
+        "main": "Hoofdmenu",
+        "backtesting": "Backtesting",
+        "performance": "Prestaties"
+      }
     },
     "connection": {
       "lost": "Verbinding verbroken — opnieuw verbinden…",
@@ -835,6 +861,208 @@
       "entry": "Instap",
       "mark": "Markt",
       "pnl": "Open resultaat"
+    }
+  },
+  "soon": {
+    "note": "We tonen alleen echte gegevens. Deze pagina gaat live zodra de functie klaar is.",
+    "back": "Terug naar home",
+    "points": {
+      "body": "Verdien Daily Points met handelsactiviteit en mijlpalen en wissel ze in voor beloningen.",
+      "points": [
+        "Punten voor handelsdagen, mijlpalen en doorverwijzingen",
+        "Inwisselen voor korting op nieuwe accounts",
+        "Duidelijke regels, zichtbaar in je account"
+      ]
+    },
+    "leaderboard": {
+      "body": "Zie hoe de beste Daily Funded-traders presteren — op basis van echte, geanonimiseerde resultaten.",
+      "points": [
+        "Ranglijst op rendement en consistentie",
+        "Meedoen met een bijnaam; geen persoonsgegevens",
+        "Dag-, week- en maandoverzicht"
+      ]
+    },
+    "competitions": {
+      "body": "Handel in competities met een vaste looptijd en gelijke startpositie.",
+      "points": [
+        "Iedereen hetzelfde startsaldo",
+        "Duidelijke regels en live tussenstand",
+        "Prijzen per competitie aangekondigd"
+      ]
+    },
+    "offers": {
+      "body": "Persoonlijke aanbiedingen en kortingscodes voor nieuwe accounts.",
+      "points": [
+        "Korting op instant funding-accounts",
+        "Aanbiedingen gekoppeld aan je Daily Points"
+      ]
+    },
+    "transparency": {
+      "body": "Openbare, controleerbare cijfers over uitbetalingen en accounts.",
+      "points": [
+        "Totaal uitbetaald (alleen echte uitbetalingen)",
+        "Aantal funded traders",
+        "Gemiddelde tijd tot uitbetaling"
+      ]
+    },
+    "copier": {
+      "body": "Kopieer trades automatisch tussen je eigen accounts.",
+      "points": [
+        "Van één hoofdaccount naar meerdere accounts",
+        "Groottefactor per account",
+        "Respecteert de regels van elk account"
+      ]
+    },
+    "backtesting": {
+      "body": "Test je strategie op historische koersdata voordat je ermee handelt.",
+      "points": [
+        "Historische candles afspelen",
+        "Gesimuleerde orders per candle plaatsen",
+        "Statistieken zoals bij My Stats"
+      ]
+    },
+    "certificates": {
+      "body": "Downloadbare certificaten voor funded accounts en uitbetalingen.",
+      "points": ["Certificaat zodra je funded bent", "Uitbetalingscertificaten met verificatielink"]
+    }
+  },
+  "stats": {
+    "subtitle": "Alle statistieken van {{account}}",
+    "bySymbol": "Per symbool",
+    "byDirection": "Long vs short",
+    "noTrades": "Nog geen gesloten trades."
+  },
+  "history": {
+    "orders": "Orders",
+    "fills": "Uitvoeringen",
+    "empty": "Nog geen geschiedenis",
+    "emptyBody": "Gesloten, geannuleerde en uitgevoerde orders verschijnen hier.",
+    "col": {
+      "time": "Tijd",
+      "symbol": "Symbool",
+      "side": "Richting",
+      "type": "Type",
+      "qty": "Grootte",
+      "price": "Prijs",
+      "status": "Status",
+      "fee": "Kosten",
+      "realized": "Gerealiseerd"
+    },
+    "side": {
+      "BUY": "Koop",
+      "SELL": "Verkoop"
+    },
+    "type": {
+      "MARKET": "Markt",
+      "LIMIT": "Limiet",
+      "STOP": "Stop"
+    },
+    "source": {
+      "SYSTEM_SL": "stop loss",
+      "SYSTEM_TP": "take profit",
+      "SYSTEM_STOPOUT": "stop-out",
+      "SYSTEM_BREACH": "regelovertreding",
+      "ADMIN": "beheerder"
+    }
+  },
+  "withdrawal": {
+    "demoTitle": "Uitbetalen kan alleen met een funded account",
+    "demoBody": "Demo-accounts handelen met virtueel geld en kunnen niet uitbetalen. Neem een funded account om winstdeling te verdienen.",
+    "request": "Uitbetaling aanvragen",
+    "available": "Jouw deel (gesimuleerd)",
+    "status": "Status",
+    "requestButton": "Uitbetaling aanvragen",
+    "lockedNote": "Uitbetalingen aanvragen kan in een volgende release. Identiteitsverificatie (KYC) is vereist vóór de eerste uitbetaling."
+  },
+  "trackRecord": {
+    "subtitle": "Alle accounts waarmee je hebt gehandeld, met hun resultaat.",
+    "accounts": "Accounts",
+    "empty": "Nog geen accounts",
+    "col": {
+      "account": "Account",
+      "status": "Status",
+      "started": "Gestart",
+      "size": "Grootte",
+      "equity": "Equity",
+      "return": "Rendement",
+      "trades": "Trades",
+      "winRate": "Win rate"
+    }
+  },
+  "notebook": {
+    "subtitle": "Je privé-handelsdagboek — opgeslagen bij je account.",
+    "new": "Nieuwe notitie",
+    "entries": "Notities",
+    "empty": "Nog geen notities",
+    "emptyBody": "Schrijf na elke sessie je plan, emoties en lessen op.",
+    "more": "Meer laden",
+    "edit": "Notitie bewerken",
+    "date": "Handelsdag",
+    "titleLabel": "Titel",
+    "titlePlaceholder": "bv. Geduldige BTC-breakout",
+    "body": "Notitie",
+    "bodyPlaceholder": "Wat was het plan? Wat gebeurde er? Wat doe je de volgende keer anders?",
+    "tags": "Tags",
+    "tagsHint": "Gescheiden door komma’s, max 8 (bv. btc, geduld)",
+    "delete": "Verwijderen",
+    "save": "Notitie opslaan",
+    "saved": "Notitie opgeslagen",
+    "deleted": "Notitie verwijderd",
+    "deleteTitle": "Deze notitie verwijderen?",
+    "deleteBody": "Dit kan niet ongedaan worden gemaakt."
+  },
+  "newAccount": {
+    "subtitle": "Kies een instant funding-account. Accounts zijn gesimuleerd; je betaalt een eenmalige fee."
+  },
+  "tutorial": {
+    "subtitle": "Start met Daily Funded in zes korte stappen.",
+    "steps": {
+      "start": {
+        "title": "Je gratis demo-account",
+        "body": [
+          "Elke trader krijgt een demo-account met $100.000 virtueel geld. Leer daarmee het platform kennen — er is geen echt geld bij betrokken.",
+          "Wissel bovenaan van account met de accountwisselaar."
+        ]
+      },
+      "trade": {
+        "title": "Plaats je eerste trade",
+        "body": [
+          "Open Trade, kies een markt en kies Koop of Verkoop. Stel grootte en hefboom in, en eventueel een stop loss en take profit.",
+          "Open posities en orders staan onder de grafiek; je kunt ze altijd sluiten."
+        ],
+        "cta": "Naar het handelsscherm"
+      },
+      "rules": {
+        "title": "Begrijp de accountregels",
+        "body": [
+          "Funded accounts hebben een dagelijkse verlieslimiet en een maximale drawdown. De meters op Home tonen hoeveel ruimte je nog hebt.",
+          "Wordt een limiet bereikt, dan worden posities gesloten en eindigt het account. De daglimiet reset om 00:00 Amsterdamse tijd."
+        ],
+        "cta": "Bekijk je regelmeters"
+      },
+      "funded": {
+        "title": "Neem een funded account",
+        "body": [
+          "Kies een accountgrootte en betaal een eenmalige fee. Je gesimuleerde funded account staat direct na betaling klaar."
+        ],
+        "cta": "Kies een account"
+      },
+      "payouts": {
+        "title": "Winstdeling en uitbetalingen",
+        "body": [
+          "Je houdt een deel van de winst die je op een funded account maakt. Bij Uitbetaling zie je wanneer je mag aanvragen en welke voorwaarden nog openstaan.",
+          "Identiteitsverificatie (KYC) is vereist vóór je eerste uitbetaling."
+        ],
+        "cta": "Bekijk uitbetalingsstatus"
+      },
+      "review": {
+        "title": "Evalueer en verbeter",
+        "body": [
+          "Mijn statistieken toont je win rate, profit factor en een kalender met elke handelsdag. Track record toont al je accounts.",
+          "Gebruik het Notitieboek om na elke sessie je plan en lessen op te schrijven."
+        ],
+        "cta": "Open Mijn statistieken"
+      }
     }
   }
 }

@@ -148,3 +148,20 @@ export function monthCalendar(
     worstDayMinor: worst,
   };
 }
+
+/** Trade statistics per group (e.g. per symbol or per direction), largest groups first. */
+export function tradeStatsBy<T extends ClosedTrade>(
+  trades: T[],
+  key: (t: T) => string,
+): { key: string; stats: TradeStats }[] {
+  const groups = new Map<string, T[]>();
+  for (const t of trades) {
+    const k = key(t);
+    const list = groups.get(k);
+    if (list) list.push(t);
+    else groups.set(k, [t]);
+  }
+  return [...groups.entries()]
+    .map(([k, list]) => ({ key: k, stats: tradeStats(list) }))
+    .sort((a, b) => b.stats.trades - a.stats.trades || a.key.localeCompare(b.key));
+}

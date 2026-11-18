@@ -62,3 +62,7 @@
 | D58 | Platform krijgt eigen huisstijl zwart + lime `#AFE604`, donker standaard; landingspagina blijft voorlopig lichtblauw. Lime nooit als tekstkleur op licht (AA) — dan donker olijf | besloten |
 | D59 | Dashboard-statistieken: trade = vulling met gerealiseerde PnL ≠ 0 (netto na commissie van die vulling); win rate = winst / (winst + verlies) trades, break-even telt niet mee; dagresultaat = gerealiseerd + commissie + funding per handelsdag (Europe/Amsterdam) | besloten |
 | D60 | Demo-preview: "Voorbeeld funded account" bevat een gelabelde voorbeeldhistorie (alleen in de demo-build), zodat kalender en win rate zichtbaar zijn | besloten |
+| D61 | Platformmenu naar voorbeeld van de gebruiker: Hoofdmenu / Backtesting / Prestaties + Tutorial en Instellingen; knop "Nieuw account" (alleen instant funding, geen "challenge") | besloten |
+| D62 | Nu werkend: Home, Trade, Uitbetaling (op slot tot uitbetaalbaar; aanvragen in fase 9), Ordergeschiedenis, Mijn statistieken (per symbool, long/short), Track record, Notitieboek, Tutorial. "Binnenkort"-pagina's zonder nepdata: Daily Points, Ranglijst, Competities, Mijn aanbiedingen, Transparantie, Trade Copier, Backtesting, Certificaten | besloten |
+| D63 | Puntenprogramma heet **Daily Points** | besloten |
+| D64 | Notitieboek op de server (`JournalEntry`, privé per gebruiker, cursor-paginatie, wordt met de gebruiker verwijderd; kan persoonlijke tekst bevatten → valt onder GDPR-export/-verwijdering) | besloten |

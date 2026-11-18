@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   ChevronRight,
+  CirclePlay,
   FileText,
   Headphones,
   HelpCircle,
   LogOut,
   Moon,
   ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { LanguageSwitcher } from '@/components/layout/language-switcher';
@@ -19,6 +19,7 @@ import { realtime } from '@/lib/realtime';
 import { useSession } from '@/stores/session';
 import { useThemeStore } from '@/stores/theme';
 import { LEGAL_DOCS } from '@/components/layout/site-footer';
+import { NAV_SECTIONS } from '@/features/app/nav';
 
 const row =
   'flex w-full items-center gap-4 px-5 py-4 text-left text-[15px] font-medium transition-colors hover:bg-primary-tint/20';
@@ -36,7 +37,7 @@ export function MorePage() {
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-5">
       <title>{t('app.more.title')}</title>
-      <h1 className="text-2xl font-bold tracking-tight">{t('app.more.title')}</h1>
+      <h1 className="text-xl font-semibold tracking-tight">{t('app.more.title')}</h1>
 
       <Card padding="none" className="overflow-hidden">
         <div className="flex items-center gap-4 px-5 py-4">
@@ -64,16 +65,49 @@ export function MorePage() {
             <LogOut className="size-5" aria-hidden="true" />
           </button>
         </div>
-        <SectionLink
-          id="pricing"
-          className="mx-5 mb-4 flex items-center justify-center gap-2 rounded-btn bg-card-muted px-4 py-3 font-semibold hover:bg-primary-tint/30"
+        <Link
+          to={`/${lang}/app/new-account`}
+          className="btn-primary mx-5 mb-4 flex items-center justify-center gap-2 rounded-btn px-4 py-3 font-semibold"
         >
-          {t('app.account.getFunded')}{' '}
-          <Sparkles className="size-4 text-accent" aria-hidden="true" />
-        </SectionLink>
+          {t('app.nav.newAccount')}
+        </Link>
       </Card>
 
+      {/* Full menu on mobile (the desktop sidebar already shows it). */}
+      {NAV_SECTIONS.map((section) => (
+        <section
+          key={section.key}
+          className="lg:hidden"
+          aria-label={t(`app.nav.sections.${section.key}`)}
+        >
+          <p className="px-1 pb-2 text-[11px] font-semibold tracking-[0.08em] text-muted uppercase">
+            {t(`app.nav.sections.${section.key}`)}
+          </p>
+          <Card padding="none" className="overflow-hidden divide-y divide-border">
+            {section.items
+              .filter((i) => i.to !== 'portfolio' && i.to !== 'trade')
+              .map(({ to, key, icon: Icon, soon }) => (
+                <Link key={to} to={`/${lang}/app/${to}`} className={row}>
+                  <Icon className="size-5 text-muted" aria-hidden="true" strokeWidth={1.75} />
+                  <span className="flex-1">{t(`app.nav.${key}`)}</span>
+                  {soon && (
+                    <span className="rounded-full border border-border px-1.5 text-[10px] font-semibold text-muted uppercase">
+                      {t('app.nav.soon')}
+                    </span>
+                  )}
+                  <ChevronRight className="size-4 text-muted" aria-hidden="true" />
+                </Link>
+              ))}
+          </Card>
+        </section>
+      ))}
+
       <Card padding="none" className="overflow-hidden divide-y divide-border">
+        <Link to={`/${lang}/app/tutorial`} className={row}>
+          <CirclePlay className="size-5 text-muted" aria-hidden="true" />
+          <span className="flex-1">{t('app.nav.tutorial')}</span>
+          <ChevronRight className="size-4 text-muted" aria-hidden="true" />
+        </Link>
         <Link to={`/${lang}/app/security`} className={row}>
           <ShieldCheck className="size-5 text-muted" aria-hidden="true" />
           <span className="flex-1">{t('app.more.security')}</span>

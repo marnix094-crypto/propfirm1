@@ -479,7 +479,8 @@
     "PRODUCT_TYPE_UNAVAILABLE": "Este tipo de cuenta no se ofrece.",
     "CHECKOUT_ITEM_INVALID": "Elige una cuenta para comprar.",
     "ACCOUNT_SUSPENDED": "Tu cuenta está suspendida. Contacta con soporte.",
-    "IDEMPOTENCY_KEY_REUSED": "Esta solicitud ya se envió con otros datos. Inténtalo de nuevo."
+    "IDEMPOTENCY_KEY_REUSED": "Esta solicitud ya se envió con otros datos. Inténtalo de nuevo.",
+    "JOURNALENTRY_NOT_FOUND": "Nota no encontrada."
   },
   "app": {
     "nav": {
@@ -487,7 +488,32 @@
       "portfolio": "Cartera",
       "trade": "Operar",
       "more": "Más",
-      "platform": "Plataforma"
+      "platform": "Plataforma",
+      "home": "Inicio",
+      "points": "Daily Points",
+      "withdrawal": "Retiro",
+      "leaderboard": "Clasificación",
+      "competitions": "Competiciones",
+      "offers": "Mis ofertas",
+      "transparency": "Transparencia",
+      "orders": "Historial de órdenes",
+      "copier": "Copiador de operaciones",
+      "backtesting": "Backtesting",
+      "stats": "Mis estadísticas",
+      "trackRecord": "Historial",
+      "notebook": "Cuaderno",
+      "certificates": "Certificados",
+      "tutorial": "Tutorial",
+      "settings": "Ajustes",
+      "newAccount": "Nueva cuenta",
+      "soon": "Pronto",
+      "new": "Nuevo",
+      "locked": "Bloqueado",
+      "sections": {
+        "main": "Menú principal",
+        "backtesting": "Backtesting",
+        "performance": "Rendimiento"
+      }
     },
     "connection": {
       "lost": "Conexión perdida — reconectando…",
@@ -835,6 +861,211 @@
       "entry": "Entrada",
       "mark": "Mercado",
       "pnl": "Resultado abierto"
+    }
+  },
+  "soon": {
+    "note": "Solo mostramos datos reales. Esta página se activará cuando la función esté lista.",
+    "back": "Volver al inicio",
+    "points": {
+      "body": "Gana Daily Points por tu actividad y tus hitos y canjéalos por recompensas.",
+      "points": [
+        "Puntos por días de trading, hitos y referidos",
+        "Canjéalos por descuentos en nuevas cuentas",
+        "Reglas claras, visibles en tu cuenta"
+      ]
+    },
+    "leaderboard": {
+      "body": "Mira cómo rinden los mejores traders de Daily Funded, con resultados reales y anonimizados.",
+      "points": [
+        "Clasificación por rentabilidad y consistencia",
+        "Participación con apodo; sin datos personales",
+        "Vistas diarias, semanales y mensuales"
+      ]
+    },
+    "competitions": {
+      "body": "Opera en competiciones de duración fija en igualdad de condiciones.",
+      "points": [
+        "Mismo saldo inicial para todos",
+        "Reglas claras y clasificación en vivo",
+        "Premios anunciados por competición"
+      ]
+    },
+    "offers": {
+      "body": "Ofertas personales y códigos de descuento para nuevas cuentas.",
+      "points": [
+        "Descuentos en cuentas de financiación instantánea",
+        "Ofertas vinculadas a tus Daily Points"
+      ]
+    },
+    "transparency": {
+      "body": "Cifras públicas y verificables sobre pagos y cuentas.",
+      "points": [
+        "Total pagado (solo pagos reales)",
+        "Número de traders financiados",
+        "Tiempo medio hasta el pago"
+      ]
+    },
+    "copier": {
+      "body": "Copia operaciones automáticamente entre tus propias cuentas.",
+      "points": [
+        "De una cuenta maestra a varias cuentas",
+        "Multiplicador de tamaño por cuenta",
+        "Respeta las reglas de cada cuenta"
+      ]
+    },
+    "backtesting": {
+      "body": "Prueba tu estrategia con datos históricos antes de operarla.",
+      "points": [
+        "Reproduce velas históricas",
+        "Coloca órdenes simuladas vela a vela",
+        "Estadísticas como en My Stats"
+      ]
+    },
+    "certificates": {
+      "body": "Certificados descargables de cuentas financiadas y pagos.",
+      "points": [
+        "Certificado al conseguir financiación",
+        "Certificados de pago con enlace de verificación"
+      ]
+    }
+  },
+  "stats": {
+    "subtitle": "Todas las estadísticas de {{account}}",
+    "bySymbol": "Por símbolo",
+    "byDirection": "Largo vs corto",
+    "noTrades": "Aún no hay operaciones cerradas."
+  },
+  "history": {
+    "orders": "Órdenes",
+    "fills": "Ejecuciones",
+    "empty": "Aún no hay historial",
+    "emptyBody": "Aquí aparecen las órdenes cerradas, canceladas y ejecutadas.",
+    "col": {
+      "time": "Hora",
+      "symbol": "Símbolo",
+      "side": "Lado",
+      "type": "Tipo",
+      "qty": "Tamaño",
+      "price": "Precio",
+      "status": "Estado",
+      "fee": "Comisión",
+      "realized": "Resultado realizado"
+    },
+    "side": {
+      "BUY": "Compra",
+      "SELL": "Venta"
+    },
+    "type": {
+      "MARKET": "Mercado",
+      "LIMIT": "Límite",
+      "STOP": "Stop"
+    },
+    "source": {
+      "SYSTEM_SL": "stop loss",
+      "SYSTEM_TP": "take profit",
+      "SYSTEM_STOPOUT": "stop-out",
+      "SYSTEM_BREACH": "infracción de regla",
+      "ADMIN": "administrador"
+    }
+  },
+  "withdrawal": {
+    "demoTitle": "Los retiros requieren una cuenta financiada",
+    "demoBody": "Las cuentas demo operan con dinero virtual y no pueden retirar. Consigue una cuenta financiada para ganar un reparto de beneficios.",
+    "request": "Solicitar pago",
+    "available": "Tu parte (simulada)",
+    "status": "Estado",
+    "requestButton": "Solicitar pago",
+    "lockedNote": "Las solicitudes de pago llegarán en una próxima versión. La verificación de identidad (KYC) es obligatoria antes del primer pago."
+  },
+  "trackRecord": {
+    "subtitle": "Todas las cuentas con las que has operado y su resultado.",
+    "accounts": "Cuentas",
+    "empty": "Aún no hay cuentas",
+    "col": {
+      "account": "Cuenta",
+      "status": "Estado",
+      "started": "Inicio",
+      "size": "Tamaño",
+      "equity": "Equity",
+      "return": "Rentabilidad",
+      "trades": "Operaciones",
+      "winRate": "Tasa de acierto"
+    }
+  },
+  "notebook": {
+    "subtitle": "Tu diario de trading privado, guardado en tu cuenta.",
+    "new": "Nueva nota",
+    "entries": "Notas",
+    "empty": "Aún no hay notas",
+    "emptyBody": "Escribe tu plan, emociones y lecciones después de cada sesión.",
+    "more": "Cargar más",
+    "edit": "Editar nota",
+    "date": "Día de trading",
+    "titleLabel": "Título",
+    "titlePlaceholder": "p. ej. Ruptura paciente en BTC",
+    "body": "Nota",
+    "bodyPlaceholder": "¿Cuál era el plan? ¿Qué pasó? ¿Qué harás distinto?",
+    "tags": "Etiquetas",
+    "tagsHint": "Separadas por comas, máx. 8 (p. ej. btc, paciencia)",
+    "delete": "Eliminar",
+    "save": "Guardar nota",
+    "saved": "Nota guardada",
+    "deleted": "Nota eliminada",
+    "deleteTitle": "¿Eliminar esta nota?",
+    "deleteBody": "No se puede deshacer."
+  },
+  "newAccount": {
+    "subtitle": "Elige una cuenta de financiación instantánea. Las cuentas son simuladas; pagas una tarifa única."
+  },
+  "tutorial": {
+    "subtitle": "Empieza con Daily Funded en seis pasos cortos.",
+    "steps": {
+      "start": {
+        "title": "Tu cuenta demo gratuita",
+        "body": [
+          "Cada trader recibe una cuenta demo con $100.000 en dinero virtual. Úsala para conocer la plataforma; no hay dinero real.",
+          "Cambia de cuenta con el selector de cuentas de arriba."
+        ]
+      },
+      "trade": {
+        "title": "Haz tu primera operación",
+        "body": [
+          "Abre Operar, elige un mercado y pulsa Comprar o Vender. Define tamaño y apalancamiento y, si quieres, un stop loss y take profit.",
+          "Las posiciones y órdenes abiertas aparecen bajo el gráfico; puedes cerrarlas cuando quieras."
+        ],
+        "cta": "Abrir la pantalla de trading"
+      },
+      "rules": {
+        "title": "Entiende las reglas de la cuenta",
+        "body": [
+          "Las cuentas financiadas tienen un límite de pérdida diaria y un drawdown máximo. Los indicadores en Inicio muestran el margen que te queda.",
+          "Si se alcanza un límite, se cierran las posiciones y la cuenta termina. El límite diario se reinicia a las 00:00 hora de Ámsterdam."
+        ],
+        "cta": "Ver tus indicadores de reglas"
+      },
+      "funded": {
+        "title": "Consigue una cuenta financiada",
+        "body": [
+          "Elige un tamaño de cuenta y paga una tarifa única. Tu cuenta financiada simulada está lista justo después del pago."
+        ],
+        "cta": "Elegir una cuenta"
+      },
+      "payouts": {
+        "title": "Reparto de beneficios y pagos",
+        "body": [
+          "Te quedas con parte del beneficio que generes en una cuenta financiada. En Retiro ves cuándo puedes solicitar un pago y qué condiciones faltan.",
+          "La verificación de identidad (KYC) es obligatoria antes de tu primer pago."
+        ],
+        "cta": "Ver estado de retiro"
+      },
+      "review": {
+        "title": "Analiza y mejora",
+        "body": [
+          "Mis estadísticas muestra tu tasa de acierto, factor de beneficio y un calendario con cada día de trading. Historial lista todas tus cuentas.",
+          "Usa el Cuaderno para anotar tu plan y tus lecciones tras cada sesión."
+        ],
+        "cta": "Abrir Mis estadísticas"
+      }
     }
   }
 }

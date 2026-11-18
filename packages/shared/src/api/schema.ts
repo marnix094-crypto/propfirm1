@@ -788,6 +788,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/journal': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['JournalController_list'];
+    put?: never;
+    post: operations['JournalController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/journal/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations['JournalController_remove'];
+    options?: never;
+    head?: never;
+    patch: operations['JournalController_update'];
+    trace?: never;
+  };
   '/api/v1/me/watchlist': {
     parameters: {
       query?: never;
@@ -973,6 +1005,8 @@ export interface components {
       hasRules: boolean;
       /** @description Rule that failed the account */
       failReason: string | null;
+      createdAt: string;
+      endedAt: string | null;
     };
     RuleSetDto: {
       code: string;
@@ -1024,6 +1058,16 @@ export interface components {
       bestTradeMinor: string | null;
       worstTradeMinor: string | null;
     };
+    GroupStatsDto: {
+      /** @description Symbol, or LONG/SHORT */
+      key: string;
+      trades: number;
+      wins: number;
+      losses: number;
+      winRateBps: number | null;
+      netPnlMinor: string;
+      profitFactorBps: number | null;
+    };
     CalendarDayDto: {
       /** @example 2026-11-03 */
       date: string;
@@ -1044,6 +1088,9 @@ export interface components {
     PerformanceDto: {
       /** @description All-time statistics of this account */
       stats: components['schemas']['TradeStatsDto'];
+      bySymbol: components['schemas']['GroupStatsDto'][];
+      /** @description LONG / SHORT (closed position side) */
+      byDirection: components['schemas']['GroupStatsDto'][];
       calendar: components['schemas']['MonthCalendarDto'];
     };
     PayoutConditionDto: {
@@ -1301,6 +1348,36 @@ export interface components {
     TestPaymentDto: {
       /** @enum {string} */
       outcome: 'succeeded' | 'failed' | 'cancelled';
+    };
+    JournalEntryDto: {
+      id: string;
+      accountId: string | null;
+      /** @example 2026-11-18 */
+      date: string;
+      title: string;
+      body: string;
+      tags: string[];
+      createdAt: string;
+      updatedAt: string;
+    };
+    JournalPageDto: {
+      items: components['schemas']['JournalEntryDto'][];
+      nextCursor: string | null;
+    };
+    CreateJournalEntryDto: {
+      /** @example 2026-11-18 */
+      date: string;
+      title: string;
+      body: string;
+      tags?: string[];
+      /** @description Trading account the note is about */
+      accountId?: string;
+    };
+    UpdateJournalEntryDto: {
+      date?: string;
+      title?: string;
+      body?: string;
+      tags?: string[];
     };
     WatchlistDto: {
       /**
@@ -2388,6 +2465,95 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['PurchaseDto'];
+        };
+      };
+    };
+  };
+  JournalController_list: {
+    parameters: {
+      query?: {
+        cursor?: string;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['JournalPageDto'];
+        };
+      };
+    };
+  };
+  JournalController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateJournalEntryDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['JournalEntryDto'];
+        };
+      };
+    };
+  };
+  JournalController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  JournalController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateJournalEntryDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['JournalEntryDto'];
         };
       };
     };

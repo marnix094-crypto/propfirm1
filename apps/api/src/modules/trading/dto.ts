@@ -183,6 +183,8 @@ export class AccountDto {
   hasRules!: boolean;
   @ApiProperty({ type: String, nullable: true, description: 'Rule that failed the account' })
   failReason!: string | null;
+  @ApiProperty() createdAt!: string;
+  @ApiProperty({ type: String, nullable: true }) endedAt!: string | null;
 }
 
 export class RuleProgressDto {
@@ -339,8 +341,21 @@ export class MonthCalendarDto {
   @ApiProperty({ type: String, nullable: true }) worstDayMinor!: string | null;
 }
 
+export class GroupStatsDto {
+  @ApiProperty({ description: 'Symbol, or LONG/SHORT' }) key!: string;
+  @ApiProperty() trades!: number;
+  @ApiProperty() wins!: number;
+  @ApiProperty() losses!: number;
+  @ApiProperty({ type: Number, nullable: true }) winRateBps!: number | null;
+  @ApiProperty() netPnlMinor!: string;
+  @ApiProperty({ type: Number, nullable: true }) profitFactorBps!: number | null;
+}
+
 export class PerformanceDto {
   @ApiProperty({ type: TradeStatsDto, description: 'All-time statistics of this account' })
   stats!: TradeStatsDto;
+  @ApiProperty({ type: [GroupStatsDto] }) bySymbol!: GroupStatsDto[];
+  @ApiProperty({ type: [GroupStatsDto], description: 'LONG / SHORT (closed position side)' })
+  byDirection!: GroupStatsDto[];
   @ApiProperty({ type: MonthCalendarDto }) calendar!: MonthCalendarDto;
 }

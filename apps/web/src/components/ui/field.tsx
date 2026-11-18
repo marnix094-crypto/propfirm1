@@ -4,6 +4,7 @@ import {
   type InputHTMLAttributes,
   type ReactNode,
   type SelectHTMLAttributes,
+  type TextareaHTMLAttributes,
 } from 'react';
 import { cn } from '@/lib/cn';
 
@@ -94,3 +95,32 @@ export const Select = forwardRef<
   );
 });
 Select.displayName = 'Select';
+
+export const Textarea = forwardRef<
+  HTMLTextAreaElement,
+  TextareaHTMLAttributes<HTMLTextAreaElement> & Omit<FieldProps, 'suffix'>
+>(({ label, hint, error, className, id, ...props }, ref) => {
+  const auto = useId();
+  const inputId = id ?? auto;
+  return (
+    <div className={cn('flex flex-col gap-1.5', className)}>
+      <label htmlFor={inputId} className="text-sm font-medium">
+        {label}
+      </label>
+      <textarea
+        ref={ref}
+        id={inputId}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={hint ? `${inputId}-hint` : undefined}
+        className={cn(control, 'h-auto min-h-48 py-3 leading-relaxed')}
+        {...props}
+      />
+      {hint && (
+        <p id={`${inputId}-hint`} className="text-xs text-muted">
+          {hint}
+        </p>
+      )}
+    </div>
+  );
+});
+Textarea.displayName = 'Textarea';

@@ -8,6 +8,7 @@ import {
   fundingProgress,
   monthCalendar,
   tradeStats,
+  tradeStatsBy,
   traderShareMinor,
 } from '@brand/engine';
 import { tradingDateKey } from './day.js';
@@ -84,6 +85,8 @@ export class AccountsService {
       seq: acc.seq.toString(),
       hasRules: acc.ruleSetId !== null,
       failReason: acc.failReason,
+      createdAt: acc.createdAt.toISOString(),
+      endedAt: acc.endedAt?.toISOString() ?? null,
     };
   }
 
@@ -322,11 +325,20 @@ export class AccountsService {
 
     const fills = await this.prisma.fill.findMany({
       where: { accountId, realizedPnlMinor: { not: 0n } },
-      select: { realizedPnlMinor: true, commissionMinor: true, executedAt: true },
+      select: {
+        realizedPnlMinor: true,
+        commissionMinor: true,
+        executedAt: true,
+        side: true,
+        instrument: { select: { symbol: true } },
+      },
     });
     const trades = fills.map((f) => ({
       netPnlMinor: f.realizedPnlMinor - f.commissionMinor,
       day: tradingDateKey(f.executedAt),
+      symbol: f.instrument.symbol,
+      // A realizing SELL closes (part of) a long; a realizing BUY closes a short.
+      direction: f.side === 'SELL' ? 'LONG' : 'SHORT',
     }));
     const ledger = await this.prisma.ledgerEntry.findMany({
       where: {
@@ -343,7 +355,18 @@ export class AccountsService {
       trades,
     );
     const str = (v: bigint | null) => (v === null ? null : v.toString());
+    const group = (g: { key: string; stats: typeof s }) => ({
+      key: g.key,
+      trades: g.stats.trades,
+      wins: g.stats.wins,
+      losses: g.stats.losses,
+      winRateBps: g.stats.winRateBps,
+      netPnlMinor: g.stats.netPnlMinor.toString(),
+      profitFactorBps: g.stats.profitFactorBps,
+    });
     return {
+      bySymbol: tradeStatsBy(trades, (x) => x.symbol).map(group),
+      byDirection: tradeStatsBy(trades, (x) => x.direction).map(group),
       stats: {
         trades: s.trades,
         wins: s.wins,

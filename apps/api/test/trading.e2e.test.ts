@@ -384,6 +384,10 @@ describe('performance', () => {
     expect(res.status).toBe(200);
     const { stats, calendar } = res.body;
     expect(stats).toMatchObject({ trades: 2, wins: 1, losses: 1, winRateBps: 5000 });
+    expect(res.body.bySymbol).toEqual([
+      expect.objectContaining({ key: 'BTCUSDT', trades: 2, winRateBps: 5000 }),
+    ]);
+    expect(res.body.byDirection).toEqual([expect.objectContaining({ key: 'LONG', trades: 2 })]);
     expect(BigInt(stats.bestTradeMinor)).toBeGreaterThan(0n);
     expect(BigInt(stats.worstTradeMinor)).toBeLessThan(0n);
 

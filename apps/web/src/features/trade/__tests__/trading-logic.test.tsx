@@ -42,6 +42,8 @@ const account: Account = {
   seq: '0',
   hasRules: false,
   failReason: null,
+  createdAt: '2026-11-01T00:00:00.000Z',
+  endedAt: null,
 };
 
 describe('decimal input helpers', () => {

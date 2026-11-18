@@ -12,6 +12,7 @@ import {
   fundingProgress,
   monthCalendar,
   tradeStats,
+  tradeStatsBy,
   type FundingParams,
   fromDecimalString,
   isStopTriggered,
@@ -150,6 +151,17 @@ interface State {
   }[];
   watchlist: Record<string, string[]>;
   purchases?: Purchase[];
+  journal?: {
+    id: string;
+    userId: string;
+    accountId: string | null;
+    date: string;
+    title: string;
+    body: string;
+    tags: string[];
+    createdAt: number;
+    updatedAt: number;
+  }[];
 }
 
 const empty = (): State => ({
@@ -301,6 +313,8 @@ function accountDto(a: Acc) {
     seq: '0',
     hasRules: a.rules,
     failReason: a.failReason,
+    createdAt: new Date(a.createdAt).toISOString(),
+    endedAt: null,
   };
 }
 
@@ -944,7 +958,12 @@ on('GET', '/accounts/{id}/performance', (m, _b, url) => {
   const fills = st.fills.filter((f) => f.accountId === a.id);
   const trades = fills
     .filter((f) => f.realized !== 0n)
-    .map((f) => ({ netPnlMinor: f.realized - f.commission, day: dayKey(f.at) }));
+    .map((f) => ({
+      netPnlMinor: f.realized - f.commission,
+      day: dayKey(f.at),
+      symbol: f.symbol,
+      direction: f.side === 'SELL' ? 'LONG' : 'SHORT',
+    }));
   const s = tradeStats(trades);
   const c = monthCalendar(
     month,
@@ -952,7 +971,18 @@ on('GET', '/accounts/{id}/performance', (m, _b, url) => {
     trades,
   );
   const str = (v: bigint | null) => (v === null ? null : v.toString());
+  const group = (g: { key: string; stats: typeof s }) => ({
+    key: g.key,
+    trades: g.stats.trades,
+    wins: g.stats.wins,
+    losses: g.stats.losses,
+    winRateBps: g.stats.winRateBps,
+    netPnlMinor: String(g.stats.netPnlMinor),
+    profitFactorBps: g.stats.profitFactorBps,
+  });
   return json(200, {
+    bySymbol: tradeStatsBy(trades, (x) => x.symbol).map(group),
+    byDirection: tradeStatsBy(trades, (x) => x.direction).map(group),
     stats: {
       trades: s.trades,
       wins: s.wins,
@@ -1150,6 +1180,70 @@ on('GET', '/accounts/{id}/funding', (m) => {
       atMaximum: f.scaling.atMaximum,
     },
   });
+});
+
+// Notebook (journal): private notes, newest first.
+const journal = () => (st.journal ??= []);
+const journalDto = (e: NonNullable<State['journal']>[number]) => ({
+  id: e.id,
+  accountId: e.accountId,
+  date: e.date,
+  title: e.title,
+  body: e.body,
+  tags: e.tags,
+  createdAt: new Date(e.createdAt).toISOString(),
+  updatedAt: new Date(e.updatedAt).toISOString(),
+});
+const cleanTags = (v: unknown) =>
+  Array.isArray(v) ? [...new Set(v.map((x) => String(x).trim()).filter(Boolean))].slice(0, 8) : [];
+const ownNote = (id: string) => {
+  const e = journal().find((x) => x.id === id && x.userId === me().id);
+  if (!e) throw new Fail(404, 'JOURNALENTRY_NOT_FOUND');
+  return e;
+};
+on('GET', '/journal', (_m, _b, url) => {
+  const limit = Number(url.searchParams.get('limit') ?? 30);
+  const cursor = url.searchParams.get('cursor');
+  const mine = journal()
+    .filter((e) => e.userId === me().id)
+    .sort((a, b) => b.createdAt - a.createdAt);
+  const start = cursor ? mine.findIndex((e) => e.id === cursor) + 1 : 0;
+  const page = mine.slice(start, start + limit);
+  return json(200, {
+    items: page.map(journalDto),
+    nextCursor: start + limit < mine.length ? page[page.length - 1]!.id : null,
+  });
+});
+on('POST', '/journal', (_m, b) => {
+  if (!String(b.title ?? '').trim()) throw new Fail(400, 'VALIDATION_ERROR');
+  const now = Date.now();
+  const e = {
+    id: uid(),
+    userId: me().id,
+    accountId: typeof b.accountId === 'string' ? b.accountId : null,
+    date: String(b.date),
+    title: String(b.title).trim().slice(0, 120),
+    body: String(b.body ?? '').slice(0, 10_000),
+    tags: cleanTags(b.tags),
+    createdAt: now,
+    updatedAt: now,
+  };
+  journal().push(e);
+  return json(201, journalDto(e));
+});
+on('PATCH', '/journal/{id}', (m, b) => {
+  const e = ownNote(m[1]!);
+  if (b.date !== undefined) e.date = String(b.date);
+  if (b.title !== undefined) e.title = String(b.title).trim().slice(0, 120);
+  if (b.body !== undefined) e.body = String(b.body).slice(0, 10_000);
+  if (b.tags !== undefined) e.tags = cleanTags(b.tags);
+  e.updatedAt = Date.now();
+  return json(200, journalDto(e));
+});
+on('DELETE', '/journal/{id}', (m) => {
+  const e = ownNote(m[1]!);
+  st.journal = journal().filter((x) => x !== e);
+  return json(204);
 });
 
 /** Route /api/v1/* requests to the in-browser backend; everything else goes to the network. */

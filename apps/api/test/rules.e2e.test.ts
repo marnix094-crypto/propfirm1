@@ -50,7 +50,7 @@ describe('funded account rules', () => {
     const r = await rules();
     expect(r.ruleSet).toMatchObject({
       code: 'INSTANT_EXAMPLE',
-      version: 1,
+      version: 2,
       isExample: true,
       maxDailyLossBps: 300,
       maxDrawdownBps: 600,

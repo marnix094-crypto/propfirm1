@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { usePriceQuote } from '@/hooks/use-catalog';
 import { useFormat } from '@/hooks/use-format';
 
-const DRAWDOWN_OPTIONS = [400, 600, 800];
+const DRAWDOWN_OPTIONS = [400, 600, 800] as const;
+type DrawdownBps = (typeof DRAWDOWN_OPTIONS)[number];
 const SIZE_STEP = 5_000;
 
 interface Props {
@@ -23,7 +24,7 @@ export function CustomAccountModal({ open, onOpenChange }: Props) {
   const { lang } = useParams();
   const f = useFormat();
   const [sizeUsd, setSizeUsd] = useState(30_000);
-  const [drawdownBps, setDrawdownBps] = useState(600);
+  const [drawdownBps, setDrawdownBps] = useState<DrawdownBps>(600);
   const quote = usePriceQuote();
   const { mutate } = quote;
 
@@ -70,7 +71,7 @@ export function CustomAccountModal({ open, onOpenChange }: Props) {
           <Tabs
             label={t('landing.custom.drawdown')}
             value={String(drawdownBps)}
-            onValueChange={(v) => setDrawdownBps(Number(v))}
+            onValueChange={(v) => setDrawdownBps(Number(v) as DrawdownBps)}
             items={DRAWDOWN_OPTIONS.map((b) => ({ value: String(b), label: f.bps(b) }))}
           />
         </div>
@@ -98,7 +99,7 @@ export function CustomAccountModal({ open, onOpenChange }: Props) {
         <p className="text-xs text-muted">{t('landing.custom.note')}</p>
         <Button asChild fullWidth disabled={!isCurrent}>
           {isCurrent ? (
-            <Link to={`/${lang}/register?quote=${encodeURIComponent(data.quoteId)}`}>
+            <Link to={`/${lang}/app/checkout?quote=${encodeURIComponent(data.quoteId)}`}>
               {t('landing.custom.continue')}
             </Link>
           ) : (

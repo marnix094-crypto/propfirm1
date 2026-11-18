@@ -368,7 +368,8 @@
     "privacy": "Privacybeleid",
     "cookies": "Cookiebeleid",
     "risk": "Risico-informatie",
-    "aml": "KYC- & AML-beleid"
+    "aml": "KYC- & AML-beleid",
+    "refund": "Restitutiebeleid"
   },
   "placeholder": {
     "login": "Inloggen",
@@ -466,7 +467,18 @@
     "TOKEN_INVALID": "Deze link is ongeldig of verlopen.",
     "PASSWORD_INCORRECT": "Het wachtwoord is onjuist.",
     "TWO_FACTOR_ALREADY_ENABLED": "Verificatie in twee stappen staat al aan.",
-    "TWO_FACTOR_NOT_SET_UP": "Begin opnieuw met instellen."
+    "TWO_FACTOR_NOT_SET_UP": "Begin opnieuw met instellen.",
+    "EMAIL_NOT_VERIFIED": "Bevestig eerst je e-mailadres.",
+    "QUOTE_EXPIRED": "Deze prijs is verlopen. Stel je account opnieuw samen.",
+    "QUOTE_NOT_FOUND": "Deze prijs is niet meer beschikbaar.",
+    "PRODUCT_NOT_FOUND": "Dit product is niet meer beschikbaar.",
+    "PURCHASE_NOT_FOUND": "Bestelling niet gevonden.",
+    "PAYMENT_PROVIDER_UNAVAILABLE": "Betalen is tijdelijk niet mogelijk. Probeer het later opnieuw.",
+    "ACCOUNT_SIZE_INVALID": "Kies een geldige accountgrootte.",
+    "PRODUCT_TYPE_UNAVAILABLE": "Dit accounttype wordt niet aangeboden.",
+    "CHECKOUT_ITEM_INVALID": "Kies een account om te kopen.",
+    "ACCOUNT_SUSPENDED": "Je account is geschorst. Neem contact op met support.",
+    "IDEMPOTENCY_KEY_REUSED": "Dit verzoek is al met andere gegevens verstuurd. Probeer het opnieuw."
   },
   "app": {
     "nav": {
@@ -637,7 +649,8 @@
     "verifyBanner": {
       "text": "Bevestig je e-mailadres — we hebben een link gestuurd naar {{email}}.",
       "resend": "Opnieuw versturen",
-      "sent": "E-mail verstuurd"
+      "sent": "E-mail verstuurd",
+      "devVerify": "Nu verifiëren (dev)"
     },
     "security": {
       "title": "Beveiliging",
@@ -704,5 +717,80 @@
       },
       "cannotTrade": "Dit account is gesloten en kan geen orders plaatsen."
     }
+  },
+  "checkout": {
+    "title": "Afrekenen",
+    "instant": "Instant funding",
+    "simulated": "Gesimuleerd account",
+    "testPayment": "Testbetaling — geen echt geld",
+    "payoutEvery": "Uitbetalingscyclus",
+    "days_one": "{{count}} dag",
+    "days_other": "{{count}} dagen",
+    "quantity": "Aantal accounts",
+    "total": "Totaal",
+    "simulatedNotice": "Funded accounts zijn gesimuleerd: je handelt met virtueel kapitaal en er wordt geen echt kapitaal toegewezen. Winstdeling en uitbetalingen volgen de accountregels. Resultaten zijn nooit gegarandeerd.",
+    "accept": "Ik ga akkoord met de voorwaarden, de risicoverklaring en het restitutiebeleid",
+    "readRefund": "restitutiebeleid",
+    "pay": "Verder naar betalen",
+    "verifyFirst": "Bevestig eerst je e-mailadres voordat je afrekent.",
+    "notFound": "Dit aanbod is niet meer beschikbaar.",
+    "backToPricing": "Terug naar prijzen",
+    "openAccount": "Account openen",
+    "continuePayment": "Betaling voortzetten",
+    "tryAgain": "Kies een account",
+    "testPage": {
+      "title": "Testbetaling",
+      "body": "Dit is een testomgeving. Er wordt geen geld afgeschreven. Kies de uitkomst die je wilt simuleren.",
+      "succeed": "Geslaagde betaling simuleren",
+      "fail": "Betaling mislukt",
+      "cancel": "Annuleren"
+    },
+    "status": {
+      "PENDING": {
+        "title": "Wachten op betaling",
+        "body": "Je accounts worden aangemaakt zodra de betaling is bevestigd."
+      },
+      "PAID": {
+        "title": "Betaling ontvangen",
+        "body": "We maken je accounts aan…"
+      },
+      "FULFILLED": {
+        "title": "Je account staat klaar",
+        "body_one": "Je funded account staat klaar om te handelen.",
+        "body_other": "Je {{count}} funded accounts staan klaar om te handelen."
+      },
+      "FAILED": {
+        "title": "Betaling mislukt",
+        "body": "Er is geen geld afgeschreven en geen account aangemaakt."
+      },
+      "CANCELLED": {
+        "title": "Betaling geannuleerd",
+        "body": "Er is geen geld afgeschreven en geen account aangemaakt."
+      }
+    }
+  },
+  "funding": {
+    "title": "Winstdeling & uitbetalingen",
+    "profit": "Winst deze cyclus",
+    "share": "Jouw deel ({{split}})",
+    "payout": "Uitbetaling",
+    "eligible": "Mogelijk",
+    "notYet": "Nog niet",
+    "met": "Voldaan",
+    "notMet": "Niet voldaan",
+    "cond": {
+      "interval": "Uitbetalingscyclus voltooid ({{current}}/{{required}} dagen, vanaf {{date}})",
+      "tradingDays": "Minstens {{required}} handelsdagen ({{current}}/{{required}})",
+      "minAmount": "Jouw deel is minstens {{amount}}",
+      "noOpenPositions": "Geen open posities"
+    },
+    "kyc": "Identiteitsverificatie (KYC) is vereist vóór je eerste uitbetaling.",
+    "requestSoon": "Uitbetalingen aanvragen kan in een volgende release.",
+    "scaling": "Scaling plan",
+    "scalingBody": "Haal {{target}} winst en {{payouts}} uitbetalingen om je account met {{step}} te laten groeien naar {{next}}.",
+    "scalingMax": "Je account heeft de maximale grootte bereikt.",
+    "scalingProfit": "Winst richting volgende stap",
+    "scalingPayouts": "Uitbetalingen: {{current}}/{{required}}",
+    "disclaimer": "Gesimuleerde handel. Getoonde bedragen zijn berekend volgens de accountregels en zijn geen betalingsbelofte."
   }
 }

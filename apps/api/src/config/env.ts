@@ -30,6 +30,8 @@ const schema = z.object({
   APP_BASE_URL: z.string().url().default('http://localhost:5173'),
   SMTP_URL: z.string().url().optional(),
   MAIL_FROM: z.string().default('BRAND <no-reply@example.com>'),
+  /** Payment provider. `fake` = test payments without real money (dev/test only). */
+  PAYMENT_PROVIDER: z.enum(['fake']).default('fake'),
   RISK_LOOP_ENABLED: z
     .enum(['true', 'false'])
     .default('true')
@@ -55,6 +57,7 @@ export type AppConfig = Readonly<{
   appBaseUrl: string;
   smtpUrl: string | null;
   mailFrom: string;
+  paymentProvider: 'fake';
 }>;
 
 export const APP_CONFIG = Symbol('APP_CONFIG');
@@ -71,6 +74,8 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     throw new Error('COOKIE_SECURE must be true in production');
   if (e.NODE_ENV === 'production' && e.DEV_TOOLS_ENABLED)
     throw new Error('DEV_TOOLS_ENABLED must be false in production');
+  if (e.NODE_ENV === 'production' && e.PAYMENT_PROVIDER === 'fake')
+    throw new Error('PAYMENT_PROVIDER=fake is not allowed in production');
   return {
     env: e.NODE_ENV,
     port: e.API_PORT,
@@ -96,5 +101,6 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     appBaseUrl: e.APP_BASE_URL.replace(/\/$/, ''),
     smtpUrl: e.SMTP_URL ?? null,
     mailFrom: e.MAIL_FROM,
+    paymentProvider: e.PAYMENT_PROVIDER,
   };
 }

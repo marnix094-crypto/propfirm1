@@ -5,16 +5,20 @@ import {
   usedMarginMinor,
   closePrice,
   directionOf,
+  fundingProgress,
+  traderShareMinor,
 } from '@brand/engine';
 import { PrismaService } from '../../infra/prisma.service.js';
 import { Errors } from '../../common/errors.js';
 import { MarketDataService } from '../market-data/market-data.service.js';
+import { toFundingParams } from '../rules/rules.service.js';
 import { AccountStateService } from './account-state.service.js';
 import { toFillDto, toLedgerDto, toOrderDto } from './mappers.js';
 import type {
   AccountDto,
   EquityPointDto,
   AccountRulesDto,
+  FundingProgressDto,
   EquityQuery,
   LedgerEntryDto,
   PositionDto,
@@ -226,5 +230,76 @@ export class AccountsService {
     }
     points.push({ t: Date.now(), equityMinor: now.equityMinor, balanceMinor: now.balanceMinor });
     return points;
+  }
+
+  /** Profit split, payout eligibility and scaling progress of a funded account. */
+  async funding(userId: string, accountId: string): Promise<FundingProgressDto> {
+    const acc = await this.prisma.tradingAccount.findFirst({
+      where: { id: accountId, userId },
+      include: { ruleSet: true },
+    });
+    if (!acc) throw Errors.notFound('Account');
+    const baseline = acc.payoutBaselineMinor ?? acc.initialBalanceMinor;
+    const profit = acc.balanceMinor > baseline ? acc.balanceMinor - baseline : 0n;
+    const split = acc.ruleSet?.profitSplitBps ?? null;
+    const params = acc.ruleSet ? toFundingParams(acc.ruleSet) : null;
+    const base = {
+      isExample: acc.ruleSet?.isExample ?? false,
+      accountSizeMinor: acc.initialBalanceMinor.toString(),
+      profitSplitBps: split,
+    };
+    if (!params || acc.kind !== 'FUNDED') {
+      return {
+        ...base,
+        available: false,
+        profitMinor: profit.toString(),
+        traderShareMinor: (split == null ? 0n : traderShareMinor(profit, split)).toString(),
+        payout: null,
+        scaling: null,
+      };
+    }
+    const openPositions = await this.prisma.position.count({
+      where: { accountId, status: 'OPEN' },
+    });
+    const p = fundingProgress(params, {
+      initialBalanceMinor: acc.initialBalanceMinor,
+      balanceMinor: acc.balanceMinor,
+      payoutBaselineMinor: baseline,
+      scalingProfitMinor: acc.balanceMinor - acc.initialBalanceMinor + acc.paidOutSinceScaleMinor,
+      cycleStartedAtMs: (acc.payoutCycleStartedAt ?? acc.createdAt).getTime(),
+      nowMs: Date.now(),
+      cycleTradingDays: acc.cycleTradingDays,
+      payoutsCount: acc.payoutsCount,
+      hasOpenPositions: openPositions > 0,
+    });
+    return {
+      ...base,
+      available: true,
+      profitMinor: p.profitMinor.toString(),
+      traderShareMinor: p.traderShareMinor.toString(),
+      payout: {
+        eligible: p.payout.eligible && acc.status === 'FUNDED_ACTIVE',
+        eligibleFrom: new Date(p.payout.eligibleFromMs).toISOString(),
+        conditions: p.payout.conditions.map((c) => ({
+          code: c.code,
+          met: c.met,
+          current: c.current.toString(),
+          required: c.required.toString(),
+        })),
+        kycRequired: true,
+      },
+      scaling: {
+        profitMinor: p.scaling.profitMinor.toString(),
+        targetMinor: p.scaling.targetMinor.toString(),
+        targetBps: params.scalingProfitTargetBps,
+        payouts: p.scaling.payouts,
+        requiredPayouts: p.scaling.requiredPayouts,
+        eligible: p.scaling.eligible && acc.status === 'FUNDED_ACTIVE',
+        stepBps: params.scalingStepBps,
+        nextSizeMinor: p.scaling.nextSizeMinor.toString(),
+        maxSizeMinor: params.scalingMaxBalanceMinor.toString(),
+        atMaximum: p.scaling.atMaximum,
+      },
+    };
   }
 }

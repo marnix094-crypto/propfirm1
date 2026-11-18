@@ -10,11 +10,9 @@ import { ApiError } from '@/lib/api';
 import { useSession } from '@/stores/session';
 import { AuthLayout } from './auth-layout';
 import { GuestOnly } from './require-auth';
+import { nextQuery, safeNext } from '@/lib/safe-next';
 
-/** Only allow in-app redirects (prevents open redirects via ?next=). */
-export function safeNext(next: string | null, lang: string | undefined): string {
-  return next && next.startsWith(`/${lang}/app`) && !next.startsWith('//') ? next : `/${lang}/app`;
-}
+export { safeNext } from '@/lib/safe-next';
 
 export function ErrorNote({ children }: { children: React.ReactNode }) {
   return (
@@ -172,7 +170,10 @@ export function LoginPage() {
         </form>
         <p className="mt-6 text-center text-sm text-muted">
           {t('auth.login.noAccount')}{' '}
-          <Link to={`/${lang}/register`} className="font-semibold text-link hover:underline">
+          <Link
+            to={`/${lang}/register${nextQuery(params.get('next'))}`}
+            className="font-semibold text-link hover:underline"
+          >
             {t('auth.login.registerLink')}
           </Link>
         </p>

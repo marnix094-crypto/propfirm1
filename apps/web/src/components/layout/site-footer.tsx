@@ -6,7 +6,7 @@ import { Logo } from './logo';
 import { SOCIAL_NAMES, SocialIcon } from './social-icons';
 import { NAV_ITEMS } from './site-header';
 
-export const LEGAL_DOCS = ['terms', 'privacy', 'cookies', 'risk', 'aml'] as const;
+export const LEGAL_DOCS = ['terms', 'privacy', 'cookies', 'risk', 'refund', 'aml'] as const;
 const RISK_PARAGRAPHS = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'] as const;
 
 export function SiteFooter() {

@@ -35,8 +35,8 @@ export default defineConfig({
       },
     },
     {
-      // Test build: MSW only mocks the not-yet-built catalog endpoints (pricing, payout feed).
-      command: 'VITE_ENABLE_MSW=true pnpm build && pnpm preview',
+      // Production-like build: everything, including the catalogue, comes from the real API.
+      command: 'pnpm build && pnpm preview',
       url: 'http://localhost:4173',
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,

@@ -79,6 +79,16 @@ function parsePrice(s: string | undefined | null, inst: InstrumentRecord): bigin
  * Order lifecycle for simulated accounts. Every mutation runs in one DB transaction with the
  * account row locked (single writer per account) and is audited. Events go out after commit.
  */
+export interface OpenRuleAccountArgs {
+  userId: string;
+  ruleSetId: string;
+  kind: 'CHALLENGE' | 'FUNDED';
+  initialBalanceMinor: bigint;
+  label: string;
+  actor: { type: 'USER' | 'SYSTEM'; id: string | null };
+  purchaseId?: string;
+}
+
 @Injectable()
 export class TradingService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(TradingService.name);
@@ -533,6 +543,7 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
     if (account.lastTradingDate !== today) {
       account.lastTradingDate = today;
       account.tradingDaysCount += 1;
+      account.cycleTradingDays += 1;
     }
     await tx.tradingAccount.update({
       where: { id: account.id },
@@ -541,6 +552,7 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
         highWaterMarkMinor: account.highWaterMarkMinor,
         lastTradingDate: account.lastTradingDate,
         tradingDaysCount: account.tradingDaysCount,
+        cycleTradingDays: account.cycleTradingDays,
       },
     });
 
@@ -840,61 +852,64 @@ export class TradingService implements OnModuleInit, OnModuleDestroy {
    * Open a rule-governed (challenge/funded) simulated account. Used by checkout (phase 6)
    * and, in development, by the example-account helper.
    */
-  async openRuleAccount(args: {
-    userId: string;
-    ruleSetId: string;
-    kind: 'CHALLENGE' | 'FUNDED';
-    initialBalanceMinor: bigint;
-    label: string;
-    actor: { type: 'USER' | 'SYSTEM'; id: string | null };
-  }): Promise<string> {
-    const ruleSet = await this.prisma.ruleSet.findUniqueOrThrow({ where: { id: args.ruleSetId } });
-    const today = tradingDateKey();
-    const id = await this.prisma.$transaction(async (tx) => {
-      const acc = await tx.tradingAccount.create({
-        data: {
-          userId: args.userId,
-          kind: args.kind,
-          status: args.kind === 'FUNDED' ? 'FUNDED_ACTIVE' : 'ACTIVE',
-          label: args.label,
-          initialBalanceMinor: args.initialBalanceMinor,
-          balanceMinor: args.initialBalanceMinor,
-          highWaterMarkMinor: args.initialBalanceMinor,
-          maxLeverage: ruleSet.maxLeverage,
-          ruleSetId: ruleSet.id,
-          ruleHighWaterMarkMinor: args.initialBalanceMinor,
-          dayStartBalanceMinor: args.initialBalanceMinor,
-          dayStartEquityMinor: args.initialBalanceMinor,
-          dayStartDate: today,
-        },
-      });
-      await tx.ledgerEntry.create({
-        data: {
-          accountId: acc.id,
-          type: 'INITIAL_CAPITAL',
-          amountMinor: args.initialBalanceMinor,
-          balanceAfterMinor: args.initialBalanceMinor,
-          refType: 'account',
-          refId: acc.id,
-        },
-      });
-      await this.audit.append(tx, {
-        actorType: args.actor.type,
-        actorId: args.actor.id,
-        action: 'account.created',
-        entityType: 'TradingAccount',
-        entityId: acc.id,
-        data: {
-          kind: args.kind,
-          ruleSetId: ruleSet.id,
-          ruleSetVersion: ruleSet.version,
-          initialBalanceMinor: args.initialBalanceMinor,
-        },
-      });
-      return acc.id;
-    });
+  async openRuleAccount(args: OpenRuleAccountArgs): Promise<string> {
+    const id = await this.prisma.$transaction((tx) => this.openRuleAccountTx(tx, args));
     await this.state.reload(id);
     return id;
+  }
+
+  /**
+   * Create a rule-bound account inside the caller's transaction. The caller must call
+   * `AccountStateService.reload(id)` after the commit so the account is evaluated live.
+   */
+  async openRuleAccountTx(tx: Tx, args: OpenRuleAccountArgs): Promise<string> {
+    const ruleSet = await tx.ruleSet.findUniqueOrThrow({ where: { id: args.ruleSetId } });
+    const today = tradingDateKey();
+    const acc = await tx.tradingAccount.create({
+      data: {
+        userId: args.userId,
+        kind: args.kind,
+        status: args.kind === 'FUNDED' ? 'FUNDED_ACTIVE' : 'ACTIVE',
+        label: args.label,
+        initialBalanceMinor: args.initialBalanceMinor,
+        balanceMinor: args.initialBalanceMinor,
+        highWaterMarkMinor: args.initialBalanceMinor,
+        maxLeverage: ruleSet.maxLeverage,
+        ruleSetId: ruleSet.id,
+        ruleHighWaterMarkMinor: args.initialBalanceMinor,
+        dayStartBalanceMinor: args.initialBalanceMinor,
+        dayStartEquityMinor: args.initialBalanceMinor,
+        dayStartDate: today,
+        payoutCycleStartedAt: new Date(),
+        payoutBaselineMinor: args.initialBalanceMinor,
+        purchaseId: args.purchaseId ?? null,
+      },
+    });
+    await tx.ledgerEntry.create({
+      data: {
+        accountId: acc.id,
+        type: 'INITIAL_CAPITAL',
+        amountMinor: args.initialBalanceMinor,
+        balanceAfterMinor: args.initialBalanceMinor,
+        refType: 'account',
+        refId: acc.id,
+      },
+    });
+    await this.audit.append(tx, {
+      actorType: args.actor.type,
+      actorId: args.actor.id,
+      action: 'account.created',
+      entityType: 'TradingAccount',
+      entityId: acc.id,
+      data: {
+        kind: args.kind,
+        ruleSetId: ruleSet.id,
+        ruleSetVersion: ruleSet.version,
+        initialBalanceMinor: args.initialBalanceMinor,
+        purchaseId: args.purchaseId ?? null,
+      },
+    });
+    return acc.id;
   }
 
   // ---------------------------------------------------------------- rules

@@ -1,5 +1,6 @@
 import { useMemo, useState, type FormEvent } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
+import { nextQuery, safeNext } from '@/lib/safe-next';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
 import { INTL_LOCALE, isLocale, type Locale } from '@brand/shared';
@@ -16,6 +17,7 @@ export function RegisterPage() {
   const { t } = useTranslation();
   const { lang } = useParams();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const setSession = useSession((s) => s.setSession);
   const locale: Locale = isLocale(lang) ? lang : 'en';
   const countries = useMemo(() => countryOptions(INTL_LOCALE[locale]), [locale]);
@@ -40,7 +42,7 @@ export function RegisterPage() {
         }),
       );
       setSession(res);
-      void navigate(`/${lang}/app`, { replace: true });
+      void navigate(safeNext(params.get('next'), lang), { replace: true });
     } catch (err) {
       setError(errorMessage(t, err));
     } finally {
@@ -123,7 +125,10 @@ export function RegisterPage() {
         </form>
         <p className="mt-6 text-center text-sm text-muted">
           {t('auth.register.haveAccount')}{' '}
-          <Link to={`/${lang}/login`} className="font-semibold text-link hover:underline">
+          <Link
+            to={`/${lang}/login${nextQuery(params.get('next'))}`}
+            className="font-semibold text-link hover:underline"
+          >
             {t('auth.register.loginLink')}
           </Link>
         </p>

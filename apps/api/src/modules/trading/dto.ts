@@ -246,3 +246,53 @@ export class OrdersQuery {
   @IsIn(['open', 'history'])
   status: 'open' | 'history' = 'open';
 }
+
+export class PayoutConditionDto {
+  @ApiProperty({
+    enum: [
+      'PAYOUT_INTERVAL',
+      'PAYOUT_TRADING_DAYS',
+      'PAYOUT_MIN_AMOUNT',
+      'PAYOUT_NO_OPEN_POSITIONS',
+    ],
+  })
+  code!: string;
+  @ApiProperty() met!: boolean;
+  @ApiProperty({ description: 'Days, count or minor units depending on the code (integer string)' })
+  current!: string;
+  @ApiProperty() required!: string;
+}
+
+export class PayoutProgressDto {
+  @ApiProperty() eligible!: boolean;
+  @ApiProperty() eligibleFrom!: string;
+  @ApiProperty({ type: [PayoutConditionDto] }) conditions!: PayoutConditionDto[];
+  @ApiProperty({ description: 'KYC is required before the first payout (phase 9)' })
+  kycRequired!: boolean;
+}
+
+export class ScalingProgressDto {
+  @ApiProperty() profitMinor!: string;
+  @ApiProperty() targetMinor!: string;
+  @ApiProperty() targetBps!: number;
+  @ApiProperty() payouts!: number;
+  @ApiProperty() requiredPayouts!: number;
+  @ApiProperty() eligible!: boolean;
+  @ApiProperty() stepBps!: number;
+  @ApiProperty() nextSizeMinor!: string;
+  @ApiProperty() maxSizeMinor!: string;
+  @ApiProperty() atMaximum!: boolean;
+}
+
+export class FundingProgressDto {
+  @ApiProperty({ description: 'False when the rule set defines no payout/scaling terms' })
+  available!: boolean;
+  @ApiProperty({ description: 'Values are examples, not the final offer' }) isExample!: boolean;
+  @ApiProperty() accountSizeMinor!: string;
+  @ApiProperty({ type: Number, nullable: true }) profitSplitBps!: number | null;
+  @ApiProperty({ description: 'Closed profit in the current payout cycle' }) profitMinor!: string;
+  @ApiProperty({ description: 'Trader share of that profit (simulated)' })
+  traderShareMinor!: string;
+  @ApiProperty({ type: PayoutProgressDto, nullable: true }) payout!: PayoutProgressDto | null;
+  @ApiProperty({ type: ScalingProgressDto, nullable: true }) scaling!: ScalingProgressDto | null;
+}

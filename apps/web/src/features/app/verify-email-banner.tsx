@@ -5,10 +5,13 @@ import { call, client } from '@/lib/api-client';
 import { errorMessage } from '@/lib/errors';
 import { toast } from '@/components/ui/toaster';
 import { useSession } from '@/stores/session';
+import { useClientConfig } from '@/hooks/use-trading';
 
 export function VerifyEmailBanner() {
   const { t } = useTranslation();
   const user = useSession((s) => s.user);
+  const updateUser = useSession((s) => s.updateUser);
+  const config = useClientConfig();
   const [busy, setBusy] = useState(false);
   if (!user || user.emailVerified) return null;
   return (
@@ -36,6 +39,26 @@ export function VerifyEmailBanner() {
       >
         {t('app.verifyBanner.resend')}
       </button>
+      {config.data?.devTools && (
+        <button
+          type="button"
+          disabled={busy}
+          className="rounded-full border border-dashed border-border-strong px-2.5 py-0.5 text-xs font-semibold"
+          onClick={async () => {
+            setBusy(true);
+            try {
+              await call(() => client.POST('/api/v1/dev/verify-email'));
+              updateUser({ emailVerified: true });
+            } catch (e) {
+              toast({ kind: 'error', title: errorMessage(t, e) });
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          {t('app.verifyBanner.devVerify')}
+        </button>
+      )}
     </div>
   );
 }

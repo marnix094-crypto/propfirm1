@@ -420,6 +420,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/accounts/{id}/funding': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AccountsController_funding'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/accounts/{id}/positions': {
     parameters: {
       query?: never;
@@ -596,6 +612,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/dev/verify-email': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['DevToolsController_verifyEmail'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/dev/example-funded-account': {
     parameters: {
       query?: never;
@@ -606,6 +638,134 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations['DevToolsController_exampleFunded'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/products': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['ProductsController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/products/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['ProductsController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/products/quote': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['ProductsController_quote'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/products/quotes/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['ProductsController_getQuote'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/public/payouts-feed': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['ProductsController_payoutsFeed'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/checkout': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CheckoutController_list'];
+    put?: never;
+    post: operations['CheckoutController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/checkout/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CheckoutController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/checkout/{id}/test-payment': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CheckoutController_testPayment'];
     delete?: never;
     options?: never;
     head?: never;
@@ -833,6 +993,51 @@ export interface components {
       failReason: string | null;
       tradingDays: number;
     };
+    PayoutConditionDto: {
+      /** @enum {string} */
+      code:
+        | 'PAYOUT_INTERVAL'
+        | 'PAYOUT_TRADING_DAYS'
+        | 'PAYOUT_MIN_AMOUNT'
+        | 'PAYOUT_NO_OPEN_POSITIONS';
+      met: boolean;
+      /** @description Days, count or minor units depending on the code (integer string) */
+      current: string;
+      required: string;
+    };
+    PayoutProgressDto: {
+      eligible: boolean;
+      eligibleFrom: string;
+      conditions: components['schemas']['PayoutConditionDto'][];
+      /** @description KYC is required before the first payout (phase 9) */
+      kycRequired: boolean;
+    };
+    ScalingProgressDto: {
+      profitMinor: string;
+      targetMinor: string;
+      targetBps: number;
+      payouts: number;
+      requiredPayouts: number;
+      eligible: boolean;
+      stepBps: number;
+      nextSizeMinor: string;
+      maxSizeMinor: string;
+      atMaximum: boolean;
+    };
+    FundingProgressDto: {
+      /** @description False when the rule set defines no payout/scaling terms */
+      available: boolean;
+      /** @description Values are examples, not the final offer */
+      isExample: boolean;
+      accountSizeMinor: string;
+      profitSplitBps: number | null;
+      /** @description Closed profit in the current payout cycle */
+      profitMinor: string;
+      /** @description Trader share of that profit (simulated) */
+      traderShareMinor: string;
+      payout: components['schemas']['PayoutProgressDto'] | null;
+      scaling: components['schemas']['ScalingProgressDto'] | null;
+    };
     PositionDto: {
       id: string;
       symbol: string;
@@ -939,6 +1144,110 @@ export interface components {
     };
     CreatedAccountDto: {
       id: string;
+    };
+    ProductRulesDto: {
+      maxDailyLossBps: number;
+      maxDrawdownBps: number;
+      /** @enum {string} */
+      drawdownType: 'STATIC' | 'TRAILING';
+      profitSplitBps: number;
+      maxLeverage: number;
+      minTradingDays: number;
+      payoutIntervalDays: number | null;
+      minTradingDaysPerPayout: number | null;
+      scalingStepBps: number | null;
+      /** @description Rule set has example values (not the final offer) */
+      isExample: boolean;
+    };
+    ProductDto: {
+      id: string;
+      slug: string;
+      /** @enum {string} */
+      type: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
+      /** @description Simulated capital, USD minor units */
+      accountSizeMinor: string;
+      /** @enum {string} */
+      accountCurrency: 'USD';
+      /** @description One-time fee, minor units of priceCurrency */
+      priceMinor: string;
+      /** @enum {string} */
+      priceCurrency: 'EUR';
+      isRecommended: boolean;
+      isExample: boolean;
+      rules: components['schemas']['ProductRulesDto'];
+    };
+    ProductListDto: {
+      items: components['schemas']['ProductDto'][];
+    };
+    PriceQuoteRequestDto: {
+      /** @enum {string} */
+      type: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
+      /**
+       * @description USD minor units, integer string
+       * @example 3000000
+       */
+      accountSizeMinor: string;
+      /** @enum {number} */
+      maxDrawdownBps: 400 | 600 | 800;
+    };
+    PriceQuoteDto: {
+      quoteId: string;
+      priceMinor: string;
+      /** @enum {string} */
+      priceCurrency: 'EUR';
+      accountSizeMinor: string;
+      rules: components['schemas']['ProductRulesDto'];
+      expiresAt: string;
+    };
+    PayoutFeedItemDto: {
+      id: string;
+      countryCode: string;
+      amountMinor: string;
+      /** @enum {string} */
+      currency: 'USD';
+      paidAt: string;
+    };
+    PayoutFeedDto: {
+      items: components['schemas']['PayoutFeedItemDto'][];
+    };
+    CheckoutRequestDto: {
+      /** @description Catalogue product (exactly one of productId / quoteId) */
+      productId?: string;
+      /** @description Custom-account quote */
+      quoteId?: string;
+      quantity: number;
+      /** @description Terms, risk disclosure and refund policy accepted */
+      acceptTerms: boolean;
+      /** @enum {string} */
+      locale?: 'en' | 'nl' | 'es';
+    };
+    PurchaseDto: {
+      id: string;
+      /** @enum {string} */
+      status: 'PENDING' | 'PAID' | 'FULFILLED' | 'FAILED' | 'CANCELLED';
+      /** @enum {string} */
+      type: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
+      quantity: number;
+      accountSizeMinor: string;
+      unitPriceMinor: string;
+      totalMinor: string;
+      /** @enum {string} */
+      currency: 'EUR';
+      provider: string;
+      /** @description Test provider: no real money moves */
+      isTestPayment: boolean;
+      paymentUrl: string | null;
+      failureCode: string | null;
+      accountIds: string[];
+      rules: components['schemas']['ProductRulesDto'];
+      createdAt: string;
+    };
+    PurchaseListDto: {
+      items: components['schemas']['PurchaseDto'][];
+    };
+    TestPaymentDto: {
+      /** @enum {string} */
+      outcome: 'succeeded' | 'failed' | 'cancelled';
     };
     WatchlistDto: {
       /**
@@ -1489,6 +1798,27 @@ export interface operations {
       };
     };
   };
+  AccountsController_funding: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FundingProgressDto'];
+        };
+      };
+    };
+  };
   AccountsController_positions: {
     parameters: {
       query?: never;
@@ -1754,6 +2084,23 @@ export interface operations {
       };
     };
   };
+  DevToolsController_verifyEmail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   DevToolsController_exampleFunded: {
     parameters: {
       query?: never;
@@ -1769,6 +2116,201 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['CreatedAccountDto'];
+        };
+      };
+    };
+  };
+  ProductsController_list: {
+    parameters: {
+      query?: {
+        type?: 'INSTANT' | 'ONE_STEP' | 'TWO_STEP';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ProductListDto'];
+        };
+      };
+    };
+  };
+  ProductsController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ProductDto'];
+        };
+      };
+    };
+  };
+  ProductsController_quote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PriceQuoteRequestDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PriceQuoteDto'];
+        };
+      };
+    };
+  };
+  ProductsController_getQuote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PriceQuoteDto'];
+        };
+      };
+    };
+  };
+  ProductsController_payoutsFeed: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PayoutFeedDto'];
+        };
+      };
+    };
+  };
+  CheckoutController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PurchaseListDto'];
+        };
+      };
+    };
+  };
+  CheckoutController_create: {
+    parameters: {
+      query?: never;
+      header: {
+        'Idempotency-Key': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CheckoutRequestDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PurchaseDto'];
+        };
+      };
+    };
+  };
+  CheckoutController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PurchaseDto'];
+        };
+      };
+    };
+  };
+  CheckoutController_testPayment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TestPaymentDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PurchaseDto'];
         };
       };
     };

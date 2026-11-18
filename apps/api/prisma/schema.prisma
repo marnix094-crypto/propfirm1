@@ -110,6 +110,20 @@ enum DailyLossReference {
   MAX_OF_BOTH
 }
 
+enum ProductType {
+  INSTANT
+  ONE_STEP
+  TWO_STEP
+}
+
+enum PurchaseStatus {
+  PENDING
+  PAID
+  FULFILLED
+  FAILED
+  CANCELLED
+}
+
 enum EmailTokenPurpose {
   VERIFY_EMAIL
   RESET_PASSWORD
@@ -138,6 +152,7 @@ model User {
   refreshTokens   RefreshToken[]
   accounts        TradingAccount[]
   watchlist       Watchlist?
+  purchases       Purchase[]
   twoFactor       TwoFactor?
   emailTokens     EmailToken[]
 }
@@ -169,25 +184,36 @@ model EmailToken {
 
 /// Immutable and versioned (decision D5): accounts keep the version they were opened with.
 model RuleSet {
-  id                     String             @id @default(uuid(7)) @db.Uuid
-  code                   String
-  version                Int
-  name                   String
-  maxDailyLossBps        Int
-  dailyLossBasis         DailyLossBasis
-  dailyLossReference     DailyLossReference
-  maxDrawdownBps         Int
-  drawdownType           DrawdownType
-  trailingBasis          TrailingBasis
-  trailingLocksAtInitial Boolean
-  profitTargetBps        Int?
-  minTradingDays         Int                @default(0)
-  maxLeverage            Int
-  profitSplitBps         Int?
-  warnRatioBps           Int                @default(7000)
-  isExample              Boolean            @default(false)
-  createdAt              DateTime           @default(now())
-  accounts               TradingAccount[]
+  id                      String             @id @default(uuid(7)) @db.Uuid
+  code                    String
+  version                 Int
+  name                    String
+  maxDailyLossBps         Int
+  dailyLossBasis          DailyLossBasis
+  dailyLossReference      DailyLossReference
+  maxDrawdownBps          Int
+  drawdownType            DrawdownType
+  trailingBasis           TrailingBasis
+  trailingLocksAtInitial  Boolean
+  profitTargetBps         Int?
+  minTradingDays          Int                @default(0)
+  maxLeverage             Int
+  profitSplitBps          Int?
+  warnRatioBps            Int                @default(7000)
+  isExample               Boolean            @default(false)
+  /// Funded-account economics (null = not offered by this version).
+  payoutIntervalDays      Int?
+  minTradingDaysPerPayout Int?
+  minPayoutMinor          BigInt?
+  scalingProfitTargetBps  Int?
+  scalingMinPayouts       Int?
+  scalingStepBps          Int?
+  scalingMaxBalanceMinor  BigInt?
+  createdAt               DateTime           @default(now())
+  accounts                TradingAccount[]
+  products                Product[]
+  quotes                  PriceQuote[]
+  purchases               Purchase[]
 
   @@unique([code, version])
 }
@@ -276,6 +302,14 @@ model TradingAccount {
   tradingDaysCount       Int              @default(0)
   lastTradingDate        String?
   failReason             String?
+  /// Funded accounts: payout cycle and scaling bookkeeping.
+  payoutCycleStartedAt   DateTime?
+  cycleTradingDays       Int              @default(0)
+  payoutsCount           Int              @default(0)
+  payoutBaselineMinor    BigInt?
+  paidOutSinceScaleMinor BigInt           @default(0)
+  purchaseId             String?          @db.Uuid
+  purchase               Purchase?        @relation(fields: [purchaseId], references: [id])
   violations             RuleViolation[]
   createdAt              DateTime         @default(now())
   endedAt                DateTime?
@@ -424,4 +458,86 @@ model AuditLog {
 
   @@index([entityType, entityId])
   @@index([actorId])
+}
+
+/// Catalogue item shown on the pricing page. The purchase snapshots size, price and rule set.
+model Product {
+  id               String      @id @default(uuid(7)) @db.Uuid
+  slug             String      @unique
+  type             ProductType
+  accountSizeMinor BigInt
+  priceMinor       BigInt
+  priceCurrency    String      @default("EUR") @db.Char(3)
+  ruleSetId        String      @db.Uuid
+  ruleSet          RuleSet     @relation(fields: [ruleSetId], references: [id])
+  isRecommended    Boolean     @default(false)
+  isActive         Boolean     @default(true)
+  isExample        Boolean     @default(false)
+  sortOrder        Int         @default(0)
+  createdAt        DateTime    @default(now())
+  purchases        Purchase[]
+}
+
+/// Server-calculated price for a custom account (configurator). Short-lived.
+model PriceQuote {
+  id               String      @id @default(uuid(7)) @db.Uuid
+  type             ProductType
+  accountSizeMinor BigInt
+  maxDrawdownBps   Int
+  priceMinor       BigInt
+  priceCurrency    String      @default("EUR") @db.Char(3)
+  ruleSetId        String      @db.Uuid
+  ruleSet          RuleSet     @relation(fields: [ruleSetId], references: [id])
+  expiresAt        DateTime
+  createdAt        DateTime    @default(now())
+  purchases        Purchase[]
+
+  @@index([expiresAt])
+}
+
+/// A checkout. Amounts are snapshotted; accounts are created once the payment is confirmed.
+model Purchase {
+  id               String           @id @default(uuid(7)) @db.Uuid
+  userId           String           @db.Uuid
+  user             User             @relation(fields: [userId], references: [id])
+  productId        String?          @db.Uuid
+  product          Product?         @relation(fields: [productId], references: [id])
+  quoteId          String?          @db.Uuid
+  quote            PriceQuote?      @relation(fields: [quoteId], references: [id])
+  type             ProductType
+  quantity         Int
+  accountSizeMinor BigInt
+  unitPriceMinor   BigInt
+  totalMinor       BigInt
+  currency         String           @db.Char(3)
+  ruleSetId        String           @db.Uuid
+  ruleSet          RuleSet          @relation(fields: [ruleSetId], references: [id])
+  status           PurchaseStatus   @default(PENDING)
+  provider         String
+  providerRef      String?
+  paymentUrl       String?
+  termsAcceptedAt  DateTime
+  paidAt           DateTime?
+  fulfilledAt      DateTime?
+  failureCode      String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  accounts         TradingAccount[]
+  events           PaymentEvent[]
+
+  @@unique([provider, providerRef])
+  @@index([userId, createdAt])
+}
+
+/// Payment provider events, deduplicated per (provider, eventId) — webhooks may be delivered twice.
+model PaymentEvent {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  provider   String
+  eventId    String
+  type       String
+  purchaseId String   @db.Uuid
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  receivedAt DateTime @default(now())
+
+  @@unique([provider, eventId])
 }

@@ -672,6 +672,36 @@
         ]
       }
     },
+    "/api/v1/accounts/{id}/funding": {
+      "get": {
+        "operationId": "AccountsController_funding",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundingProgressDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
     "/api/v1/accounts/{id}/positions": {
       "get": {
         "operationId": "AccountsController_positions",
@@ -1107,6 +1137,20 @@
         ]
       }
     },
+    "/api/v1/dev/verify-email": {
+      "post": {
+        "operationId": "DevToolsController_verifyEmail",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "config"
+        ]
+      }
+    },
     "/api/v1/dev/example-funded-account": {
       "post": {
         "operationId": "DevToolsController_exampleFunded",
@@ -1125,6 +1169,282 @@
         },
         "tags": [
           "config"
+        ]
+      }
+    },
+    "/api/v1/products": {
+      "get": {
+        "operationId": "ProductsController_list",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "INSTANT",
+                "ONE_STEP",
+                "TWO_STEP"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/products/{id}": {
+      "get": {
+        "operationId": "ProductsController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/products/quote": {
+      "post": {
+        "operationId": "ProductsController_quote",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PriceQuoteRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceQuoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/products/quotes/{id}": {
+      "get": {
+        "operationId": "ProductsController_getQuote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceQuoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/public/payouts-feed": {
+      "get": {
+        "operationId": "ProductsController_payoutsFeed",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutFeedDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/checkout": {
+      "post": {
+        "operationId": "CheckoutController_create",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "checkout"
+        ]
+      },
+      "get": {
+        "operationId": "CheckoutController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "checkout"
+        ]
+      }
+    },
+    "/api/v1/checkout/{id}": {
+      "get": {
+        "operationId": "CheckoutController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "checkout"
+        ]
+      }
+    },
+    "/api/v1/checkout/{id}/test-payment": {
+      "post": {
+        "operationId": "CheckoutController_testPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestPaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "checkout"
         ]
       }
     },
@@ -1918,6 +2238,166 @@
           "tradingDays"
         ]
       },
+      "PayoutConditionDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "PAYOUT_INTERVAL",
+              "PAYOUT_TRADING_DAYS",
+              "PAYOUT_MIN_AMOUNT",
+              "PAYOUT_NO_OPEN_POSITIONS"
+            ]
+          },
+          "met": {
+            "type": "boolean"
+          },
+          "current": {
+            "type": "string",
+            "description": "Days, count or minor units depending on the code (integer string)"
+          },
+          "required": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "met",
+          "current",
+          "required"
+        ]
+      },
+      "PayoutProgressDto": {
+        "type": "object",
+        "properties": {
+          "eligible": {
+            "type": "boolean"
+          },
+          "eligibleFrom": {
+            "type": "string"
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayoutConditionDto"
+            }
+          },
+          "kycRequired": {
+            "type": "boolean",
+            "description": "KYC is required before the first payout (phase 9)"
+          }
+        },
+        "required": [
+          "eligible",
+          "eligibleFrom",
+          "conditions",
+          "kycRequired"
+        ]
+      },
+      "ScalingProgressDto": {
+        "type": "object",
+        "properties": {
+          "profitMinor": {
+            "type": "string"
+          },
+          "targetMinor": {
+            "type": "string"
+          },
+          "targetBps": {
+            "type": "number"
+          },
+          "payouts": {
+            "type": "number"
+          },
+          "requiredPayouts": {
+            "type": "number"
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "stepBps": {
+            "type": "number"
+          },
+          "nextSizeMinor": {
+            "type": "string"
+          },
+          "maxSizeMinor": {
+            "type": "string"
+          },
+          "atMaximum": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "profitMinor",
+          "targetMinor",
+          "targetBps",
+          "payouts",
+          "requiredPayouts",
+          "eligible",
+          "stepBps",
+          "nextSizeMinor",
+          "maxSizeMinor",
+          "atMaximum"
+        ]
+      },
+      "FundingProgressDto": {
+        "type": "object",
+        "properties": {
+          "available": {
+            "type": "boolean",
+            "description": "False when the rule set defines no payout/scaling terms"
+          },
+          "isExample": {
+            "type": "boolean",
+            "description": "Values are examples, not the final offer"
+          },
+          "accountSizeMinor": {
+            "type": "string"
+          },
+          "profitSplitBps": {
+            "type": "number",
+            "nullable": true
+          },
+          "profitMinor": {
+            "type": "string",
+            "description": "Closed profit in the current payout cycle"
+          },
+          "traderShareMinor": {
+            "type": "string",
+            "description": "Trader share of that profit (simulated)"
+          },
+          "payout": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PayoutProgressDto"
+              }
+            ]
+          },
+          "scaling": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ScalingProgressDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "available",
+          "isExample",
+          "accountSizeMinor",
+          "profitSplitBps",
+          "profitMinor",
+          "traderShareMinor",
+          "payout",
+          "scaling"
+        ]
+      },
       "PositionDto": {
         "type": "object",
         "properties": {
@@ -2294,6 +2774,396 @@
         },
         "required": [
           "id"
+        ]
+      },
+      "ProductRulesDto": {
+        "type": "object",
+        "properties": {
+          "maxDailyLossBps": {
+            "type": "number"
+          },
+          "maxDrawdownBps": {
+            "type": "number"
+          },
+          "drawdownType": {
+            "type": "string",
+            "enum": [
+              "STATIC",
+              "TRAILING"
+            ]
+          },
+          "profitSplitBps": {
+            "type": "number"
+          },
+          "maxLeverage": {
+            "type": "number"
+          },
+          "minTradingDays": {
+            "type": "number"
+          },
+          "payoutIntervalDays": {
+            "type": "number",
+            "nullable": true
+          },
+          "minTradingDaysPerPayout": {
+            "type": "number",
+            "nullable": true
+          },
+          "scalingStepBps": {
+            "type": "number",
+            "nullable": true
+          },
+          "isExample": {
+            "type": "boolean",
+            "description": "Rule set has example values (not the final offer)"
+          }
+        },
+        "required": [
+          "maxDailyLossBps",
+          "maxDrawdownBps",
+          "drawdownType",
+          "profitSplitBps",
+          "maxLeverage",
+          "minTradingDays",
+          "payoutIntervalDays",
+          "minTradingDaysPerPayout",
+          "scalingStepBps",
+          "isExample"
+        ]
+      },
+      "ProductDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INSTANT",
+              "ONE_STEP",
+              "TWO_STEP"
+            ]
+          },
+          "accountSizeMinor": {
+            "type": "string",
+            "description": "Simulated capital, USD minor units"
+          },
+          "accountCurrency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          },
+          "priceMinor": {
+            "type": "string",
+            "description": "One-time fee, minor units of priceCurrency"
+          },
+          "priceCurrency": {
+            "type": "string",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "isRecommended": {
+            "type": "boolean"
+          },
+          "isExample": {
+            "type": "boolean"
+          },
+          "rules": {
+            "$ref": "#/components/schemas/ProductRulesDto"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "type",
+          "accountSizeMinor",
+          "accountCurrency",
+          "priceMinor",
+          "priceCurrency",
+          "isRecommended",
+          "isExample",
+          "rules"
+        ]
+      },
+      "ProductListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "PriceQuoteRequestDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "INSTANT",
+              "ONE_STEP",
+              "TWO_STEP"
+            ]
+          },
+          "accountSizeMinor": {
+            "type": "string",
+            "description": "USD minor units, integer string",
+            "example": "3000000"
+          },
+          "maxDrawdownBps": {
+            "type": "number",
+            "enum": [
+              400,
+              600,
+              800
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "accountSizeMinor",
+          "maxDrawdownBps"
+        ]
+      },
+      "PriceQuoteDto": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string"
+          },
+          "priceMinor": {
+            "type": "string"
+          },
+          "priceCurrency": {
+            "type": "string",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "accountSizeMinor": {
+            "type": "string"
+          },
+          "rules": {
+            "$ref": "#/components/schemas/ProductRulesDto"
+          },
+          "expiresAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "quoteId",
+          "priceMinor",
+          "priceCurrency",
+          "accountSizeMinor",
+          "rules",
+          "expiresAt"
+        ]
+      },
+      "PayoutFeedItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "amountMinor": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          },
+          "paidAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "countryCode",
+          "amountMinor",
+          "currency",
+          "paidAt"
+        ]
+      },
+      "PayoutFeedDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayoutFeedItemDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CheckoutRequestDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "Catalogue product (exactly one of productId / quoteId)"
+          },
+          "quoteId": {
+            "type": "string",
+            "description": "Custom-account quote"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "acceptTerms": {
+            "type": "boolean",
+            "description": "Terms, risk disclosure and refund policy accepted"
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "nl",
+              "es"
+            ]
+          }
+        },
+        "required": [
+          "quantity",
+          "acceptTerms"
+        ]
+      },
+      "PurchaseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PAID",
+              "FULFILLED",
+              "FAILED",
+              "CANCELLED"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INSTANT",
+              "ONE_STEP",
+              "TWO_STEP"
+            ]
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "accountSizeMinor": {
+            "type": "string"
+          },
+          "unitPriceMinor": {
+            "type": "string"
+          },
+          "totalMinor": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "isTestPayment": {
+            "type": "boolean",
+            "description": "Test provider: no real money moves"
+          },
+          "paymentUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "failureCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "accountIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rules": {
+            "$ref": "#/components/schemas/ProductRulesDto"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "type",
+          "quantity",
+          "accountSizeMinor",
+          "unitPriceMinor",
+          "totalMinor",
+          "currency",
+          "provider",
+          "isTestPayment",
+          "paymentUrl",
+          "failureCode",
+          "accountIds",
+          "rules",
+          "createdAt"
+        ]
+      },
+      "PurchaseListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PurchaseDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "TestPaymentDto": {
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "succeeded",
+              "failed",
+              "cancelled"
+            ]
+          }
+        },
+        "required": [
+          "outcome"
         ]
       },
       "WatchlistDto": {

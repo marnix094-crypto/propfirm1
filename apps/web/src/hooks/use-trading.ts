@@ -15,6 +15,7 @@ export const qk = {
   candles: (symbol: string, tf: string) => ['candles', symbol, tf] as const,
   watchlist: ['watchlist'] as const,
   rules: (id: string) => ['rules', id] as const,
+  funding: (id: string) => ['funding', id] as const,
   config: ['client-config'] as const,
   sessions: ['sessions'] as const,
 };
@@ -172,6 +173,7 @@ export function invalidateTrading(qc: ReturnType<typeof useQueryClient>, account
     qk.accounts,
     ['equity', accountId],
     qk.rules(accountId),
+    qk.funding(accountId),
   ]) {
     void qc.invalidateQueries({ queryKey: key });
   }

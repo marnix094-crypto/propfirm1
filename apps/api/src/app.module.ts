@@ -7,6 +7,7 @@ import { AuditModule } from './modules/audit/audit.module.js';
 import { MailModule } from './modules/mail/mail.module.js';
 import { SecurityModule } from './modules/security/security.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { CommerceModule } from './modules/commerce/commerce.module.js';
 import { HealthController } from './modules/health/health.controller.js';
 import { MarketDataModule } from './modules/market-data/market-data.module.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
@@ -31,6 +32,7 @@ import { UsersModule } from './modules/users/users.module.js';
     RulesModule,
     AuthModule,
     TradingModule,
+    CommerceModule,
     RealtimeModule,
     UsersModule,
   ],

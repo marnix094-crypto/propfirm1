@@ -22,7 +22,7 @@ describe('PricingCard', () => {
     expect(within(card).getByText('€398.00')).toBeInTheDocument();
     expect(within(card).getByRole('link', { name: 'Get this account' })).toHaveAttribute(
       'href',
-      `/en/register?product=${recommended.slug}&qty=2`,
+      `/en/app/checkout?product=${recommended.id}&qty=2`,
     );
   });
 });
@@ -59,7 +59,7 @@ describe('Pricing', () => {
     );
     expect(within(dialog).getByRole('link', { name: 'Continue' })).toHaveAttribute(
       'href',
-      '/en/register?quote=q_3000000_600',
+      '/en/app/checkout?quote=q_3000000_600',
     );
   });
 });

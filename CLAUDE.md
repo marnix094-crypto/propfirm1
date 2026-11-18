@@ -78,7 +78,9 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - Frontend-API: gegenereerde types (`@brand/shared/api`, `pnpm --filter @brand/shared generate:api`) + `openapi-fetch` via `lib/api-client.ts` (`call()` ververst de sessie bij 401). Realtime: `lib/realtime.ts` (Socket.IO, resync via `seq`).
 - Regels: `packages/engine/src/rules/rule-engine.ts` (puur). Regelsets als catalogus in `apps/api/src/modules/rules/catalog.ts`; rijen zijn onveranderlijk (DB-trigger) → nieuwe versie toevoegen i.p.v. wijzigen. Realtime evaluatie in `AccountStateService` (elke tick + na elke fill); overtreding → `TradingService.failAccount` (posities sluiten tegen markt, orders annuleren, FAILED, `RuleViolation`, audit).
 - Nieuwe env: `FIELD_ENCRYPTION_KEY` (32 bytes base64, versleutelt 2FA-secrets — back-up nodig), `APP_BASE_URL` (links in e-mails), `SMTP_URL` (Mailpit in dev; zonder → mails in API-log), `MAIL_FROM`, `DEV_TOOLS_ENABLED` (alleen dev; verboden in productie).
-- Dev-hulpmiddel: in de accountwisselaar "Voorbeeld funded account aanmaken (dev)" (alleen met `DEV_TOOLS_ENABLED=true`).
+- Dev-hulpmiddel: in de accountwisselaar "Voorbeeld funded account aanmaken (dev)" en in de e-mailbanner "Nu verifiëren (dev)" (alleen met `DEV_TOOLS_ENABLED=true`).
+- Aankoop: `apps/api/src/modules/commerce` (producten, offertes, checkout, `PaymentProvider` + `FakePaymentProvider`). `PAYMENT_PROVIDER=fake` (verboden in productie) → testbetaalpagina `/{lang}/app/checkout/:id/pay`. Funded-economie (winstdeling, uitbetaling, scaling) puur in `packages/engine/src/funding`; voorbeeldwaarden in regelset `INSTANT_EXAMPLE v2`.
+- Demo-preview (claude.ai Artifact): `pnpm --filter @brand/web build:demo` → `dist-demo` (in-browser backend `src/demo/`, alleen met `VITE_DEMO_MODE=true`).
 - E2E draait tegen de echte API (Playwright start API + preview); vereist Postgres + Redis.
 - Landing: `/{en|nl|es}` · design-preview: `/{en|nl|es}/design` · placeholders: `/login`, `/register`, `/legal/:doc`
 - API lokaal: Postgres 16 + Redis 7, `apps/api/.env` (zie `.env.example`), `pnpm --filter './packages/*' build`, `pnpm --filter @brand/api db:migrate`, `pnpm --filter @brand/api dev`. Docs: `/api/docs`, spec: `/api/v1/openapi.json`.
@@ -113,7 +115,7 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - [x] Fase 3 — Backend-slice: DB, auth (zonder 2FA), marktdata (Binance + simulated), engine, trading-API, WebSockets, OpenAPI
 - [x] Fase 4 — Platform-UI op de echte API: app-shell (mobiel bottom-nav), portfolio/dashboard, trading terminal, login/registratie, account-wissel
 - [x] Fase 5 — 2FA (TOTP + herstelcodes), e-mailverificatie, wachtwoord-reset, sessiebeheer, regelengine (daily loss/drawdown, targets) + realtime equity-controle met automatische FAILED (wacht op akkoord)
-- [ ] Fase 6 — Funded-accounts (instant funding) + challenge-voortgang
+- [x] Fase 6 — Funded-accounts (instant funding): catalogus, checkout met testbetaling, accounts na betaling, winstdeling/uitbetaalbaarheid/scaling-voortgang (wacht op akkoord)
 - [ ] Fase 7 — Pricing-checkout (betaalprovider), facturen
 - [ ] Fase 8 — Admin, audit log, risico-alerts
 - [ ] Fase 9 — KYC, broker-mock, uitbetalingen, e2e, performance, a11y

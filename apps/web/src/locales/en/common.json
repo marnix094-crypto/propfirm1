@@ -368,7 +368,8 @@
     "privacy": "Privacy policy",
     "cookies": "Cookie policy",
     "risk": "Risk disclosure",
-    "aml": "KYC & AML policy"
+    "aml": "KYC & AML policy",
+    "refund": "Refund policy"
   },
   "placeholder": {
     "login": "Log in",
@@ -466,7 +467,18 @@
     "TOKEN_INVALID": "This link is invalid or has expired.",
     "PASSWORD_INCORRECT": "The password is incorrect.",
     "TWO_FACTOR_ALREADY_ENABLED": "Two-step verification is already on.",
-    "TWO_FACTOR_NOT_SET_UP": "Start the setup again."
+    "TWO_FACTOR_NOT_SET_UP": "Start the setup again.",
+    "EMAIL_NOT_VERIFIED": "Confirm your email address first.",
+    "QUOTE_EXPIRED": "This price has expired. Please configure your account again.",
+    "QUOTE_NOT_FOUND": "This price is no longer available.",
+    "PRODUCT_NOT_FOUND": "This product is no longer available.",
+    "PURCHASE_NOT_FOUND": "Order not found.",
+    "PAYMENT_PROVIDER_UNAVAILABLE": "Payments are temporarily unavailable. Please try again later.",
+    "ACCOUNT_SIZE_INVALID": "Choose a valid account size.",
+    "PRODUCT_TYPE_UNAVAILABLE": "This account type is not offered.",
+    "CHECKOUT_ITEM_INVALID": "Choose an account to buy.",
+    "ACCOUNT_SUSPENDED": "Your account is suspended. Please contact support.",
+    "IDEMPOTENCY_KEY_REUSED": "This request was already sent with different details. Please try again."
   },
   "app": {
     "nav": {
@@ -637,7 +649,8 @@
     "verifyBanner": {
       "text": "Confirm your email address — we sent a link to {{email}}.",
       "resend": "Resend email",
-      "sent": "Email sent"
+      "sent": "Email sent",
+      "devVerify": "Verify now (dev)"
     },
     "security": {
       "title": "Security",
@@ -704,5 +717,80 @@
       },
       "cannotTrade": "This account is closed and cannot place orders."
     }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "instant": "Instant funding",
+    "simulated": "Simulated account",
+    "testPayment": "Test payment — no real money",
+    "payoutEvery": "Payout cycle",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "quantity": "Number of accounts",
+    "total": "Total",
+    "simulatedNotice": "Funded accounts are simulated: you trade virtual capital and no real capital is allocated. Profit share and payouts follow the account rules. Results are never guaranteed.",
+    "accept": "I accept the terms, the risk disclosure and the refund policy",
+    "readRefund": "refund policy",
+    "pay": "Continue to payment",
+    "verifyFirst": "Confirm your email address before you check out.",
+    "notFound": "This offer is no longer available.",
+    "backToPricing": "Back to pricing",
+    "openAccount": "Open account",
+    "continuePayment": "Continue payment",
+    "tryAgain": "Choose an account",
+    "testPage": {
+      "title": "Test payment",
+      "body": "This is a test environment. No money is charged. Choose the outcome you want to simulate.",
+      "succeed": "Simulate successful payment",
+      "fail": "Payment fails",
+      "cancel": "Cancel"
+    },
+    "status": {
+      "PENDING": {
+        "title": "Waiting for payment",
+        "body": "Your accounts are created as soon as the payment is confirmed."
+      },
+      "PAID": {
+        "title": "Payment received",
+        "body": "We are creating your accounts…"
+      },
+      "FULFILLED": {
+        "title": "Your account is ready",
+        "body_one": "Your funded account is ready to trade.",
+        "body_other": "Your {{count}} funded accounts are ready to trade."
+      },
+      "FAILED": {
+        "title": "Payment failed",
+        "body": "No money was charged and no account was created."
+      },
+      "CANCELLED": {
+        "title": "Payment cancelled",
+        "body": "No money was charged and no account was created."
+      }
+    }
+  },
+  "funding": {
+    "title": "Profit split & payouts",
+    "profit": "Profit this cycle",
+    "share": "Your share ({{split}})",
+    "payout": "Payout",
+    "eligible": "Eligible",
+    "notYet": "Not yet",
+    "met": "Met",
+    "notMet": "Not met",
+    "cond": {
+      "interval": "Payout cycle completed ({{current}}/{{required}} days, from {{date}})",
+      "tradingDays": "At least {{required}} trading days ({{current}}/{{required}})",
+      "minAmount": "Your share is at least {{amount}}",
+      "noOpenPositions": "No open positions"
+    },
+    "kyc": "Identity verification (KYC) is required before your first payout.",
+    "requestSoon": "Payout requests open in a later release.",
+    "scaling": "Scaling plan",
+    "scalingBody": "Reach {{target}} profit and {{payouts}} payouts to grow your account by {{step}} to {{next}}.",
+    "scalingMax": "Your account has reached the maximum size.",
+    "scalingProfit": "Profit towards next step",
+    "scalingPayouts": "Payouts: {{current}}/{{required}}",
+    "disclaimer": "Simulated trading. Amounts shown are calculated from the account rules and are not a promise of payment."
   }
 }

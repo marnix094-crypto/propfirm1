@@ -9,6 +9,8 @@ import {
   closePrice,
   directionOf,
   evaluateRules,
+  fundingProgress,
+  type FundingParams,
   fromDecimalString,
   isStopTriggered,
   limitExecution,
@@ -23,7 +25,7 @@ import {
   type PositionState,
   type RuleParams,
 } from '@brand/engine';
-import { exampleProducts, exampleQuotePriceMinor } from '@/mocks/data';
+import { exampleProducts, exampleQuotePriceMinor, exampleRules } from '@/mocks/data';
 import { bySymbol, DEMO_INSTRUMENTS, DemoMarket } from './market';
 
 const uid = () => crypto.randomUUID();
@@ -43,6 +45,30 @@ const RULES: RuleParams & { profitSplitBps: number; maxLeverage: number } = {
   profitSplitBps: 8000,
   maxLeverage: 50,
 };
+
+/** Example payout & scaling terms (same as the API's INSTANT_EXAMPLE v2). */
+const FUNDING: FundingParams = {
+  profitSplitBps: 8000,
+  payoutIntervalDays: 14,
+  minTradingDaysPerPayout: 3,
+  minPayoutMinor: 5_000n,
+  scalingProfitTargetBps: 1_000,
+  scalingMinPayouts: 2,
+  scalingStepBps: 2_500,
+  scalingMaxBalanceMinor: 40_000_000n,
+};
+
+interface Purchase {
+  id: string;
+  userId: string;
+  quantity: number;
+  size: bigint;
+  unitPrice: bigint;
+  drawdownBps: number;
+  status: 'PENDING' | 'FULFILLED' | 'FAILED' | 'CANCELLED';
+  accountIds: string[];
+  createdAt: number;
+}
 
 interface User {
   id: string;
@@ -121,6 +147,7 @@ interface State {
     at: number;
   }[];
   watchlist: Record<string, string[]>;
+  purchases?: Purchase[];
 }
 
 const empty = (): State => ({
@@ -857,23 +884,172 @@ on('POST', '/dev/example-funded-account', () =>
 // Landing page catalogue (same example data as the MSW mocks).
 on('GET', '/products', () => json(200, { items: exampleProducts }));
 on('GET', '/public/payouts-feed', () => json(200, { items: [] }));
+const QUOTE_ID = /^q_(\d+)_(\d+)$/;
+const quoteDto = (size: bigint, dd: number) => ({
+  quoteId: `q_${size}_${dd}`,
+  priceMinor: exampleQuotePriceMinor(size, dd).toString(),
+  priceCurrency: 'EUR',
+  accountSizeMinor: String(size),
+  rules: exampleRules(dd),
+  expiresAt: new Date(Date.now() + 1_800_000).toISOString(),
+});
 on('POST', '/products/quote', (_m, b) => {
   const size = BigInt(String(b.accountSizeMinor));
-  const dd = Number(b.maxDrawdownBps);
+  if (size < 500_000n || size > 20_000_000n || size % 500_000n !== 0n)
+    throw new Fail(422, 'ACCOUNT_SIZE_INVALID');
+  return json(200, quoteDto(size, Number(b.maxDrawdownBps)));
+});
+on('GET', '/products/quotes/{id}', (m) => {
+  const q = QUOTE_ID.exec(decodeURIComponent(m[1]!));
+  if (!q) throw new Fail(404, 'QUOTE_NOT_FOUND');
+  return json(200, quoteDto(BigInt(q[1]!), Number(q[2])));
+});
+on('GET', '/products/{id}', (m) => {
+  const p = exampleProducts.find((x) => x.id === decodeURIComponent(m[1]!));
+  if (!p) throw new Fail(404, 'PRODUCT_NOT_FOUND');
+  return json(200, p);
+});
+
+// Checkout with the TEST payment provider: no money moves, the pay page picks the outcome.
+const purchases = () => (st.purchases ??= []);
+const purchaseDto = (p: Purchase) => ({
+  id: p.id,
+  status: p.status,
+  type: 'INSTANT',
+  quantity: p.quantity,
+  accountSizeMinor: String(p.size),
+  unitPriceMinor: String(p.unitPrice),
+  totalMinor: String(p.unitPrice * BigInt(p.quantity)),
+  currency: 'EUR',
+  provider: 'fake',
+  isTestPayment: true,
+  paymentUrl: p.status === 'PENDING' ? `demo://checkout/${p.id}/pay` : null,
+  failureCode:
+    p.status === 'FAILED'
+      ? 'PAYMENT_FAILED'
+      : p.status === 'CANCELLED'
+        ? 'PAYMENT_CANCELLED'
+        : null,
+  accountIds: p.accountIds,
+  rules: exampleRules(p.drawdownBps),
+  createdAt: new Date(p.createdAt).toISOString(),
+});
+const ownPurchase = (id: string) => {
+  const p = purchases().find((x) => x.id === id && x.userId === me().id);
+  if (!p) throw new Fail(404, 'PURCHASE_NOT_FOUND');
+  return p;
+};
+const sizeLabel = (minor: bigint) => `$${minor / 100_000n}K`;
+on('POST', '/checkout', (_m, b) => {
+  const u = me();
+  if (b.acceptTerms !== true) throw new Fail(400, 'VALIDATION_ERROR');
+  const quantity = Math.min(5, Math.max(1, Number(b.quantity) || 1));
+  let size: bigint;
+  let price: bigint;
+  let dd: number;
+  if (b.productId) {
+    const p = exampleProducts.find((x) => x.id === b.productId);
+    if (!p) throw new Fail(404, 'PRODUCT_NOT_FOUND');
+    size = BigInt(p.accountSizeMinor);
+    price = BigInt(p.priceMinor);
+    dd = p.rules.maxDrawdownBps;
+  } else {
+    const q = QUOTE_ID.exec(String(b.quoteId ?? ''));
+    if (!q) throw new Fail(404, 'QUOTE_NOT_FOUND');
+    size = BigInt(q[1]!);
+    dd = Number(q[2]);
+    price = exampleQuotePriceMinor(size, dd);
+  }
+  const p: Purchase = {
+    id: uid(),
+    userId: u.id,
+    quantity,
+    size,
+    unitPrice: price,
+    drawdownBps: dd,
+    status: 'PENDING',
+    accountIds: [],
+    createdAt: Date.now(),
+  };
+  purchases().push(p);
+  return json(201, purchaseDto(p));
+});
+on('GET', '/checkout', () =>
+  json(200, {
+    items: purchases()
+      .filter((p) => p.userId === me().id)
+      .map(purchaseDto),
+  }),
+);
+on('GET', '/checkout/{id}', (m) => json(200, purchaseDto(ownPurchase(m[1]!))));
+on('POST', '/checkout/{id}/test-payment', (m, b) => {
+  const p = ownPurchase(m[1]!);
+  if (p.status === 'PENDING') {
+    if (b.outcome === 'succeeded') {
+      for (let i = 1; i <= p.quantity; i++) {
+        const label = `Instant ${sizeLabel(p.size)}${p.quantity > 1 ? ` #${i}` : ''}`;
+        p.accountIds.push(newAccount(p.userId, 'FUNDED', p.size, label).id);
+      }
+      p.status = 'FULFILLED';
+    } else p.status = b.outcome === 'failed' ? 'FAILED' : 'CANCELLED';
+  }
+  return json(200, purchaseDto(p));
+});
+on('GET', '/accounts/{id}/funding', (m) => {
+  const a = ownAcc(m[1]!);
+  const profit = a.balance > a.initial ? a.balance - a.initial : 0n;
+  if (a.kind !== 'FUNDED')
+    return json(200, {
+      available: false,
+      isExample: false,
+      accountSizeMinor: String(a.initial),
+      profitSplitBps: null,
+      profitMinor: String(profit),
+      traderShareMinor: '0',
+      payout: null,
+      scaling: null,
+    });
+  const f = fundingProgress(FUNDING, {
+    initialBalanceMinor: a.initial,
+    balanceMinor: a.balance,
+    payoutBaselineMinor: a.initial,
+    scalingProfitMinor: a.balance - a.initial,
+    cycleStartedAtMs: a.createdAt,
+    nowMs: Date.now(),
+    cycleTradingDays: a.tradingDays,
+    payoutsCount: 0,
+    hasOpenPositions: st.positions.some((p) => p.accountId === a.id),
+  });
   return json(200, {
-    quoteId: `q_${size}_${dd}`,
-    priceMinor: exampleQuotePriceMinor(size, dd).toString(),
-    priceCurrency: 'EUR',
-    accountSizeMinor: String(size),
-    rules: {
-      maxDailyLossBps: 300,
-      maxDrawdownBps: dd,
-      drawdownType: 'TRAILING',
-      profitSplitBps: 8000,
-      maxLeverage: 50,
-      minTradingDays: 0,
+    available: true,
+    isExample: true,
+    accountSizeMinor: String(a.initial),
+    profitSplitBps: FUNDING.profitSplitBps,
+    profitMinor: String(f.profitMinor),
+    traderShareMinor: String(f.traderShareMinor),
+    payout: {
+      eligible: f.payout.eligible && a.status === 'FUNDED_ACTIVE',
+      eligibleFrom: new Date(f.payout.eligibleFromMs).toISOString(),
+      kycRequired: true,
+      conditions: f.payout.conditions.map((c) => ({
+        code: c.code,
+        met: c.met,
+        current: String(c.current),
+        required: String(c.required),
+      })),
     },
-    expiresAt: new Date(Date.now() + 900_000).toISOString(),
+    scaling: {
+      profitMinor: String(f.scaling.profitMinor),
+      targetMinor: String(f.scaling.targetMinor),
+      targetBps: FUNDING.scalingProfitTargetBps,
+      payouts: 0,
+      requiredPayouts: FUNDING.scalingMinPayouts,
+      eligible: false,
+      stepBps: FUNDING.scalingStepBps,
+      nextSizeMinor: String(f.scaling.nextSizeMinor),
+      maxSizeMinor: String(FUNDING.scalingMaxBalanceMinor),
+      atMaximum: f.scaling.atMaximum,
+    },
   });
 });
 

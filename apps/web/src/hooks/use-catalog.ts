@@ -1,17 +1,25 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type {
-  PayoutFeedResponse,
-  PriceQuoteRequest,
-  PriceQuoteResponse,
-  ProductListResponse,
-  ProductType,
-} from '@brand/shared';
-import { api } from '@/lib/api';
+import { call, client, type Schemas } from '@/lib/api-client';
 
-export function useProducts(type: ProductType) {
+export type Product = Schemas['ProductDto'];
+export type ProductRules = Schemas['ProductRulesDto'];
+export type PriceQuote = Schemas['PriceQuoteDto'];
+export type PriceQuoteRequest = Schemas['PriceQuoteRequestDto'];
+
+export function useProducts(type: Product['type']) {
   return useQuery({
     queryKey: ['products', type],
-    queryFn: ({ signal }) => api.get<ProductListResponse>(`/products?type=${type}`, signal),
+    queryFn: () => call(() => client.GET('/api/v1/products', { params: { query: { type } } })),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function useProduct(id: string | null) {
+  return useQuery({
+    queryKey: ['product', id],
+    queryFn: () =>
+      call(() => client.GET('/api/v1/products/{id}', { params: { path: { id: id! } } })),
+    enabled: !!id,
     staleTime: 5 * 60_000,
   });
 }
@@ -19,7 +27,7 @@ export function useProducts(type: ProductType) {
 export function usePayoutFeed() {
   return useQuery({
     queryKey: ['public', 'payouts-feed'],
-    queryFn: ({ signal }) => api.get<PayoutFeedResponse>('/public/payouts-feed', signal),
+    queryFn: () => call(() => client.GET('/api/v1/public/payouts-feed')),
     staleTime: 60_000,
     retry: 1,
   });
@@ -27,6 +35,16 @@ export function usePayoutFeed() {
 
 export function usePriceQuote() {
   return useMutation({
-    mutationFn: (body: PriceQuoteRequest) => api.post<PriceQuoteResponse>('/products/quote', body),
+    mutationFn: (body: PriceQuoteRequest) =>
+      call(() => client.POST('/api/v1/products/quote', { body })),
+  });
+}
+
+export function useQuote(id: string | null) {
+  return useQuery({
+    queryKey: ['quote', id],
+    queryFn: () =>
+      call(() => client.GET('/api/v1/products/quotes/{id}', { params: { path: { id: id! } } })),
+    enabled: !!id,
   });
 }

@@ -91,6 +91,27 @@ const routes: RouteObject[] = [
                 Component: m.SecurityPage,
               })),
           },
+          {
+            path: 'checkout',
+            lazy: () =>
+              import('@/features/checkout/checkout-page').then((m) => ({
+                Component: m.CheckoutPage,
+              })),
+          },
+          {
+            path: 'checkout/:purchaseId',
+            lazy: () =>
+              import('@/features/checkout/purchase-page').then((m) => ({
+                Component: m.PurchasePage,
+              })),
+          },
+          {
+            path: 'checkout/:purchaseId/pay',
+            lazy: () =>
+              import('@/features/checkout/test-payment-page').then((m) => ({
+                Component: m.TestPaymentPage,
+              })),
+          },
           // Unknown app routes fall back to the portfolio instead of rendering nothing.
           { path: '*', element: <Navigate to="portfolio" replace /> },
         ],

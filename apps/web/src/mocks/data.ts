@@ -1,19 +1,24 @@
-import type { ProductDto, ProductRulesDto } from '@brand/shared';
+import { quotePriceMinor } from '@brand/engine';
+import type { Product, ProductRules } from '@/hooks/use-catalog';
 
 /**
  * DEVELOPMENT / TEST DATA ONLY. Example sizes, prices and rules — not the real offer.
- * The UI shows a "mock data" indicator whenever MSW is active.
+ * Mirrors the API's example catalogue. The UI shows a "mock data" indicator when MSW is active.
  */
-const rules = (maxDrawdownBps: number): ProductRulesDto => ({
+export const exampleRules = (maxDrawdownBps: number): ProductRules => ({
   maxDailyLossBps: 300,
   maxDrawdownBps,
   drawdownType: 'TRAILING',
   profitSplitBps: 8_000,
   maxLeverage: 50,
   minTradingDays: 0,
+  payoutIntervalDays: 14,
+  minTradingDaysPerPayout: 3,
+  scalingStepBps: 2_500,
+  isExample: true,
 });
 
-const mk = (size: number, priceEur: number, recommended = false): ProductDto => ({
+const mk = (size: number, priceEur: number, recommended = false): Product => ({
   id: `instant-${size}`,
   slug: `instant-${size / 1000}k`,
   type: 'INSTANT',
@@ -22,10 +27,11 @@ const mk = (size: number, priceEur: number, recommended = false): ProductDto => 
   priceMinor: String(priceEur * 100),
   priceCurrency: 'EUR',
   isRecommended: recommended,
-  rules: rules(600),
+  isExample: true,
+  rules: exampleRules(600),
 });
 
-export const exampleProducts: ProductDto[] = [
+export const exampleProducts: Product[] = [
   mk(5_000, 59),
   mk(10_000, 99),
   mk(25_000, 199, true),
@@ -33,11 +39,5 @@ export const exampleProducts: ProductDto[] = [
   mk(100_000, 599),
 ];
 
-/** Placeholder pricing formula for the custom configurator (server is the source of truth). */
-export function exampleQuotePriceMinor(accountSizeMinor: bigint, maxDrawdownBps: number): bigint {
-  const base = 2_900n; // €29
-  const perThousand = 600n; // €6 per $1k
-  const sizeThousands = accountSizeMinor / 100_000n;
-  const drawdownFactor = BigInt(maxDrawdownBps); // higher drawdown → pricier
-  return base + (sizeThousands * perThousand * drawdownFactor) / 600n;
-}
+/** Same example formula as the API (packages/engine). */
+export const exampleQuotePriceMinor = quotePriceMinor;

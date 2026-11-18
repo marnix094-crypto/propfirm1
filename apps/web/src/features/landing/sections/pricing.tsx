@@ -3,13 +3,12 @@ import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { AlertCircle, ArrowRight, RotateCw, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { applyBps } from '@brand/engine';
-import type { ProductDto } from '@brand/shared';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Stepper } from '@/components/ui/stepper';
 import { RevealGroup, RevealItem } from '@/components/motion/reveal';
-import { useProducts } from '@/hooks/use-catalog';
+import { useProducts, type Product } from '@/hooks/use-catalog';
 import { useFormat } from '@/hooks/use-format';
 import { isMockData } from '@/lib/api';
 import { cn } from '@/lib/cn';
@@ -31,7 +30,7 @@ function Row({ label, value, hint }: { label: string; value: string; hint?: stri
   );
 }
 
-export function PricingCard({ product }: { product: ProductDto }) {
+export function PricingCard({ product }: { product: Product }) {
   const { t } = useTranslation();
   const { lang } = useParams();
   const f = useFormat();
@@ -96,7 +95,7 @@ export function PricingCard({ product }: { product: ProductDto }) {
       </div>
       <div className="mt-auto pt-5">
         <Button asChild fullWidth variant={product.isRecommended ? 'primary' : 'secondary'}>
-          <Link to={`/${lang}/register?product=${encodeURIComponent(product.slug)}&qty=${qty}`}>
+          <Link to={`/${lang}/app/checkout?product=${encodeURIComponent(product.id)}&qty=${qty}`}>
             {t('landing.pricing.buy')}
           </Link>
         </Button>
@@ -134,7 +133,7 @@ export function Pricing() {
       title={t('landing.pricing.title')}
       subtitle={t('landing.pricing.subtitle')}
     >
-      {isMockData() && (
+      {(isMockData() || products.data?.items.some((p) => p.isExample)) && (
         <div className="-mt-6 mb-10 flex justify-center">
           <Badge>{t('landing.pricing.examplePrices')}</Badge>
         </div>

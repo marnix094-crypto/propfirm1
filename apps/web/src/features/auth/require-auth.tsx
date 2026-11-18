@@ -1,5 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
-import { Navigate, useLocation, useParams } from 'react-router';
+import { Navigate, useLocation, useParams, useSearchParams } from 'react-router';
+import { safeNext } from '@/lib/safe-next';
 import { useSession } from '@/stores/session';
 import { Logo } from '@/components/layout/logo';
 
@@ -33,10 +34,12 @@ export function GuestOnly({ children }: { children: ReactNode }) {
   const status = useSession((s) => s.status);
   const refresh = useSession((s) => s.refresh);
   const { lang } = useParams();
+  const [params] = useSearchParams();
   useEffect(() => {
     if (status === 'unknown') void refresh();
   }, [status, refresh]);
   if (status === 'unknown') return <Splash />;
-  if (status === 'authenticated') return <Navigate to={`/${lang}/app`} replace />;
+  if (status === 'authenticated')
+    return <Navigate to={safeNext(params.get('next'), lang)} replace />;
   return <>{children}</>;
 }

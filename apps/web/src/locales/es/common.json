@@ -368,7 +368,8 @@
     "privacy": "Política de privacidad",
     "cookies": "Política de cookies",
     "risk": "Divulgación de riesgos",
-    "aml": "Política KYC y AML"
+    "aml": "Política KYC y AML",
+    "refund": "Política de reembolso"
   },
   "placeholder": {
     "login": "Iniciar sesión",
@@ -466,7 +467,18 @@
     "TOKEN_INVALID": "Este enlace no es válido o ha caducado.",
     "PASSWORD_INCORRECT": "La contraseña es incorrecta.",
     "TWO_FACTOR_ALREADY_ENABLED": "La verificación en dos pasos ya está activada.",
-    "TWO_FACTOR_NOT_SET_UP": "Vuelve a empezar la configuración."
+    "TWO_FACTOR_NOT_SET_UP": "Vuelve a empezar la configuración.",
+    "EMAIL_NOT_VERIFIED": "Confirma primero tu correo electrónico.",
+    "QUOTE_EXPIRED": "Este precio ha caducado. Configura tu cuenta de nuevo.",
+    "QUOTE_NOT_FOUND": "Este precio ya no está disponible.",
+    "PRODUCT_NOT_FOUND": "Este producto ya no está disponible.",
+    "PURCHASE_NOT_FOUND": "Pedido no encontrado.",
+    "PAYMENT_PROVIDER_UNAVAILABLE": "Los pagos no están disponibles temporalmente. Inténtalo más tarde.",
+    "ACCOUNT_SIZE_INVALID": "Elige un tamaño de cuenta válido.",
+    "PRODUCT_TYPE_UNAVAILABLE": "Este tipo de cuenta no se ofrece.",
+    "CHECKOUT_ITEM_INVALID": "Elige una cuenta para comprar.",
+    "ACCOUNT_SUSPENDED": "Tu cuenta está suspendida. Contacta con soporte.",
+    "IDEMPOTENCY_KEY_REUSED": "Esta solicitud ya se envió con otros datos. Inténtalo de nuevo."
   },
   "app": {
     "nav": {
@@ -637,7 +649,8 @@
     "verifyBanner": {
       "text": "Confirma tu correo electrónico — enviamos un enlace a {{email}}.",
       "resend": "Reenviar correo",
-      "sent": "Correo enviado"
+      "sent": "Correo enviado",
+      "devVerify": "Verificar ahora (dev)"
     },
     "security": {
       "title": "Seguridad",
@@ -704,5 +717,80 @@
       },
       "cannotTrade": "Esta cuenta está cerrada y no puede colocar órdenes."
     }
+  },
+  "checkout": {
+    "title": "Pago",
+    "instant": "Financiación instantánea",
+    "simulated": "Cuenta simulada",
+    "testPayment": "Pago de prueba — sin dinero real",
+    "payoutEvery": "Ciclo de pago",
+    "days_one": "{{count}} día",
+    "days_other": "{{count}} días",
+    "quantity": "Número de cuentas",
+    "total": "Total",
+    "simulatedNotice": "Las cuentas financiadas son simuladas: operas con capital virtual y no se asigna capital real. El reparto de beneficios y los pagos siguen las reglas de la cuenta. Los resultados nunca están garantizados.",
+    "accept": "Acepto los términos, la divulgación de riesgos y la política de reembolso",
+    "readRefund": "política de reembolso",
+    "pay": "Continuar al pago",
+    "verifyFirst": "Confirma tu correo electrónico antes de pagar.",
+    "notFound": "Esta oferta ya no está disponible.",
+    "backToPricing": "Volver a precios",
+    "openAccount": "Abrir cuenta",
+    "continuePayment": "Continuar el pago",
+    "tryAgain": "Elige una cuenta",
+    "testPage": {
+      "title": "Pago de prueba",
+      "body": "Este es un entorno de prueba. No se cobra dinero. Elige el resultado que quieres simular.",
+      "succeed": "Simular pago correcto",
+      "fail": "El pago falla",
+      "cancel": "Cancelar"
+    },
+    "status": {
+      "PENDING": {
+        "title": "Esperando el pago",
+        "body": "Tus cuentas se crean en cuanto se confirme el pago."
+      },
+      "PAID": {
+        "title": "Pago recibido",
+        "body": "Estamos creando tus cuentas…"
+      },
+      "FULFILLED": {
+        "title": "Tu cuenta está lista",
+        "body_one": "Tu cuenta financiada está lista para operar.",
+        "body_other": "Tus {{count}} cuentas financiadas están listas para operar."
+      },
+      "FAILED": {
+        "title": "El pago ha fallado",
+        "body": "No se ha cobrado dinero ni se ha creado ninguna cuenta."
+      },
+      "CANCELLED": {
+        "title": "Pago cancelado",
+        "body": "No se ha cobrado dinero ni se ha creado ninguna cuenta."
+      }
+    }
+  },
+  "funding": {
+    "title": "Reparto de beneficios y pagos",
+    "profit": "Beneficio de este ciclo",
+    "share": "Tu parte ({{split}})",
+    "payout": "Pago",
+    "eligible": "Disponible",
+    "notYet": "Todavía no",
+    "met": "Cumplido",
+    "notMet": "No cumplido",
+    "cond": {
+      "interval": "Ciclo de pago completado ({{current}}/{{required}} días, desde el {{date}})",
+      "tradingDays": "Al menos {{required}} días de operación ({{current}}/{{required}})",
+      "minAmount": "Tu parte es de al menos {{amount}}",
+      "noOpenPositions": "Sin posiciones abiertas"
+    },
+    "kyc": "La verificación de identidad (KYC) es obligatoria antes de tu primer pago.",
+    "requestSoon": "Las solicitudes de pago llegarán en una próxima versión.",
+    "scaling": "Plan de escalado",
+    "scalingBody": "Alcanza un {{target}} de beneficio y {{payouts}} pagos para ampliar tu cuenta un {{step}} hasta {{next}}.",
+    "scalingMax": "Tu cuenta ha alcanzado el tamaño máximo.",
+    "scalingProfit": "Beneficio hacia el siguiente paso",
+    "scalingPayouts": "Pagos: {{current}}/{{required}}",
+    "disclaimer": "Trading simulado. Los importes se calculan según las reglas de la cuenta y no son una promesa de pago."
   }
 }

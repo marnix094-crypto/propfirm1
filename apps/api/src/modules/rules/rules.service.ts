@@ -1,5 +1,5 @@
 import { Injectable, Logger, type OnModuleInit } from '@nestjs/common';
-import type { RuleParams } from '@brand/engine';
+import type { FundingParams, RuleParams } from '@brand/engine';
 import { PrismaService } from '../../infra/prisma.service.js';
 import { Errors } from '../../common/errors.js';
 import type { RuleSet } from '../../generated/prisma/client.js';
@@ -20,6 +20,31 @@ export function toRuleParams(r: RuleSet): RuleParams {
   };
 }
 
+/** Payout & scaling terms, or null when this rule set version does not define them. */
+export function toFundingParams(r: RuleSet): FundingParams | null {
+  if (
+    r.profitSplitBps == null ||
+    r.payoutIntervalDays == null ||
+    r.minTradingDaysPerPayout == null ||
+    r.minPayoutMinor == null ||
+    r.scalingProfitTargetBps == null ||
+    r.scalingMinPayouts == null ||
+    r.scalingStepBps == null ||
+    r.scalingMaxBalanceMinor == null
+  )
+    return null;
+  return {
+    profitSplitBps: r.profitSplitBps,
+    payoutIntervalDays: r.payoutIntervalDays,
+    minTradingDaysPerPayout: r.minTradingDaysPerPayout,
+    minPayoutMinor: r.minPayoutMinor,
+    scalingProfitTargetBps: r.scalingProfitTargetBps,
+    scalingMinPayouts: r.scalingMinPayouts,
+    scalingStepBps: r.scalingStepBps,
+    scalingMaxBalanceMinor: r.scalingMaxBalanceMinor,
+  };
+}
+
 const KEYS = Object.keys(RULE_SET_CATALOG[0]!) as (keyof (typeof RULE_SET_CATALOG)[number])[];
 
 /** Ensures the catalogue exists in the DB; refuses to start if a stored version differs. */
@@ -28,7 +53,19 @@ export class RulesService implements OnModuleInit {
   private readonly logger = new Logger(RulesService.name);
   constructor(private readonly prisma: PrismaService) {}
 
-  async onModuleInit() {
+  private ready: Promise<void> | null = null;
+
+  onModuleInit() {
+    return this.ensureCatalog();
+  }
+
+  /** Idempotent; other modules await it before relying on catalogue rows. */
+  ensureCatalog(): Promise<void> {
+    this.ready ??= this.syncCatalog();
+    return this.ready;
+  }
+
+  private async syncCatalog() {
     for (const def of RULE_SET_CATALOG) {
       const existing = await this.prisma.ruleSet.findUnique({
         where: { code_version: { code: def.code, version: def.version } },

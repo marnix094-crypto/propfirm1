@@ -2,6 +2,7 @@ import { Controller, Get, HttpCode, Inject, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { APP_CONFIG, type AppConfig } from '../../config/env.js';
 import { Errors } from '../../common/errors.js';
+import { PrismaService } from '../../infra/prisma.service.js';
 import { Public } from '../auth/public.decorator.js';
 import { CurrentUser, type AuthUser } from '../auth/current-user.decorator.js';
 import { RulesService } from '../rules/rules.service.js';
@@ -23,6 +24,7 @@ export class DevToolsController {
     @Inject(APP_CONFIG) private readonly config: AppConfig,
     private readonly rules: RulesService,
     private readonly trading: TradingService,
+    private readonly prisma: PrismaService,
   ) {}
 
   @Public()
@@ -30,6 +32,17 @@ export class DevToolsController {
   @ApiOkResponse({ type: ClientConfigDto })
   clientConfig(): ClientConfigDto {
     return { devTools: this.config.devToolsEnabled };
+  }
+
+  /** DEV ONLY: mark the current user's email as verified (no mailbox needed while developing). */
+  @Post('dev/verify-email')
+  @HttpCode(204)
+  async verifyEmail(@CurrentUser() u: AuthUser): Promise<void> {
+    if (!this.config.devToolsEnabled) throw Errors.notFound('Route');
+    await this.prisma.user.update({
+      where: { id: u.id },
+      data: { emailVerifiedAt: new Date() },
+    });
   }
 
   /** DEV ONLY: open an example $25,000 funded account with the example rule set. */

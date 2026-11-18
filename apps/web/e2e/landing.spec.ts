@@ -43,10 +43,11 @@ test.describe('landing page', () => {
     const card = page.getByTestId('pricing-card-instant-25k');
     await card.getByRole('button', { name: 'More accounts' }).click();
     await card.getByRole('link', { name: 'Get this account' }).click();
-    await expect(page).toHaveURL(/\/en\/register\?product=instant-25k&qty=2$/);
-    await expect(
-      page.getByRole('heading', { level: 1, name: 'Create your account' }),
-    ).toBeVisible();
+    // Signed out: the checkout destination is kept through login.
+    await expect(page).toHaveURL(
+      /\/en\/login\?next=%2Fen%2Fapp%2Fcheckout%3Fproduct%3D.+%26qty%3D2$/,
+    );
+    await expect(page.getByRole('heading', { level: 1, name: 'Welcome back' })).toBeVisible();
   });
 
   test('custom account configurator returns a server-calculated price', async ({ page }) => {

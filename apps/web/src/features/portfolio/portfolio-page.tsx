@@ -25,6 +25,7 @@ import { cn } from '@/lib/cn';
 import type { Account } from '@/lib/api-client';
 import { AssetAvatar, MarketsList } from './markets-list';
 import { AccountClosedBanner, RulesCard } from '../rules/rules-card';
+import { FundingCard } from '../funding/funding-card';
 
 const RANGES: EquityRange[] = ['1D', '1W', '1M', '3M', '6M', '1Y'];
 
@@ -281,6 +282,7 @@ export function PortfolioPage() {
 
         <div className="flex flex-col gap-5">
           <RulesCard account={account} />
+          <FundingCard account={account} />
           <Card padding="lg" className="flex items-center gap-5">
             <RadialMeter
               value={health}

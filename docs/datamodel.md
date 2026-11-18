@@ -107,3 +107,10 @@ erDiagram
 - IP-adressen alleen gehasht (met pepper) in logs.
 - Verwijderverzoek: profiel wissen, e-mail vervangen door pseudoniem, financiële records/audit behouden (pseudoniem gekoppeld).
 - Data-export endpoint (JSON) voor inzagerecht.
+
+## Status fase 6 (geïmplementeerd)
+
+- `Product` (catalogus, verwijst naar een vaste `RuleSet`-versie), `PriceQuote` (configurator, 30 min), `Purchase` (snapshot van grootte, stukprijs, totaal, regelversie; status `PENDING → PAID → FULFILLED` of `FAILED`/`CANCELLED`; DB-checks: aantal 1–5, totaal = stukprijs × aantal, precies één van product/offerte), `PaymentEvent` (uniek per provider + eventId).
+- `RuleSet` kreeg nullable uitbetalings-/scalingvelden (`payoutIntervalDays`, `minTradingDaysPerPayout`, `minPayoutMinor`, `scalingProfitTargetBps`, `scalingMinPayouts`, `scalingStepBps`, `scalingMaxBalanceMinor`); bestaande versies blijven ongewijzigd (v1 = null).
+- `TradingAccount` kreeg `purchaseId`, `payoutCycleStartedAt`, `cycleTradingDays`, `payoutsCount`, `payoutBaselineMinor`, `paidOutSinceScaleMinor`.
+- Het ERD hierboven gebruikt nog `ChallengeProduct`; in de code heet dit `Product`.

@@ -1,6 +1,6 @@
 import { delay, http, HttpResponse } from 'msw';
-import type { PriceQuoteRequest, PriceQuoteResponse } from '@brand/shared';
-import { exampleProducts, exampleQuotePriceMinor } from './data';
+import type { PriceQuote, PriceQuoteRequest } from '@/hooks/use-catalog';
+import { exampleProducts, exampleQuotePriceMinor, exampleRules } from './data';
 
 const API = '*/api/v1';
 
@@ -24,24 +24,17 @@ export const handlers = [
           type: 'about:blank',
           title: 'Invalid account size',
           status: 422,
-          code: 'INVALID_ACCOUNT_SIZE',
+          code: 'ACCOUNT_SIZE_INVALID',
         },
         { status: 422 },
       );
     }
-    const res: PriceQuoteResponse = {
+    const res: PriceQuote = {
       quoteId: `q_${size}_${body.maxDrawdownBps}`,
       priceMinor: exampleQuotePriceMinor(size, body.maxDrawdownBps).toString(),
       priceCurrency: 'EUR',
       accountSizeMinor: body.accountSizeMinor,
-      rules: {
-        maxDailyLossBps: 300,
-        maxDrawdownBps: body.maxDrawdownBps,
-        drawdownType: 'TRAILING',
-        profitSplitBps: 8_000,
-        maxLeverage: 50,
-        minTradingDays: 0,
-      },
+      rules: exampleRules(body.maxDrawdownBps),
       expiresAt: new Date(Date.now() + 15 * 60_000).toISOString(),
     };
     return HttpResponse.json(res);

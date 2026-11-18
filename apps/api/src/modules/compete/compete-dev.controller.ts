@@ -30,6 +30,11 @@ class DevOperatorDto {
   @Matches(/^[a-z0-9-]{1,40}$/) slug!: string;
   @IsOptional() @IsString() @MaxLength(60) name?: string;
 }
+class DevStaffDto {
+  @IsString() @MaxLength(254) email!: string;
+  @IsString() @MaxLength(128) password!: string;
+  @IsOptional() @Matches(/^[a-z0-9-]{1,40}$/) operatorSlug?: string;
+}
 class DevTickDto {
   @IsOptional() @IsISO8601() at?: string;
 }
@@ -64,6 +69,35 @@ export class CompeteDevController {
       update: {},
     });
     return { id: op.id, slug: op.slug };
+  }
+
+  /** Staff account with a password (no invite link): owner of an operator, or superadmin. */
+  @Post('staff')
+  async staff(@Body() dto: DevStaffDto) {
+    this.guard();
+    const op = dto.operatorSlug
+      ? await this.prisma.competeOperator.upsert({
+          where: { slug: dto.operatorSlug },
+          create: { slug: dto.operatorSlug, name: dto.operatorSlug },
+          update: {},
+        })
+      : null;
+    const passwordHash = await hash(dto.password, {
+      memoryCost: 19_456,
+      timeCost: 2,
+      parallelism: 1,
+    });
+    const s = await this.prisma.competeStaff.upsert({
+      where: { email: dto.email.toLowerCase() },
+      create: {
+        email: dto.email.toLowerCase(),
+        passwordHash,
+        role: op ? 'OWNER' : 'SUPERADMIN',
+        operatorId: op?.id ?? null,
+      },
+      update: { passwordHash },
+    });
+    return { id: s.id, role: s.role, operatorId: s.operatorId };
   }
 
   /** Creates a round that starts soon (shorter duration / lower minimum for testing). */

@@ -1716,6 +1716,326 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/compete/admin/auth/login': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_login'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/auth/refresh': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_refresh'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/auth/logout': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_logout'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/auth/setup': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_setup'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/me': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteAdminController_me'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/2fa/setup': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_twoFactorSetup'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/2fa/enable': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_twoFactorEnable'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/overview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteAdminController_overview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/rounds': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteAdminController_rounds'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/rounds/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteAdminController_round'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/players': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteAdminController_players'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/players/{id}/suspend': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_suspend'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/players/{id}/reactivate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_reactivate'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/payouts': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteAdminController_payouts'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/payouts/{id}/mark-paid': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_markPaid'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/settings': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteAdminController_settings'];
+    put: operations['CompeteAdminController_updateSettings'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/audit': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteAdminController_audit'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/operators': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteAdminController_operators'];
+    put?: never;
+    post: operations['CompeteAdminController_createOperator'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/operators/{id}/status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_setStatus'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/operators/{id}/owner/reinvite': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_reinvite'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3053,6 +3373,202 @@ export interface components {
        * @example 0.100
        */
       qty: string;
+    };
+    CompeteAdminLoginDto: {
+      email: string;
+      password: string;
+      /** @description 6-digit TOTP code (when 2FA is enabled) */
+      code?: string;
+    };
+    CompeteStaffDto: {
+      id: string;
+      email: string;
+      /** @enum {string} */
+      role: 'OWNER' | 'SUPERADMIN';
+      operatorId: string | null;
+      operatorName: string | null;
+      operatorSlug: string | null;
+      twoFactorEnabled: boolean;
+      /** @description True when 2FA must be set up before the panel opens */
+      twoFactorRequired: boolean;
+    };
+    CompeteAdminAuthDto: {
+      accessToken: string;
+      expiresIn: number;
+      staff: components['schemas']['CompeteStaffDto'];
+    };
+    CompeteAdminTokenDto: {
+      accessToken: string;
+      expiresIn: number;
+    };
+    CompeteAdminSetupPasswordDto: {
+      token: string;
+      password: string;
+    };
+    CompeteTwoFactorSetupDto: {
+      secret: string;
+      otpauthUri: string;
+    };
+    CompeteTwoFactorCodeDto: {
+      code: string;
+    };
+    CompeteAdminRoundSummaryDto: {
+      id: string;
+      /** @enum {string} */
+      status: 'OPEN' | 'LIVE' | 'SETTLED' | 'CANCELLED';
+      startsAt: string;
+      participants: number;
+      potMinor: string;
+      prizesMinor: string;
+      operatorShareMinor: string;
+    };
+    CompeteAdminOverviewDto: {
+      current: components['schemas']['CompeteRoundDto'];
+      currency: string;
+      players: number;
+      roundsSettled30d: number;
+      roundsCancelled30d: number;
+      entries30d: number;
+      /** @description Entry fees collected minus refunds, last 30 days */
+      netEntryFeesMinor30d: string;
+      prizesMinor30d: string;
+      /** @description Operator share of settled rounds, last 30 days */
+      operatorRevenueMinor30d: string;
+      awaitingPayouts: number;
+      awaitingPayoutsMinor: string;
+      /** @description Last 14 finished rounds */
+      recent: components['schemas']['CompeteAdminRoundSummaryDto'][];
+    };
+    CompeteAdminRoundRowDto: {
+      rank: number;
+      nickname: string;
+      returnBps: string;
+      equityMinor: string;
+      /** @enum {string} */
+      status:
+        'PENDING_PAYMENT' | 'PAYMENT_FAILED' | 'ACTIVE' | 'BREACHED' | 'FINISHED' | 'REFUNDED';
+      /** @description Final prize, or the projected prize while the round runs */
+      prizeMinor: string;
+      isMe: boolean;
+      entryId: string;
+      playerId: string;
+    };
+    CompeteAdminRoundDetailDto: {
+      round: components['schemas']['CompeteAdminRoundSummaryDto'];
+      endsAt: string;
+      minParticipants: number;
+      entryFeeMinor: string;
+      currency: string;
+      rows: components['schemas']['CompeteAdminRoundRowDto'][];
+    };
+    CompeteAdminPlayerDto: {
+      id: string;
+      nickname: string;
+      email: string;
+      country: string;
+      /** @enum {string} */
+      status: 'ACTIVE' | 'SUSPENDED' | 'SELF_EXCLUDED';
+      statusReason: string | null;
+      entries: number;
+      prizesMinor: string;
+      createdAt: string;
+    };
+    CompeteAdminPlayerPageDto: {
+      items: components['schemas']['CompeteAdminPlayerDto'][];
+      nextCursor: string | null;
+    };
+    CompeteAdminReasonDto: {
+      reason: string;
+    };
+    CompeteAdminPayoutDto: {
+      id: string;
+      entryId: string;
+      roundId: string;
+      roundStartsAt: string;
+      nickname: string;
+      rank: number | null;
+      amountMinor: string;
+      currency: string;
+      /** @enum {string} */
+      status: 'AWAITING_PAYOUT' | 'SUCCEEDED';
+      updatedAt: string;
+    };
+    CompeteAdminMarkPaidDto: {
+      /** @description Bank / PSP reference of the payout */
+      reference: string;
+    };
+    CompeteAdminSettingsDto: {
+      name: string;
+      primaryColor: string;
+      domain: string | null;
+      timeZone: string;
+      startMinuteOfDay: number;
+      durationMinutes: number;
+      entryFeeMinor: string;
+      currency: string;
+      startBalanceMinor: string;
+      leverage: number;
+      maxDrawdownBps: number;
+      minParticipants: number;
+      prizePoolBps: number;
+      prizeSplitBps: number[];
+    };
+    UpdateCompeteSettingsDto: {
+      name: string;
+      primaryColor: string;
+      domain: string | null;
+      timeZone: string;
+      startMinuteOfDay: number;
+      durationMinutes: number;
+      /** @description Integer string in minor units */
+      entryFeeMinor: string;
+      startBalanceMinor: string;
+      leverage: number;
+      maxDrawdownBps: number;
+      minParticipants: number;
+      prizePoolBps: number;
+      prizeSplitBps: number[];
+    };
+    CompeteAdminAuditDto: {
+      id: string;
+      ts: string;
+      actorType: string;
+      actorId: string | null;
+      action: string;
+      entityType: string;
+      entityId: string;
+      data: Record<string, never>;
+    };
+    CompeteAdminAuditPageDto: {
+      items: components['schemas']['CompeteAdminAuditDto'][];
+      nextCursor: string | null;
+      chainIntact: boolean;
+    };
+    CompeteAdminOperatorDto: {
+      id: string;
+      slug: string;
+      name: string;
+      domain: string | null;
+      /** @enum {string} */
+      status: 'ACTIVE' | 'SUSPENDED';
+      ownerEmail: string | null;
+      ownerTwoFactor: boolean;
+      players: number;
+      createdAt: string;
+    };
+    CreateCompeteOperatorDto: {
+      slug: string;
+      name: string;
+      ownerEmail: string;
+    };
+    CompeteAdminInviteDto: {
+      operator: components['schemas']['CompeteAdminOperatorDto'];
+      /** @description One-time link (24 h) for the owner to set a password */
+      setupUrl: string;
+    };
+    CompeteOperatorStatusDto: {
+      /** @enum {string} */
+      status: 'ACTIVE' | 'SUSPENDED';
     };
   };
   responses: never;
@@ -5697,6 +6213,492 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['CompeteOrderDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_login: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteAdminLoginDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminAuthDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_refresh: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminTokenDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_logout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CompeteAdminController_setup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteAdminSetupPasswordDto'];
+      };
+    };
+    responses: {
+      /** @description Set the password from an invite / reset link */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CompeteAdminController_me: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteStaffDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_twoFactorSetup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteTwoFactorSetupDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_twoFactorEnable: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteTwoFactorCodeDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CompeteAdminController_overview: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminOverviewDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_rounds: {
+    parameters: {
+      query: {
+        cursor: string;
+      };
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminRoundSummaryDto'][];
+        };
+      };
+    };
+  };
+  CompeteAdminController_round: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminRoundDetailDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_players: {
+    parameters: {
+      query: {
+        q: string;
+        cursor: string;
+      };
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminPlayerPageDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_suspend: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteAdminReasonDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CompeteAdminController_reactivate: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteAdminReasonDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CompeteAdminController_payouts: {
+    parameters: {
+      query: {
+        status: string;
+      };
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminPayoutDto'][];
+        };
+      };
+    };
+  };
+  CompeteAdminController_markPaid: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteAdminMarkPaidDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CompeteAdminController_settings: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminSettingsDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_updateSettings: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateCompeteSettingsDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminSettingsDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_audit: {
+    parameters: {
+      query: {
+        cursor: string;
+      };
+      header: {
+        'x-compete-admin-operator': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminAuditPageDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_operators: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminOperatorDto'][];
+        };
+      };
+    };
+  };
+  CompeteAdminController_createOperator: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCompeteOperatorDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminInviteDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_setStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteOperatorStatusDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminOperatorDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_reinvite: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminInviteDto'];
         };
       };
     };

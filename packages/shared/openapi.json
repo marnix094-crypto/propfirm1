@@ -3871,6 +3871,800 @@
           "compete"
         ]
       }
+    },
+    "/api/v1/compete/admin/auth/login": {
+      "post": {
+        "operationId": "CompeteAdminController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteAdminLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminAuthDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/auth/refresh": {
+      "post": {
+        "operationId": "CompeteAdminController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminTokenDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/auth/logout": {
+      "post": {
+        "operationId": "CompeteAdminController_logout",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/auth/setup": {
+      "post": {
+        "operationId": "CompeteAdminController_setup",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteAdminSetupPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Set the password from an invite / reset link"
+          }
+        },
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/me": {
+      "get": {
+        "operationId": "CompeteAdminController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteStaffDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/2fa/setup": {
+      "post": {
+        "operationId": "CompeteAdminController_twoFactorSetup",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteTwoFactorSetupDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/2fa/enable": {
+      "post": {
+        "operationId": "CompeteAdminController_twoFactorEnable",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteTwoFactorCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/overview": {
+      "get": {
+        "operationId": "CompeteAdminController_overview",
+        "parameters": [
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminOverviewDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/rounds": {
+      "get": {
+        "operationId": "CompeteAdminController_rounds",
+        "parameters": [
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompeteAdminRoundSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/rounds/{id}": {
+      "get": {
+        "operationId": "CompeteAdminController_round",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminRoundDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/players": {
+      "get": {
+        "operationId": "CompeteAdminController_players",
+        "parameters": [
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminPlayerPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/players/{id}/suspend": {
+      "post": {
+        "operationId": "CompeteAdminController_suspend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteAdminReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/players/{id}/reactivate": {
+      "post": {
+        "operationId": "CompeteAdminController_reactivate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteAdminReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/payouts": {
+      "get": {
+        "operationId": "CompeteAdminController_payouts",
+        "parameters": [
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompeteAdminPayoutDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/payouts/{id}/mark-paid": {
+      "post": {
+        "operationId": "CompeteAdminController_markPaid",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteAdminMarkPaidDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/settings": {
+      "get": {
+        "operationId": "CompeteAdminController_settings",
+        "parameters": [
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminSettingsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      },
+      "put": {
+        "operationId": "CompeteAdminController_updateSettings",
+        "parameters": [
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompeteSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminSettingsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/audit": {
+      "get": {
+        "operationId": "CompeteAdminController_audit",
+        "parameters": [
+          {
+            "name": "x-compete-admin-operator",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminAuditPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/operators": {
+      "get": {
+        "operationId": "CompeteAdminController_operators",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompeteAdminOperatorDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      },
+      "post": {
+        "operationId": "CompeteAdminController_createOperator",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCompeteOperatorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminInviteDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/operators/{id}/status": {
+      "post": {
+        "operationId": "CompeteAdminController_setStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteOperatorStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminOperatorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/operators/{id}/owner/reinvite": {
+      "post": {
+        "operationId": "CompeteAdminController_reinvite",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminInviteDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
     }
   },
   "info": {
@@ -8622,6 +9416,772 @@
           "symbol",
           "side",
           "qty"
+        ]
+      },
+      "CompeteAdminLoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "description": "6-digit TOTP code (when 2FA is enabled)"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "CompeteStaffDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "SUPERADMIN"
+            ]
+          },
+          "operatorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "operatorName": {
+            "type": "string",
+            "nullable": true
+          },
+          "operatorSlug": {
+            "type": "string",
+            "nullable": true
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
+          },
+          "twoFactorRequired": {
+            "type": "boolean",
+            "description": "True when 2FA must be set up before the panel opens"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role",
+          "operatorId",
+          "operatorName",
+          "operatorSlug",
+          "twoFactorEnabled",
+          "twoFactorRequired"
+        ]
+      },
+      "CompeteAdminAuthDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "number"
+          },
+          "staff": {
+            "$ref": "#/components/schemas/CompeteStaffDto"
+          }
+        },
+        "required": [
+          "accessToken",
+          "expiresIn",
+          "staff"
+        ]
+      },
+      "CompeteAdminTokenDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "accessToken",
+          "expiresIn"
+        ]
+      },
+      "CompeteAdminSetupPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12
+          }
+        },
+        "required": [
+          "token",
+          "password"
+        ]
+      },
+      "CompeteTwoFactorSetupDto": {
+        "type": "object",
+        "properties": {
+          "secret": {
+            "type": "string"
+          },
+          "otpauthUri": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "secret",
+          "otpauthUri"
+        ]
+      },
+      "CompeteTwoFactorCodeDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "CompeteAdminRoundSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "LIVE",
+              "SETTLED",
+              "CANCELLED"
+            ]
+          },
+          "startsAt": {
+            "type": "string"
+          },
+          "participants": {
+            "type": "number"
+          },
+          "potMinor": {
+            "type": "string"
+          },
+          "prizesMinor": {
+            "type": "string"
+          },
+          "operatorShareMinor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "startsAt",
+          "participants",
+          "potMinor",
+          "prizesMinor",
+          "operatorShareMinor"
+        ]
+      },
+      "CompeteAdminOverviewDto": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "$ref": "#/components/schemas/CompeteRoundDto"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "players": {
+            "type": "number"
+          },
+          "roundsSettled30d": {
+            "type": "number"
+          },
+          "roundsCancelled30d": {
+            "type": "number"
+          },
+          "entries30d": {
+            "type": "number"
+          },
+          "netEntryFeesMinor30d": {
+            "type": "string",
+            "description": "Entry fees collected minus refunds, last 30 days"
+          },
+          "prizesMinor30d": {
+            "type": "string"
+          },
+          "operatorRevenueMinor30d": {
+            "type": "string",
+            "description": "Operator share of settled rounds, last 30 days"
+          },
+          "awaitingPayouts": {
+            "type": "number"
+          },
+          "awaitingPayoutsMinor": {
+            "type": "string"
+          },
+          "recent": {
+            "description": "Last 14 finished rounds",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompeteAdminRoundSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "current",
+          "currency",
+          "players",
+          "roundsSettled30d",
+          "roundsCancelled30d",
+          "entries30d",
+          "netEntryFeesMinor30d",
+          "prizesMinor30d",
+          "operatorRevenueMinor30d",
+          "awaitingPayouts",
+          "awaitingPayoutsMinor",
+          "recent"
+        ]
+      },
+      "CompeteAdminRoundRowDto": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "returnBps": {
+            "type": "string"
+          },
+          "equityMinor": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_PAYMENT",
+              "PAYMENT_FAILED",
+              "ACTIVE",
+              "BREACHED",
+              "FINISHED",
+              "REFUNDED"
+            ]
+          },
+          "prizeMinor": {
+            "type": "string",
+            "description": "Final prize, or the projected prize while the round runs"
+          },
+          "isMe": {
+            "type": "boolean"
+          },
+          "entryId": {
+            "type": "string"
+          },
+          "playerId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "rank",
+          "nickname",
+          "returnBps",
+          "equityMinor",
+          "status",
+          "prizeMinor",
+          "isMe",
+          "entryId",
+          "playerId"
+        ]
+      },
+      "CompeteAdminRoundDetailDto": {
+        "type": "object",
+        "properties": {
+          "round": {
+            "$ref": "#/components/schemas/CompeteAdminRoundSummaryDto"
+          },
+          "endsAt": {
+            "type": "string"
+          },
+          "minParticipants": {
+            "type": "number"
+          },
+          "entryFeeMinor": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompeteAdminRoundRowDto"
+            }
+          }
+        },
+        "required": [
+          "round",
+          "endsAt",
+          "minParticipants",
+          "entryFeeMinor",
+          "currency",
+          "rows"
+        ]
+      },
+      "CompeteAdminPlayerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED",
+              "SELF_EXCLUDED"
+            ]
+          },
+          "statusReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "entries": {
+            "type": "number"
+          },
+          "prizesMinor": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nickname",
+          "email",
+          "country",
+          "status",
+          "statusReason",
+          "entries",
+          "prizesMinor",
+          "createdAt"
+        ]
+      },
+      "CompeteAdminPlayerPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompeteAdminPlayerDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "CompeteAdminReasonDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "CompeteAdminPayoutDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entryId": {
+            "type": "string"
+          },
+          "roundId": {
+            "type": "string"
+          },
+          "roundStartsAt": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "rank": {
+            "type": "number",
+            "nullable": true
+          },
+          "amountMinor": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "AWAITING_PAYOUT",
+              "SUCCEEDED"
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "entryId",
+          "roundId",
+          "roundStartsAt",
+          "nickname",
+          "rank",
+          "amountMinor",
+          "currency",
+          "status",
+          "updatedAt"
+        ]
+      },
+      "CompeteAdminMarkPaidDto": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string",
+            "description": "Bank / PSP reference of the payout"
+          }
+        },
+        "required": [
+          "reference"
+        ]
+      },
+      "CompeteAdminSettingsDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "primaryColor": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "startMinuteOfDay": {
+            "type": "number"
+          },
+          "durationMinutes": {
+            "type": "number"
+          },
+          "entryFeeMinor": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "startBalanceMinor": {
+            "type": "string"
+          },
+          "leverage": {
+            "type": "number"
+          },
+          "maxDrawdownBps": {
+            "type": "number"
+          },
+          "minParticipants": {
+            "type": "number"
+          },
+          "prizePoolBps": {
+            "type": "number"
+          },
+          "prizeSplitBps": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "primaryColor",
+          "domain",
+          "timeZone",
+          "startMinuteOfDay",
+          "durationMinutes",
+          "entryFeeMinor",
+          "currency",
+          "startBalanceMinor",
+          "leverage",
+          "maxDrawdownBps",
+          "minParticipants",
+          "prizePoolBps",
+          "prizeSplitBps"
+        ]
+      },
+      "UpdateCompeteSettingsDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "primaryColor": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "startMinuteOfDay": {
+            "type": "number"
+          },
+          "durationMinutes": {
+            "type": "number"
+          },
+          "entryFeeMinor": {
+            "type": "string",
+            "description": "Integer string in minor units"
+          },
+          "startBalanceMinor": {
+            "type": "string"
+          },
+          "leverage": {
+            "type": "number"
+          },
+          "maxDrawdownBps": {
+            "type": "number"
+          },
+          "minParticipants": {
+            "type": "number"
+          },
+          "prizePoolBps": {
+            "type": "number"
+          },
+          "prizeSplitBps": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "primaryColor",
+          "domain",
+          "timeZone",
+          "startMinuteOfDay",
+          "durationMinutes",
+          "entryFeeMinor",
+          "startBalanceMinor",
+          "leverage",
+          "maxDrawdownBps",
+          "minParticipants",
+          "prizePoolBps",
+          "prizeSplitBps"
+        ]
+      },
+      "CompeteAdminAuditDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "ts": {
+            "type": "string"
+          },
+          "actorType": {
+            "type": "string"
+          },
+          "actorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string"
+          },
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "ts",
+          "actorType",
+          "actorId",
+          "action",
+          "entityType",
+          "entityId",
+          "data"
+        ]
+      },
+      "CompeteAdminAuditPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompeteAdminAuditDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "chainIntact": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor",
+          "chainIntact"
+        ]
+      },
+      "CompeteAdminOperatorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "ownerEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerTwoFactor": {
+            "type": "boolean"
+          },
+          "players": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "domain",
+          "status",
+          "ownerEmail",
+          "ownerTwoFactor",
+          "players",
+          "createdAt"
+        ]
+      },
+      "CreateCompeteOperatorDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ownerEmail": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "ownerEmail"
+        ]
+      },
+      "CompeteAdminInviteDto": {
+        "type": "object",
+        "properties": {
+          "operator": {
+            "$ref": "#/components/schemas/CompeteAdminOperatorDto"
+          },
+          "setupUrl": {
+            "type": "string",
+            "description": "One-time link (24 h) for the owner to set a password"
+          }
+        },
+        "required": [
+          "operator",
+          "setupUrl"
+        ]
+      },
+      "CompeteOperatorStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          }
+        },
+        "required": [
+          "status"
         ]
       }
     }

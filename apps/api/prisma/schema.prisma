@@ -884,6 +884,51 @@ model CompeteOperator {
 
   players CompetePlayer[]
   rounds  CompeteRound[]
+  staff   CompeteStaff[]
+}
+
+enum CompeteStaffRole {
+  /// The one admin of an operator (created by Daily Funded).
+  OWNER
+  /// Daily Funded: manages every operator of the compete product.
+  SUPERADMIN
+}
+
+/// Admin accounts of the compete product (D104) — separate from prop-firm staff and from players.
+model CompeteStaff {
+  id                 String           @id @default(uuid(7)) @db.Uuid
+  operatorId         String?          @db.Uuid
+  operator           CompeteOperator? @relation(fields: [operatorId], references: [id])
+  email              String           @unique
+  passwordHash       String
+  role               CompeteStaffRole
+  active             Boolean          @default(true)
+  /// TOTP secret (AES-256-GCM via FieldCrypto); 2FA is required unless ADMIN_REQUIRE_2FA=false.
+  totpSecretEnc      String?
+  totpEnabledAt      DateTime?
+  totpLastStep       BigInt?
+  /// One-time invite / reset link to set the password (sha256 of the token).
+  setupTokenHash     String?          @unique
+  setupTokenExpires  DateTime?
+  lastLoginAt        DateTime?
+  createdAt          DateTime         @default(now())
+
+  sessions CompeteStaffSession[]
+
+  @@index([operatorId])
+}
+
+model CompeteStaffSession {
+  id        String       @id @default(uuid(7)) @db.Uuid
+  staffId   String       @db.Uuid
+  staff     CompeteStaff @relation(fields: [staffId], references: [id])
+  familyId  String       @db.Uuid
+  tokenHash String       @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime     @default(now())
+
+  @@index([staffId])
 }
 
 /// Player account of one operator. Separate from prop-firm users (D98).
@@ -899,6 +944,8 @@ model CompetePlayer {
   locale        String              @default("en")
   adultConfirmedAt DateTime
   status        CompetePlayerStatus @default(ACTIVE)
+  /// Reason of the last suspension by the operator (no PII).
+  statusReason  String?
   createdAt     DateTime            @default(now())
 
   sessions CompeteSession[]

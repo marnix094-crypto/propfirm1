@@ -12,6 +12,9 @@ import { CompeteEvents } from './events.js';
 import { CompeteOperatorsService } from './operators.service.js';
 import { COMPETE_PAYMENTS, FakeCompetePaymentProvider } from './payments.js';
 import { CompetePlayersService } from './players.service.js';
+import { CompeteAdminController } from './admin/admin.controller.js';
+import { CompeteAdminService } from './admin/admin.service.js';
+import { CompeteAdminGuard, CompeteStaffTokens } from './admin/staff-auth.js';
 
 /**
  * Compete — the second white-label product (daily paid trading competition, D97).
@@ -20,7 +23,7 @@ import { CompetePlayersService } from './players.service.js';
  */
 @Module({
   imports: [MarketDataModule],
-  controllers: [CompeteController, CompeteDevController],
+  controllers: [CompeteController, CompeteAdminController, CompeteDevController],
   providers: [
     CompeteAuditService,
     CompeteTokensService,
@@ -31,6 +34,9 @@ import { CompetePlayersService } from './players.service.js';
     CompeteEvents,
     CompeteScheduler,
     CompeteGateway,
+    CompeteStaffTokens,
+    CompeteAdminGuard,
+    CompeteAdminService,
     {
       provide: COMPETE_PAYMENTS,
       inject: [APP_CONFIG],

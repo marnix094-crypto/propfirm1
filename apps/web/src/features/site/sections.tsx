@@ -23,6 +23,7 @@ export function HowItWorks() {
       <div className="mx-auto grid max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-[1fr_1.2fr]">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <SectionTitle
+            id="how-title"
             eyebrow={t('site.how.eyebrow')}
             title={t('site.how.title')}
             body={t('site.how.body')}
@@ -117,6 +118,7 @@ export function Security() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionTitle
+          id="security-title"
           eyebrow={t('site.security.eyebrow')}
           title={t('site.security.title')}
           body={t('site.security.body')}
@@ -154,6 +156,7 @@ export function Roadmap() {
     <section id="roadmap" className="scroll-mt-20 py-24 sm:py-32" aria-labelledby="roadmap-title">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionTitle
+          id="roadmap-title"
           eyebrow={t('site.roadmap.eyebrow')}
           title={t('site.roadmap.title')}
           body={t('site.roadmap.body')}
@@ -205,7 +208,7 @@ export function SiteFaq() {
   return (
     <section id="faq" className="scroll-mt-20 py-24 sm:py-32" aria-labelledby="faq-title">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.4fr]">
-        <SectionTitle eyebrow={t('site.faq.eyebrow')} title={t('site.faq.title')} />
+        <SectionTitle id="faq-title" eyebrow={t('site.faq.eyebrow')} title={t('site.faq.title')} />
         <Accordion type="single" collapsible>
           {qs.map((q) => (
             <AccordionItem key={q} value={q} question={t(`site.faq.${q}.q`)}>

@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "e2e": "playwright test --trace off",
-    "build:demo": "VITE_DEMO_MODE=true vite build --outDir dist-demo --emptyOutDir"
+    "build:demo": "VITE_DEMO_MODE=true vite build --outDir dist-demo --emptyOutDir",
+    "screens": "node scripts/capture-screens.cjs"
   },
   "dependencies": {
     "@brand/engine": "workspace:*",

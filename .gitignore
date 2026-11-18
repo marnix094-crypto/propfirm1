@@ -13,3 +13,4 @@ test-results
 **/src/generated/
 dist-demo
 dump.rdb
+.screens-tmp

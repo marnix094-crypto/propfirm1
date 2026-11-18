@@ -1276,15 +1276,7 @@
       "seeStorefront": "Prueba la demo en vivo",
       "p1": "Tu logo, colores y dominio",
       "p2": "Hecho para la UE, RGPD primero",
-      "p3": "EN · NL · ES de serie",
-      "stageLabel": "Ilustración del panel del trader con datos de ejemplo.",
-      "stageFirm": "Tu Firma",
-      "kpiEquity": "Equity",
-      "kpiToday": "Hoy",
-      "kpiWin": "Tasa de acierto",
-      "meter": "Límite de pérdida diaria",
-      "toastTitle": "Cuenta financiada",
-      "toastBody": "Cuenta instantánea de $50K · ejemplo"
+      "p3": "EN · NL · ES de serie"
     },
     "marquee": [
       "Motor de reglas",
@@ -1350,28 +1342,34 @@
     },
     "builder": {
       "eyebrow": "Marca blanca",
-      "title": "Hazla tuya en segundos.",
-      "body": "Escribe el nombre de tu empresa y elige un color: así se adapta la plataforma a tu marca. Logo, colores, dominio, correos e idiomas son tuyos.",
-      "formLabel": "Prueba tu marca",
-      "name": "Nombre de la empresa",
-      "placeholder": "Tu Firma",
-      "color": "Color de marca",
-      "pick": "Usar el color {{color}}",
-      "custom": "Elegir un color propio",
-      "mode": "Tema",
-      "dark": "Oscuro",
-      "light": "Claro",
-      "note": "Solo vista previa. En producción también subes tu logo, configuras tu dominio y eliges tus fuentes.",
-      "nav": {
-        "home": "Inicio",
-        "trade": "Operar",
-        "stats": "Estadísticas",
-        "payouts": "Pagos",
-        "leaderboard": "Clasificación"
+      "title": "Tu prop firm, tu marca.",
+      "body": "Configura tu nombre, logo, colores y dominio en el panel de administración y elige qué módulos ven tus traders. Abajo: la misma plataforma para cuatro empresas de ejemplo.",
+      "pickBrand": "Empresas de ejemplo",
+      "shotAlt": "El panel del trader con la marca de {{firm}}",
+      "step1": {
+        "title": "Configura tu marca",
+        "body": "Nombre, logo, color y dominio: el contraste del texto se ajusta automáticamente."
       },
-      "buy": "Comprar",
-      "sell": "Vender",
-      "powered": "Powered by Daily Funded"
+      "step2": {
+        "title": "Compón el panel de clientes",
+        "body": "Activa o desactiva módulos como Daily Points, competiciones o el copiador de operaciones."
+      },
+      "step3": {
+        "title": "En vivo para tus traders",
+        "body": "Tus traders solo ven tu marca. Nosotros operamos el software."
+      },
+      "admin": {
+        "brand": {
+          "alt": "Panel de administración: página de marca con vista previa",
+          "title": "Marca en el panel de administración",
+          "body": "Sube un logo, elige un color y conecta tu dominio; la vista previa muestra el resultado al instante."
+        },
+        "modules": {
+          "alt": "Panel de administración: módulos del panel de clientes con vista previa del menú",
+          "title": "Compón el panel de clientes",
+          "body": "Decide qué módulos reciben tus traders. Los módulos desactivados desaparecen en todas partes."
+        }
+      }
     },
     "how": {
       "eyebrow": "Cómo funciona",
@@ -1536,6 +1534,54 @@
       "tagline": "Software de marca blanca para prop firms: plataforma de trading, motor de reglas, financiación y herramientas para traders con tu marca.",
       "product": "Producto",
       "disclaimer": "{{brand}} solo proporciona software. {{brand}} no es una prop firm, bróker ni empresa de inversión, no ofrece cuentas de trading al público y no custodia fondos de clientes. Las cuentas de la plataforma son simuladas."
+    },
+    "shots": {
+      "caption": "Capturas reales del producto con datos de ejemplo. Las cuentas de la plataforma son simuladas.",
+      "dashboard": "Panel del trader: capital, objetivo de escalado, próximo pago, gráfico de equity, tasa de acierto y calendario de P&L",
+      "terminal": "Terminal de trading con gráfico en vivo y formulario de órdenes",
+      "stats": "Estadísticas con calendario de P&L y resultados por símbolo",
+      "admin": "Resumen del panel de administración con ventas, traders y alertas de riesgo",
+      "mobile": "El panel del trader en un móvil"
+    },
+    "tour": {
+      "eyebrow": "La plataforma",
+      "title": "Todo lo que necesitan tus traders y tu equipo.",
+      "body": "Un producto, dos caras: una plataforma de trading cuidada para tus traders y un panel de administración para tu equipo. El mismo software, tu marca.",
+      "tabs": "Recorrido por la plataforma",
+      "tab": {
+        "dashboard": "Panel del trader",
+        "terminal": "Terminal de trading",
+        "stats": "Estadísticas",
+        "admin": "Panel de administración"
+      },
+      "desc": {
+        "dashboard": "Todo lo que un trader financiado mira primero: capital, progreso de escalado, próximo pago, equity y un calendario de P&L por día.",
+        "terminal": "Órdenes rápidas con precios en vivo, apalancamiento, stop loss / take profit y posiciones, en escritorio y móvil.",
+        "stats": "Tasa de acierto, profit factor y resultados por día, símbolo y dirección, para que los traders entiendan su ventaja.",
+        "admin": "Ventas, traders, cuentas, productos, reglas y alertas de riesgo para tu equipo, estrictamente separados por empresa."
+      },
+      "points": {
+        "dashboard": [
+          "Equity y medidores de reglas en vivo",
+          "Calendario de P&L para cada día del mes",
+          "Reparto de beneficios y elegibilidad de pago"
+        ],
+        "terminal": [
+          "Órdenes de mercado, límite y stop",
+          "Control de reglas en tiempo real en cada tick",
+          "Funciona en cualquier pantalla"
+        ],
+        "stats": [
+          "Resultados por símbolo y dirección",
+          "Mejores y peores días de un vistazo",
+          "Historial exportable"
+        ],
+        "admin": [
+          "Alertas de riesgo por incumplimientos y pérdidas grandes",
+          "Registro de auditoría inmutable y verificable",
+          "Activar o desactivar módulos de clientes"
+        ]
+      }
     }
   },
   "admin": {

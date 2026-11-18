@@ -27,6 +27,12 @@ export default tseslint.config(
     languageOptions: { globals: globals.node },
   },
   {
+    // Node tooling scripts (CommonJS); page.evaluate callbacks run in the browser.
+    files: ['**/scripts/**/*.cjs'],
+    languageOptions: { sourceType: 'commonjs', globals: { ...globals.node, ...globals.browser } },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
+  {
     rules: {
       '@typescript-eslint/no-unused-vars': [
         'error',

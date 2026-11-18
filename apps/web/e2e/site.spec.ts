@@ -12,17 +12,28 @@ test.describe('Daily Funded website (white label)', () => {
     await expect(page.getByRole('contentinfo')).toContainText('provides software only');
   });
 
-  test('brand builder re-brands the preview', async ({ page }) => {
+  test('brand builder switches between real example-brand screenshots', async ({ page }) => {
     await page.goto('/en#brand-builder');
-    await page.getByLabel('Firm name').fill('Nova Capital');
-    await expect(
-      page.locator('#brand-builder').getByText('Nova Capital', { exact: true }),
-    ).toBeVisible();
-    await page.getByRole('button', { name: 'Use colour #F97316' }).click();
-    await expect(page.getByRole('button', { name: 'Use colour #F97316' })).toHaveAttribute(
+    const section = page.locator('#brand-builder');
+    await section.getByRole('button', { name: 'Atlas Funding' }).click();
+    await expect(section.getByRole('button', { name: 'Atlas Funding' })).toHaveAttribute(
       'aria-pressed',
       'true',
     );
+    await expect(
+      section.getByRole('img', { name: 'The trader dashboard branded as Atlas Funding' }),
+    ).toBeVisible();
+  });
+
+  test('product tour shows real screenshots per tab', async ({ page }) => {
+    await page.goto('/en#tour');
+    const tour = page.locator('#tour');
+    await tour.getByRole('tab', { name: 'Trading terminal' }).click();
+    await expect(tour.getByRole('tab', { name: 'Trading terminal' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await expect(tour.getByRole('img', { name: /Trading terminal with live chart/ })).toBeVisible();
   });
 
   test('demo request form sends a lead', async ({ page }) => {

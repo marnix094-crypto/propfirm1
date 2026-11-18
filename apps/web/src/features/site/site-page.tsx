@@ -10,6 +10,7 @@ import { SiteHero } from './hero';
 import { Marquee } from './fx';
 import { BrandBuilder } from './brand-builder';
 import { Product } from './product';
+import { ProductTour } from './showcase';
 import { Contact, HowItWorks, Roadmap, Security, SiteFaq, Statement } from './sections';
 
 /** Daily Funded website: white-label prop-firm software (B2B). */
@@ -33,6 +34,7 @@ export function SitePage() {
       <main id="main">
         <SiteHero />
         <Marquee items={t('site.marquee', { returnObjects: true }) as string[]} />
+        <ProductTour />
         <Product />
         <Statement />
         <BrandBuilder />

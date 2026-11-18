@@ -171,11 +171,14 @@ export function SectionTitle({
   title,
   body,
   className,
+  id,
 }: {
   eyebrow: string;
   title: string;
   body?: string;
   className?: string;
+  /** Heading id, for the section's aria-labelledby. */
+  id?: string;
 }) {
   const reduce = useReducedMotion();
   return (
@@ -187,7 +190,10 @@ export function SectionTitle({
       transition={{ duration: 0.7, ease: EASE }}
     >
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-4 font-display text-3xl leading-[1.08] font-semibold tracking-tight text-balance sm:text-5xl">
+      <h2
+        id={id}
+        className="mt-4 font-display text-3xl leading-[1.08] font-semibold tracking-tight text-balance sm:text-5xl"
+      >
         {title}
       </h2>
       {body && <p className="mt-5 max-w-2xl text-base text-muted sm:text-lg">{body}</p>}

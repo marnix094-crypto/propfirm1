@@ -178,6 +178,7 @@ export function Product() {
     <section id="product" className="scroll-mt-20 py-24 sm:py-32" aria-labelledby="product-title">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionTitle
+          id="product-title"
           eyebrow={t('site.product.eyebrow')}
           title={t('site.product.title')}
           body={t('site.product.body')}

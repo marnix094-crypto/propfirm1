@@ -1276,15 +1276,7 @@
       "seeStorefront": "Try the live demo",
       "p1": "Your logo, colours and domain",
       "p2": "Built for the EU, GDPR-first",
-      "p3": "EN · NL · ES out of the box",
-      "stageLabel": "Illustration of the trader dashboard with example data.",
-      "stageFirm": "Your Firm",
-      "kpiEquity": "Equity",
-      "kpiToday": "Today",
-      "kpiWin": "Win rate",
-      "meter": "Daily loss limit",
-      "toastTitle": "Account funded",
-      "toastBody": "$50K instant account · example"
+      "p3": "EN · NL · ES out of the box"
     },
     "marquee": [
       "Rule engine",
@@ -1350,28 +1342,34 @@
     },
     "builder": {
       "eyebrow": "White label",
-      "title": "Make it yours in seconds.",
-      "body": "Type your firm name and pick a colour — this is how the platform re-brands for you. Logo, colours, domain, emails and languages are all yours.",
-      "formLabel": "Try your brand",
-      "name": "Firm name",
-      "placeholder": "Your Firm",
-      "color": "Brand colour",
-      "pick": "Use colour {{color}}",
-      "custom": "Choose a custom colour",
-      "mode": "Theme",
-      "dark": "Dark",
-      "light": "Light",
-      "note": "Preview only. In production you also upload your logo, set your domain and choose your fonts.",
-      "nav": {
-        "home": "Home",
-        "trade": "Trade",
-        "stats": "My stats",
-        "payouts": "Payouts",
-        "leaderboard": "Leaderboard"
+      "title": "Your prop firm, your brand.",
+      "body": "Set your name, logo, colours and domain in the admin panel and choose which modules your traders see. Below: the same platform for four example firms.",
+      "pickBrand": "Example firms",
+      "shotAlt": "The trader dashboard branded as {{firm}}",
+      "step1": {
+        "title": "Set your brand",
+        "body": "Name, logo, colour and domain — text contrast is adjusted automatically."
       },
-      "buy": "Buy",
-      "sell": "Sell",
-      "powered": "Powered by Daily Funded"
+      "step2": {
+        "title": "Compose the client dashboard",
+        "body": "Switch modules like Daily Points, competitions or the trade copier on or off."
+      },
+      "step3": {
+        "title": "Live for your traders",
+        "body": "Your traders only ever see your brand. We run the software."
+      },
+      "admin": {
+        "brand": {
+          "alt": "Admin panel: branding page with live preview",
+          "title": "Branding in the admin panel",
+          "body": "Upload a logo, pick a colour and connect your domain; the preview shows the result instantly."
+        },
+        "modules": {
+          "alt": "Admin panel: client dashboard modules with menu preview",
+          "title": "Compose the client dashboard",
+          "body": "Decide which modules your traders get. Switched-off modules disappear everywhere."
+        }
+      }
     },
     "how": {
       "eyebrow": "How it works",
@@ -1536,6 +1534,54 @@
       "tagline": "White-label software for prop firms: trading platform, rule engine, funding and trader tools under your brand.",
       "product": "Product",
       "disclaimer": "{{brand}} provides software only. {{brand}} is not a prop firm, broker or investment firm, does not offer trading accounts to the public and does not hold client funds. Accounts on the platform are simulated."
+    },
+    "shots": {
+      "caption": "Real product screenshots with example data. Accounts on the platform are simulated.",
+      "dashboard": "Trader dashboard: capital, scaling target, next payout, equity chart, win rate and P&L calendar",
+      "terminal": "Trading terminal with live chart and order ticket",
+      "stats": "Statistics with P&L calendar and performance per symbol",
+      "admin": "Admin panel overview with sales, traders and risk alerts",
+      "mobile": "The trader dashboard on a phone"
+    },
+    "tour": {
+      "eyebrow": "The platform",
+      "title": "Everything your traders and your team need.",
+      "body": "One product, two sides: a polished trading platform for your traders and an admin panel for your team. Same software, your brand.",
+      "tabs": "Platform tour",
+      "tab": {
+        "dashboard": "Trader dashboard",
+        "terminal": "Trading terminal",
+        "stats": "Statistics",
+        "admin": "Admin panel"
+      },
+      "desc": {
+        "dashboard": "Everything a funded trader checks first: capital, scaling progress, next payout, equity and a day-by-day P&L calendar.",
+        "terminal": "Fast order entry with live prices, leverage, stop loss / take profit and positions — on desktop and mobile.",
+        "stats": "Win rate, profit factor and results per day, symbol and direction, so traders understand their own edge.",
+        "admin": "Sales, traders, accounts, products, rules and risk alerts for your team — strictly separated per firm."
+      },
+      "points": {
+        "dashboard": [
+          "Live equity and rule meters",
+          "P&L calendar for every day of the month",
+          "Profit split and payout eligibility"
+        ],
+        "terminal": [
+          "Market, limit and stop orders",
+          "Realtime rule checks on every tick",
+          "Works on any screen size"
+        ],
+        "stats": [
+          "Performance by symbol and direction",
+          "Best and worst days at a glance",
+          "Exportable track record"
+        ],
+        "admin": [
+          "Risk alerts for breaches and large losses",
+          "Immutable, verifiable audit log",
+          "Switch client modules on or off"
+        ]
+      }
     }
   },
   "admin": {

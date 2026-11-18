@@ -11,6 +11,7 @@ export function MockDataIndicator() {
   const platform = useThemeStore((s) => s.surface === 'platform');
   return (
     <div
+      data-capture-hide
       role="status"
       className={cn(
         'pointer-events-none fixed left-3 z-50 inline-flex max-w-[calc(100vw-1.5rem)] items-center gap-1.5 rounded-full border border-dashed border-border-strong bg-card/95 px-2.5 py-1 text-[11px] font-semibold text-accent shadow-card',

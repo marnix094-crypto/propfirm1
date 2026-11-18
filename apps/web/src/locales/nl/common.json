@@ -1276,15 +1276,7 @@
       "seeStorefront": "Probeer de live demo",
       "p1": "Jouw logo, kleuren en domein",
       "p2": "Gebouwd voor de EU, AVG voorop",
-      "p3": "EN · NL · ES standaard",
-      "stageLabel": "Illustratie van het traderdashboard met voorbeelddata.",
-      "stageFirm": "Jouw Firm",
-      "kpiEquity": "Equity",
-      "kpiToday": "Vandaag",
-      "kpiWin": "Win rate",
-      "meter": "Dagelijkse verlieslimiet",
-      "toastTitle": "Account funded",
-      "toastBody": "$50K instant-account · voorbeeld"
+      "p3": "EN · NL · ES standaard"
     },
     "marquee": [
       "Regelengine",
@@ -1350,28 +1342,34 @@
     },
     "builder": {
       "eyebrow": "White label",
-      "title": "In een paar seconden van jou.",
-      "body": "Typ je bedrijfsnaam en kies een kleur — zo past het platform zich aan jouw merk aan. Logo, kleuren, domein, e-mails en talen zijn helemaal van jou.",
-      "formLabel": "Probeer je merk",
-      "name": "Bedrijfsnaam",
-      "placeholder": "Jouw Firm",
-      "color": "Merkkleur",
-      "pick": "Gebruik kleur {{color}}",
-      "custom": "Kies een eigen kleur",
-      "mode": "Thema",
-      "dark": "Donker",
-      "light": "Licht",
-      "note": "Alleen een voorbeeld. In productie upload je ook je logo, stel je je domein in en kies je je lettertypes.",
-      "nav": {
-        "home": "Home",
-        "trade": "Handelen",
-        "stats": "Statistieken",
-        "payouts": "Uitbetalingen",
-        "leaderboard": "Ranglijst"
+      "title": "Jouw prop firm, jouw merk.",
+      "body": "Stel in het adminpanel je naam, logo, kleuren en domein in en kies welke onderdelen je traders zien. Hieronder: hetzelfde platform voor vier voorbeeldfirma's.",
+      "pickBrand": "Voorbeeldfirma's",
+      "shotAlt": "Het traderdashboard in de huisstijl van {{firm}}",
+      "step1": {
+        "title": "Stel je huisstijl in",
+        "body": "Naam, logo, kleur en domein — het tekstcontrast wordt automatisch aangepast."
       },
-      "buy": "Koop",
-      "sell": "Verkoop",
-      "powered": "Powered by Daily Funded"
+      "step2": {
+        "title": "Stel het klantdashboard samen",
+        "body": "Zet onderdelen als Daily Points, competities of de trade copier aan of uit."
+      },
+      "step3": {
+        "title": "Live voor je traders",
+        "body": "Je traders zien alleen jouw merk. Wij draaien de software."
+      },
+      "admin": {
+        "brand": {
+          "alt": "Adminpanel: huisstijlpagina met live voorbeeld",
+          "title": "Huisstijl in het adminpanel",
+          "body": "Upload een logo, kies een kleur en koppel je domein; het voorbeeld toont meteen het resultaat."
+        },
+        "modules": {
+          "alt": "Adminpanel: modules van het klantdashboard met menuvoorbeeld",
+          "title": "Stel het klantdashboard samen",
+          "body": "Bepaal welke onderdelen je traders krijgen. Uitgeschakelde onderdelen verdwijnen overal."
+        }
+      }
     },
     "how": {
       "eyebrow": "Hoe het werkt",
@@ -1536,6 +1534,54 @@
       "tagline": "White-label software voor prop firms: tradingplatform, regelengine, funding en tradertools onder jouw merk.",
       "product": "Product",
       "disclaimer": "{{brand}} levert uitsluitend software. {{brand}} is geen prop firm, broker of beleggingsonderneming, biedt geen tradingaccounts aan het publiek aan en houdt geen klantgeld aan. Accounts op het platform zijn gesimuleerd."
+    },
+    "shots": {
+      "caption": "Echte productscreenshots met voorbeelddata. Accounts op het platform zijn gesimuleerd.",
+      "dashboard": "Traderdashboard: kapitaal, scaling-doel, volgende uitbetaling, equity-grafiek, win rate en P&L-kalender",
+      "terminal": "Handelsterminal met live grafiek en orderformulier",
+      "stats": "Statistieken met P&L-kalender en resultaten per symbool",
+      "admin": "Overzicht van het adminpanel met omzet, traders en risicomeldingen",
+      "mobile": "Het traderdashboard op een telefoon"
+    },
+    "tour": {
+      "eyebrow": "Het platform",
+      "title": "Alles wat je traders en je team nodig hebben.",
+      "body": "Eén product, twee kanten: een strak handelsplatform voor je traders en een adminpanel voor je team. Dezelfde software, jouw merk.",
+      "tabs": "Rondleiding door het platform",
+      "tab": {
+        "dashboard": "Traderdashboard",
+        "terminal": "Handelsterminal",
+        "stats": "Statistieken",
+        "admin": "Adminpanel"
+      },
+      "desc": {
+        "dashboard": "Alles wat een funded trader als eerste bekijkt: kapitaal, scaling-voortgang, volgende uitbetaling, equity en een P&L-kalender per dag.",
+        "terminal": "Snel orders plaatsen met live koersen, hefboom, stop loss / take profit en posities — op desktop en mobiel.",
+        "stats": "Win rate, profit factor en resultaten per dag, symbool en richting, zodat traders hun eigen edge begrijpen.",
+        "admin": "Omzet, traders, accounts, producten, regels en risicomeldingen voor je team — strikt gescheiden per firma."
+      },
+      "points": {
+        "dashboard": [
+          "Live equity en regelmeters",
+          "P&L-kalender voor elke dag van de maand",
+          "Winstdeling en uitbetaalbaarheid"
+        ],
+        "terminal": [
+          "Market-, limit- en stoporders",
+          "Realtime regelcontrole bij elke koerswijziging",
+          "Werkt op elk schermformaat"
+        ],
+        "stats": [
+          "Resultaten per symbool en richting",
+          "Beste en slechtste dagen in één oogopslag",
+          "Exporteerbaar track record"
+        ],
+        "admin": [
+          "Risicomeldingen bij overtredingen en grote verliezen",
+          "Onveranderlijke, controleerbare audit log",
+          "Klantmodules aan- of uitzetten"
+        ]
+      }
     }
   },
   "admin": {

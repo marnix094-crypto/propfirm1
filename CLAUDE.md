@@ -89,6 +89,7 @@ Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/token
 - Nieuwe env: `FIELD_ENCRYPTION_KEY` (32 bytes base64, versleutelt 2FA-secrets — back-up nodig), `APP_BASE_URL` (links in e-mails), `SMTP_URL` (Mailpit in dev; zonder → mails in API-log), `MAIL_FROM`, `DEV_TOOLS_ENABLED` (alleen dev; verboden in productie).
 - Dev-hulpmiddel: in de accountwisselaar "Voorbeeld funded account aanmaken (dev)" en in de e-mailbanner "Nu verifiëren (dev)" (alleen met `DEV_TOOLS_ENABLED=true`).
 - Aankoop: `apps/api/src/modules/commerce` (producten, offertes, checkout, `PaymentProvider` + `FakePaymentProvider`). `PAYMENT_PROVIDER=fake` (verboden in productie) → testbetaalpagina `/{lang}/app/checkout/:id/pay`. Funded-economie (winstdeling, uitbetaling, scaling) puur in `packages/engine/src/funding`; voorbeeldwaarden in regelset `INSTANT_EXAMPLE v2`.
+- Website-screenshots (D96): `pnpm --filter @brand/web screens` (bouwt demo, legt dashboard/terminal/stats/mobiel/admin + vier voorbeeldmerken vast → `apps/web/src/assets/site/*.webp`; `--no-build` slaat de build over). Opnieuw draaien na UI-wijzigingen in het dashboard.
 - Demo-preview (claude.ai Artifact): `pnpm --filter @brand/web build:demo` → `dist-demo` (in-browser backend `src/demo/`, alleen met `VITE_DEMO_MODE=true`).
 - E2E draait tegen de echte API (Playwright start API + preview); vereist Postgres + Redis.
 - Landing: `/{en|nl|es}` · design-preview: `/{en|nl|es}/design` · placeholders: `/login`, `/register`, `/legal/:doc`

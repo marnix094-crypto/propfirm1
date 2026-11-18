@@ -30,6 +30,7 @@ export function Toaster({ closeLabel }: { closeLabel: string }) {
   const { toasts, dismiss } = useToasts();
   return (
     <div
+      data-capture-hide
       aria-live="polite"
       className="pointer-events-none fixed inset-x-3 top-3 z-[60] flex flex-col items-center gap-2 sm:inset-x-auto sm:top-auto sm:right-4 sm:bottom-4 sm:items-end"
     >

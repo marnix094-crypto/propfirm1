@@ -1,7 +1,7 @@
 # CLAUDE.md — BRAND platform
 
 > Werkafspraken en projectgeheugen. Houd dit bestand bij na elke fase.
-> "BRAND" is een placeholder voor de merknaam; nooit hardcoden buiten `apps/web/src/config/brand.ts` en de i18n-bestanden.
+> Merknaam: **Daily Funded** (besluit D57). Alleen in `apps/web/src/config/brand.ts`, `apps/api/src/config/brand.ts` en de logo-component; nergens anders hardcoden.
 
 ## Product
 
@@ -42,7 +42,11 @@ Prop trading platform + broker-app voor de EU-markt. Talen: **EN (standaard)**, 
 - Landenrestricties: configureerbare blocklist (EU-sancties + FATF), gecontroleerd bij registratie, checkout en uitbetaling.
 - KYC pas bij promotie naar funded en bij uitbetaling.
 
-## Design system (lichtblauw, premium broker-look)
+## Design system
+
+**Platform (`/{lang}/app…`) — Daily Funded zwart + lime (D58):** eigen tokenblokken `:root[data-surface='platform'][data-theme=dark|light]` in `tokens.css`; **donker standaard**, eigen opgeslagen thema (`df-platform-theme`), `AppLayout` zet `data-surface="platform"`. Logo-lime `#AFE604` (`--brand-lime`) alleen als vlak/accent; op licht is tekst-accent donker olijf (`--accent-deep` `#3F5C00`). Strak: kaarten radius 12px, knoppen 8px, 1px randen, geen gradients/glows, compacte data. Logo = vector-component `components/layout/logo.tsx` ("DAILY" = currentColor, "FUNDED" = lime). Dashboard: KPI-balk, prestaties (win rate, profit factor …), P&L-kalender per maand (`GET /accounts/:id/performance?month=`), posities-tabel.
+
+**Marketing-site (landing, login) — lichtblauw, premium broker-look** (ongewijzigd):
 
 Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/tokens.css`. Componenten gebruiken nooit hex-waarden direct.
 

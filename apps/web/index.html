@@ -5,15 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>BRAND</title>
+    <title>Daily Funded</title>
     <script>
-      // Apply the stored theme before first paint (no flash). Light is the default.
-      try {
-        var t = localStorage.getItem('brand-theme');
-        document.documentElement.dataset.theme = t === 'dark' ? 'dark' : 'light';
-      } catch (e) {
-        document.documentElement.dataset.theme = 'light';
-      }
+      // Apply the stored theme before first paint (no flash).
+      // Site: light by default. Platform (/:lang/app…): own palette, dark by default.
+      (function () {
+        var d = document.documentElement;
+        var platform = /^\/(en|nl|es)\/app(\/|$)/.test(location.pathname);
+        d.dataset.surface = platform ? 'platform' : 'site';
+        var t = null;
+        try {
+          t = localStorage.getItem(platform ? 'df-platform-theme' : 'brand-theme');
+        } catch (e) {}
+        d.dataset.theme = t === 'dark' || t === 'light' ? t : platform ? 'dark' : 'light';
+      })();
     </script>
   </head>
   <body>

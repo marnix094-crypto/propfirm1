@@ -6,8 +6,11 @@ import {
   closePrice,
   directionOf,
   fundingProgress,
+  monthCalendar,
+  tradeStats,
   traderShareMinor,
 } from '@brand/engine';
+import { tradingDateKey } from './day.js';
 import { PrismaService } from '../../infra/prisma.service.js';
 import { Errors } from '../../common/errors.js';
 import { MarketDataService } from '../market-data/market-data.service.js';
@@ -19,6 +22,7 @@ import type {
   EquityPointDto,
   AccountRulesDto,
   FundingProgressDto,
+  PerformanceDto,
   EquityQuery,
   LedgerEntryDto,
   PositionDto,
@@ -299,6 +303,74 @@ export class AccountsService {
         nextSizeMinor: p.scaling.nextSizeMinor.toString(),
         maxSizeMinor: params.scalingMaxBalanceMinor.toString(),
         atMaximum: p.scaling.atMaximum,
+      },
+    };
+  }
+
+  /** Win rate & trade statistics (all time) plus a daily PnL calendar for one month. */
+  async performance(userId: string, accountId: string, month?: string): Promise<PerformanceDto> {
+    const acc = await this.prisma.tradingAccount.findFirst({
+      where: { id: accountId, userId },
+      select: { id: true },
+    });
+    if (!acc) throw Errors.notFound('Account');
+    const m = month ?? tradingDateKey().slice(0, 7);
+    const [y, mo] = m.split('-').map(Number) as [number, number];
+    // Amsterdam is UTC+1/+2: a one-day margin on both sides covers the whole local month.
+    const from = new Date(Date.UTC(y, mo - 1, 1) - 86_400_000);
+    const to = new Date(Date.UTC(y, mo, 1) + 86_400_000);
+
+    const fills = await this.prisma.fill.findMany({
+      where: { accountId, realizedPnlMinor: { not: 0n } },
+      select: { realizedPnlMinor: true, commissionMinor: true, executedAt: true },
+    });
+    const trades = fills.map((f) => ({
+      netPnlMinor: f.realizedPnlMinor - f.commissionMinor,
+      day: tradingDateKey(f.executedAt),
+    }));
+    const ledger = await this.prisma.ledgerEntry.findMany({
+      where: {
+        accountId,
+        type: { in: ['REALIZED_PNL', 'COMMISSION', 'FUNDING'] },
+        createdAt: { gte: from, lt: to },
+      },
+      select: { amountMinor: true, createdAt: true },
+    });
+    const s = tradeStats(trades);
+    const c = monthCalendar(
+      m,
+      ledger.map((l) => ({ amountMinor: l.amountMinor, day: tradingDateKey(l.createdAt) })),
+      trades,
+    );
+    const str = (v: bigint | null) => (v === null ? null : v.toString());
+    return {
+      stats: {
+        trades: s.trades,
+        wins: s.wins,
+        losses: s.losses,
+        winRateBps: s.winRateBps,
+        grossProfitMinor: s.grossProfitMinor.toString(),
+        grossLossMinor: s.grossLossMinor.toString(),
+        netPnlMinor: s.netPnlMinor.toString(),
+        avgWinMinor: str(s.avgWinMinor),
+        avgLossMinor: str(s.avgLossMinor),
+        profitFactorBps: s.profitFactorBps,
+        expectancyMinor: str(s.expectancyMinor),
+        bestTradeMinor: str(s.bestTradeMinor),
+        worstTradeMinor: str(s.worstTradeMinor),
+      },
+      calendar: {
+        month: c.month,
+        days: c.days.map((d) => ({
+          date: d.day,
+          pnlMinor: d.pnlMinor.toString(),
+          trades: d.trades,
+        })),
+        netMinor: c.netMinor.toString(),
+        greenDays: c.greenDays,
+        redDays: c.redDays,
+        bestDayMinor: str(c.bestDayMinor),
+        worstDayMinor: str(c.worstDayMinor),
       },
     };
   }

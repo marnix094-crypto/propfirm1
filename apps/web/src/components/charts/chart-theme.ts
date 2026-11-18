@@ -19,12 +19,13 @@ const read = (name: string) =>
 /** Chart colours come from tokens.css so charts follow the palette and the theme. */
 export function useChartColors(): ChartColors {
   const theme = useThemeStore((s) => s.theme);
+  const surface = useThemeStore((s) => s.surface);
   const compute = (): ChartColors => ({
     text: read('--text'),
     muted: read('--text-muted'),
     grid: read('--border'),
     border: read('--border'),
-    primary: read('--primary'),
+    primary: read('--chart-line'),
     aqua: read('--glow-aqua'),
     profit: read('--profit'),
     loss: read('--loss'),
@@ -35,7 +36,7 @@ export function useChartColors(): ChartColors {
     // Wait a frame so the new theme's variables are applied (view transitions).
     const id = requestAnimationFrame(() => setColors(compute()));
     return () => cancelAnimationFrame(id);
-  }, [theme]);
+  }, [theme, surface]);
   return colors;
 }
 

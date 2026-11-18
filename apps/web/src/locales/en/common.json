@@ -17,7 +17,8 @@
     "remove": "Remove",
     "optional": "optional",
     "demoPreview": "Demo preview · simulated data in your browser",
-    "mockData": "Mock data (dev)"
+    "mockData": "Mock data (dev)",
+    "simulatedNote": "All accounts are simulated. No real capital is traded."
   },
   "nav": {
     "main": "Main navigation",
@@ -485,7 +486,8 @@
       "main": "App navigation",
       "portfolio": "Portfolio",
       "trade": "Trade",
-      "more": "More"
+      "more": "More",
+      "platform": "Platform"
     },
     "connection": {
       "lost": "Connection lost — reconnecting…",
@@ -525,7 +527,7 @@
       "reset": "Reset",
       "details": "Details",
       "balance": "Balance",
-      "unrealized": "Unrealized PnL",
+      "unrealized": "Unrealized P&L",
       "freeMargin": "Free margin",
       "usedMargin": "Used margin",
       "marginLevel": "Margin level",
@@ -792,5 +794,47 @@
     "scalingProfit": "Profit towards next step",
     "scalingPayouts": "Payouts: {{current}}/{{required}}",
     "disclaimer": "Simulated trading. Amounts shown are calculated from the account rules and are not a promise of payment."
+  },
+  "dashboard": {
+    "kpis": "Account overview",
+    "today": "Today's P&L",
+    "sinceStart": "{{value}} since start",
+    "openPositions_one": "{{count}} open position",
+    "openPositions_other": "{{count}} open positions",
+    "marginFree": "Free margin {{value}}",
+    "stats": {
+      "title": "Performance",
+      "winRate": "Win rate",
+      "winsLosses": "{{wins}}W · {{losses}}L",
+      "trades": "Closed trades",
+      "profitFactor": "Profit factor",
+      "netPnl": "Net P&L",
+      "avgWin": "Average win",
+      "avgLoss": "Average loss",
+      "expectancy": "Expectancy per trade",
+      "bestTrade": "Best trade",
+      "worstTrade": "Worst trade"
+    },
+    "calendar": {
+      "title": "P&L calendar",
+      "prev": "Previous month",
+      "next": "Next month",
+      "net": "Month P&L",
+      "greenDays": "Green days",
+      "redDays": "Red days",
+      "bestDay": "Best day",
+      "worstDay": "Worst day",
+      "week": "Week",
+      "trades_one": "{{count}} trade",
+      "trades_other": "{{count}} trades"
+    },
+    "positions": {
+      "symbol": "Symbol",
+      "side": "Side",
+      "size": "Size",
+      "entry": "Entry",
+      "mark": "Mark",
+      "pnl": "Unrealized P&L"
+    }
   }
 }

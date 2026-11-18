@@ -43,11 +43,11 @@ export function AccountSwitcher({ className }: { className?: string }) {
           type="button"
           aria-label={t('app.account.switch')}
           className={cn(
-            'inline-flex h-10 max-w-full items-center gap-2 rounded-full border border-border bg-card py-1 pr-3 pl-1 text-sm font-semibold transition-colors hover:border-border-strong',
+            'inline-flex h-9 max-w-full items-center gap-2 rounded-sm border border-border bg-card py-1 pr-2.5 pl-1 text-sm font-medium transition-colors hover:border-border-strong',
             className,
           )}
         >
-          <span className="inline-flex size-8 items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--primary-light),var(--accent-deep))] text-xs font-bold text-white">
+          <span className="inline-flex size-7 items-center justify-center rounded-sm bg-primary text-[11px] font-bold text-[var(--btn-primary-fg)]">
             {initials(account.kind)}
           </span>
           <span className="truncate">{account.label}</span>
@@ -68,13 +68,13 @@ export function AccountSwitcher({ className }: { className?: string }) {
                   setOpen(false);
                 }}
                 className={cn(
-                  'flex w-full items-center gap-3 rounded-[18px] border p-3.5 text-left transition-colors',
+                  'flex w-full items-center gap-3 rounded-sm border p-3 text-left transition-colors',
                   active
                     ? 'border-primary bg-primary-tint/30'
                     : 'border-border hover:border-border-strong',
                 )}
               >
-                <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--primary-light),var(--accent-deep))] text-sm font-bold text-white">
+                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-primary text-xs font-bold text-[var(--btn-primary-fg)]">
                   {initials(a.kind)}
                 </span>
                 <span className="min-w-0 flex-1">
@@ -115,7 +115,7 @@ export function AccountSwitcher({ className }: { className?: string }) {
       )}
       <SectionLink
         id="pricing"
-        className="mt-4 flex items-center gap-3 rounded-[18px] border border-dashed border-border-strong p-3.5 transition-colors hover:bg-primary-tint/20"
+        className="mt-4 flex items-center gap-3 rounded-sm border border-dashed border-border-strong p-3 transition-colors hover:bg-primary-tint/20"
       >
         <Sparkles className="size-5 shrink-0 text-accent" aria-hidden="true" />
         <span>

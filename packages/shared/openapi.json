@@ -672,6 +672,45 @@
         ]
       }
     },
+    "/api/v1/accounts/{id}/performance": {
+      "get": {
+        "operationId": "AccountsController_performance",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "required": false,
+            "in": "query",
+            "description": "Calendar month YYYY-MM (Europe/Amsterdam); default: current",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerformanceDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
     "/api/v1/accounts/{id}/funding": {
       "get": {
         "operationId": "AccountsController_funding",
@@ -2236,6 +2275,154 @@
           "status",
           "failReason",
           "tradingDays"
+        ]
+      },
+      "TradeStatsDto": {
+        "type": "object",
+        "properties": {
+          "trades": {
+            "type": "number"
+          },
+          "wins": {
+            "type": "number"
+          },
+          "losses": {
+            "type": "number"
+          },
+          "winRateBps": {
+            "type": "number",
+            "nullable": true
+          },
+          "grossProfitMinor": {
+            "type": "string"
+          },
+          "grossLossMinor": {
+            "type": "string"
+          },
+          "netPnlMinor": {
+            "type": "string"
+          },
+          "avgWinMinor": {
+            "type": "string",
+            "nullable": true
+          },
+          "avgLossMinor": {
+            "type": "string",
+            "nullable": true
+          },
+          "profitFactorBps": {
+            "type": "number",
+            "nullable": true
+          },
+          "expectancyMinor": {
+            "type": "string",
+            "nullable": true
+          },
+          "bestTradeMinor": {
+            "type": "string",
+            "nullable": true
+          },
+          "worstTradeMinor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "trades",
+          "wins",
+          "losses",
+          "winRateBps",
+          "grossProfitMinor",
+          "grossLossMinor",
+          "netPnlMinor",
+          "avgWinMinor",
+          "avgLossMinor",
+          "profitFactorBps",
+          "expectancyMinor",
+          "bestTradeMinor",
+          "worstTradeMinor"
+        ]
+      },
+      "CalendarDayDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026-11-03"
+          },
+          "pnlMinor": {
+            "type": "string",
+            "description": "Net trading result of the day (realized, commission, funding)"
+          },
+          "trades": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "pnlMinor",
+          "trades"
+        ]
+      },
+      "MonthCalendarDto": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "example": "2026-11"
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CalendarDayDto"
+            }
+          },
+          "netMinor": {
+            "type": "string"
+          },
+          "greenDays": {
+            "type": "number"
+          },
+          "redDays": {
+            "type": "number"
+          },
+          "bestDayMinor": {
+            "type": "string",
+            "nullable": true
+          },
+          "worstDayMinor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "month",
+          "days",
+          "netMinor",
+          "greenDays",
+          "redDays",
+          "bestDayMinor",
+          "worstDayMinor"
+        ]
+      },
+      "PerformanceDto": {
+        "type": "object",
+        "properties": {
+          "stats": {
+            "description": "All-time statistics of this account",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TradeStatsDto"
+              }
+            ]
+          },
+          "calendar": {
+            "$ref": "#/components/schemas/MonthCalendarDto"
+          }
+        },
+        "required": [
+          "stats",
+          "calendar"
         ]
       },
       "PayoutConditionDto": {

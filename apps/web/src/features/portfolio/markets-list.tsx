@@ -19,7 +19,7 @@ export function AssetAvatar({ asset, className }: { asset: string; className?: s
     <span
       aria-hidden="true"
       className={cn(
-        'inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--primary-tint),color-mix(in_srgb,var(--glow-lavender)_35%,transparent))] text-[11px] font-bold text-accent',
+        'inline-flex size-9 shrink-0 items-center justify-center rounded-sm border border-border bg-card-muted text-[10px] font-semibold tracking-wide text-muted',
         className,
       )}
     >
@@ -141,7 +141,7 @@ export function MarketsList() {
   return (
     <Card padding="none" className="overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-5">
-        <h2 className="text-lg font-semibold">{t('app.portfolio.markets')}</h2>
+        <h2 className="text-sm font-semibold">{t('app.portfolio.markets')}</h2>
         <Tabs
           label={t('app.portfolio.markets')}
           value={tab}

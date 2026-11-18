@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule, type OpenAPIObject } from '@nestjs/swag
 import cookieParser from 'cookie-parser';
 import { ProblemDetailsFilter } from './common/problem-details.filter.js';
 import { installBigIntJson } from './common/json.js';
+import { BRAND_NAME } from './config/brand.js';
 
 /** Shared app setup for main.ts, tests and the OpenAPI export. */
 export function configureApp(app: INestApplication, corsOrigins: string[]): void {
@@ -19,7 +20,7 @@ export function configureApp(app: INestApplication, corsOrigins: string[]): void
 
 export function buildOpenApi(app: INestApplication): OpenAPIObject {
   const config = new DocumentBuilder()
-    .setTitle('BRAND API')
+    .setTitle(`${BRAND_NAME} API`)
     .setDescription(
       'Simulated trading platform API. Money: integer strings in minor units (…Minor). Prices/quantities: decimal strings.',
     )

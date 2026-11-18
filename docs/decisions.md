@@ -58,3 +58,7 @@
 | D54 | Betaalgebeurtenissen worden precies één keer verwerkt (uniek per provider+eventId, purchase-rij `FOR UPDATE`); accounts worden in dezelfde transactie als `PAID → FULFILLED` aangemaakt; late of dubbele events veranderen niets | besloten |
 | D55 | KYC pas vóór de eerste uitbetaling (fase 9), niet bij aankoop (Q-fase 6) | besloten |
 | D56 | Productcatalogus in code (`products.catalog.ts`), bij boot aangemaakt als de slug ontbreekt; bestaande rijen worden niet overschreven (later admin-beheer). Configurator-offertes (`PriceQuote`) verlopen na 30 min | besloten |
+| D57 | Merknaam **Daily Funded** (logo aangeleverd, gevectoriseerd); juridische entiteitsnaam nog te bevestigen | besloten |
+| D58 | Platform krijgt eigen huisstijl zwart + lime `#AFE604`, donker standaard; landingspagina blijft voorlopig lichtblauw. Lime nooit als tekstkleur op licht (AA) — dan donker olijf | besloten |
+| D59 | Dashboard-statistieken: trade = vulling met gerealiseerde PnL ≠ 0 (netto na commissie van die vulling); win rate = winst / (winst + verlies) trades, break-even telt niet mee; dagresultaat = gerealiseerd + commissie + funding per handelsdag (Europe/Amsterdam) | besloten |
+| D60 | Demo-preview: "Voorbeeld funded account" bevat een gelabelde voorbeeldhistorie (alleen in de demo-build), zodat kalender en win rate zichtbaar zijn | besloten |

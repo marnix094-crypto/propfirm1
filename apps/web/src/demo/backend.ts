@@ -10,6 +10,8 @@ import {
   directionOf,
   evaluateRules,
   fundingProgress,
+  monthCalendar,
+  tradeStats,
   type FundingParams,
   fromDecimalString,
   isStopTriggered,
@@ -612,7 +614,7 @@ on('POST', '/me/password', (_m, b) => {
 on('POST', '/me/2fa/setup', () =>
   json(200, {
     secret: 'DEMOJBSWY3DPEHPK3PXP',
-    otpauthUri: `otpauth://totp/BRAND:${encodeURIComponent(me().email)}?secret=DEMOJBSWY3DPEHPK3PXP&issuer=BRAND`,
+    otpauthUri: `otpauth://totp/Daily%20Funded:${encodeURIComponent(me().email)}?secret=DEMOJBSWY3DPEHPK3PXP&issuer=Daily%20Funded`,
   }),
 );
 const codes = () =>
@@ -877,9 +879,106 @@ on('POST', '/accounts/{id}/reset', (m) => {
   a.equity.push({ t: Date.now(), e: a.initial, b: a.initial });
   return json(204);
 });
-on('POST', '/dev/example-funded-account', () =>
-  json(201, { id: newAccount(me().id, 'FUNDED', 2_500_000n, 'Instant $25K (example)').id }),
-);
+/**
+ * EXAMPLE history for the preview only (labelled "example" in the account name): ~3 weeks of
+ * closed BTC trades with deterministic pseudo-random results, so the dashboard's win rate and
+ * PnL calendar can be seen. Never used outside the demo build.
+ */
+function seedExampleHistory(a: Acc) {
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const now = Date.now();
+  let balance = a.initial;
+  a.equity = [{ t: now - 22 * DAY, e: balance, b: balance }];
+  a.createdAt = now - 22 * DAY;
+  for (let d = 21; d >= 1; d--) {
+    const dayStart = now - d * DAY;
+    const wd = new Date(dayStart).getUTCDay();
+    if (wd === 0 || wd === 6 || rnd() < 0.15) continue; // weekends / days off
+    const n = 1 + Math.floor(rnd() * 4);
+    for (let k = 0; k < n; k++) {
+      const win = rnd() < 0.58;
+      const size = BigInt(Math.round(win ? 4_000 + rnd() * 26_000 : 3_000 + rnd() * 17_000));
+      const realized = win ? size : -size;
+      const commission = 240n;
+      const at = dayStart + (k + 1) * 3_600_000;
+      st.fills.push({
+        id: uid(),
+        orderId: uid(),
+        accountId: a.id,
+        symbol: 'BTCUSDT',
+        side: 'SELL',
+        qty: 100n,
+        price: 6_700_000n,
+        commission,
+        realized,
+        at,
+      });
+      balance += realized - commission;
+      a.equity.push({ t: at, e: balance, b: balance });
+    }
+    a.tradingDays += 1;
+  }
+  a.balance = balance;
+  a.hwm = balance > a.hwm ? balance : a.hwm;
+  a.dayStartBalance = balance;
+  a.dayStartEquity = balance;
+}
+const DAY = 86_400_000;
+on('POST', '/dev/example-funded-account', () => {
+  const a = newAccount(me().id, 'FUNDED', 2_500_000n, 'Instant $25K (example)');
+  seedExampleHistory(a);
+  return json(201, { id: a.id });
+});
+
+const dayKey = (t: number) =>
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Amsterdam',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date(t));
+on('GET', '/accounts/{id}/performance', (m, _b, url) => {
+  const a = ownAcc(m[1]!);
+  const month = url.searchParams.get('month') ?? today().slice(0, 7);
+  const fills = st.fills.filter((f) => f.accountId === a.id);
+  const trades = fills
+    .filter((f) => f.realized !== 0n)
+    .map((f) => ({ netPnlMinor: f.realized - f.commission, day: dayKey(f.at) }));
+  const s = tradeStats(trades);
+  const c = monthCalendar(
+    month,
+    fills.map((f) => ({ amountMinor: f.realized - f.commission, day: dayKey(f.at) })),
+    trades,
+  );
+  const str = (v: bigint | null) => (v === null ? null : v.toString());
+  return json(200, {
+    stats: {
+      trades: s.trades,
+      wins: s.wins,
+      losses: s.losses,
+      winRateBps: s.winRateBps,
+      grossProfitMinor: String(s.grossProfitMinor),
+      grossLossMinor: String(s.grossLossMinor),
+      netPnlMinor: String(s.netPnlMinor),
+      avgWinMinor: str(s.avgWinMinor),
+      avgLossMinor: str(s.avgLossMinor),
+      profitFactorBps: s.profitFactorBps,
+      expectancyMinor: str(s.expectancyMinor),
+      bestTradeMinor: str(s.bestTradeMinor),
+      worstTradeMinor: str(s.worstTradeMinor),
+    },
+    calendar: {
+      month: c.month,
+      days: c.days.map((d) => ({ date: d.day, pnlMinor: String(d.pnlMinor), trades: d.trades })),
+      netMinor: String(c.netMinor),
+      greenDays: c.greenDays,
+      redDays: c.redDays,
+      bestDayMinor: str(c.bestDayMinor),
+      worstDayMinor: str(c.worstDayMinor),
+    },
+  });
+});
 
 // Landing page catalogue (same example data as the MSW mocks).
 on('GET', '/products', () => json(200, { items: exampleProducts }));

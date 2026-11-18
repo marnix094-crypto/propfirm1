@@ -420,6 +420,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/accounts/{id}/performance': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AccountsController_performance'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/accounts/{id}/funding': {
     parameters: {
       query?: never;
@@ -992,6 +1008,43 @@ export interface components {
       status: string;
       failReason: string | null;
       tradingDays: number;
+    };
+    TradeStatsDto: {
+      trades: number;
+      wins: number;
+      losses: number;
+      winRateBps: number | null;
+      grossProfitMinor: string;
+      grossLossMinor: string;
+      netPnlMinor: string;
+      avgWinMinor: string | null;
+      avgLossMinor: string | null;
+      profitFactorBps: number | null;
+      expectancyMinor: string | null;
+      bestTradeMinor: string | null;
+      worstTradeMinor: string | null;
+    };
+    CalendarDayDto: {
+      /** @example 2026-11-03 */
+      date: string;
+      /** @description Net trading result of the day (realized, commission, funding) */
+      pnlMinor: string;
+      trades: number;
+    };
+    MonthCalendarDto: {
+      /** @example 2026-11 */
+      month: string;
+      days: components['schemas']['CalendarDayDto'][];
+      netMinor: string;
+      greenDays: number;
+      redDays: number;
+      bestDayMinor: string | null;
+      worstDayMinor: string | null;
+    };
+    PerformanceDto: {
+      /** @description All-time statistics of this account */
+      stats: components['schemas']['TradeStatsDto'];
+      calendar: components['schemas']['MonthCalendarDto'];
     };
     PayoutConditionDto: {
       /** @enum {string} */
@@ -1794,6 +1847,30 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['AccountRulesDto'];
+        };
+      };
+    };
+  };
+  AccountsController_performance: {
+    parameters: {
+      query?: {
+        /** @description Calendar month YYYY-MM (Europe/Amsterdam); default: current */
+        month?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PerformanceDto'];
         };
       };
     };

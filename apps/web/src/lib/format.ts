@@ -8,14 +8,21 @@ export function formatMoneyMinor(
   minor: bigint,
   currency: string,
   locale: string,
-  opts: { decimals?: number; signDisplay?: Intl.NumberFormatOptions['signDisplay'] } = {},
+  opts: {
+    decimals?: number;
+    signDisplay?: Intl.NumberFormatOptions['signDisplay'];
+    /** Short form for dense views, e.g. "$1.2K" (display only). */
+    notation?: 'standard' | 'compact';
+  } = {},
 ): string {
   const decimals = opts.decimals ?? 2;
+  const compact = opts.notation === 'compact';
   const nf = new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
+    notation: opts.notation ?? 'standard',
+    minimumFractionDigits: compact ? 0 : decimals,
+    maximumFractionDigits: compact ? 1 : decimals,
     signDisplay: opts.signDisplay ?? 'auto',
   });
   return nf.format(toDecimalString(minor, decimals) as unknown as number);

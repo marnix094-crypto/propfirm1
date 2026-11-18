@@ -1,24 +1,25 @@
 import { isLocale, type Locale } from '@brand/shared';
+import { BRAND_NAME } from '../../config/brand.js';
 
 type Template = { subject: string; text: (link: string) => string };
 
-/** Plain-text transactional emails. BRAND is the brand placeholder (see config/brand). */
+/** Plain-text transactional emails. Brand name from config/brand. */
 const T: Record<'verify' | 'reset', Record<Locale, Template>> = {
   verify: {
     en: {
       subject: 'Confirm your email address',
       text: (l) =>
-        `Welcome to BRAND.\n\nConfirm your email address:\n${l}\n\nThis link expires in 24 hours. If you did not create an account, ignore this email.`,
+        `Welcome to ${BRAND_NAME}.\n\nConfirm your email address:\n${l}\n\nThis link expires in 24 hours. If you did not create an account, ignore this email.`,
     },
     nl: {
       subject: 'Bevestig je e-mailadres',
       text: (l) =>
-        `Welkom bij BRAND.\n\nBevestig je e-mailadres:\n${l}\n\nDeze link verloopt over 24 uur. Heb je geen account aangemaakt? Negeer dan deze e-mail.`,
+        `Welkom bij ${BRAND_NAME}.\n\nBevestig je e-mailadres:\n${l}\n\nDeze link verloopt over 24 uur. Heb je geen account aangemaakt? Negeer dan deze e-mail.`,
     },
     es: {
       subject: 'Confirma tu correo electrónico',
       text: (l) =>
-        `Bienvenido a BRAND.\n\nConfirma tu correo electrónico:\n${l}\n\nEste enlace caduca en 24 horas. Si no creaste una cuenta, ignora este correo.`,
+        `Bienvenido a ${BRAND_NAME}.\n\nConfirma tu correo electrónico:\n${l}\n\nEste enlace caduca en 24 horas. Si no creaste una cuenta, ignora este correo.`,
     },
   },
   reset: {

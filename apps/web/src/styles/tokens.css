@@ -32,6 +32,8 @@
   --accent-deep: #2563eb;
   --glow-aqua: #22d3ee; /* gradients/glows only */
   --glow-lavender: #a5b4fc; /* gradients/glows only */
+  --brand-lime: #afe604; /* logo "FUNDED" — fills/logo only, never text on light */
+  --chart-line: #0284c7;
 
   /* Text */
   --text: #0b2540;
@@ -67,6 +69,9 @@
   --btn-primary-to: #0ea5e9;
   --btn-primary-fg: #0b2540; /* navy on light-blue gradient: AA (D23) */
   --btn-primary-glow: 0 10px 28px -8px rgb(14 165 233 / 0.6), 0 0 0 1px rgb(14 165 233 / 0.15);
+  --btn-primary-shadow:
+    0 1px 0 rgb(255 255 255 / 0.35) inset, 0 6px 16px -10px rgb(14 165 233 / 0.6);
+  --btn-primary-shadow-hover: 0 1px 0 rgb(255 255 255 / 0.35) inset, var(--btn-primary-glow);
   --btn-secondary-bg: #ffffff;
   --btn-secondary-fg: #2563eb;
   --btn-secondary-border: #7dd3fc;
@@ -154,4 +159,146 @@
   --shadow-float: 0 20px 50px -18px rgb(0 0 0 / 0.7);
 
   --focus-ring: #38bdf8;
+  --chart-line: #38bdf8;
+}
+
+/*
+ * PLATFORM (/:lang/app…): Daily Funded black + lime, flat and dense. Dark is the default
+ * (stores/theme.ts). The marketing site keeps the palette above.
+ * Lime is a fill/accent colour: on light surfaces text uses --accent-deep (dark olive).
+ */
+:root[data-surface='platform'][data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0a0a0a;
+  --bg-glow: #0a0a0a;
+  --bg-image: none;
+  --card: #111111;
+  --card-glass: rgb(10 10 10 / 0.88);
+  --card-muted: #181818;
+  --border: #222222;
+  --border-strong: #333333;
+
+  --primary: #afe604;
+  --primary-light: #afe604;
+  --primary-tint: #2b3a05;
+  --accent-deep: #afe604;
+  --glow-aqua: #afe604;
+  --glow-lavender: #afe604;
+
+  --text: #f4f4f5;
+  --text-muted: #a1a1aa;
+  --text-link: #c3f23a;
+  --text-on-accent: #0a0a0a;
+
+  --profit: #afe604;
+  --profit-text: #b8ef1c;
+  --loss: #f04438;
+  --loss-text: #ff6b5e;
+
+  --buy-bg: #afe604;
+  --sell-bg: #f04438;
+  --on-trade-action: #0a0a0a;
+
+  --badge-success-fg: #c3f23a;
+  --badge-warn-fg: #facc15;
+  --badge-danger-fg: #ff6b5e;
+
+  --meter-track: #262626;
+  --meter-safe: #afe604;
+  --meter-warn: #facc15;
+  --meter-breach: #f04438;
+  --warn-text: #facc15;
+
+  --btn-primary-from: #afe604;
+  --btn-primary-to: #afe604;
+  --btn-primary-fg: #0a0a0a;
+  --btn-primary-glow: 0 0 0 1px rgb(175 230 4 / 0.5);
+  --btn-primary-shadow: none;
+  --btn-primary-shadow-hover: 0 0 0 3px rgb(175 230 4 / 0.18);
+  --btn-secondary-bg: #111111;
+  --btn-secondary-fg: #f4f4f5;
+  --btn-secondary-border: #333333;
+
+  --heading-gradient: linear-gradient(#f4f4f5, #f4f4f5);
+
+  --shadow-card: none;
+  --shadow-card-hover: 0 0 0 1px #333333;
+  --shadow-float: 0 16px 40px -12px rgb(0 0 0 / 0.8);
+
+  --focus-ring: #afe604;
+  --chart-line: #afe604;
+
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --radius-tile: 8px;
+  --radius-sm: 6px;
+}
+
+:root[data-surface='platform'][data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f6f6f4;
+  --bg-glow: #f6f6f4;
+  --bg-image: none;
+  --card: #ffffff;
+  --card-glass: rgb(255 255 255 / 0.9);
+  --card-muted: #f4f4f2;
+  --border: #e5e5e2;
+  --border-strong: #d4d4cf;
+
+  --primary: #afe604;
+  --primary-light: #afe604;
+  --primary-tint: #ecf7c4;
+  --accent-deep: #3f5c00;
+  --glow-aqua: #afe604;
+  --glow-lavender: #afe604;
+
+  --text: #0a0a0a;
+  --text-muted: #57534e;
+  --text-link: #3f5c00;
+  --text-on-accent: #ffffff;
+
+  --profit: #4d7c0f;
+  --profit-text: #3f6212;
+  --loss: #dc2626;
+  --loss-text: #c81e1e;
+
+  --buy-bg: #afe604;
+  --sell-bg: #ef4444;
+  --on-trade-action: #0a0a0a;
+
+  --badge-success-fg: #3f6212;
+  --badge-warn-fg: #854d0e;
+  --badge-danger-fg: #991b1b;
+
+  --meter-track: #ececea;
+  --meter-safe: #4d7c0f;
+  --meter-warn: #ca8a04;
+  --meter-breach: #dc2626;
+  --warn-text: #a16207;
+
+  --btn-primary-from: #afe604;
+  --btn-primary-to: #afe604;
+  --btn-primary-fg: #0a0a0a;
+  --btn-primary-glow: 0 0 0 1px rgb(10 10 10 / 0.12);
+  --btn-primary-shadow: none;
+  --btn-primary-shadow-hover: 0 0 0 3px rgb(175 230 4 / 0.35);
+  --btn-secondary-bg: #ffffff;
+  --btn-secondary-fg: #0a0a0a;
+  --btn-secondary-border: #d4d4cf;
+
+  --heading-gradient: linear-gradient(#0a0a0a, #0a0a0a);
+
+  --shadow-card: 0 1px 2px rgb(10 10 10 / 0.04);
+  --shadow-card-hover: 0 1px 2px rgb(10 10 10 / 0.06), 0 0 0 1px #d4d4cf;
+  --shadow-float: 0 16px 40px -16px rgb(10 10 10 / 0.25);
+
+  --focus-ring: #3f5c00;
+  --chart-line: #4d7c0f;
+
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --radius-tile: 8px;
+  --radius-sm: 6px;
 }

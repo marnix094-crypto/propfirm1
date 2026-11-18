@@ -1,7 +1,7 @@
-/** The ONLY place for brand identity. Replace "BRAND" when the name is final. */
+/** The ONLY place for brand identity in the web app (API: apps/api/src/config/brand.ts). */
 export const brand = {
-  name: 'BRAND',
-  legalName: 'BRAND B.V.',
+  name: 'Daily Funded',
+  legalName: 'Daily Funded B.V.', // TODO: confirm legal entity name
   supportEmail: 'support@example.com',
 } as const;
 

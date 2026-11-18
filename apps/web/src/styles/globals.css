@@ -72,14 +72,10 @@
   .btn-primary {
     background-image: linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to));
     color: var(--btn-primary-fg);
-    box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.35) inset,
-      0 6px 16px -10px rgb(14 165 233 / 0.6);
+    box-shadow: var(--btn-primary-shadow);
   }
   .btn-primary:hover {
-    box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.35) inset,
-      var(--btn-primary-glow);
+    box-shadow: var(--btn-primary-shadow-hover);
   }
   .tabular {
     font-variant-numeric: tabular-nums;

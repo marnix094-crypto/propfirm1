@@ -28,9 +28,9 @@ export function RulesCard({ account }: { account: Account }) {
   };
 
   return (
-    <Card padding="lg" data-testid="rules-card">
+    <Card padding="md" className="p-5 sm:p-5" data-testid="rules-card">
       <div className="flex flex-wrap items-center gap-2">
-        <h2 className="text-lg font-semibold">{t('app.rules.title')}</h2>
+        <h2 className="text-sm font-semibold">{t('app.rules.title')}</h2>
         {r.ruleSet?.isExample && <Badge>{t('app.rules.example')}</Badge>}
       </div>
       <div className="mt-5 flex flex-col gap-6">

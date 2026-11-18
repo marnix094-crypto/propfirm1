@@ -32,7 +32,7 @@ function Progress({ value, label }: { value: number; label: string }) {
       className="h-2.5 overflow-hidden rounded-full bg-[var(--meter-track)]"
     >
       <motion.div
-        className="h-full origin-left rounded-full bg-[linear-gradient(90deg,var(--primary-light),var(--accent-deep))]"
+        className="h-full origin-left rounded-full bg-primary"
         initial={reduce ? false : { scaleX: 0 }}
         animate={{ scaleX: value / 100 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -76,18 +76,18 @@ export function FundingCard({ account }: { account: Account }) {
   };
 
   return (
-    <Card padding="lg" data-testid="funding-card">
+    <Card padding="md" className="p-5 sm:p-5" data-testid="funding-card">
       <div className="flex flex-wrap items-center gap-2">
-        <h2 className="text-lg font-semibold">{t('funding.title')}</h2>
+        <h2 className="text-sm font-semibold">{t('funding.title')}</h2>
         {d.isExample && <Badge>{t('app.rules.example')}</Badge>}
       </div>
 
       <dl className="mt-4 grid grid-cols-2 gap-3">
-        <div className="rounded-[18px] bg-card-muted p-3.5">
+        <div className="rounded-sm border border-border bg-card-muted p-3">
           <dt className="text-xs text-muted">{t('funding.profit')}</dt>
           <dd className="mt-1 text-lg font-bold tabular-nums">{money(d.profitMinor)}</dd>
         </div>
-        <div className="rounded-[18px] bg-card-muted p-3.5">
+        <div className="rounded-sm border border-border bg-card-muted p-3">
           <dt className="text-xs text-muted">
             {t('funding.share', {
               split: d.profitSplitBps == null ? '—' : f.bps(d.profitSplitBps),

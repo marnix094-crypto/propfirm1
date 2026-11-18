@@ -362,3 +362,48 @@ describe('market tickers and watchlist', () => {
     ]);
   });
 });
+
+describe('performance', () => {
+  it('reports win rate, trade stats and the daily PnL calendar', async () => {
+    const close = async () => {
+      const [pos] = await positions();
+      await t
+        .http()
+        .post(`/api/v1/accounts/${user.accountId}/positions/${pos.id}/close`)
+        .set(auth())
+        .send({});
+    };
+    await order({ side: 'BUY', type: 'MARKET', qty: '0.100' });
+    btc('61000.0', '61000.1');
+    await close(); // win
+    await order({ side: 'BUY', type: 'MARKET', qty: '0.100' });
+    btc('60000.0', '60000.1');
+    await close(); // loss
+
+    const res = await t.http().get(`/api/v1/accounts/${user.accountId}/performance`).set(auth());
+    expect(res.status).toBe(200);
+    const { stats, calendar } = res.body;
+    expect(stats).toMatchObject({ trades: 2, wins: 1, losses: 1, winRateBps: 5000 });
+    expect(BigInt(stats.bestTradeMinor)).toBeGreaterThan(0n);
+    expect(BigInt(stats.worstTradeMinor)).toBeLessThan(0n);
+
+    const acc = await account();
+    const today = calendar.days.find((d: { trades: number }) => d.trades > 0);
+    expect(today.trades).toBe(2);
+    // Day result = every realized PnL and commission of the day = balance change.
+    expect(BigInt(today.pnlMinor)).toBe(BigInt(acc.balanceMinor) - 10_000_000n);
+    expect(calendar.days.length).toBeGreaterThanOrEqual(28);
+
+    const other = await t
+      .http()
+      .get(`/api/v1/accounts/${user.accountId}/performance?month=2020-01`)
+      .set(auth());
+    expect(other.body.calendar).toMatchObject({ month: '2020-01', netMinor: '0', greenDays: 0 });
+    expect(other.body.calendar.days).toHaveLength(31);
+    const bad = await t
+      .http()
+      .get(`/api/v1/accounts/${user.accountId}/performance?month=2020-13`)
+      .set(auth());
+    expect(bad.status).toBe(400);
+  });
+});

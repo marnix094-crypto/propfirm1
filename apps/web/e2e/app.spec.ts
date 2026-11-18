@@ -90,7 +90,10 @@ test.describe('trading platform (real API)', () => {
   for (const theme of ['light', 'dark'] as const) {
     test(`portfolio and trade have no axe violations (${theme})`, async ({ page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
-      await page.addInitScript((t) => localStorage.setItem('brand-theme', t), theme);
+      await page.addInitScript((t) => {
+        localStorage.setItem('brand-theme', t);
+        localStorage.setItem('df-platform-theme', t);
+      }, theme);
       await register(page);
       for (const path of ['/en/app/portfolio', '/en/app/trade/BTCUSDT', '/en/app/more']) {
         await page.goto(path);

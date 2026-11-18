@@ -29,7 +29,7 @@ const schema = z.object({
     ),
   APP_BASE_URL: z.string().url().default('http://localhost:5173'),
   SMTP_URL: z.string().url().optional(),
-  MAIL_FROM: z.string().default('BRAND <no-reply@example.com>'),
+  MAIL_FROM: z.string().default('Daily Funded <no-reply@example.com>'),
   /** Payment provider. `fake` = test payments without real money (dev/test only). */
   PAYMENT_PROVIDER: z.enum(['fake']).default('fake'),
   RISK_LOOP_ENABLED: z

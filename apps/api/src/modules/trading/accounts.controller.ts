@@ -31,6 +31,8 @@ import {
   PositionDto,
   UpdatePositionDto,
   FundingProgressDto,
+  PerformanceDto,
+  PerformanceQuery,
 } from './dto.js';
 
 const UUID = new ParseUUIDPipe({ version: '7' });
@@ -65,6 +67,16 @@ export class AccountsController {
   @ApiOkResponse({ type: AccountRulesDto })
   rules(@CurrentUser() u: AuthUser, @Param('id', UUID) id: string) {
     return this.accounts.rules(u.id, id);
+  }
+
+  @Get(':id/performance')
+  @ApiOkResponse({ type: PerformanceDto })
+  performance(
+    @CurrentUser() u: AuthUser,
+    @Param('id', UUID) id: string,
+    @Query() q: PerformanceQuery,
+  ) {
+    return this.accounts.performance(u.id, id, q.month);
   }
 
   @Get(':id/funding')

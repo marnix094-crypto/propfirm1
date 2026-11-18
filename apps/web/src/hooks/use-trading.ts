@@ -16,6 +16,7 @@ export const qk = {
   watchlist: ['watchlist'] as const,
   rules: (id: string) => ['rules', id] as const,
   funding: (id: string) => ['funding', id] as const,
+  performance: (id: string, month: string) => ['performance', id, month] as const,
   config: ['client-config'] as const,
   sessions: ['sessions'] as const,
 };
@@ -174,6 +175,7 @@ export function invalidateTrading(qc: ReturnType<typeof useQueryClient>, account
     ['equity', accountId],
     qk.rules(accountId),
     qk.funding(accountId),
+    ['performance', accountId],
   ]) {
     void qc.invalidateQueries({ queryKey: key });
   }
@@ -313,5 +315,20 @@ export function useCreateExampleFunded() {
       setActive(r.id);
       void qc.invalidateQueries({ queryKey: qk.accounts });
     },
+  });
+}
+
+/** Win rate / trade statistics and the daily PnL calendar of one month (YYYY-MM). */
+export function usePerformance(accountId: string | undefined, month: string) {
+  return useQuery({
+    queryKey: qk.performance(accountId ?? 'none', month),
+    queryFn: () =>
+      call(() =>
+        client.GET('/api/v1/accounts/{id}/performance', {
+          params: { path: { id: accountId! }, query: { month } },
+        }),
+      ),
+    enabled: !!accountId,
+    placeholderData: keepPreviousData,
   });
 }

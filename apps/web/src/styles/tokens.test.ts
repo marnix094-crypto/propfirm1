@@ -34,6 +34,14 @@ function contrast(a: string, b: string): number {
 
 const light = block(/:root,\s*:root\[data-theme='light'\]\s*\{/);
 const dark = { ...light, ...block(/:root\[data-theme='dark'\]\s*\{/) };
+const platformDark = {
+  ...dark,
+  ...block(/:root\[data-surface='platform'\]\[data-theme='dark'\]\s*\{/),
+};
+const platformLight = {
+  ...light,
+  ...block(/:root\[data-surface='platform'\]\[data-theme='light'\]\s*\{/),
+};
 
 type Pair = [fg: string, bg: string, min: number];
 const TEXT_PAIRS: Pair[] = [
@@ -54,11 +62,16 @@ const TEXT_PAIRS: Pair[] = [
   ['focus-ring', 'bg', 3],
   ['meter-safe', 'card', 3],
   ['meter-breach', 'card', 3],
+  ['chart-line', 'card', 3],
+  ['text', 'card-muted', 4.5],
+  ['text-muted', 'card-muted', 4.5],
 ];
 
 describe.each([
   ['light', light],
   ['dark', dark],
+  ['platform dark', platformDark],
+  ['platform light', platformLight],
 ] as const)('%s theme contrast', (_theme, vars) => {
   it.each(TEXT_PAIRS)('%s on %s ≥ %s:1', (fg, bg, min) => {
     const ratio = contrast(vars[fg]!, vars[bg]!);
@@ -86,6 +99,8 @@ function mix(fg: string, bg: string, p: number): string {
 describe.each([
   ['light', light],
   ['dark', dark],
+  ['platform dark', platformDark],
+  ['platform light', platformLight],
 ] as const)('%s status badges', (_theme, vars) => {
   it.each([
     ['badge-success-fg', 'profit'],

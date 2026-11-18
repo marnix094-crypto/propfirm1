@@ -296,3 +296,51 @@ export class FundingProgressDto {
   @ApiProperty({ type: PayoutProgressDto, nullable: true }) payout!: PayoutProgressDto | null;
   @ApiProperty({ type: ScalingProgressDto, nullable: true }) scaling!: ScalingProgressDto | null;
 }
+
+export class PerformanceQuery {
+  @ApiPropertyOptional({
+    description: 'Calendar month YYYY-MM (Europe/Amsterdam); default: current',
+  })
+  @IsOptional()
+  @Matches(/^\d{4}-(0[1-9]|1[0-2])$/)
+  month?: string;
+}
+
+export class TradeStatsDto {
+  @ApiProperty() trades!: number;
+  @ApiProperty() wins!: number;
+  @ApiProperty() losses!: number;
+  @ApiProperty({ type: Number, nullable: true }) winRateBps!: number | null;
+  @ApiProperty() grossProfitMinor!: string;
+  @ApiProperty() grossLossMinor!: string;
+  @ApiProperty() netPnlMinor!: string;
+  @ApiProperty({ type: String, nullable: true }) avgWinMinor!: string | null;
+  @ApiProperty({ type: String, nullable: true }) avgLossMinor!: string | null;
+  @ApiProperty({ type: Number, nullable: true }) profitFactorBps!: number | null;
+  @ApiProperty({ type: String, nullable: true }) expectancyMinor!: string | null;
+  @ApiProperty({ type: String, nullable: true }) bestTradeMinor!: string | null;
+  @ApiProperty({ type: String, nullable: true }) worstTradeMinor!: string | null;
+}
+
+export class CalendarDayDto {
+  @ApiProperty({ example: '2026-11-03' }) date!: string;
+  @ApiProperty({ description: 'Net trading result of the day (realized, commission, funding)' })
+  pnlMinor!: string;
+  @ApiProperty() trades!: number;
+}
+
+export class MonthCalendarDto {
+  @ApiProperty({ example: '2026-11' }) month!: string;
+  @ApiProperty({ type: [CalendarDayDto] }) days!: CalendarDayDto[];
+  @ApiProperty() netMinor!: string;
+  @ApiProperty() greenDays!: number;
+  @ApiProperty() redDays!: number;
+  @ApiProperty({ type: String, nullable: true }) bestDayMinor!: string | null;
+  @ApiProperty({ type: String, nullable: true }) worstDayMinor!: string | null;
+}
+
+export class PerformanceDto {
+  @ApiProperty({ type: TradeStatsDto, description: 'All-time statistics of this account' })
+  stats!: TradeStatsDto;
+  @ApiProperty({ type: MonthCalendarDto }) calendar!: MonthCalendarDto;
+}

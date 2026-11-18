@@ -5,8 +5,9 @@ import { Errors } from '../../common/errors.js';
 import { AuditService } from '../audit/audit.service.js';
 import { FIELD_CRYPTO, type FieldCrypto } from '../security/field-crypto.js';
 import { base32Encode, generateSecret, otpauthUri, verifyTotp } from '../security/totp.js';
+import { BRAND_NAME } from '../../config/brand.js';
 
-const ISSUER = 'BRAND';
+const ISSUER = BRAND_NAME;
 const sha256 = (s: string) => createHash('sha256').update(s).digest('hex');
 const normalizeRecovery = (c: string) =>
   c

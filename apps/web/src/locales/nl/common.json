@@ -17,7 +17,8 @@
     "remove": "Verwijderen",
     "optional": "optioneel",
     "demoPreview": "Demo-preview · gesimuleerde data in je browser",
-    "mockData": "Mockdata (dev)"
+    "mockData": "Mockdata (dev)",
+    "simulatedNote": "Alle accounts zijn gesimuleerd. Er wordt geen echt kapitaal verhandeld."
   },
   "nav": {
     "main": "Hoofdnavigatie",
@@ -485,7 +486,8 @@
       "main": "App-navigatie",
       "portfolio": "Portfolio",
       "trade": "Trade",
-      "more": "Meer"
+      "more": "Meer",
+      "platform": "Platform"
     },
     "connection": {
       "lost": "Verbinding verbroken — opnieuw verbinden…",
@@ -792,5 +794,47 @@
     "scalingProfit": "Winst richting volgende stap",
     "scalingPayouts": "Uitbetalingen: {{current}}/{{required}}",
     "disclaimer": "Gesimuleerde handel. Getoonde bedragen zijn berekend volgens de accountregels en zijn geen betalingsbelofte."
+  },
+  "dashboard": {
+    "kpis": "Accountoverzicht",
+    "today": "Resultaat vandaag",
+    "sinceStart": "{{value}} sinds start",
+    "openPositions_one": "{{count}} open positie",
+    "openPositions_other": "{{count}} open posities",
+    "marginFree": "Vrije margin {{value}}",
+    "stats": {
+      "title": "Prestaties",
+      "winRate": "Win rate",
+      "winsLosses": "{{wins}}W · {{losses}}V",
+      "trades": "Gesloten trades",
+      "profitFactor": "Profit factor",
+      "netPnl": "Netto resultaat",
+      "avgWin": "Gemiddelde winst",
+      "avgLoss": "Gemiddeld verlies",
+      "expectancy": "Verwachting per trade",
+      "bestTrade": "Beste trade",
+      "worstTrade": "Slechtste trade"
+    },
+    "calendar": {
+      "title": "Resultatenkalender",
+      "prev": "Vorige maand",
+      "next": "Volgende maand",
+      "net": "Resultaat maand",
+      "greenDays": "Groene dagen",
+      "redDays": "Rode dagen",
+      "bestDay": "Beste dag",
+      "worstDay": "Slechtste dag",
+      "week": "Week",
+      "trades_one": "{{count}} trade",
+      "trades_other": "{{count}} trades"
+    },
+    "positions": {
+      "symbol": "Symbool",
+      "side": "Richting",
+      "size": "Grootte",
+      "entry": "Instap",
+      "mark": "Markt",
+      "pnl": "Open resultaat"
+    }
   }
 }

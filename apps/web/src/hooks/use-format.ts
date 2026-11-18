@@ -18,7 +18,7 @@ export function useFormat() {
       /** Whole-unit money, e.g. "$25,000" — only for values that are whole by definition. */
       moneyWhole: (minor: bigint | string, currency: string) =>
         formatMoneyMinor(BigInt(minor) / 100n, currency, locale, { decimals: 0 }),
-      bps: (bps: number) => formatBps(bps, locale),
+      bps: (bps: number, maxFractionDigits?: number) => formatBps(bps, locale, maxFractionDigits),
       leverage: formatLeverage,
       relativeTime: (iso: string) => {
         const diffSec = Math.round((new Date(iso).getTime() - Date.now()) / 1000);

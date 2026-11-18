@@ -17,7 +17,8 @@
     "remove": "Quitar",
     "optional": "opcional",
     "demoPreview": "Vista previa demo · datos simulados en tu navegador",
-    "mockData": "Datos simulados (dev)"
+    "mockData": "Datos simulados (dev)",
+    "simulatedNote": "Todas las cuentas son simuladas. No se opera con capital real."
   },
   "nav": {
     "main": "Navegación principal",
@@ -485,7 +486,8 @@
       "main": "Navegación de la app",
       "portfolio": "Cartera",
       "trade": "Operar",
-      "more": "Más"
+      "more": "Más",
+      "platform": "Plataforma"
     },
     "connection": {
       "lost": "Conexión perdida — reconectando…",
@@ -792,5 +794,47 @@
     "scalingProfit": "Beneficio hacia el siguiente paso",
     "scalingPayouts": "Pagos: {{current}}/{{required}}",
     "disclaimer": "Trading simulado. Los importes se calculan según las reglas de la cuenta y no son una promesa de pago."
+  },
+  "dashboard": {
+    "kpis": "Resumen de la cuenta",
+    "today": "Resultado de hoy",
+    "sinceStart": "{{value}} desde el inicio",
+    "openPositions_one": "{{count}} posición abierta",
+    "openPositions_other": "{{count}} posiciones abiertas",
+    "marginFree": "Margen libre {{value}}",
+    "stats": {
+      "title": "Rendimiento",
+      "winRate": "Tasa de acierto",
+      "winsLosses": "{{wins}}G · {{losses}}P",
+      "trades": "Operaciones cerradas",
+      "profitFactor": "Factor de beneficio",
+      "netPnl": "Resultado neto",
+      "avgWin": "Ganancia media",
+      "avgLoss": "Pérdida media",
+      "expectancy": "Esperanza por operación",
+      "bestTrade": "Mejor operación",
+      "worstTrade": "Peor operación"
+    },
+    "calendar": {
+      "title": "Calendario de resultados",
+      "prev": "Mes anterior",
+      "next": "Mes siguiente",
+      "net": "Resultado del mes",
+      "greenDays": "Días verdes",
+      "redDays": "Días rojos",
+      "bestDay": "Mejor día",
+      "worstDay": "Peor día",
+      "week": "Semana",
+      "trades_one": "{{count}} operación",
+      "trades_other": "{{count}} operaciones"
+    },
+    "positions": {
+      "symbol": "Símbolo",
+      "side": "Lado",
+      "size": "Tamaño",
+      "entry": "Entrada",
+      "mark": "Mercado",
+      "pnl": "Resultado abierto"
+    }
   }
 }

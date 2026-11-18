@@ -146,3 +146,7 @@ Auth: `auth/2fa/verify`, `auth/verify-email`, `auth/verify-email/resend`, `auth/
 ## Status fase 6 (geïmplementeerd)
 
 Catalogus (publiek): `GET /products?type=INSTANT`, `GET /products/:id`, `POST /products/quote` (server-berekende prijs, 30 min geldig), `GET /products/quotes/:id`, `GET /public/payouts-feed` (leeg tot er echte uitbetalingen zijn). Checkout (ingelogd): `POST /checkout` (🔑 `Idempotency-Key`, `{ productId | quoteId, quantity 1–5, acceptTerms, locale }`; vereist geverifieerd e-mailadres), `GET /checkout`, `GET /checkout/:id`, `POST /checkout/:id/test-payment` (`{ outcome: succeeded | failed | cancelled }`, alleen fake provider). Funded-voortgang: `GET /accounts/:id/funding` (winstdeling, uitbetalingsvoorwaarden, scaling). Dev-only: `POST /dev/verify-email`. Nieuwe foutcodes: `EMAIL_NOT_VERIFIED`, `COUNTRY_RESTRICTED`, `QUOTE_EXPIRED`, `ACCOUNT_SIZE_INVALID`, `PRODUCT_TYPE_UNAVAILABLE`, `CHECKOUT_ITEM_INVALID`, `PAYMENT_PROVIDER_UNAVAILABLE`, `PURCHASE_NOT_FOUND`.
+
+## Dashboard (na fase 6)
+
+`GET /accounts/:id/performance?month=YYYY-MM` → `{ stats: { trades, wins, losses, winRateBps, profitFactorBps, avgWinMinor, avgLossMinor, expectancyMinor, bestTradeMinor, worstTradeMinor, … }, calendar: { month, days[{ date, pnlMinor, trades }], netMinor, greenDays, redDays, bestDayMinor, worstDayMinor } }`. Dev-only: `POST /dev/verify-email`.

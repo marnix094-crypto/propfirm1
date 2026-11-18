@@ -53,7 +53,7 @@ export function Tabs({
                 {value === item.value && (
                   <motion.span
                     layoutId={layoutId}
-                    className="absolute inset-0 rounded-[10px] bg-primary-tint/60"
+                    className="absolute inset-0 rounded-[calc(var(--radius-btn)-4px)] bg-primary-tint/60"
                     transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
                   />
                 )}
@@ -85,7 +85,7 @@ export function Tabs({
               {value === item.value && (
                 <motion.span
                   layoutId={layoutId}
-                  className="absolute inset-0 rounded-[10px] bg-primary-tint/60"
+                  className="absolute inset-0 rounded-[calc(var(--radius-btn)-4px)] bg-primary-tint/60"
                   transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
                 />
               )}

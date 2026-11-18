@@ -1539,7 +1539,7 @@
     }
   },
   "info": {
-    "title": "BRAND API",
+    "title": "Daily Funded API",
     "description": "Simulated trading platform API. Money: integer strings in minor units (…Minor). Prices/quantities: decimal strings.",
     "version": "0.3.0",
     "contact": {}

@@ -188,7 +188,7 @@ export function SiteHero() {
               </a>
             </Button>
             <Button size="lg" variant="secondary" asChild>
-              <Link to={`/${lang}/storefront`}>{t('site.hero.seeStorefront')}</Link>
+              <Link to={`/${lang}/login`}>{t('site.hero.seeStorefront')}</Link>
             </Button>
           </motion.div>
           <motion.ul

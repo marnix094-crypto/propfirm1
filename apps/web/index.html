@@ -8,16 +8,20 @@
     <title>Daily Funded</title>
     <script>
       // Apply the stored theme before first paint (no flash).
-      // Dark by default (brand). Site and platform (/:lang/app…) remember their own choice.
+      // Website: dark by default (brand-theme). Platform + auth pages: always light (D79).
       (function () {
         var d = document.documentElement;
-        var platform = /^\/(en|nl|es)\/app(\/|$)/.test(location.pathname);
+        // Platform pages (dashboard, trading, login/sign-up) are light-only.
+        var platform =
+          /^\/(en|nl|es)\/(app|login|register|forgot-password|reset-password|verify-email)(\/|$)/.test(
+            location.pathname,
+          );
         d.dataset.surface = platform ? 'platform' : 'site';
         var t = null;
         try {
-          t = localStorage.getItem(platform ? 'df-platform-theme' : 'brand-theme');
+          t = localStorage.getItem('brand-theme');
         } catch (e) {}
-        d.dataset.theme = t === 'light' ? 'light' : 'dark';
+        d.dataset.theme = platform || t === 'light' ? 'light' : 'dark';
       })();
     </script>
   </head>

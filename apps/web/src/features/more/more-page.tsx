@@ -9,7 +9,6 @@ import {
   Headphones,
   HelpCircle,
   LogOut,
-  Moon,
   ShieldCheck,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -17,7 +16,6 @@ import { LanguageSwitcher } from '@/components/layout/language-switcher';
 import { brand } from '@/config/brand';
 import { realtime } from '@/lib/realtime';
 import { useSession } from '@/stores/session';
-import { useThemeStore } from '@/stores/theme';
 import { LEGAL_DOCS } from '@/components/layout/storefront-footer';
 import { NAV_SECTIONS } from '@/features/app/nav';
 
@@ -31,8 +29,6 @@ export function MorePage() {
   const qc = useQueryClient();
   const user = useSession((s) => s.user);
   const logout = useSession((s) => s.logout);
-  const theme = useThemeStore((s) => s.theme);
-  const toggleTheme = useThemeStore((s) => s.toggleTheme);
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-5">
@@ -113,17 +109,6 @@ export function MorePage() {
           <span className="flex-1">{t('app.more.security')}</span>
           <ChevronRight className="size-4 text-muted" aria-hidden="true" />
         </Link>
-        <label className={row}>
-          <Moon className="size-5 text-muted" aria-hidden="true" />
-          <span className="flex-1">{t('app.more.theme')}</span>
-          <input
-            type="checkbox"
-            role="switch"
-            checked={theme === 'dark'}
-            onChange={toggleTheme}
-            className="h-6 w-11 cursor-pointer appearance-none rounded-full bg-[var(--meter-track)] transition-colors before:block before:size-5 before:translate-x-0.5 before:rounded-full before:bg-white before:shadow before:transition-transform checked:bg-primary checked:before:translate-x-[22px]"
-          />
-        </label>
         <div className={row}>
           <span className="flex-1">{t('app.more.language')}</span>
           <LanguageSwitcher />

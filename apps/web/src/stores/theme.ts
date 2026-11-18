@@ -5,9 +5,12 @@ export type Theme = 'light' | 'dark';
 export type Surface = 'site' | 'platform';
 
 const STORAGE_KEY: Record<Surface, string> = { site: 'brand-theme', platform: 'df-platform-theme' };
-const DEFAULT_THEME: Record<Surface, Theme> = { site: 'dark', platform: 'dark' };
+const DEFAULT_THEME: Record<Surface, Theme> = { site: 'dark', platform: 'light' };
+/** The platform (dashboard, trading, login) has a single light theme (D79). */
+const LIGHT_ONLY: Record<Surface, boolean> = { site: false, platform: true };
 
 function storedTheme(surface: Surface): Theme {
+  if (LIGHT_ONLY[surface]) return 'light';
   try {
     const t = localStorage.getItem(STORAGE_KEY[surface]);
     if (t === 'light' || t === 'dark') return t;
@@ -70,7 +73,10 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
       commit();
     }
   },
-  toggleTheme: () => get().setTheme(get().theme === 'light' ? 'dark' : 'light'),
+  toggleTheme: () => {
+    if (LIGHT_ONLY[get().surface]) return;
+    get().setTheme(get().theme === 'light' ? 'dark' : 'light');
+  },
   setSurface: (surface) => {
     const theme = storedTheme(surface);
     document.documentElement.dataset.surface = surface;

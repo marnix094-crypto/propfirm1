@@ -1,10 +1,10 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
+import { useThemeStore } from '@/stores/theme';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck } from 'lucide-react';
 import { Logo } from '@/components/layout/logo';
 import { LanguageSwitcher } from '@/components/layout/language-switcher';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { SkipLink } from '@/components/layout/skip-link';
 import { Card } from '@/components/ui/card';
 
@@ -19,6 +19,12 @@ export function AuthLayout({
 }) {
   const { t } = useTranslation();
   const { lang } = useParams();
+  const setSurface = useThemeStore((s) => s.setSurface);
+  // Login and sign-up belong to the (light) platform.
+  useEffect(() => {
+    setSurface('platform');
+    return () => setSurface('site');
+  }, [setSurface]);
   return (
     <div className="flex min-h-dvh flex-col">
       <title>{title}</title>
@@ -29,7 +35,6 @@ export function AuthLayout({
         </Link>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
-          <ThemeToggle />
         </div>
       </header>
       <main
@@ -37,7 +42,7 @@ export function AuthLayout({
         className="flex flex-1 items-start justify-center px-4 pt-6 pb-16 sm:items-center sm:pt-0"
       >
         <Card padding="lg" className="w-full max-w-md">
-          <h1 className="text-gradient text-3xl font-bold tracking-tight">{title}</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight">{title}</h1>
           <p className="mt-2 text-muted">{subtitle}</p>
           <div className="mt-7">{children}</div>
           <p className="mt-6 flex items-start gap-2 text-xs text-muted">

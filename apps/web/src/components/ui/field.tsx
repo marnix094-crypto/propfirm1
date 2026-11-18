@@ -9,7 +9,7 @@ import {
 import { cn } from '@/lib/cn';
 
 const control =
-  'h-11 w-full rounded-btn border border-border bg-card px-3.5 text-[15px] text-fg placeholder:text-muted/70 transition-colors ' +
+  'h-11 w-full rounded-[var(--radius-field)] border border-border bg-card px-3.5 text-[15px] text-fg placeholder:text-muted/70 transition-colors ' +
   'hover:border-border-strong focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ' +
   'aria-[invalid=true]:border-loss disabled:opacity-60';
 

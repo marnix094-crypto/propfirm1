@@ -761,6 +761,18 @@
         "other": "A rule was breached. All positions were closed and this account can no longer trade."
       },
       "cannotTrade": "This account is closed and cannot place orders."
+    },
+    "top": {
+      "overview": "Dashboard overview",
+      "expand": "Expand menu",
+      "collapse": "Collapse menu",
+      "role": {
+        "DEMO": "Demo trader",
+        "FUNDED": "Funded trader",
+        "COMPETITION": "Competitor",
+        "CHALLENGE": "Challenge",
+        "LIVE_BROKER": "Broker"
+      }
     }
   },
   "checkout": {
@@ -881,7 +893,23 @@
       "entry": "Entry",
       "mark": "Mark",
       "pnl": "Unrealized P&L"
-    }
+    },
+    "capital": "Total trading capital",
+    "scalingTarget": "Scaling target",
+    "marginFreeTitle": "Free margin",
+    "nextPayout": "Next payout",
+    "payoutNow": "Available now",
+    "countdown": "{{d}}d {{h}}h",
+    "estimated": "Estimated: {{amount}}",
+    "payoutFundedOnly": "Payouts are for funded accounts",
+    "yourEquity": "Your equity",
+    "memberSince": "Member since {{date}}",
+    "monthly": "Result per month",
+    "activeAccounts": "Active accounts",
+    "viewAll": "View all",
+    "since": "since {{date}}",
+    "profitLoss": "Profit/Loss",
+    "marginUsed": "Margin used"
   },
   "stats": {
     "subtitle": "All-time statistics of {{account}}",
@@ -1225,7 +1253,7 @@
       "titleA": "Launch your prop firm.",
       "titleB": "We run the engine.",
       "body": "Daily Funded is the complete platform behind a modern prop firm — trading terminal, rule engine, instant funding, payouts and trader tools. You bring the brand and the community.",
-      "seeStorefront": "See an example storefront",
+      "seeStorefront": "Try the live demo",
       "p1": "Your logo, colours and domain",
       "p2": "Built for the EU, GDPR-first",
       "p3": "EN · NL · ES out of the box",

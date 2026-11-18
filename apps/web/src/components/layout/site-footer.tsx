@@ -33,7 +33,7 @@ export function SiteFooter() {
                 </li>
               ))}
               <li>
-                <Link to={`/${lang}/storefront`} className={link}>
+                <Link to={`/${lang}/login`} className={link}>
                   {t('site.nav.liveDemo')}
                 </Link>
               </li>

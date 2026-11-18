@@ -36,7 +36,7 @@ export function Tabs({
           <div
             role="radiogroup"
             aria-label={label}
-            className="inline-flex max-w-full gap-1 overflow-x-auto rounded-btn border border-border bg-card p-1 shadow-card"
+            className="inline-flex max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-card p-1"
           >
             {items.map((item) => (
               <button
@@ -46,14 +46,14 @@ export function Tabs({
                 aria-checked={value === item.value}
                 onClick={() => onValueChange(item.value)}
                 className={cn(
-                  'relative shrink-0 rounded-[10px] px-3 py-2 text-sm font-semibold text-muted transition-colors hover:text-fg sm:px-4',
+                  'relative shrink-0 rounded-full px-3 py-1.5 text-sm font-semibold text-muted transition-colors hover:text-fg sm:px-4',
                   value === item.value && 'text-fg',
                 )}
               >
                 {value === item.value && (
                   <motion.span
                     layoutId={layoutId}
-                    className="absolute inset-0 rounded-[calc(var(--radius-btn)-4px)] bg-primary-tint/60"
+                    className="absolute inset-0 rounded-full bg-primary-tint"
                     transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
                   />
                 )}
@@ -71,21 +71,21 @@ export function Tabs({
         {header}
         <TabsPrimitive.List
           aria-label={label}
-          className="inline-flex max-w-full gap-1 overflow-x-auto rounded-btn border border-border bg-card p-1 shadow-card"
+          className="inline-flex max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-card p-1"
         >
           {items.map((item) => (
             <TabsPrimitive.Trigger
               key={item.value}
               value={item.value}
               className={cn(
-                'relative shrink-0 rounded-[10px] px-3 py-2 text-sm font-semibold text-muted transition-colors hover:text-fg sm:px-4',
+                'relative shrink-0 rounded-full px-3 py-1.5 text-sm font-semibold text-muted transition-colors hover:text-fg sm:px-4',
                 'data-[state=active]:text-fg',
               )}
             >
               {value === item.value && (
                 <motion.span
                   layoutId={layoutId}
-                  className="absolute inset-0 rounded-[calc(var(--radius-btn)-4px)] bg-primary-tint/60"
+                  className="absolute inset-0 rounded-full bg-primary-tint"
                   transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
                 />
               )}

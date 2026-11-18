@@ -37,10 +37,11 @@ test.describe('Daily Funded website (white label)', () => {
     await expect(page.getByText("Thanks — we'll be in touch.")).toBeVisible();
   });
 
-  test('links to the example storefront and back', async ({ page }) => {
+  test('live demo goes to the platform login; storefront still links back', async ({ page }) => {
     await page.goto('/en');
-    await page.getByRole('link', { name: 'See an example storefront' }).click();
-    await expect(page).toHaveURL(/\/en\/storefront$/);
+    await page.getByRole('link', { name: 'Try the live demo' }).click();
+    await expect(page).toHaveURL(/\/en\/login$/);
+    await page.goto('/en/storefront');
     await page.getByRole('link', { name: 'Back to Daily Funded' }).click();
     await expect(page).toHaveURL(/\/en$/);
   });

@@ -761,6 +761,18 @@
         "other": "Er is een regel overschreden. Alle posities zijn gesloten en met dit account kan niet meer gehandeld worden."
       },
       "cannotTrade": "Dit account is gesloten en kan geen orders plaatsen."
+    },
+    "top": {
+      "overview": "Dashboardoverzicht",
+      "expand": "Menu uitklappen",
+      "collapse": "Menu inklappen",
+      "role": {
+        "DEMO": "Demotrader",
+        "FUNDED": "Funded trader",
+        "COMPETITION": "Deelnemer",
+        "CHALLENGE": "Challenge",
+        "LIVE_BROKER": "Broker"
+      }
     }
   },
   "checkout": {
@@ -881,7 +893,23 @@
       "entry": "Instap",
       "mark": "Markt",
       "pnl": "Open resultaat"
-    }
+    },
+    "capital": "Totaal handelskapitaal",
+    "scalingTarget": "Scaling-doel",
+    "marginFreeTitle": "Vrije margin",
+    "nextPayout": "Volgende uitbetaling",
+    "payoutNow": "Nu beschikbaar",
+    "countdown": "{{d}}d {{h}}u",
+    "estimated": "Geschat: {{amount}}",
+    "payoutFundedOnly": "Uitbetalingen zijn voor funded accounts",
+    "yourEquity": "Jouw equity",
+    "memberSince": "Lid sinds {{date}}",
+    "monthly": "Resultaat per maand",
+    "activeAccounts": "Actieve accounts",
+    "viewAll": "Alles bekijken",
+    "since": "sinds {{date}}",
+    "profitLoss": "Winst/verlies",
+    "marginUsed": "Margin gebruikt"
   },
   "stats": {
     "subtitle": "Alle statistieken van {{account}}",
@@ -1225,7 +1253,7 @@
       "titleA": "Start jouw prop firm.",
       "titleB": "Wij draaien de motor.",
       "body": "Daily Funded is het complete platform achter een moderne prop firm — tradingterminal, regelengine, instant funding, uitbetalingen en tradertools. Jij brengt het merk en de community.",
-      "seeStorefront": "Bekijk een voorbeeldwinkel",
+      "seeStorefront": "Probeer de live demo",
       "p1": "Jouw logo, kleuren en domein",
       "p2": "Gebouwd voor de EU, AVG voorop",
       "p3": "EN · NL · ES standaard",

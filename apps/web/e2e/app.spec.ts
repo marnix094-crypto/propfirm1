@@ -118,12 +118,12 @@ test.describe('trading platform (real API)', () => {
     await expect(page.getByTestId('stats-by-symbol')).toContainText('No closed trades yet.');
   });
 
+  // The platform is light only (D79); a dark site preference must not leak into it.
   for (const theme of ['light', 'dark'] as const) {
-    test(`portfolio and trade have no axe violations (${theme})`, async ({ page }) => {
+    test(`platform pages have no axe violations (site theme ${theme})`, async ({ page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.addInitScript((t) => {
         localStorage.setItem('brand-theme', t);
-        localStorage.setItem('df-platform-theme', t);
       }, theme);
       await register(page);
       for (const path of [

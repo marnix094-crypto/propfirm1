@@ -16,17 +16,15 @@ describe('theme store', () => {
     expect(localStorage.getItem('brand-theme')).toBe('dark');
   });
 
-  it('the platform is dark by default and remembers its own theme', () => {
+  it('the platform is light only and leaves the site theme alone', () => {
     const s = useThemeStore.getState();
     s.setSurface('platform');
-    expect(document.documentElement.dataset).toMatchObject({ surface: 'platform', theme: 'dark' });
+    expect(document.documentElement.dataset).toMatchObject({ surface: 'platform', theme: 'light' });
     useThemeStore.getState().toggleTheme();
-    expect(localStorage.getItem('df-platform-theme')).toBe('light');
+    expect(document.documentElement.dataset.theme).toBe('light');
     expect(localStorage.getItem('brand-theme')).toBeNull();
 
     useThemeStore.getState().setSurface('site');
     expect(document.documentElement.dataset).toMatchObject({ surface: 'site', theme: 'dark' });
-    useThemeStore.getState().setSurface('platform');
-    expect(useThemeStore.getState().theme).toBe('light');
   });
 });

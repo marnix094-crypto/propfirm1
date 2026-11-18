@@ -20,8 +20,8 @@ export function Panel({
 }) {
   return (
     <Card padding="none" className={cn('min-w-0', className)} {...rest}>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-3">
-        <h2 className="text-sm font-semibold">{title}</h2>
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-5 pb-3">
+        <h2 className="text-[15px] font-semibold">{title}</h2>
         {actions}
       </div>
       <div className={bodyClassName}>{children}</div>
@@ -43,7 +43,8 @@ export function PageHeader({
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div className="min-w-0">
         <title>{title}</title>
-        <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
+        {/* The top bar shows the title on desktop; it stays the page's h1 for assistive tech. */}
+        <h1 className="font-display text-xl font-semibold tracking-tight lg:sr-only">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}
       </div>
       {actions}

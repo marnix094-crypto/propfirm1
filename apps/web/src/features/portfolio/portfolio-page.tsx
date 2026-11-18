@@ -1,9 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ArrowUpRight, RotateCcw } from 'lucide-react';
+import { BarChart3, Clock, RotateCcw, Wallet } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Tabs } from '@/components/ui/tabs';
 import { Modal } from '@/components/ui/modal';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import { EmptyState, ErrorState, Skeleton } from '@/components/ui/feedback';
 import { toast } from '@/components/ui/toaster';
 import { EquityChart } from '@/components/charts/equity-chart';
 import {
+  useAccounts,
   useActiveAccount,
   useEquity,
   usePerformance,
@@ -18,17 +18,29 @@ import {
   useResetDemo,
   type EquityRange,
 } from '@/hooks/use-trading';
+import { useFunding } from '@/hooks/use-checkout';
+import { useTraderProfile } from '@/hooks/use-features';
 import { useFormat } from '@/hooks/use-format';
 import { errorMessage } from '@/lib/errors';
 import { cn } from '@/lib/cn';
 import type { Account } from '@/lib/api-client';
+import { useSession } from '@/stores/session';
 import { MarketsList } from './markets-list';
 import { amsterdamToday, PnlCalendar } from './pnl-calendar';
-import { formatRatioBps, StatsPanel } from './stats-panel';
 import { AccountClosedBanner, RulesCard } from '../rules/rules-card';
 import { FundingCard } from '../funding/funding-card';
+import {
+  ActiveAccounts,
+  ChangePill,
+  IconTile,
+  pctOf,
+  ProfileCard,
+  ProgressBar,
+  StatCard,
+  useNow,
+} from './dashboard-widgets';
 
-const RANGES: EquityRange[] = ['1D', '1W', '1M', '3M', '6M', '1Y'];
+const RANGES: EquityRange[] = ['1D', '1W', '1M', '3M'];
 
 /** 0–100: share of equity not used as margin. */
 export function marginHealth(a: Pick<Account, 'equityMinor' | 'usedMarginMinor'>): number {
@@ -39,71 +51,54 @@ export function marginHealth(a: Pick<Account, 'equityMinor' | 'usedMarginMinor'>
   return Math.max(0, Math.min(100, Number((free * 100n) / equity)));
 }
 
-function Kpi({
-  label,
-  value,
-  sub,
-  tone,
-  testId,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-  tone?: 'profit' | 'loss';
-  testId?: string;
-}) {
-  return (
-    <div className="min-w-0 bg-card px-4 py-3.5">
-      <p className="truncate text-xs text-muted">{label}</p>
-      <p
-        data-testid={testId}
-        className={cn(
-          'mt-1 truncate text-lg font-semibold tracking-tight tabular-nums sm:text-xl',
-          tone === 'profit' && 'text-profit',
-          tone === 'loss' && 'text-loss',
-        )}
-      >
-        {value}
-      </p>
-      {sub && <p className="mt-0.5 truncate text-xs text-muted tabular-nums">{sub}</p>}
-    </div>
-  );
+function countdown(ms: number): { d: number; h: number } {
+  const totalH = Math.max(0, Math.floor(ms / 3_600_000));
+  return { d: Math.floor(totalH / 24), h: totalH % 24 };
 }
 
-function PanelHeader({ title, children }: { title: string; children?: React.ReactNode }) {
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-3">
-      <h2 className="text-sm font-semibold">{title}</h2>
-      {children}
-    </div>
-  );
-}
-
-const pnlTone = (v: bigint) => (v > 0n ? 'profit' : v < 0n ? 'loss' : undefined);
-
+/** Dashboard overview (layout after the supplied design, in the Daily Funded light theme). */
 export function PortfolioPage() {
   const { t } = useTranslation();
   const { lang } = useParams();
   const f = useFormat();
   const { account, isPending, isError, refetch } = useActiveAccount();
+  const accounts = useAccounts();
+  const user = useSession((s) => s.user);
+  const profile = useTraderProfile();
+  const now = useNow();
   const [range, setRange] = useState<EquityRange>('1M');
   const [confirmReset, setConfirmReset] = useState(false);
   const [month] = useState(() => amsterdamToday().slice(0, 7));
   const equity = useEquity(account?.id, range);
   const positions = usePositions(account?.id);
   const performance = usePerformance(account?.id, month);
+  const funding = useFunding(account?.id, account?.kind === 'FUNDED');
   const reset = useResetDemo(account?.id);
   const money = useCallback(
     (m: bigint | string) => f.money(m, account?.currency ?? 'USD'),
     [f, account?.currency],
   );
+  const memberSince = useMemo(() => {
+    const first = (accounts.data ?? []).reduce<string | null>(
+      (min, a) => (min === null || a.createdAt < min ? a.createdAt : min),
+      null,
+    );
+    return first
+      ? new Intl.DateTimeFormat(f.locale, { month: 'long', year: 'numeric' }).format(
+          new Date(first),
+        )
+      : null;
+  }, [accounts.data, f.locale]);
 
   if (isPending) {
     return (
       <div className="flex flex-col gap-4" aria-busy="true" aria-label={t('app.account.loading')}>
-        <Skeleton className="h-8 w-56" />
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-72 w-full" />
+        <div className="grid gap-4 md:grid-cols-3">
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} className="h-36 rounded-card" />
+          ))}
+        </div>
+        <Skeleton className="h-80 rounded-card" />
       </div>
     );
   }
@@ -112,132 +107,188 @@ export function PortfolioPage() {
       <ErrorState title={t('app.account.error')} retryLabel={t('common.retry')} onRetry={refetch} />
     );
 
-  const daily = BigInt(account.dailyPnlMinor);
-  const dayStart = BigInt(account.equityMinor) - daily;
-  const dailyBps = dayStart > 0n ? Number((daily * 10_000n) / dayStart) : 0;
-  const unrealized = BigInt(account.unrealizedPnlMinor);
-  const total = BigInt(account.equityMinor) - BigInt(account.initialBalanceMinor);
-  const totalBps =
-    BigInt(account.initialBalanceMinor) > 0n
-      ? Number((total * 10_000n) / BigInt(account.initialBalanceMinor))
-      : 0;
+  const initial = BigInt(account.initialBalanceMinor);
+  const total = BigInt(account.equityMinor) - initial;
+  const totalBps = initial > 0n ? Number((total * 10_000n) / initial) : 0;
   const stats = performance.data?.stats;
   const signed = (m: bigint) => f.money(m, account.currency, { signDisplay: 'exceptZero' });
-  const pct = (bps: number) => `${bps > 0 ? '+' : ''}${f.bps(bps)}`;
+  const name = profile.data?.nickname ?? user?.email.split('@')[0] ?? '';
+  const fd = funding.data;
+  const scaling = fd?.scaling;
+  const payout = fd?.payout;
+  const daily = BigInt(account.dailyPnlMinor);
 
   return (
-    <div className="flex flex-col gap-4">
-      <title>{t('app.portfolio.title')}</title>
-
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="min-w-0">
-          <h1 className="truncate text-xl font-semibold tracking-tight">{account.label}</h1>
-          <div className="mt-1 flex flex-wrap gap-1.5">
-            <Badge variant="simulated">{t(`app.account.kinds.${account.kind}`)}</Badge>
-            {account.status === 'FAILED' && (
-              <Badge variant="danger">{t('app.account.statuses.FAILED')}</Badge>
-            )}
-            {account.kind === 'DEMO' && <Badge>{t('app.account.virtual')}</Badge>}
-          </div>
-        </div>
-        <div className="flex gap-2">
-          {account.kind === 'DEMO' && (
-            <Button variant="secondary" size="sm" onClick={() => setConfirmReset(true)}>
-              <RotateCcw aria-hidden="true" /> {t('app.portfolio.reset')}
-            </Button>
-          )}
-          <Button size="sm" asChild>
-            <Link to={`/${lang}/app/trade`}>
-              {t('app.portfolio.trade')} <ArrowUpRight aria-hidden="true" />
-            </Link>
-          </Button>
-        </div>
-      </div>
-
+    <div className="flex flex-col gap-5">
+      <title>{t('app.top.overview')}</title>
+      <h1 className="sr-only">{t('app.top.overview')}</h1>
       <AccountClosedBanner account={account} />
 
-      <section
-        aria-label={t('dashboard.kpis')}
-        className="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-3 xl:grid-cols-6"
-      >
-        <Kpi
-          label={t('app.portfolio.value')}
-          value={money(account.equityMinor)}
-          sub={t('dashboard.sinceStart', { value: pct(totalBps) })}
-          testId="account-value"
-        />
-        <Kpi label={t('app.portfolio.balance')} value={money(account.balanceMinor)} />
-        <Kpi
-          label={t('dashboard.today')}
-          value={signed(daily)}
-          sub={pct(dailyBps)}
-          tone={pnlTone(daily)}
-        />
-        <Kpi
-          label={t('app.portfolio.unrealized')}
-          value={signed(unrealized)}
-          tone={pnlTone(unrealized)}
-          sub={t('dashboard.openPositions', { count: positions.data?.length ?? 0 })}
-        />
-        <Kpi
-          label={t('dashboard.stats.winRate')}
-          value={stats?.winRateBps == null ? '—' : f.bps(stats.winRateBps, 1)}
-          sub={
-            stats
-              ? t('dashboard.stats.winsLosses', { wins: stats.wins, losses: stats.losses })
-              : undefined
-          }
-        />
-        <Kpi
-          label={t('dashboard.stats.profitFactor')}
-          value={formatRatioBps(stats?.profitFactorBps ?? null, f.locale)}
-          sub={t('dashboard.marginFree', { value: `${marginHealth(account)}%` })}
-        />
+      {/* Row 1: capital · target · payout */}
+      <section aria-label={t('dashboard.kpis')} className="grid gap-4 md:grid-cols-3">
+        <StatCard label={t('dashboard.capital')}>
+          <div className="flex flex-wrap items-center gap-3">
+            <p
+              className="font-display text-3xl font-semibold tracking-tight tabular-nums"
+              data-testid="account-value"
+            >
+              {money(account.equityMinor)}
+            </p>
+            <ChangePill bps={totalBps} />
+          </div>
+          <p className="mt-2 text-xs text-muted">
+            {account.label} · {t('dashboard.today')}{' '}
+            <span
+              className={cn(
+                'font-semibold',
+                daily > 0n ? 'text-profit' : daily < 0n ? 'text-loss' : undefined,
+              )}
+            >
+              {signed(daily)}
+            </span>
+          </p>
+        </StatCard>
+
+        {account.kind === 'FUNDED' && scaling ? (
+          <StatCard label={t('dashboard.scalingTarget')}>
+            <div className="flex items-baseline justify-between gap-3">
+              <p className="font-display text-2xl font-semibold tracking-tight tabular-nums">
+                {money(scaling.profitMinor)}
+              </p>
+              <p className="text-sm text-muted tabular-nums">{money(scaling.targetMinor)}</p>
+            </div>
+            <div className="mt-4">
+              <ProgressBar
+                value={pctOf(BigInt(scaling.profitMinor), BigInt(scaling.targetMinor))}
+                label={t('dashboard.scalingTarget')}
+              />
+            </div>
+          </StatCard>
+        ) : (
+          <StatCard label={t('dashboard.marginFreeTitle')}>
+            <div className="flex items-baseline justify-between gap-3">
+              <p className="font-display text-2xl font-semibold tracking-tight tabular-nums">
+                {money(account.freeMarginMinor)}
+              </p>
+              <p className="text-sm text-muted tabular-nums">{marginHealth(account)}%</p>
+            </div>
+            <div className="mt-4">
+              <ProgressBar value={marginHealth(account)} label={t('dashboard.marginFreeTitle')} />
+            </div>
+          </StatCard>
+        )}
+
+        <StatCard label={t('dashboard.nextPayout')}>
+          <div className="flex items-center gap-4">
+            <IconTile>
+              <Clock className="size-5" />
+            </IconTile>
+            {account.kind === 'FUNDED' && payout ? (
+              <div>
+                <p className="font-display text-2xl font-semibold tracking-tight tabular-nums">
+                  {payout.eligible
+                    ? t('dashboard.payoutNow')
+                    : (() => {
+                        const c = countdown(new Date(payout.eligibleFrom).getTime() - now);
+                        return t('dashboard.countdown', { d: c.d, h: c.h });
+                      })()}
+                </p>
+                <p className="text-xs text-muted">
+                  {t('dashboard.estimated', { amount: money(fd!.traderShareMinor) })}
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p className="font-semibold">{t('dashboard.payoutFundedOnly')}</p>
+                <Link
+                  to={`/${lang}/app/new-account`}
+                  className="text-xs font-semibold text-link hover:underline"
+                >
+                  {t('app.nav.newAccount')} →
+                </Link>
+              </div>
+            )}
+          </div>
+        </StatCard>
       </section>
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="flex min-w-0 flex-col gap-4">
-          <Card padding="none">
-            <PanelHeader title={t('app.portfolio.equityCurve')}>
-              <Tabs
-                label={t('app.trade.timeframe')}
-                value={range}
-                onValueChange={(v) => setRange(v as EquityRange)}
-                items={RANGES.map((r) => ({
-                  value: r,
-                  label: t(`range.${r}`, { defaultValue: r }),
-                }))}
-              />
-            </PanelHeader>
-            <div className="px-2 pt-3 pb-3">
-              {equity.isPending ? (
-                <Skeleton className="mx-3 h-64" />
-              ) : equity.isError ? (
-                <ErrorState
-                  title={t('errors.generic')}
-                  retryLabel={t('common.retry')}
-                  onRetry={() => void equity.refetch()}
-                />
-              ) : (equity.data?.length ?? 0) < 2 ? (
-                <EmptyState
-                  title={t('app.portfolio.equityCurve')}
-                  body={t('app.portfolio.noHistory')}
-                />
-              ) : (
-                <EquityChart
-                  points={equity.data!}
-                  label={t('app.portfolio.equityCurve')}
-                  formatValue={(v) => money(v)}
-                  className="h-64 w-full sm:h-72"
-                />
-              )}
+      {/* Row 2: equity chart · profile & win rate */}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+        <Card padding="none" className="p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <IconTile>
+                <BarChart3 className="size-5" />
+              </IconTile>
+              <div>
+                <p className="text-sm text-muted">{t('dashboard.yourEquity')}</p>
+                <p className="font-display text-2xl font-semibold tracking-tight tabular-nums">
+                  {money(account.equityMinor)}
+                </p>
+              </div>
             </div>
-          </Card>
+            <Tabs
+              label={t('app.trade.timeframe')}
+              value={range}
+              onValueChange={(v) => setRange(v as EquityRange)}
+              items={RANGES.map((r) => ({ value: r, label: t(`range.${r}`, { defaultValue: r }) }))}
+            />
+          </div>
+          <div className="mt-4">
+            {equity.isPending ? (
+              <Skeleton className="h-72 rounded-card" />
+            ) : equity.isError ? (
+              <ErrorState
+                title={t('errors.generic')}
+                retryLabel={t('common.retry')}
+                onRetry={() => void equity.refetch()}
+              />
+            ) : (equity.data?.length ?? 0) < 2 ? (
+              <EmptyState
+                title={t('app.portfolio.equityCurve')}
+                body={t('app.portfolio.noHistory')}
+              />
+            ) : (
+              <EquityChart
+                points={equity.data!}
+                label={t('app.portfolio.equityCurve')}
+                formatValue={(v) => money(v)}
+                className="h-72 w-full"
+              />
+            )}
+          </div>
+        </Card>
+        <ProfileCard
+          name={name}
+          memberSince={memberSince}
+          winRateBps={stats?.winRateBps ?? null}
+          account={account}
+        />
+      </div>
 
+      {/* Row 3: active accounts */}
+      <ActiveAccounts current={account} />
+
+      {/* Row 4: calendar · rules & funding */}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="flex min-w-0 flex-col gap-4">
           <PnlCalendar accountId={account.id} currency={account.currency} />
-
           <Card padding="none">
-            <PanelHeader title={t('app.portfolio.positions')} />
+            <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-5 pb-3">
+              <h2 className="text-[15px] font-semibold">{t('app.portfolio.positions')}</h2>
+              <div className="flex gap-2">
+                {account.kind === 'DEMO' && (
+                  <Button variant="secondary" size="sm" onClick={() => setConfirmReset(true)}>
+                    <RotateCcw aria-hidden="true" /> {t('app.portfolio.reset')}
+                  </Button>
+                )}
+                <Button size="sm" asChild>
+                  <Link to={`/${lang}/app/trade`}>
+                    <Wallet aria-hidden="true" /> {t('app.portfolio.trade')}
+                  </Link>
+                </Button>
+              </div>
+            </div>
             {positions.isPending ? (
               <Skeleton className="m-5 h-16" />
             ) : (positions.data?.length ?? 0) === 0 ? (
@@ -306,9 +357,7 @@ export function PortfolioPage() {
             )}
           </Card>
         </div>
-
         <div className="flex min-w-0 flex-col gap-4">
-          <StatsPanel stats={stats} currency={account.currency} />
           <RulesCard account={account} />
           <FundingCard account={account} />
           <MarketsList />

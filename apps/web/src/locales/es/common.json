@@ -761,6 +761,18 @@
         "other": "Se incumplió una regla. Se cerraron todas las posiciones y esta cuenta ya no puede operar."
       },
       "cannotTrade": "Esta cuenta está cerrada y no puede colocar órdenes."
+    },
+    "top": {
+      "overview": "Resumen del panel",
+      "expand": "Expandir menú",
+      "collapse": "Contraer menú",
+      "role": {
+        "DEMO": "Trader demo",
+        "FUNDED": "Trader financiado",
+        "COMPETITION": "Competidor",
+        "CHALLENGE": "Challenge",
+        "LIVE_BROKER": "Bróker"
+      }
     }
   },
   "checkout": {
@@ -881,7 +893,23 @@
       "entry": "Entrada",
       "mark": "Mercado",
       "pnl": "Resultado abierto"
-    }
+    },
+    "capital": "Capital total de trading",
+    "scalingTarget": "Objetivo de escalado",
+    "marginFreeTitle": "Margen libre",
+    "nextPayout": "Próximo pago",
+    "payoutNow": "Disponible ya",
+    "countdown": "{{d}}d {{h}}h",
+    "estimated": "Estimado: {{amount}}",
+    "payoutFundedOnly": "Los pagos son para cuentas financiadas",
+    "yourEquity": "Tu equity",
+    "memberSince": "Miembro desde {{date}}",
+    "monthly": "Resultado por mes",
+    "activeAccounts": "Cuentas activas",
+    "viewAll": "Ver todas",
+    "since": "desde {{date}}",
+    "profitLoss": "Ganancia/Pérdida",
+    "marginUsed": "Margen usado"
   },
   "stats": {
     "subtitle": "Todas las estadísticas de {{account}}",
@@ -1225,7 +1253,7 @@
       "titleA": "Lanza tu prop firm.",
       "titleB": "Nosotros movemos el motor.",
       "body": "Daily Funded es la plataforma completa detrás de una prop firm moderna: terminal de trading, motor de reglas, financiación instantánea, pagos y herramientas para traders. Tú pones la marca y la comunidad.",
-      "seeStorefront": "Ver una tienda de ejemplo",
+      "seeStorefront": "Prueba la demo en vivo",
       "p1": "Tu logo, colores y dominio",
       "p2": "Hecho para la UE, RGPD primero",
       "p3": "EN · NL · ES de serie",

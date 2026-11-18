@@ -71,7 +71,7 @@ export function SiteHeader() {
           </div>
           <ThemeToggle />
           <Button size="sm" variant="secondary" className="hidden sm:inline-flex" asChild>
-            <Link to={`/${lang}/storefront`}>{t('site.nav.liveDemo')}</Link>
+            <Link to={`/${lang}/login`}>{t('site.nav.liveDemo')}</Link>
           </Button>
           <Button size="sm" className="hidden sm:inline-flex" asChild>
             <a href={`/${lang}#contact`} onClick={go('contact')}>
@@ -116,7 +116,7 @@ export function SiteHeader() {
           <div className="flex flex-col gap-2 border-t border-border pt-4">
             <LanguageSwitcher />
             <Button variant="secondary" asChild>
-              <Link to={`/${lang}/storefront`}>{t('site.nav.liveDemo')}</Link>
+              <Link to={`/${lang}/login`}>{t('site.nav.liveDemo')}</Link>
             </Button>
             <Button asChild>
               <a href={`/${lang}#contact`} onClick={go('contact')}>

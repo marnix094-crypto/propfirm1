@@ -1583,6 +1583,106 @@
           "Klantmodules aan- of uitzetten"
         ]
       }
+    },
+    "compete": {
+      "seo": {
+        "title": "Dagelijkse tradingcompetities als white label — {{brand}}",
+        "description": "Draai een dagelijkse betaalde tradingcompetitie onder je eigen merk: live ranglijst, risicoregels, prijzenpot en adminpanel."
+      },
+      "hero": {
+        "eyebrow": "Nieuw product · Compete",
+        "title1": "Dagelijkse tradingcompetities,",
+        "title2": "onder jouw merk.",
+        "body": "Spelers betalen een vaste inleg, handelen een uur op een virtueel account tegen echte marktprijzen en strijden om de prijzenpot. Jij bepaalt de regels en houdt het operatordeel — wij draaien de software.",
+        "cta": "Plan een demo",
+        "example": "Bekijk het voorbeeld"
+      },
+      "shots": {
+        "caption": "Echte screenshots van de voorbeeld-operator met voorbeelddata. Alleen testbetalingen.",
+        "dashboard": "Spelersdashboard van een live ronde: aftelklok, prijzenpot, grafiek, orderformulier, verliesgrensmeter en live ranglijst",
+        "home": "Homepagina van de voorbeeldcompetitie met aftelklok en regels",
+        "homeTitle": "Jouw competitiesite",
+        "homeBody": "Een homepagina met de volgende ronde, de regels en de prijzen — in jouw huisstijl, op jouw domein.",
+        "admin": "Adminpanel van de operator: omzet, prijzenpot per ronde en uitbetalingen",
+        "adminTitle": "Jouw adminpanel",
+        "adminBody": "Omzet, spelers, rondes, uitbetalingen, instellingen en een audit log — los van al het andere."
+      },
+      "how": {
+        "eyebrow": "Zo werkt het",
+        "title": "Eén ronde per dag. Volledig automatisch.",
+        "body": "Het platform opent de inschrijving, start en beëindigt de ronde, sluit posities, rangschikt spelers en verdeelt de pot.",
+        "step1": {
+          "title": "Wij zetten je op",
+          "body": "Daily Funded maakt je operator en één adminaccount voor je aan."
+        },
+        "step2": {
+          "title": "Jij bepaalt de regels",
+          "body": "Naam, kleur, domein, starttijd, inleg, startsaldo, hefboom, verliesgrens, minimum aantal spelers en prijsverdeling."
+        },
+        "step3": {
+          "title": "Spelers strijden",
+          "body": "Eén uur handelen met live koersen en een live ranglijst. Onder het minimum krijgt iedereen automatisch zijn inleg terug."
+        },
+        "step4": {
+          "title": "Afrekenen en uitbetalen",
+          "body": "De top wordt op rendement gerangschikt; jij ziet wie je moet uitbetalen en legt elke uitbetaling vast."
+        }
+      },
+      "features": {
+        "eyebrow": "Functies",
+        "title": "Alles wat een competitie nodig heeft.",
+        "live": {
+          "title": "Live ranglijst",
+          "body": "De ranglijst wordt elke twee seconden bijgewerkt via WebSocket, op desktop en mobiel."
+        },
+        "rules": {
+          "title": "Eerlijke, afgedwongen regels",
+          "body": "Vaste verliesgrens, één inschrijving per ronde, minimum aantal spelers en automatische terugbetaling — gecontroleerd bij elke koerswijziging."
+        },
+        "brand": {
+          "title": "Volledig white label",
+          "body": "Jouw naam, kleuren en domein. Spelers zien de onze nooit."
+        },
+        "admin": {
+          "title": "Apart adminpanel",
+          "body": "Eén eigenaar per operator, tweestapsverificatie, elke actie in een onveranderlijke audit log."
+        },
+        "market": {
+          "title": "Echte marktprijzen",
+          "body": "Crypto-perpetuals met spread, slippage en commissie — dezelfde engine als ons prop-firm-platform."
+        },
+        "languages": {
+          "title": "EN · NL · ES",
+          "body": "Alle speler- en adminschermen in drie talen."
+        }
+      },
+      "revenue": {
+        "eyebrow": "Voorbeeldberekening",
+        "title": "Wat één ronde kan opleveren.",
+        "body": "Elke inleg gaat naar de pot. Standaard gaat 80% naar de top 3 (50/30/20) en blijft 20% bij jou.",
+        "players": "Spelers per ronde",
+        "fee": "Inleg",
+        "pot": "Prijzenpot",
+        "prizes": "Naar de top 3",
+        "yours": "Jouw deel",
+        "month": "Ongeveer {{amount}} per maand bij één ronde per dag.",
+        "disclaimer": "Voorbeeldberekening, geen prognose of garantie. De werkelijke cijfers hangen af van je spelers, kosten, belastingen en vergunning."
+      },
+      "legal": {
+        "title": "Betaalde competities vragen om een vergunning",
+        "body": "Een betaalde inleg met een prijzenpot valt in de EU meestal onder kansspelregels. Jij draait de competitie onder je eigen vergunning; wij leveren de software. Tot er een betaalprovider met vergunning is gekoppeld, zijn alleen testbetalingen mogelijk.",
+        "points": [
+          "Leeftijdsbevestiging (18+) en landenblocklist",
+          "Zelfuitsluiting en schorsen van spelers",
+          "Automatische terugbetaling onder het minimum",
+          "Onveranderlijke, controleerbare audit log"
+        ]
+      },
+      "cta": {
+        "title": "Start je eigen competitie.",
+        "body": "We laten je de speler- en adminkant zien in een demo van 30 minuten.",
+        "operatorLogin": "Operator-login"
+      }
     }
   },
   "admin": {

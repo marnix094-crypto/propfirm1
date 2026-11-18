@@ -27,7 +27,7 @@ test.describe('Compete (separate product)', () => {
     page,
   }) => {
     await page.goto('/en');
-    await expect(page.locator('header a[href="/en/compete"]').first()).toBeAttached();
+    await expect(page.locator('header a[href="/en/products/compete"]').first()).toBeAttached();
     await page.goto('/en/compete');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Trade for one hour.');
     await expect(page.getByText('Test payments only')).toBeVisible();
@@ -104,5 +104,129 @@ test.describe('Compete (separate product)', () => {
     await expect(page.getByRole('cell', { name: 'BTCUSDT' })).toBeVisible();
     await expect(page.getByText('you', { exact: true })).toBeVisible({ timeout: 10_000 });
     await axe(page, 'dashboard (live)');
+  });
+});
+
+test.describe('Compete product page and operator admin (D104, D105)', () => {
+  test('product page sells the software and links to the example and operator login', async ({
+    page,
+  }) => {
+    await page.goto('/en/products/compete');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+      'Daily trading competitions',
+    );
+    await expect(page.getByText('What one round can bring in.')).toBeVisible();
+    await expect(page.getByText('Your share')).toBeVisible();
+    await expect(page.getByText(/not a forecast or guarantee/)).toBeVisible();
+    await expect(page.getByRole('link', { name: 'See the example' })).toHaveAttribute(
+      'href',
+      '/en/compete',
+    );
+    await expect(page.getByRole('link', { name: 'Operator login' })).toHaveAttribute(
+      'href',
+      '/en/compete/admin/login',
+    );
+  });
+
+  for (const theme of ['light', 'dark'] as const) {
+    test(`product page has no axe violations (${theme})`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.addInitScript((t) => localStorage.setItem('brand-theme', t), theme);
+      await page.goto('/en/products/compete');
+      await page.waitForLoadState('networkidle');
+      await axe(page, 'products/compete');
+    });
+  }
+
+  test('operator owner runs the panel: overview, players, settings, payouts', async ({
+    page,
+    request,
+  }) => {
+    const slug = await operator(request);
+    const email = `owner-${slug}@example.com`;
+    const password = 'owner-password-123';
+    expect(
+      (
+        await request.post(`${API}/dev/staff`, { data: { email, password, operatorSlug: slug } })
+      ).ok(),
+    ).toBe(true);
+    // One player so the players page has a row.
+    const reg = await request.post(`${API}/auth/register`, {
+      headers: { 'X-Compete-Operator': slug },
+      data: {
+        email: `pl-${slug}@example.com`,
+        password: 'correct-horse-battery',
+        nickname: `pl_${slug.slice(-6).replace(/-/g, '_')}`,
+        country: 'NL',
+        locale: 'en',
+        acceptTerms: true,
+        confirmAdult: true,
+      },
+    });
+    expect(reg.ok()).toBe(true);
+
+    await page.goto('/en/compete/admin');
+    await expect(page).toHaveURL(/\/en\/compete\/admin\/login/);
+    await page.getByLabel('E-mail').fill(email);
+    await page.getByLabel('Password').fill(password);
+    await page.getByRole('button', { name: 'Log in' }).click();
+    await expect(page.getByRole('heading', { name: 'Overview' })).toBeVisible();
+    await expect(page.getByText('Your revenue')).toBeVisible();
+    await axe(page, 'admin overview');
+
+    const nav = page.getByRole('navigation', { name: 'Admin menu' });
+    await nav.getByRole('link', { name: 'Players' }).click();
+    await expect(page.getByRole('cell', { name: `pl-${slug}@example.com` })).toBeVisible();
+    await axe(page, 'admin players');
+
+    await nav.getByRole('link', { name: 'Payouts' }).click();
+    await expect(page.getByText('Nothing here.')).toBeVisible();
+
+    await nav.getByRole('link', { name: 'Settings' }).click();
+    await page.getByLabel('Name').fill('E2E Royale');
+    await page.getByLabel('Prize split (%)').fill('60 / 30 / 20');
+    await page.getByRole('button', { name: 'Save settings' }).click();
+    await expect(page.getByRole('alert')).toContainText('not consistent');
+    await page.getByLabel('Prize split (%)').fill('60 / 25 / 15');
+    await page.getByRole('button', { name: 'Save settings' }).click();
+    await expect(page.getByRole('status')).toHaveText('Saved.');
+    await axe(page, 'admin settings');
+    const pub = await (
+      await request.get(`${API}/operator`, { headers: { 'X-Compete-Operator': slug } })
+    ).json();
+    expect(pub).toMatchObject({ name: 'E2E Royale', prizeSplitBps: [6000, 2500, 1500] });
+
+    await nav.getByRole('link', { name: 'Audit log' }).click();
+    await expect(page.getByText('The audit chain is intact.')).toBeVisible();
+    await expect(page.getByText('compete.operator.settings_updated')).toBeVisible();
+  });
+
+  test('superadmin creates an operator and gets a one-time owner link', async ({
+    page,
+    request,
+  }) => {
+    const email = `sa-${Date.now().toString(36)}@example.com`;
+    expect(
+      (
+        await request.post(`${API}/dev/staff`, { data: { email, password: 'super-password-123' } })
+      ).ok(),
+    ).toBe(true);
+    await page.goto('/en/compete/admin/login');
+    await page.getByLabel('E-mail').fill(email);
+    await page.getByLabel('Password').fill('super-password-123');
+    await page.getByRole('button', { name: 'Log in' }).click();
+    await page
+      .getByRole('navigation', { name: 'Admin menu' })
+      .getByRole('link', { name: 'Operators' })
+      .click();
+    const slug = `new-${Date.now().toString(36)}`;
+    await page.getByLabel('Name', { exact: true }).fill('New Arena');
+    await page.getByLabel('Identifier').fill(slug);
+    await page.getByLabel('Owner e-mail').fill(`owner-${slug}@example.com`);
+    await page.getByRole('button', { name: 'Create operator' }).click();
+    await expect(page.getByText('One-time link for the owner')).toBeVisible();
+    await expect(page.getByText(/\/en\/compete\/admin\/setup\?token=/)).toBeVisible();
+    await expect(page.getByText(slug, { exact: true })).toBeVisible();
+    await axe(page, 'admin operators');
   });
 });

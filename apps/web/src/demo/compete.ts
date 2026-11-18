@@ -92,11 +92,83 @@ interface Round {
     me: boolean;
   }[];
 }
+interface Settings {
+  name: string;
+  primaryColor: string;
+  domain: string | null;
+  timeZone: string;
+  startMinuteOfDay: number;
+  durationMinutes: number;
+  entryFeeMinor: string;
+  startBalanceMinor: string;
+  leverage: number;
+  maxDrawdownBps: number;
+  minParticipants: number;
+  prizePoolBps: number;
+  prizeSplitBps: number[];
+}
+interface AuditRow {
+  id: number;
+  ts: number;
+  actorType: 'USER' | 'ADMIN' | 'SYSTEM';
+  action: string;
+  entityType: string;
+  entityId: string;
+}
 interface State {
   players: Player[];
   session: string | null;
   rounds: Round[];
   entries: Entry[];
+  adminSession?: boolean;
+  settings?: Settings;
+  suspended?: Record<string, string>;
+  paid?: string[];
+  audit?: AuditRow[];
+}
+
+/** Preview-only operator admin (never exists outside the demo build). */
+export const DEMO_OPERATOR_ADMIN = {
+  email: 'operator@yourarena.demo',
+  password: 'demo-operator-2026',
+};
+const DEFAULT_SETTINGS: Settings = {
+  name: 'Your Arena',
+  primaryColor: '#AFE604',
+  domain: null,
+  timeZone: 'Europe/Amsterdam',
+  startMinuteOfDay: 1200,
+  durationMinutes: 60,
+  entryFeeMinor: '1000',
+  startBalanceMinor: '10000000',
+  leverage: 100,
+  maxDrawdownBps: 1000,
+  minParticipants: 50,
+  prizePoolBps: 8000,
+  prizeSplitBps: [5000, 3000, 2000],
+};
+
+/** Example history for the admin panel: 14 past daily rounds (deterministic). */
+function exampleHistory() {
+  const day = 86_400_000;
+  const today = new Date();
+  today.setUTCHours(19, 0, 0, 0);
+  return Array.from({ length: 14 }, (_, i) => {
+    const n = i === 9 ? 41 : 58 + ((i * 37) % 90);
+    const cancelled = n < 50;
+    const pot = cancelled ? 0n : BigInt(n) * 1000n;
+    const b = prizeBreakdown(P, cancelled ? 0 : n);
+    return {
+      id: `hist-${i}`,
+      startsAt: today.getTime() - (i + 1) * day,
+      participants: cancelled ? 0 : n,
+      status: cancelled ? 'CANCELLED' : 'SETTLED',
+      pot,
+      prizes: b.prizesMinor,
+      share: cancelled ? 0n : b.operatorMinor,
+      winners: [0, 1, 2].map((k) => `example_${NAMES[(i * 3 + k) % NAMES.length]}`),
+    };
+  });
 }
 
 const NAMES = [
@@ -520,8 +592,8 @@ export function createCompeteDemo(market: DemoMarket) {
   on('GET', '/operator', () =>
     json(200, {
       slug: 'your-arena',
-      name: 'Your Arena',
-      primaryColor: '#AFE604',
+      name: (st.settings ?? DEFAULT_SETTINGS).name,
+      primaryColor: (st.settings ?? DEFAULT_SETTINGS).primaryColor,
       timeZone: 'Europe/Amsterdam',
       startMinuteOfDay: 1200,
       durationMinutes: 60,
@@ -733,6 +805,280 @@ export function createCompeteDemo(market: DemoMarket) {
       ),
     );
   });
+  // ---------------------------------------------------------------- operator admin (preview)
+  const needAdmin = () => {
+    if (!st.adminSession) throw new Fail(401, 'TOKEN_INVALID');
+  };
+  const history = exampleHistory();
+  const staffDto = () => ({
+    id: 'demo-staff',
+    email: DEMO_OPERATOR_ADMIN.email,
+    role: 'OWNER',
+    operatorId: 'demo-operator',
+    operatorName: (st.settings ?? DEFAULT_SETTINGS).name,
+    operatorSlug: 'your-arena',
+    twoFactorEnabled: true,
+    twoFactorRequired: false,
+  });
+  const audit = (
+    action: string,
+    entityType: string,
+    entityId: string,
+    actorType: AuditRow['actorType'] = 'ADMIN',
+  ) => {
+    st.audit ??= [];
+    st.audit.unshift({
+      id: (st.audit[0]?.id ?? 1000) + 1,
+      ts: Date.now(),
+      actorType,
+      action,
+      entityType,
+      entityId,
+    });
+  };
+  const roundSummaries = () => [
+    ...st.rounds
+      .slice()
+      .reverse()
+      .map((r) => {
+        const d = roundDto(r, null);
+        const settled = r.status === 'SETTLED';
+        const b = prizeBreakdown(P, d.participants);
+        return {
+          id: r.id,
+          status: r.status,
+          startsAt: d.startsAt,
+          participants: d.participants,
+          potMinor: String(d.potMinor),
+          prizesMinor: String(settled ? b.prizesMinor.reduce((a, x) => a + x, 0n) : 0n),
+          operatorShareMinor: String(settled ? b.operatorMinor : 0n),
+        };
+      }),
+    ...history.map((h) => ({
+      id: h.id,
+      status: h.status,
+      startsAt: new Date(h.startsAt).toISOString(),
+      participants: h.participants,
+      potMinor: String(h.pot),
+      prizesMinor: String(h.prizes.reduce((a, x) => a + x, 0n)),
+      operatorShareMinor: String(h.share),
+    })),
+  ];
+  const payoutRows = () => {
+    const rows = history
+      .filter((h) => h.status === 'SETTLED')
+      .flatMap((h, i) =>
+        h.prizes.map((amount, k) => ({
+          id: `${h.id}-p${k}`,
+          entryId: `${h.id}-e${k}`,
+          roundId: h.id,
+          roundStartsAt: new Date(h.startsAt).toISOString(),
+          nickname: h.winners[k]!,
+          rank: k + 1,
+          amountMinor: String(amount),
+          currency: 'USD',
+          status:
+            i < 2 && !(st.paid ?? []).includes(`${h.id}-p${k}`) ? 'AWAITING_PAYOUT' : 'SUCCEEDED',
+          updatedAt: new Date(h.startsAt + 3_600_000).toISOString(),
+        })),
+      );
+    return rows;
+  };
+
+  on('POST', '/admin/auth/login', (_m, b) => {
+    if (
+      String(b.email ?? '').toLowerCase() !== DEMO_OPERATOR_ADMIN.email ||
+      b.password !== DEMO_OPERATOR_ADMIN.password
+    )
+      throw new Fail(401, 'INVALID_CREDENTIALS');
+    st.adminSession = true;
+    audit('compete.admin.login', 'CompeteStaff', 'demo-staff');
+    return json(200, { accessToken: 'demo-compete-admin', expiresIn: 3600, staff: staffDto() });
+  });
+  on('POST', '/admin/auth/refresh', () => {
+    needAdmin();
+    return json(200, { accessToken: 'demo-compete-admin', expiresIn: 3600 });
+  });
+  on('POST', '/admin/auth/logout', () => {
+    st.adminSession = false;
+    return json(204);
+  });
+  on('GET', '/admin/me', () => (needAdmin(), json(200, staffDto())));
+  on('GET', '/admin/overview', () => {
+    needAdmin();
+    const cur = current()!;
+    const recent = roundSummaries()
+      .filter((r) => r.status === 'SETTLED' || r.status === 'CANCELLED')
+      .slice(0, 14);
+    const settled = recent.filter((r) => r.status === 'SETTLED');
+    const sum = (xs: string[]) => xs.reduce((a, x) => a + BigInt(x), 0n);
+    const awaiting = payoutRows().filter((p) => p.status === 'AWAITING_PAYOUT');
+    return json(200, {
+      current: roundDto(cur, null),
+      currency: 'USD',
+      players: EXAMPLE_PLAYERS + 180 + st.players.length,
+      roundsSettled30d: settled.length,
+      roundsCancelled30d: recent.length - settled.length,
+      entries30d: settled.reduce((a, r) => a + r.participants, 0),
+      netEntryFeesMinor30d: String(sum(settled.map((r) => r.potMinor))),
+      prizesMinor30d: String(sum(settled.map((r) => r.prizesMinor))),
+      operatorRevenueMinor30d: String(sum(settled.map((r) => r.operatorShareMinor))),
+      awaitingPayouts: awaiting.length,
+      awaitingPayoutsMinor: String(sum(awaiting.map((p) => p.amountMinor))),
+      recent,
+    });
+  });
+  on('GET', '/admin/rounds', () => (needAdmin(), json(200, roundSummaries())));
+  on('GET', '/admin/rounds/{id}', (m) => {
+    needAdmin();
+    const sum = roundSummaries().find((r) => r.id === m[1]);
+    if (!sum) throw new Fail(404, 'ROUND_NOT_FOUND');
+    const live = st.rounds.find((r) => r.id === m[1]);
+    const rows = live
+      ? live.status === 'OPEN'
+        ? []
+        : leaderboard(live, null).rows.map((r, i) => ({
+            ...r,
+            entryId: `e${i}`,
+            playerId: `p${i}`,
+          }))
+      : sum.status === 'CANCELLED'
+        ? []
+        : Array.from({ length: sum.participants }, (_, i) => {
+            const h = history.find((x) => x.id === sum.id)!;
+            const ret = Math.round(900 - i * (1700 / sum.participants));
+            return {
+              rank: i + 1,
+              nickname: i < 3 ? h.winners[i]! : `example_${NAMES[(i * 7) % NAMES.length]}${i}`,
+              returnBps: String(ret),
+              equityMinor: String(
+                P.startBalanceMinor + (P.startBalanceMinor * BigInt(ret)) / 10_000n,
+              ),
+              status: ret <= -1000 ? 'BREACHED' : 'FINISHED',
+              prizeMinor: String(h.prizes[i] ?? 0n),
+              isMe: false,
+              entryId: `${h.id}-e${i}`,
+              playerId: `${h.id}-p${i}`,
+            };
+          });
+    return json(200, {
+      round: sum,
+      endsAt: new Date(Date.parse(sum.startsAt) + 3_600_000).toISOString(),
+      minParticipants: 50,
+      entryFeeMinor: '1000',
+      currency: 'USD',
+      rows,
+    });
+  });
+  on('GET', '/admin/players', (_m, _b, req) => {
+    needAdmin();
+    const q = (new URL(req.url).searchParams.get('q') ?? '').toLowerCase();
+    const real = st.players.map((p) => ({
+      id: p.id,
+      nickname: p.nickname,
+      email: p.email,
+      country: p.country,
+      createdAt: new Date().toISOString(),
+    }));
+    const examples = NAMES.map((n, i) => ({
+      id: `ex-${n}`,
+      nickname: `example_${n}`,
+      email: `${n}@example.invalid`,
+      country: ['NL', 'DE', 'ES', 'BE', 'FR'][i % 5]!,
+      createdAt: new Date(Date.now() - (i + 2) * 86_400_000).toISOString(),
+    }));
+    const items = [...real, ...examples]
+      .filter((p) => !q || p.nickname.toLowerCase().includes(q) || p.email.includes(q))
+      .map((p, i) => {
+        const reason = st.suspended?.[p.id];
+        return {
+          ...p,
+          status: reason ? 'SUSPENDED' : 'ACTIVE',
+          statusReason: reason ?? null,
+          entries: p.id.startsWith('ex-') ? 3 + (i % 9) : 1,
+          prizesMinor: p.id.startsWith('ex-') && i % 4 === 0 ? '1840' : '0',
+        };
+      });
+    return json(200, { items, nextCursor: null });
+  });
+  on('POST', '/admin/players/{id}/suspend', (m, b) => {
+    needAdmin();
+    st.suspended = { ...(st.suspended ?? {}), [m[1]!]: String(b.reason ?? '') };
+    audit('compete.player.suspended', 'CompetePlayer', m[1]!);
+    return json(204);
+  });
+  on('POST', '/admin/players/{id}/reactivate', (m) => {
+    needAdmin();
+    const { [m[1]!]: _x, ...rest } = st.suspended ?? {};
+    st.suspended = rest;
+    audit('compete.player.reactivated', 'CompetePlayer', m[1]!);
+    return json(204);
+  });
+  on('GET', '/admin/payouts', (_m, _b, req) => {
+    needAdmin();
+    const status =
+      new URL(req.url).searchParams.get('status') === 'SUCCEEDED' ? 'SUCCEEDED' : 'AWAITING_PAYOUT';
+    return json(
+      200,
+      payoutRows().filter((p) => p.status === status),
+    );
+  });
+  on('POST', '/admin/payouts/{id}/mark-paid', (m) => {
+    needAdmin();
+    const row = payoutRows().find((p) => p.id === m[1]);
+    if (!row) throw new Fail(404, 'PAYOUT_NOT_FOUND');
+    if (row.status !== 'AWAITING_PAYOUT') throw new Fail(409, 'PAYOUT_NOT_PENDING');
+    st.paid = [...(st.paid ?? []), row.id];
+    audit('compete.prize.marked_paid', 'CompetePayment', row.id);
+    return json(204);
+  });
+  on(
+    'GET',
+    '/admin/settings',
+    () => (needAdmin(), json(200, { ...(st.settings ?? DEFAULT_SETTINGS), currency: 'USD' })),
+  );
+  on('PUT', '/admin/settings', (_m, b) => {
+    needAdmin();
+    const split = (b.prizeSplitBps as number[]) ?? [];
+    if (
+      split.reduce((a, x) => a + x, 0) !== 10_000 ||
+      split.some((x, i) => i > 0 && x > split[i - 1]!)
+    )
+      throw new Fail(422, 'SETTINGS_INVALID');
+    st.settings = { ...DEFAULT_SETTINGS, ...(b as unknown as Settings) };
+    audit('compete.operator.settings_updated', 'CompeteOperator', 'demo-operator');
+    return json(200, { ...st.settings, currency: 'USD' });
+  });
+  on('GET', '/admin/audit', () => {
+    needAdmin();
+    const base: AuditRow[] = history.slice(0, 6).flatMap((h, i) => [
+      {
+        id: 900 - i * 3,
+        ts: h.startsAt + 3_600_000,
+        actorType: 'SYSTEM' as const,
+        action: h.status === 'SETTLED' ? 'compete.round.settled' : 'compete.round.cancelled',
+        entityType: 'CompeteRound',
+        entityId: h.id,
+      },
+      {
+        id: 899 - i * 3,
+        ts: h.startsAt,
+        actorType: 'SYSTEM' as const,
+        action: 'compete.round.started',
+        entityType: 'CompeteRound',
+        entityId: h.id,
+      },
+    ]);
+    const items = [...(st.audit ?? []), ...base].map((r) => ({
+      ...r,
+      id: String(r.id),
+      ts: new Date(r.ts).toISOString(),
+      actorId: null,
+      data: {},
+    }));
+    return json(200, { items, nextCursor: null, chainIntact: true });
+  });
+
   // Demo-only shortcut so the preview does not have to wait for the start time.
   on('POST', '/dev/start-now', () => {
     const r = current();

@@ -6220,7 +6220,10 @@ export interface operations {
   CompeteAdminController_login: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -6243,7 +6246,10 @@ export interface operations {
   CompeteAdminController_refresh: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -6262,7 +6268,10 @@ export interface operations {
   CompeteAdminController_logout: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -6279,7 +6288,10 @@ export interface operations {
   CompeteAdminController_setup: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -6301,7 +6313,10 @@ export interface operations {
   CompeteAdminController_me: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -6320,7 +6335,10 @@ export interface operations {
   CompeteAdminController_twoFactorSetup: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -6339,7 +6357,10 @@ export interface operations {
   CompeteAdminController_twoFactorEnable: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -6360,8 +6381,9 @@ export interface operations {
   CompeteAdminController_overview: {
     parameters: {
       query?: never;
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path?: never;
       cookie?: never;
@@ -6380,11 +6402,12 @@ export interface operations {
   };
   CompeteAdminController_rounds: {
     parameters: {
-      query: {
-        cursor: string;
+      query?: {
+        cursor?: string;
       };
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path?: never;
       cookie?: never;
@@ -6404,8 +6427,9 @@ export interface operations {
   CompeteAdminController_round: {
     parameters: {
       query?: never;
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path: {
         id: string;
@@ -6426,12 +6450,13 @@ export interface operations {
   };
   CompeteAdminController_players: {
     parameters: {
-      query: {
-        q: string;
-        cursor: string;
+      query?: {
+        q?: string;
+        cursor?: string;
       };
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path?: never;
       cookie?: never;
@@ -6451,8 +6476,9 @@ export interface operations {
   CompeteAdminController_suspend: {
     parameters: {
       query?: never;
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path: {
         id: string;
@@ -6476,8 +6502,9 @@ export interface operations {
   CompeteAdminController_reactivate: {
     parameters: {
       query?: never;
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path: {
         id: string;
@@ -6500,11 +6527,12 @@ export interface operations {
   };
   CompeteAdminController_payouts: {
     parameters: {
-      query: {
-        status: string;
+      query?: {
+        status?: 'AWAITING_PAYOUT' | 'SUCCEEDED';
       };
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path?: never;
       cookie?: never;
@@ -6524,8 +6552,9 @@ export interface operations {
   CompeteAdminController_markPaid: {
     parameters: {
       query?: never;
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path: {
         id: string;
@@ -6549,8 +6578,9 @@ export interface operations {
   CompeteAdminController_settings: {
     parameters: {
       query?: never;
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path?: never;
       cookie?: never;
@@ -6570,8 +6600,9 @@ export interface operations {
   CompeteAdminController_updateSettings: {
     parameters: {
       query?: never;
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path?: never;
       cookie?: never;
@@ -6594,11 +6625,12 @@ export interface operations {
   };
   CompeteAdminController_audit: {
     parameters: {
-      query: {
-        cursor: string;
+      query?: {
+        cursor?: string;
       };
-      header: {
-        'x-compete-admin-operator': string;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
       };
       path?: never;
       cookie?: never;
@@ -6618,7 +6650,10 @@ export interface operations {
   CompeteAdminController_operators: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -6637,7 +6672,10 @@ export interface operations {
   CompeteAdminController_createOperator: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -6660,7 +6698,10 @@ export interface operations {
   CompeteAdminController_setStatus: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path: {
         id: string;
       };
@@ -6685,7 +6726,10 @@ export interface operations {
   CompeteAdminController_reinvite: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
       path: {
         id: string;
       };

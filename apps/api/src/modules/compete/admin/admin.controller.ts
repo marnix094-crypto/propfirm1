@@ -1,8 +1,9 @@
 import {
+  createParamDecorator,
+  type ExecutionContext,
   Body,
   Controller,
   Get,
-  Headers,
   HttpCode,
   Inject,
   Param,
@@ -16,6 +17,8 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiHeader,
+  ApiQuery,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
@@ -64,13 +67,22 @@ import {
 const COOKIE = 'compete_admin_rt';
 const COOKIE_PATH = '/api/v1/compete/admin/auth';
 const UUID = new ParseUUIDPipe({ version: '7' });
-const OP_HEADER = 'x-compete-admin-operator';
+/** Superadmins: slug of the operator to administer (ignored for owners). */
+const OperatorChoice = createParamDecorator((_d: unknown, ctx: ExecutionContext) => {
+  const h = ctx.switchToHttp().getRequest<Request>().headers['x-compete-admin-operator'];
+  return Array.isArray(h) ? h[0] : h;
+});
 
 /**
  * Compete admin panel API (D104). Separate from the prop-firm admin (/admin) and from players.
  * @Public() only opts out of the prop-firm JWT guard; CompeteAdminGuard protects the routes.
  */
 @ApiTags('compete-admin')
+@ApiHeader({
+  name: 'X-Compete-Admin-Operator',
+  required: false,
+  description: 'Superadmins only: slug of the operator to administer',
+})
 @Public()
 @Controller('compete/admin')
 export class CompeteAdminController {
@@ -177,17 +189,18 @@ export class CompeteAdminController {
   @ApiBearerAuth()
   @Get('overview')
   @ApiOkResponse({ type: CompeteAdminOverviewDto })
-  async overview(@Staff() s: StaffCtx, @Headers(OP_HEADER) op?: string) {
+  async overview(@Staff() s: StaffCtx, @OperatorChoice() op?: string) {
     return this.admin.overview(await this.admin.scope(s, op));
   }
 
   @UseGuards(CompeteAdminGuard)
   @ApiBearerAuth()
   @Get('rounds')
+  @ApiQuery({ name: 'cursor', required: false })
   @ApiOkResponse({ type: [CompeteAdminRoundSummaryDto] })
   async rounds(
     @Staff() s: StaffCtx,
-    @Headers(OP_HEADER) op?: string,
+    @OperatorChoice() op?: string,
     @Query('cursor') cursor?: string,
   ) {
     return (await this.admin.rounds(await this.admin.scope(s, op), cursor)).items;
@@ -197,21 +210,19 @@ export class CompeteAdminController {
   @ApiBearerAuth()
   @Get('rounds/:id')
   @ApiOkResponse({ type: CompeteAdminRoundDetailDto })
-  async round(
-    @Staff() s: StaffCtx,
-    @Param('id', UUID) id: string,
-    @Headers(OP_HEADER) op?: string,
-  ) {
+  async round(@Staff() s: StaffCtx, @Param('id', UUID) id: string, @OperatorChoice() op?: string) {
     return this.admin.round(await this.admin.scope(s, op), id);
   }
 
   @UseGuards(CompeteAdminGuard)
   @ApiBearerAuth()
   @Get('players')
+  @ApiQuery({ name: 'q', required: false })
+  @ApiQuery({ name: 'cursor', required: false })
   @ApiOkResponse({ type: CompeteAdminPlayerPageDto })
   async players(
     @Staff() s: StaffCtx,
-    @Headers(OP_HEADER) op?: string,
+    @OperatorChoice() op?: string,
     @Query('q') q?: string,
     @Query('cursor') cursor?: string,
   ) {
@@ -227,7 +238,7 @@ export class CompeteAdminController {
     @Staff() s: StaffCtx,
     @Param('id', UUID) id: string,
     @Body() dto: CompeteAdminReasonDto,
-    @Headers(OP_HEADER) op?: string,
+    @OperatorChoice() op?: string,
   ) {
     await this.admin.setPlayerStatus(s, await this.admin.scope(s, op), id, 'SUSPENDED', dto.reason);
   }
@@ -241,7 +252,7 @@ export class CompeteAdminController {
     @Staff() s: StaffCtx,
     @Param('id', UUID) id: string,
     @Body() dto: CompeteAdminReasonDto,
-    @Headers(OP_HEADER) op?: string,
+    @OperatorChoice() op?: string,
   ) {
     await this.admin.setPlayerStatus(s, await this.admin.scope(s, op), id, 'ACTIVE', dto.reason);
   }
@@ -249,10 +260,11 @@ export class CompeteAdminController {
   @UseGuards(CompeteAdminGuard)
   @ApiBearerAuth()
   @Get('payouts')
+  @ApiQuery({ name: 'status', required: false, enum: ['AWAITING_PAYOUT', 'SUCCEEDED'] })
   @ApiOkResponse({ type: [CompeteAdminPayoutDto] })
   async payouts(
     @Staff() s: StaffCtx,
-    @Headers(OP_HEADER) op?: string,
+    @OperatorChoice() op?: string,
     @Query('status') status?: string,
   ) {
     return this.admin.payouts(
@@ -270,7 +282,7 @@ export class CompeteAdminController {
     @Staff() s: StaffCtx,
     @Param('id', UUID) id: string,
     @Body() dto: CompeteAdminMarkPaidDto,
-    @Headers(OP_HEADER) op?: string,
+    @OperatorChoice() op?: string,
   ) {
     await this.admin.markPaid(s, await this.admin.scope(s, op), id, dto.reference);
   }
@@ -279,7 +291,7 @@ export class CompeteAdminController {
   @ApiBearerAuth()
   @Get('settings')
   @ApiOkResponse({ type: CompeteAdminSettingsDto })
-  async settings(@Staff() s: StaffCtx, @Headers(OP_HEADER) op?: string) {
+  async settings(@Staff() s: StaffCtx, @OperatorChoice() op?: string) {
     return this.admin.settings(await this.admin.scope(s, op));
   }
 
@@ -290,7 +302,7 @@ export class CompeteAdminController {
   async updateSettings(
     @Staff() s: StaffCtx,
     @Body() dto: UpdateCompeteSettingsDto,
-    @Headers(OP_HEADER) op?: string,
+    @OperatorChoice() op?: string,
   ) {
     return this.admin.updateSettings(s, await this.admin.scope(s, op), dto);
   }
@@ -298,10 +310,11 @@ export class CompeteAdminController {
   @UseGuards(CompeteAdminGuard)
   @ApiBearerAuth()
   @Get('audit')
+  @ApiQuery({ name: 'cursor', required: false })
   @ApiOkResponse({ type: CompeteAdminAuditPageDto })
   async audit(
     @Staff() s: StaffCtx,
-    @Headers(OP_HEADER) op?: string,
+    @OperatorChoice() op?: string,
     @Query('cursor') cursor?: string,
   ) {
     return this.admin.auditLog(await this.admin.scope(s, op), cursor);

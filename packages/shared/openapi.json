@@ -3875,7 +3875,17 @@
     "/api/v1/compete/admin/auth/login": {
       "post": {
         "operationId": "CompeteAdminController_login",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -3906,7 +3916,17 @@
     "/api/v1/compete/admin/auth/refresh": {
       "post": {
         "operationId": "CompeteAdminController_refresh",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -3927,7 +3947,17 @@
     "/api/v1/compete/admin/auth/logout": {
       "post": {
         "operationId": "CompeteAdminController_logout",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "204": {
             "description": ""
@@ -3941,7 +3971,17 @@
     "/api/v1/compete/admin/auth/setup": {
       "post": {
         "operationId": "CompeteAdminController_setup",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -3965,7 +4005,17 @@
     "/api/v1/compete/admin/me": {
       "get": {
         "operationId": "CompeteAdminController_me",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -3991,7 +4041,17 @@
     "/api/v1/compete/admin/2fa/setup": {
       "post": {
         "operationId": "CompeteAdminController_twoFactorSetup",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "",
@@ -4017,7 +4077,17 @@
     "/api/v1/compete/admin/2fa/enable": {
       "post": {
         "operationId": "CompeteAdminController_twoFactorEnable",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -4048,9 +4118,10 @@
         "operationId": "CompeteAdminController_overview",
         "parameters": [
           {
-            "name": "x-compete-admin-operator",
-            "required": true,
+            "name": "X-Compete-Admin-Operator",
             "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -4083,16 +4154,17 @@
         "operationId": "CompeteAdminController_rounds",
         "parameters": [
           {
-            "name": "x-compete-admin-operator",
-            "required": true,
+            "name": "X-Compete-Admin-Operator",
             "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
             "name": "cursor",
-            "required": true,
+            "required": false,
             "in": "query",
             "schema": {
               "type": "string"
@@ -4129,17 +4201,18 @@
         "operationId": "CompeteAdminController_round",
         "parameters": [
           {
-            "name": "id",
-            "required": true,
-            "in": "path",
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "x-compete-admin-operator",
+            "name": "id",
             "required": true,
-            "in": "header",
+            "in": "path",
             "schema": {
               "type": "string"
             }
@@ -4172,16 +4245,17 @@
         "operationId": "CompeteAdminController_players",
         "parameters": [
           {
-            "name": "x-compete-admin-operator",
-            "required": true,
+            "name": "X-Compete-Admin-Operator",
             "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
             "name": "q",
-            "required": true,
+            "required": false,
             "in": "query",
             "schema": {
               "type": "string"
@@ -4189,7 +4263,7 @@
           },
           {
             "name": "cursor",
-            "required": true,
+            "required": false,
             "in": "query",
             "schema": {
               "type": "string"
@@ -4223,17 +4297,18 @@
         "operationId": "CompeteAdminController_suspend",
         "parameters": [
           {
-            "name": "id",
-            "required": true,
-            "in": "path",
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "x-compete-admin-operator",
+            "name": "id",
             "required": true,
-            "in": "header",
+            "in": "path",
             "schema": {
               "type": "string"
             }
@@ -4269,17 +4344,18 @@
         "operationId": "CompeteAdminController_reactivate",
         "parameters": [
           {
-            "name": "id",
-            "required": true,
-            "in": "path",
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "x-compete-admin-operator",
+            "name": "id",
             "required": true,
-            "in": "header",
+            "in": "path",
             "schema": {
               "type": "string"
             }
@@ -4315,18 +4391,23 @@
         "operationId": "CompeteAdminController_payouts",
         "parameters": [
           {
-            "name": "x-compete-admin-operator",
-            "required": true,
+            "name": "X-Compete-Admin-Operator",
             "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
             "name": "status",
-            "required": true,
+            "required": false,
             "in": "query",
             "schema": {
+              "enum": [
+                "AWAITING_PAYOUT",
+                "SUCCEEDED"
+              ],
               "type": "string"
             }
           }
@@ -4361,17 +4442,18 @@
         "operationId": "CompeteAdminController_markPaid",
         "parameters": [
           {
-            "name": "id",
-            "required": true,
-            "in": "path",
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "x-compete-admin-operator",
+            "name": "id",
             "required": true,
-            "in": "header",
+            "in": "path",
             "schema": {
               "type": "string"
             }
@@ -4407,9 +4489,10 @@
         "operationId": "CompeteAdminController_settings",
         "parameters": [
           {
-            "name": "x-compete-admin-operator",
-            "required": true,
+            "name": "X-Compete-Admin-Operator",
             "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -4440,9 +4523,10 @@
         "operationId": "CompeteAdminController_updateSettings",
         "parameters": [
           {
-            "name": "x-compete-admin-operator",
-            "required": true,
+            "name": "X-Compete-Admin-Operator",
             "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -4485,16 +4569,17 @@
         "operationId": "CompeteAdminController_audit",
         "parameters": [
           {
-            "name": "x-compete-admin-operator",
-            "required": true,
+            "name": "X-Compete-Admin-Operator",
             "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
             "name": "cursor",
-            "required": true,
+            "required": false,
             "in": "query",
             "schema": {
               "type": "string"
@@ -4526,7 +4611,17 @@
     "/api/v1/compete/admin/operators": {
       "get": {
         "operationId": "CompeteAdminController_operators",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -4553,7 +4648,17 @@
       },
       "post": {
         "operationId": "CompeteAdminController_createOperator",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -4590,6 +4695,15 @@
       "post": {
         "operationId": "CompeteAdminController_setStatus",
         "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "id",
             "required": true,
@@ -4635,6 +4749,15 @@
       "post": {
         "operationId": "CompeteAdminController_reinvite",
         "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "id",
             "required": true,

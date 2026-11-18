@@ -169,6 +169,46 @@ async function openFunded(page) {
       await logout(page, false);
       await adminLogin(page);
     }
+
+    // Compete (separate product): example arena, live player dashboard, operator admin.
+    const cctx = await browser.newContext({
+      viewport: { width: 1440, height: 900 },
+      deviceScaleFactor: 2,
+      reducedMotion: 'reduce',
+    });
+    const c = await cctx.newPage();
+    await c.goto(BASE);
+    await c.locator('header').getByRole('link', { name: 'Compete' }).first().click();
+    await c.getByRole('link', { name: 'See the example' }).click();
+    await c.getByText('Starts in').first().waitFor();
+    await shot(c, 'compete-home', { wait: 1500 });
+    await c.getByRole('link', { name: 'Join', exact: true }).click();
+    await c.getByLabel('E-mail').fill('player@example.com');
+    await c.getByLabel('Nickname').fill('bull_rider');
+    await c.getByLabel('Password').fill('correct-horse-battery');
+    await c.getByLabel('I am 18 years or older.').check();
+    await c.getByLabel('I accept the competition rules and terms.').check();
+    await c.getByRole('button', { name: 'Create account' }).click();
+    await c
+      .getByRole('button', { name: /Join for/ })
+      .first()
+      .click();
+    await c.getByRole('button', { name: 'Pay (test)' }).click();
+    await c.getByRole('button', { name: 'Start the round now (demo)' }).click();
+    await c.getByRole('button', { name: 'Buy' }).waitFor({ timeout: 15000 });
+    await sleep(2500);
+    await c.getByLabel('Quantity').fill('0.250');
+    await c.getByRole('button', { name: 'Buy' }).click();
+    await shot(c, 'compete-dashboard', { wait: 6000 });
+    await c.goto(BASE);
+    await c.locator('header').getByRole('link', { name: 'Compete' }).first().click();
+    await c.getByRole('link', { name: 'Operator login' }).click();
+    await c.getByLabel('E-mail').fill('operator@yourarena.demo');
+    await c.getByLabel('Password').fill('demo-operator-2026');
+    await c.getByRole('button', { name: 'Log in' }).click();
+    await c.getByText('Your revenue').waitFor();
+    await shot(c, 'compete-admin', { wait: 1500 });
+    await cctx.close();
   } finally {
     await browser.close();
     server.kill();

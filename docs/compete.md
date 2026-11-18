@@ -69,10 +69,20 @@ Op de Daily Funded-website, strikt gescheiden in `apps/web/src/features/compete/
 - Demo-preview: `src/demo/compete.ts` (rondes van 10 min, 57 fictieve `example_*`-spelers, knop "Start de ronde nu (demo)").
 - E2E: `apps/web/e2e/compete.spec.ts` (eigen operator per test via `POST /compete/dev/operators`).
 
+## Beheer en verkoop (fase C3, D104–D105)
+
+- API `/api/v1/compete/admin/*` (`modules/compete/admin`): login (+ TOTP), refresh, wachtwoord via eenmalige link,
+  2FA instellen, `overview`, `rounds`, `rounds/:id`, `players` (+ `suspend`/`reactivate`), `payouts` (+ `mark-paid`),
+  `settings` (GET/PUT), `audit`; superadmin: `operators` (lijst/aanmaken/status/heruitnodigen).
+- Web `/{lang}/compete/admin/*` (`features/compete/admin`, eigen client/sessie, namespace `competeAdmin`):
+  login, setup, beveiliging (QR), overzicht met grafiek, rondes, spelers, uitbetalingen, instellingen, audit log, operators.
+- Website: `/{lang}/products/compete` (`features/site/compete-product-page.tsx`), screenshots via `pnpm --filter @brand/web screens`.
+- Tests: `apps/api/test/compete-admin.e2e.test.ts`, `apps/web/e2e/compete.spec.ts`.
+
 ## Volgende fases
 
-- **C3** — productpagina op de Daily Funded-website + apart operator-beheerpanel (merk, inleg, speeltijd,
-  deelnemers, uitbetalingen).
+- **Later** — echte betaal- en uitbetaalprovider (na vergunning), KYC voor winnaars,
+  verantwoord-spelen-limieten en e-mailnotificaties.
 
 ## Juridisch (open)
 

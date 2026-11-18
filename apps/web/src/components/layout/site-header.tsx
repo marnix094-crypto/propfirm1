@@ -57,7 +57,7 @@ export function SiteHeader() {
                 <a
                   href={`/${lang}#${id}`}
                   onClick={go(id)}
-                  className="rounded-sm px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg"
+                  className="rounded-sm px-3 py-2 text-sm font-medium whitespace-nowrap text-muted transition-colors hover:text-fg"
                 >
                   {t(`site.nav.${key}`)}
                 </a>
@@ -71,14 +71,14 @@ export function SiteHeader() {
           </div>
           <ThemeToggle />
           <Link
-            to={`/${lang}/compete`}
-            className="hidden rounded-sm px-2 py-2 text-sm font-medium text-muted hover:text-fg lg:inline"
+            to={`/${lang}/products/compete`}
+            className="hidden rounded-sm px-2 py-2 text-sm font-medium whitespace-nowrap text-muted hover:text-fg xl:inline"
           >
             {t('site.nav.compete')}
           </Link>
           <Link
             to={`/${lang}/admin/login`}
-            className="hidden rounded-sm px-2 py-2 text-sm font-medium text-muted hover:text-fg lg:inline"
+            className="hidden rounded-sm px-2 py-2 text-sm font-medium whitespace-nowrap text-muted hover:text-fg 2xl:inline"
           >
             {t('site.nav.partnerLogin')}
           </Link>
@@ -92,7 +92,7 @@ export function SiteHeader() {
           </Button>
           <button
             type="button"
-            className="inline-flex size-10 items-center justify-center rounded-sm border border-border bg-card lg:hidden"
+            className="inline-flex size-10 items-center justify-center rounded-sm border border-border bg-card xl:hidden"
             aria-expanded={open}
             aria-controls="site-mobile-nav"
             aria-label={open ? t('nav.closeMenu') : t('nav.openMenu')}
@@ -110,7 +110,7 @@ export function SiteHeader() {
         <nav
           id="site-mobile-nav"
           aria-label={t('nav.main')}
-          className="border-t border-border px-4 pb-5 lg:hidden"
+          className="border-t border-border px-4 pb-5 xl:hidden"
         >
           <ul className="flex flex-col py-2">
             {SITE_NAV.map(({ id, key }) => (
@@ -131,7 +131,7 @@ export function SiteHeader() {
               <Link to={`/${lang}/login`}>{t('site.nav.liveDemo')}</Link>
             </Button>
             <Button variant="ghost" asChild>
-              <Link to={`/${lang}/compete`}>{t('site.nav.compete')}</Link>
+              <Link to={`/${lang}/products/compete`}>{t('site.nav.compete')}</Link>
             </Button>
             <Button variant="ghost" asChild>
               <Link to={`/${lang}/admin/login`}>{t('site.nav.partnerLogin')}</Link>

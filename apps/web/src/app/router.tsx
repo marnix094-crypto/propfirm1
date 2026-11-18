@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 import { createBrowserRouter, createMemoryRouter, Navigate, type RouteObject } from 'react-router';
 import { LangLayout } from './lang-layout';
 import { RootRedirect } from './root-redirect';
@@ -22,6 +23,58 @@ const routes: RouteObject[] = [
         path: 'storefront',
         lazy: () =>
           import('@/features/landing/landing-page').then((m) => ({ Component: m.LandingPage })),
+      },
+      {
+        // Compete admin panel (D104): own login + shell; never linked from player pages.
+        path: 'compete/admin/login',
+        lazy: () =>
+          import('@/features/compete/admin/auth-pages').then((m) => ({
+            Component: m.CompeteAdminLoginPage,
+          })),
+      },
+      {
+        path: 'compete/admin/setup',
+        lazy: () =>
+          import('@/features/compete/admin/auth-pages').then((m) => ({
+            Component: m.CompeteAdminSetupPage,
+          })),
+      },
+      {
+        path: 'compete/admin',
+        lazy: () =>
+          import('@/features/compete/admin/layout').then((m) => ({
+            Component: () => (
+              <m.RequireCompeteAdmin>
+                <m.CompeteAdminLayout />
+              </m.RequireCompeteAdmin>
+            ),
+          })),
+        children: [
+          ['', 'CompeteAdminOverviewPage'],
+          ['rounds', 'CompeteAdminRoundsPage'],
+          ['rounds/:id', 'CompeteAdminRoundPage'],
+          ['players', 'CompeteAdminPlayersPage'],
+          ['payouts', 'CompeteAdminPayoutsPage'],
+          ['settings', 'CompeteAdminSettingsPage'],
+          ['audit', 'CompeteAdminAuditPage'],
+          ['operators', 'CompeteAdminOperatorsPage'],
+          ['security', 'CompeteAdminSecurityPage'],
+        ].map(([path, name]) => ({
+          ...(path ? { path } : { index: true }),
+          lazy: () =>
+            (name === 'CompeteAdminSecurityPage'
+              ? import('@/features/compete/admin/auth-pages')
+              : import('@/features/compete/admin/pages')
+            ).then((m) => ({ Component: (m as unknown as Record<string, ComponentType>)[name!]! })),
+        })) as RouteObject[],
+      },
+      {
+        // Daily Funded website: product page of the compete software (B2B).
+        path: 'products/compete',
+        lazy: () =>
+          import('@/features/site/compete-product-page').then((m) => ({
+            Component: m.CompeteProductPage,
+          })),
       },
       {
         // Compete — separate product (D97/D103): own layout, session and API client.

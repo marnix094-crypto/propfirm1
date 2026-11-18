@@ -1583,6 +1583,106 @@
           "Switch client modules on or off"
         ]
       }
+    },
+    "compete": {
+      "seo": {
+        "title": "Daily trading competitions as white label — {{brand}}",
+        "description": "Run a daily paid trading competition under your own brand: live leaderboard, risk rules, prize pool, admin panel."
+      },
+      "hero": {
+        "eyebrow": "New product · Compete",
+        "title1": "Daily trading competitions,",
+        "title2": "under your brand.",
+        "body": "Players pay a fixed entry, trade one hour on a virtual account at real market prices and compete for the prize pool. You set the rules and keep the operator share — we run the software.",
+        "cta": "Book a demo",
+        "example": "See the example"
+      },
+      "shots": {
+        "caption": "Real screenshots of the example operator with example data. Test payments only.",
+        "dashboard": "Player dashboard of a live round: countdown, prize pool, chart, order ticket, loss-limit meter and live leaderboard",
+        "home": "Home page of the example competition with countdown and rules",
+        "homeTitle": "Your competition site",
+        "homeBody": "A home page with the next round, the rules and the prizes — in your brand, on your domain.",
+        "admin": "Operator admin panel: revenue, prize pool per round and payouts",
+        "adminTitle": "Your admin panel",
+        "adminBody": "Revenue, players, rounds, payouts, settings and an audit log — separate from everything else."
+      },
+      "how": {
+        "eyebrow": "How it works",
+        "title": "One round a day. Fully automatic.",
+        "body": "The platform opens registration, starts and ends the round, closes positions, ranks players and splits the pot.",
+        "step1": {
+          "title": "We set you up",
+          "body": "Daily Funded creates your operator and one admin account for you."
+        },
+        "step2": {
+          "title": "You set the rules",
+          "body": "Name, colour, domain, start time, entry fee, start balance, leverage, loss limit, minimum players and prize split."
+        },
+        "step3": {
+          "title": "Players compete",
+          "body": "One hour of trading with live prices and a live leaderboard. Below the minimum, everyone is refunded automatically."
+        },
+        "step4": {
+          "title": "Settle and pay out",
+          "body": "The top places are ranked by return; you see who to pay and record each payout."
+        }
+      },
+      "features": {
+        "eyebrow": "Features",
+        "title": "Everything a competition needs.",
+        "live": {
+          "title": "Live leaderboard",
+          "body": "Rankings update every two seconds over WebSocket, on desktop and mobile."
+        },
+        "rules": {
+          "title": "Fair, enforced rules",
+          "body": "Static loss limit, one entry per round, minimum players and automatic refunds — checked on every price tick."
+        },
+        "brand": {
+          "title": "Fully white label",
+          "body": "Your name, colours and domain. Players never see ours."
+        },
+        "admin": {
+          "title": "Separate admin panel",
+          "body": "One owner per operator, two-step verification, every action in an unchangeable audit log."
+        },
+        "market": {
+          "title": "Real market prices",
+          "body": "Crypto perpetuals with spread, slippage and commission — the same engine as our prop-firm platform."
+        },
+        "languages": {
+          "title": "EN · NL · ES",
+          "body": "All player and admin screens in three languages."
+        }
+      },
+      "revenue": {
+        "eyebrow": "Example calculation",
+        "title": "What one round can bring in.",
+        "body": "Every entry goes into the pot. By default 80% is paid to the top 3 (50/30/20) and 20% stays with you.",
+        "players": "Players per round",
+        "fee": "Entry fee",
+        "pot": "Prize pool",
+        "prizes": "Paid to the top 3",
+        "yours": "Your share",
+        "month": "About {{amount}} per month at one round a day.",
+        "disclaimer": "Example calculation, not a forecast or guarantee. Actual numbers depend on your players, costs, taxes and licence."
+      },
+      "legal": {
+        "title": "Paid competitions need a licence",
+        "body": "A paid entry with a prize pool is usually regulated as gambling in the EU. You run the competition under your own licence; we supply the software. Until a licensed payment provider is connected, only test payments are possible.",
+        "points": [
+          "Age confirmation (18+) and country blocklist",
+          "Self-exclusion status and player suspension",
+          "Automatic refunds below the minimum",
+          "Unchangeable, verifiable audit log"
+        ]
+      },
+      "cta": {
+        "title": "Launch your own competition.",
+        "body": "We show you the player and admin side in a 30-minute demo.",
+        "operatorLogin": "Operator login"
+      }
     }
   },
   "admin": {

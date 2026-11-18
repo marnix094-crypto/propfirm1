@@ -1583,6 +1583,106 @@
           "Activar o desactivar módulos de clientes"
         ]
       }
+    },
+    "compete": {
+      "seo": {
+        "title": "Competiciones diarias de trading en marca blanca — {{brand}}",
+        "description": "Gestiona una competición diaria de trading de pago con tu propia marca: clasificación en vivo, reglas de riesgo, bote y panel de administración."
+      },
+      "hero": {
+        "eyebrow": "Nuevo producto · Compete",
+        "title1": "Competiciones diarias de trading,",
+        "title2": "con tu marca.",
+        "body": "Los jugadores pagan una inscripción fija, operan una hora con una cuenta virtual a precios reales de mercado y compiten por el bote. Tú defines las reglas y te quedas la parte del operador — nosotros gestionamos el software.",
+        "cta": "Reserva una demo",
+        "example": "Ver el ejemplo"
+      },
+      "shots": {
+        "caption": "Capturas reales del operador de ejemplo con datos de ejemplo. Solo pagos de prueba.",
+        "dashboard": "Panel del jugador en una ronda en vivo: cuenta atrás, bote, gráfico, orden, medidor del límite de pérdida y clasificación en vivo",
+        "home": "Página de inicio de la competición de ejemplo con cuenta atrás y reglas",
+        "homeTitle": "Tu sitio de competición",
+        "homeBody": "Una página de inicio con la próxima ronda, las reglas y los premios — con tu marca, en tu dominio.",
+        "admin": "Panel del operador: ingresos, bote por ronda y pagos",
+        "adminTitle": "Tu panel de administración",
+        "adminBody": "Ingresos, jugadores, rondas, pagos, configuración y registro de auditoría — separado de todo lo demás."
+      },
+      "how": {
+        "eyebrow": "Cómo funciona",
+        "title": "Una ronda al día. Totalmente automático.",
+        "body": "La plataforma abre la inscripción, inicia y termina la ronda, cierra posiciones, clasifica a los jugadores y reparte el bote.",
+        "step1": {
+          "title": "Te damos de alta",
+          "body": "Daily Funded crea tu operador y una cuenta de administrador para ti."
+        },
+        "step2": {
+          "title": "Tú defines las reglas",
+          "body": "Nombre, color, dominio, hora de inicio, inscripción, saldo inicial, apalancamiento, límite de pérdida, mínimo de jugadores y reparto."
+        },
+        "step3": {
+          "title": "Los jugadores compiten",
+          "body": "Una hora de trading con precios y clasificación en vivo. Por debajo del mínimo, todos reciben el reembolso automáticamente."
+        },
+        "step4": {
+          "title": "Liquidar y pagar",
+          "body": "Los primeros puestos se ordenan por rentabilidad; ves a quién pagar y registras cada pago."
+        }
+      },
+      "features": {
+        "eyebrow": "Funciones",
+        "title": "Todo lo que necesita una competición.",
+        "live": {
+          "title": "Clasificación en vivo",
+          "body": "Se actualiza cada dos segundos por WebSocket, en escritorio y móvil."
+        },
+        "rules": {
+          "title": "Reglas justas y aplicadas",
+          "body": "Límite de pérdida fijo, una inscripción por ronda, mínimo de jugadores y reembolsos automáticos — comprobados en cada tick."
+        },
+        "brand": {
+          "title": "Marca blanca completa",
+          "body": "Tu nombre, colores y dominio. Los jugadores nunca ven el nuestro."
+        },
+        "admin": {
+          "title": "Panel de administración separado",
+          "body": "Un propietario por operador, verificación en dos pasos y cada acción en un registro de auditoría inmutable."
+        },
+        "market": {
+          "title": "Precios reales de mercado",
+          "body": "Perpetuos de cripto con spread, deslizamiento y comisión — el mismo motor que nuestra plataforma de prop firm."
+        },
+        "languages": {
+          "title": "EN · NL · ES",
+          "body": "Todas las pantallas de jugador y administración en tres idiomas."
+        }
+      },
+      "revenue": {
+        "eyebrow": "Cálculo de ejemplo",
+        "title": "Lo que puede generar una ronda.",
+        "body": "Cada inscripción va al bote. Por defecto el 80% se reparte al top 3 (50/30/20) y el 20% es para ti.",
+        "players": "Jugadores por ronda",
+        "fee": "Inscripción",
+        "pot": "Bote",
+        "prizes": "Para el top 3",
+        "yours": "Tu parte",
+        "month": "Aproximadamente {{amount}} al mes con una ronda al día.",
+        "disclaimer": "Cálculo de ejemplo, no una previsión ni garantía. Las cifras reales dependen de tus jugadores, costes, impuestos y licencia."
+      },
+      "legal": {
+        "title": "Las competiciones de pago requieren licencia",
+        "body": "Una inscripción de pago con bote suele estar regulada como juego en la UE. Tú gestionas la competición con tu propia licencia; nosotros aportamos el software. Hasta conectar un proveedor de pagos con licencia, solo son posibles pagos de prueba.",
+        "points": [
+          "Confirmación de edad (18+) y lista de países bloqueados",
+          "Autoexclusión y suspensión de jugadores",
+          "Reembolsos automáticos por debajo del mínimo",
+          "Registro de auditoría inmutable y verificable"
+        ]
+      },
+      "cta": {
+        "title": "Lanza tu propia competición.",
+        "body": "Te mostramos el lado del jugador y del administrador en una demo de 30 minutos.",
+        "operatorLogin": "Acceso de operador"
+      }
     }
   },
   "admin": {

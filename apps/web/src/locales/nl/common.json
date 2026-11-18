@@ -904,12 +904,7 @@
     "payoutFundedOnly": "Uitbetalingen zijn voor funded accounts",
     "yourEquity": "Jouw equity",
     "memberSince": "Lid sinds {{date}}",
-    "monthly": "Resultaat per maand",
-    "activeAccounts": "Actieve accounts",
-    "viewAll": "Alles bekijken",
-    "since": "sinds {{date}}",
-    "profitLoss": "Winst/verlies",
-    "marginUsed": "Margin gebruikt"
+    "monthly": "Resultaat per maand"
   },
   "stats": {
     "subtitle": "Alle statistieken van {{account}}",

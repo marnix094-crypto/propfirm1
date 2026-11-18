@@ -904,12 +904,7 @@
     "payoutFundedOnly": "Los pagos son para cuentas financiadas",
     "yourEquity": "Tu equity",
     "memberSince": "Miembro desde {{date}}",
-    "monthly": "Resultado por mes",
-    "activeAccounts": "Cuentas activas",
-    "viewAll": "Ver todas",
-    "since": "desde {{date}}",
-    "profitLoss": "Ganancia/Pérdida",
-    "marginUsed": "Margen usado"
+    "monthly": "Resultado por mes"
   },
   "stats": {
     "subtitle": "Todas las estadísticas de {{account}}",

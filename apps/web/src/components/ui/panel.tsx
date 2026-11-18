@@ -44,7 +44,7 @@ export function PageHeader({
       <div className="min-w-0">
         <title>{title}</title>
         {/* The top bar shows the title on desktop; it stays the page's h1 for assistive tech. */}
-        <h1 className="font-display text-xl font-semibold tracking-tight lg:sr-only">{title}</h1>
+        <h1 className="text-xl font-bold tracking-tight lg:sr-only">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}
       </div>
       {actions}

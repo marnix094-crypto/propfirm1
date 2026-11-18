@@ -30,7 +30,6 @@ import { amsterdamToday, PnlCalendar } from './pnl-calendar';
 import { AccountClosedBanner, RulesCard } from '../rules/rules-card';
 import { FundingCard } from '../funding/funding-card';
 import {
-  ActiveAccounts,
   ChangePill,
   IconTile,
   pctOf,
@@ -129,7 +128,7 @@ export function PortfolioPage() {
         <StatCard label={t('dashboard.capital')}>
           <div className="flex flex-wrap items-center gap-3">
             <p
-              className="font-display text-3xl font-semibold tracking-tight tabular-nums"
+              className="text-3xl font-bold tracking-tight tabular-nums"
               data-testid="account-value"
             >
               {money(account.equityMinor)}
@@ -152,7 +151,7 @@ export function PortfolioPage() {
         {account.kind === 'FUNDED' && scaling ? (
           <StatCard label={t('dashboard.scalingTarget')}>
             <div className="flex items-baseline justify-between gap-3">
-              <p className="font-display text-2xl font-semibold tracking-tight tabular-nums">
+              <p className="text-2xl font-bold tracking-tight tabular-nums">
                 {money(scaling.profitMinor)}
               </p>
               <p className="text-sm text-muted tabular-nums">{money(scaling.targetMinor)}</p>
@@ -167,7 +166,7 @@ export function PortfolioPage() {
         ) : (
           <StatCard label={t('dashboard.marginFreeTitle')}>
             <div className="flex items-baseline justify-between gap-3">
-              <p className="font-display text-2xl font-semibold tracking-tight tabular-nums">
+              <p className="text-2xl font-bold tracking-tight tabular-nums">
                 {money(account.freeMarginMinor)}
               </p>
               <p className="text-sm text-muted tabular-nums">{marginHealth(account)}%</p>
@@ -185,7 +184,7 @@ export function PortfolioPage() {
             </IconTile>
             {account.kind === 'FUNDED' && payout ? (
               <div>
-                <p className="font-display text-2xl font-semibold tracking-tight tabular-nums">
+                <p className="text-2xl font-bold tracking-tight tabular-nums">
                   {payout.eligible
                     ? t('dashboard.payoutNow')
                     : (() => {
@@ -222,7 +221,7 @@ export function PortfolioPage() {
               </IconTile>
               <div>
                 <p className="text-sm text-muted">{t('dashboard.yourEquity')}</p>
-                <p className="font-display text-2xl font-semibold tracking-tight tabular-nums">
+                <p className="text-2xl font-bold tracking-tight tabular-nums">
                   {money(account.equityMinor)}
                 </p>
               </div>
@@ -265,9 +264,6 @@ export function PortfolioPage() {
           account={account}
         />
       </div>
-
-      {/* Row 3: active accounts */}
-      <ActiveAccounts current={account} />
 
       {/* Row 4: calendar · rules & funding */}
       <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">

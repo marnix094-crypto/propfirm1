@@ -1,15 +1,12 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
 import { useQueries } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { ArrowDown, ArrowUp, CalendarDays, ChevronRight } from 'lucide-react';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/feedback';
 import { call, client, type Account } from '@/lib/api-client';
-import { qk, useAccounts } from '@/hooks/use-trading';
+import { qk } from '@/hooks/use-trading';
 import { useFormat } from '@/hooks/use-format';
-import { useTradingUi } from '@/stores/trading';
 import { cn } from '@/lib/cn';
 import { amsterdamToday, shiftMonth } from './pnl-calendar';
 
@@ -64,49 +61,6 @@ export function ProgressBar({ value, label }: { value: number; label: string }) 
         animate={{ scaleX: value / 100 }}
         transition={{ duration: 0.9, ease: EASE }}
       />
-    </div>
-  );
-}
-
-/** "Barcode" progress bar from the design: many thin segments, filled up to the value. */
-export function SegmentBar({
-  value,
-  label,
-  tone = 'lime',
-}: {
-  value: number;
-  label: string;
-  tone?: 'lime' | 'warn';
-}) {
-  const reduce = useReducedMotion();
-  const n = 48;
-  const filled = Math.round((value / 100) * n);
-  return (
-    <div
-      role="progressbar"
-      aria-label={label}
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={Math.round(value)}
-      className="flex h-6 items-stretch gap-[3px]"
-    >
-      {Array.from({ length: n }, (_, i) => (
-        <motion.span
-          key={i}
-          aria-hidden="true"
-          className={cn(
-            'w-full origin-bottom rounded-[2px]',
-            i < filled
-              ? tone === 'lime'
-                ? 'bg-[var(--meter-safe)]'
-                : 'bg-[var(--meter-warn)]'
-              : 'bg-[var(--meter-track)]',
-          )}
-          initial={reduce ? false : { scaleY: 0.3, opacity: 0 }}
-          animate={{ scaleY: 1, opacity: 1 }}
-          transition={{ duration: 0.35, ease: EASE, delay: i * 0.012 }}
-        />
-      ))}
     </div>
   );
 }
@@ -198,12 +152,12 @@ export function ProfileCard({
       <div className="flex items-center gap-3">
         <span
           aria-hidden="true"
-          className="inline-flex size-12 items-center justify-center rounded-full bg-[var(--brand-ink)] font-display text-sm font-semibold text-[var(--brand-lime)]"
+          className="inline-flex size-12 items-center justify-center rounded-full bg-[var(--brand-ink)] text-sm font-semibold text-[var(--brand-lime)]"
         >
           {name.slice(0, 2).toUpperCase()}
         </span>
         <div className="min-w-0">
-          <p className="truncate font-display text-lg font-semibold tracking-tight">{name}</p>
+          <p className="truncate text-lg font-bold tracking-tight">{name}</p>
           {memberSince && (
             <p className="text-xs text-muted">
               {t('dashboard.memberSince', { date: memberSince })}
@@ -212,10 +166,7 @@ export function ProfileCard({
         </div>
       </div>
       <p className="mt-6 text-sm text-muted">{t('dashboard.stats.winRate')}</p>
-      <p
-        className="font-display text-4xl font-semibold tracking-tight tabular-nums"
-        data-testid="win-rate"
-      >
+      <p className="text-4xl font-bold tracking-tight tabular-nums" data-testid="win-rate">
         {winRateBps === null ? '—' : f.bps(winRateBps, 2)}
       </p>
       <div
@@ -263,141 +214,3 @@ export function ProfileCard({
 }
 
 /** "Active accounts" cards (size, id, status, period, P&L, win rate, progress bar). */
-export function ActiveAccounts({ current }: { current: Account }) {
-  const { t } = useTranslation();
-  const { lang } = useParams();
-  const navigate = useNavigate();
-  const f = useFormat();
-  const accounts = useAccounts();
-  const setActive = useTradingUi((s) => s.setActiveAccount);
-  const [month] = useState(() => amsterdamToday().slice(0, 7));
-  const list = (accounts.data ?? []).filter((a) => a.status !== 'FAILED' && a.status !== 'CLOSED');
-  const perf = useQueries({
-    queries: list.map((a) => ({
-      queryKey: qk.performance(a.id, month),
-      queryFn: () =>
-        call(() =>
-          client.GET('/api/v1/accounts/{id}/performance', {
-            params: { path: { id: a.id }, query: { month } },
-          }),
-        ),
-    })),
-  });
-  const funding = useQueries({
-    queries: list.map((a) => ({
-      queryKey: qk.funding(a.id),
-      queryFn: () =>
-        call(() => client.GET('/api/v1/accounts/{id}/funding', { params: { path: { id: a.id } } })),
-      enabled: a.kind === 'FUNDED',
-    })),
-  });
-  const date = (iso: string) =>
-    new Intl.DateTimeFormat(f.locale, { dateStyle: 'medium' }).format(new Date(iso));
-
-  return (
-    <Card padding="none" className="p-4 sm:p-5">
-      <div className="flex items-center justify-between gap-3 px-1 pb-4">
-        <h2 className="text-[15px] font-semibold">{t('dashboard.activeAccounts')}</h2>
-        <Link
-          to={`/${lang}/app/track-record`}
-          className="inline-flex items-center gap-1 text-sm font-semibold hover:underline"
-        >
-          {t('dashboard.viewAll')} <ChevronRight className="size-4" aria-hidden="true" />
-        </Link>
-      </div>
-      {accounts.isPending ? (
-        <Skeleton className="h-48 rounded-card" />
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {list.map((a, i) => {
-            const pnl = BigInt(a.equityMinor) - BigInt(a.initialBalanceMinor);
-            const stats = perf[i]?.data?.stats;
-            const scaling = funding[i]?.data?.scaling;
-            const progress =
-              a.kind === 'FUNDED' && scaling
-                ? pctOf(BigInt(scaling.profitMinor), BigInt(scaling.targetMinor))
-                : pctOf(BigInt(a.usedMarginMinor), BigInt(a.equityMinor));
-            const progressLabel =
-              a.kind === 'FUNDED' ? t('dashboard.scalingTarget') : t('dashboard.marginUsed');
-            return (
-              <button
-                key={a.id}
-                type="button"
-                onClick={() => {
-                  setActive(a.id);
-                  void navigate(`/${lang}/app/portfolio`);
-                }}
-                aria-current={a.id === current.id ? 'true' : undefined}
-                className={cn(
-                  'rounded-[18px] border bg-card-muted/60 p-5 text-left transition-colors hover:border-border-strong',
-                  a.id === current.id ? 'border-border-strong' : 'border-border',
-                )}
-              >
-                <span className="flex flex-wrap items-start justify-between gap-2">
-                  <span className="font-display text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl">
-                    {f.moneyWhole(a.initialBalanceMinor, a.currency)}
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="rounded-full border border-border px-2 py-0.5 text-[11px] text-muted">
-                      ID #{a.id.slice(-6).toUpperCase()}
-                    </span>
-                    <span
-                      className={cn(
-                        'rounded-full px-2.5 py-0.5 text-xs font-semibold',
-                        a.kind === 'FUNDED'
-                          ? 'bg-primary text-[var(--btn-primary-fg)]'
-                          : 'border border-border bg-card text-fg',
-                      )}
-                    >
-                      {t(`app.account.kinds.${a.kind}`)}
-                    </span>
-                  </span>
-                </span>
-                <span className="mt-2 flex items-center gap-1.5 text-xs text-muted">
-                  <CalendarDays className="size-3.5" aria-hidden="true" />
-                  {a.label} · {t('dashboard.since', { date: date(a.createdAt) })}
-                </span>
-                <span className="mt-5 grid grid-cols-3 gap-3 text-sm">
-                  <span>
-                    <span className="block text-xs text-muted">{t('dashboard.profitLoss')}</span>
-                    <span
-                      className={cn(
-                        'mt-0.5 block font-display font-semibold tabular-nums',
-                        pnl > 0n ? 'text-profit' : pnl < 0n ? 'text-loss' : undefined,
-                      )}
-                    >
-                      {f.money(pnl, a.currency, { signDisplay: 'exceptZero' })}
-                    </span>
-                  </span>
-                  <span>
-                    <span className="block text-xs text-muted">{t('dashboard.stats.winRate')}</span>
-                    <span className="mt-0.5 block font-display font-semibold tabular-nums">
-                      {stats?.winRateBps == null ? '—' : f.bps(stats.winRateBps, 0)}
-                    </span>
-                  </span>
-                  <span>
-                    <span className="block text-xs text-muted">{t('dashboard.stats.trades')}</span>
-                    <span className="mt-0.5 block font-display font-semibold tabular-nums">
-                      {stats?.trades ?? '—'}
-                    </span>
-                  </span>
-                </span>
-                <span className="mt-5 flex items-center justify-between text-xs">
-                  <span className="text-muted">{progressLabel}</span>
-                  <span className="font-semibold tabular-nums">{progress.toFixed(1)}%</span>
-                </span>
-                <span className="mt-2 block">
-                  <SegmentBar
-                    value={progress}
-                    label={progressLabel}
-                    tone={a.kind === 'FUNDED' ? 'lime' : 'warn'}
-                  />
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </Card>
-  );
-}

@@ -225,9 +225,7 @@ export function AppLayout() {
             <LogoMark className="size-8" />
           </NavLink>
           <div className="hidden min-w-0 lg:block">
-            <p className="truncate font-display text-lg font-semibold tracking-tight">
-              {meta.title}
-            </p>
+            <p className="truncate text-lg font-bold tracking-tight">{meta.title}</p>
             <p className="flex items-center gap-1 text-xs text-muted">
               {meta.section}
               <ChevronRight className="size-3" aria-hidden="true" />

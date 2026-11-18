@@ -904,12 +904,7 @@
     "payoutFundedOnly": "Payouts are for funded accounts",
     "yourEquity": "Your equity",
     "memberSince": "Member since {{date}}",
-    "monthly": "Result per month",
-    "activeAccounts": "Active accounts",
-    "viewAll": "View all",
-    "since": "since {{date}}",
-    "profitLoss": "Profit/Loss",
-    "marginUsed": "Margin used"
+    "monthly": "Result per month"
   },
   "stats": {
     "subtitle": "All-time statistics of {{account}}",

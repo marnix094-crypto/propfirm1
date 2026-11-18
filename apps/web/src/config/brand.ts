@@ -5,6 +5,15 @@ export const brand = {
   supportEmail: 'support@example.com',
 } as const;
 
+/**
+ * Fictional client used on the example storefront (/:lang/storefront) to show what a prop firm
+ * built on Daily Funded looks like. Never presented as a real company.
+ */
+export const exampleFirm = {
+  name: 'Your Firm',
+  legalName: 'Your Firm Ltd. (example)',
+} as const;
+
 /** Real partners only (decision D20). The partner strip is hidden while this list is empty. */
 export const partners: { name: string; logoSrc: string; href?: string }[] = [];
 

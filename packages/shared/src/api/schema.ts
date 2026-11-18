@@ -948,6 +948,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/public/leads': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['LeadsController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/copier': {
     parameters: {
       query?: never;
@@ -1703,6 +1719,21 @@ export interface components {
       payoutsTotalMinor: string;
       competitions: number;
       updatedAt: string;
+    };
+    CreateLeadDto: {
+      name: string;
+      email: string;
+      company: string;
+      website?: string;
+      message?: string;
+      /** @enum {string} */
+      volume?: 'lt100' | '100-1000' | '1000-10000' | 'gt10000' | 'unknown';
+      /** @enum {string} */
+      locale: 'en' | 'nl' | 'es';
+      /** @description Consent to be contacted (privacy policy) */
+      consent: boolean;
+      /** @description Leave empty */
+      fax?: string;
     };
     CopierLinkDto: {
       id: string;
@@ -3113,6 +3144,27 @@ export interface operations {
         content: {
           'application/json': components['schemas']['TransparencyDto'];
         };
+      };
+    };
+  };
+  LeadsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateLeadDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };

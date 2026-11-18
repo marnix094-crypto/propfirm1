@@ -25,7 +25,7 @@ describe('theme store', () => {
     expect(localStorage.getItem('brand-theme')).toBeNull();
 
     useThemeStore.getState().setSurface('site');
-    expect(document.documentElement.dataset).toMatchObject({ surface: 'site', theme: 'light' });
+    expect(document.documentElement.dataset).toMatchObject({ surface: 'site', theme: 'dark' });
     useThemeStore.getState().setSurface('platform');
     expect(useThemeStore.getState().theme).toBe('light');
   });

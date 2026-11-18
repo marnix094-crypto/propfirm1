@@ -5,7 +5,9 @@
 
 ## Product
 
-Prop trading platform + broker-app voor de EU-markt. Talen: **EN (standaard)**, NL, ES (taalprefix in URL, bv. `/en/…`, `/es/…`).
+**Daily Funded is een white-label softwareplatform voor prop firms (B2B, besluit D74).** Wij zijn zelf géén prop firm: andere bedrijven draaien hun eigen merk op onze software. De website (`/{lang}`) verkoopt het platform; `/{lang}/storefront` is een voorbeeld-prop-firm ("Your Firm") die laat zien wat traders van een klant zien.
+
+Functionaliteit van het platform (zoals een klant-prop-firm het inzet): prop trading platform + broker-app voor de EU-markt. Talen: **EN (standaard)**, NL, ES (taalprefix in URL, bv. `/en/…`, `/es/…`).
 
 1. **Instant funding** — trader betaalt een fee en krijgt direct een **gesimuleerd** funded account met winstdeling (accountvaluta USD, fee in EUR). Alleen Instant wordt aangeboden; 1-step/2-step blijven technisch mogelijk in engine/datamodel maar zijn niet actief. De UI zegt overal duidelijk dat accounts gesimuleerd zijn, tenzij er ooit echte kapitaalallocatie wordt ingebouwd.
 2. **Eigen account = gratis demo** (besluit D31) — elke trader krijgt bij registratie een `DEMO`-account met $100.000 virtueel saldo (resetbaar). **Er gaat geen echt geld in of uit; wij houden nooit klantgeld vast.** Een echte broker-koppeling (`LIVE_BROKER`) blijft alleen als interface + mock voor later.
@@ -46,7 +48,7 @@ Prop trading platform + broker-app voor de EU-markt. Talen: **EN (standaard)**, 
 
 **Platform (`/{lang}/app…`) — Daily Funded zwart + lime (D58):** eigen tokenblokken `:root[data-surface='platform'][data-theme=dark|light]` in `tokens.css`; **donker standaard**, eigen opgeslagen thema (`df-platform-theme`), `AppLayout` zet `data-surface="platform"`. Logo-lime `#AFE604` (`--brand-lime`) alleen als vlak/accent; op licht is tekst-accent donker olijf (`--accent-deep` `#3F5C00`). Strak: kaarten radius 12px, knoppen 8px, 1px randen, geen gradients/glows, compacte data. Logo = vector-component `components/layout/logo.tsx` ("DAILY" = currentColor, "FUNDED" = lime). Dashboard: KPI-balk, prestaties (win rate, profit factor …), P&L-kalender per maand (`GET /accounts/:id/performance?month=`), posities-tabel. Zijmenu-config in `features/app/nav.ts` (secties, `soon`/`new`/`lockable`); alle menu-items zijn werkende pagina's (Daily Points, aanbiedingen, ranglijst, competities, transparantie, Trade Copier, backtesting, certificaten); API-modules `rewards`, `community`, `copier`, `certificates`.
 
-**Marketing-site (landing, login) — lichtblauw, premium broker-look** (ongewijzigd):
+**Website & site-pagina's:** dezelfde huisstijl zwart + lime (D75; de lichtblauwe stijl is vervallen), donker standaard (`brand-theme`), display-font **Unbounded** voor koppen (`--font-display`), animaties met `motion/react` (woord-reveal, zelftekenende grafiek, tilt, marquee, scroll-voortgang), alles uit bij `prefers-reduced-motion`. Website-componenten in `features/site/`; demo-aanvragen via `POST /public/leads` (versleuteld opgeslagen). Onderstaande tabel beschrijft de oorspronkelijke (vervallen) lichtblauwe stijl, alleen ter historie:
 
 Alle kleuren als CSS-variabelen in **één** bestand: `apps/web/src/styles/tokens.css`. Componenten gebruiken nooit hex-waarden direct.
 

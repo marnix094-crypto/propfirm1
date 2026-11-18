@@ -1843,6 +1843,30 @@
         ]
       }
     },
+    "/api/v1/public/leads": {
+      "post": {
+        "operationId": "LeadsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLeadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public"
+        ]
+      }
+    },
     "/api/v1/copier": {
       "get": {
         "operationId": "CopierController_overview",
@@ -4493,6 +4517,63 @@
           "payoutsTotalMinor",
           "competitions",
           "updatedAt"
+        ]
+      },
+      "CreateLeadDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "email": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "website": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "volume": {
+            "type": "string",
+            "enum": [
+              "lt100",
+              "100-1000",
+              "1000-10000",
+              "gt10000",
+              "unknown"
+            ]
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "nl",
+              "es"
+            ]
+          },
+          "consent": {
+            "type": "boolean",
+            "description": "Consent to be contacted (privacy policy)"
+          },
+          "fax": {
+            "type": "string",
+            "description": "Leave empty"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "company",
+          "locale",
+          "consent"
         ]
       },
       "CopierLinkDto": {

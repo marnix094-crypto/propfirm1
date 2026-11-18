@@ -1713,6 +1713,12 @@ on('GET', '/public/certificates/{id}', (m) => {
   return json(200, certDto(c));
 });
 
+// Website demo requests: the preview never sends data anywhere.
+on('POST', '/public/leads', (_m, b) => {
+  if (b.consent !== true || !b.email || !b.company) throw new Fail(400, 'VALIDATION_ERROR');
+  return json(204);
+});
+
 /** Route /api/v1/* requests to the in-browser backend; everything else goes to the network. */
 export function installDemoBackend() {
   const original = globalThis.fetch.bind(globalThis);

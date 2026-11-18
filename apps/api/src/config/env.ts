@@ -30,6 +30,8 @@ const schema = z.object({
   APP_BASE_URL: z.string().url().default('http://localhost:5173'),
   SMTP_URL: z.string().url().optional(),
   MAIL_FROM: z.string().default('Daily Funded <no-reply@example.com>'),
+  /** Where demo requests from the marketing site are sent (optional; otherwise only stored). */
+  SALES_EMAIL: z.string().email().optional(),
   /** Payment provider. `fake` = test payments without real money (dev/test only). */
   PAYMENT_PROVIDER: z.enum(['fake']).default('fake'),
   RISK_LOOP_ENABLED: z
@@ -58,6 +60,7 @@ export type AppConfig = Readonly<{
   smtpUrl: string | null;
   mailFrom: string;
   paymentProvider: 'fake';
+  salesEmail: string | null;
 }>;
 
 export const APP_CONFIG = Symbol('APP_CONFIG');
@@ -102,5 +105,6 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     smtpUrl: e.SMTP_URL ?? null,
     mailFrom: e.MAIL_FROM,
     paymentProvider: e.PAYMENT_PROVIDER,
+    salesEmail: e.SALES_EMAIL ?? null,
   };
 }

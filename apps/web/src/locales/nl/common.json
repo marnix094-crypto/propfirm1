@@ -1202,5 +1202,292 @@
     "invalid": "Dit certificaat bestaat niet.",
     "valid": "Dit certificaat is geldig.",
     "verifyNote": "Daily Funded-accounts zijn gesimuleerd. De houder wordt alleen met bijnaam getoond."
+  },
+  "site": {
+    "seo": {
+      "title": "{{brand}} — white-label software voor prop firms",
+      "description": "Start je eigen prop firm op {{brand}}: tradingplatform, regelengine, instant funding, uitbetalingen en tradertools onder jouw merk."
+    },
+    "example": "Voorbeeld",
+    "exampleNote": "Afbeeldingen gebruiken voorbeelddata.",
+    "partlyRoadmap": "Deels roadmap",
+    "nav": {
+      "product": "Product",
+      "builder": "Jouw merk",
+      "how": "Hoe het werkt",
+      "security": "Beveiliging",
+      "faq": "FAQ",
+      "liveDemo": "Live demo",
+      "bookDemo": "Plan een demo"
+    },
+    "hero": {
+      "eyebrow": "White-label software voor prop firms",
+      "titleA": "Start jouw prop firm.",
+      "titleB": "Wij draaien de motor.",
+      "body": "Daily Funded is het complete platform achter een moderne prop firm — tradingterminal, regelengine, instant funding, uitbetalingen en tradertools. Jij brengt het merk en de community.",
+      "seeStorefront": "Bekijk een voorbeeldwinkel",
+      "p1": "Jouw logo, kleuren en domein",
+      "p2": "Gebouwd voor de EU, AVG voorop",
+      "p3": "EN · NL · ES standaard",
+      "stageLabel": "Illustratie van het traderdashboard met voorbeelddata.",
+      "stageFirm": "Jouw Firm",
+      "kpiEquity": "Equity",
+      "kpiToday": "Vandaag",
+      "kpiWin": "Win rate",
+      "meter": "Dagelijkse verlieslimiet",
+      "toastTitle": "Account funded",
+      "toastBody": "$50K instant-account · voorbeeld"
+    },
+    "marquee": [
+      "Regelengine",
+      "Instant funding",
+      "Tradingterminal",
+      "Resultatenkalender",
+      "Ranglijsten",
+      "Competities",
+      "Trade copier",
+      "Backtesting",
+      "Certificaten",
+      "Daily Points",
+      "Tweestapslogin",
+      "Onveranderlijke audit log"
+    ],
+    "product": {
+      "eyebrow": "Product",
+      "title": "Alles waar een prop firm op draait. In één platform.",
+      "body": "Geen template: een werkend platform met realtime risicocontrole, boekhouding in exacte gehele getallen en tools die traders terug laten komen.",
+      "rules": {
+        "title": "Realtime regelengine",
+        "body": "Dagelijks verlies, trailing of statische drawdown, winstdoelen en handelsdagen — bij elke koerstik gecontroleerd. Overtredingen sluiten posities automatisch en worden gelogd.",
+        "daily": "Dagverlies gebruikt",
+        "drawdown": "Max drawdown gebruikt"
+      },
+      "funding": {
+        "title": "Instant funding & checkout",
+        "body": "Verkoop accountgroottes, eigen configuraties en kortingscodes. Accounts worden na betaling automatisch aangemaakt.",
+        "c1": "Producten & offertes op maat",
+        "c2": "Idempotente checkout",
+        "c3": "Adapter voor betaalprovider"
+      },
+      "community": {
+        "title": "Ranglijsten & competities",
+        "body": "Ranglijsten met bijnamen (opt-in) en maandelijkse competities met gelijke startpositie."
+      },
+      "tools": {
+        "title": "Pro tradertools",
+        "body": "Tradingterminal met live grafieken, backtesting-replay, trade copier tussen accounts, notitieboek en een resultatenkalender met win rate en profit factor."
+      },
+      "payouts": {
+        "title": "Winstdeling & uitbetalingen",
+        "body": "Uitbetalingscycli, minimale handelsdagen, scaling plans en een duidelijke checklist per account. Uitbetalingsaanvragen en KYC zijn in ontwikkeling.",
+        "c1": "Winstdeling per regelset",
+        "c2": "Controle op uitbetaalbaarheid",
+        "c3": "Voortgang scaling plan"
+      },
+      "global": {
+        "title": "Gebouwd voor Europa",
+        "body": "Drie talen, prijzen in EUR, accounts in USD, toegankelijk (WCAG 2.2 AA) en mobile-first."
+      },
+      "engagement": {
+        "title": "Klantbinding ingebouwd",
+        "body": "Beloon activiteit en maak van traders vaste klanten.",
+        "c1": "Daily Points & beloningen",
+        "c2": "Persoonlijke kortingscodes",
+        "c3": "Verifieerbare certificaten"
+      }
+    },
+    "statement": {
+      "a": "Jouw merk aan de voorkant.",
+      "b": "Onze motor eronder."
+    },
+    "builder": {
+      "eyebrow": "White label",
+      "title": "In een paar seconden van jou.",
+      "body": "Typ je bedrijfsnaam en kies een kleur — zo past het platform zich aan jouw merk aan. Logo, kleuren, domein, e-mails en talen zijn helemaal van jou.",
+      "formLabel": "Probeer je merk",
+      "name": "Bedrijfsnaam",
+      "placeholder": "Jouw Firm",
+      "color": "Merkkleur",
+      "pick": "Gebruik kleur {{color}}",
+      "custom": "Kies een eigen kleur",
+      "mode": "Thema",
+      "dark": "Donker",
+      "light": "Licht",
+      "note": "Alleen een voorbeeld. In productie upload je ook je logo, stel je je domein in en kies je je lettertypes.",
+      "nav": {
+        "home": "Home",
+        "trade": "Handelen",
+        "stats": "Statistieken",
+        "payouts": "Uitbetalingen",
+        "leaderboard": "Ranglijst"
+      },
+      "buy": "Koop",
+      "sell": "Verkoop",
+      "powered": "Powered by Daily Funded"
+    },
+    "how": {
+      "eyebrow": "Hoe het werkt",
+      "title": "Van idee naar je eigen prop firm.",
+      "body": "Wij richten het platform in en houden het draaiende; jij focust op je merk, je aanbod en je traders.",
+      "brand": {
+        "title": "Maak het je eigen",
+        "body": "Jouw logo, kleuren, domein en taal. Traders zien alleen jouw merk.",
+        "tags": ["Logo & kleuren", "Eigen domein", "EN / NL / ES"]
+      },
+      "configure": {
+        "title": "Stel je aanbod samen",
+        "body": "Kies accountgroottes en prijzen, regelsets, winstdeling en uitbetalingsvoorwaarden. Regelsets hebben versies, zodat bestaande accounts nooit onder je traders veranderen.",
+        "tags": ["Producten & prijzen", "Regelsets met versies", "Uitbetalingsvoorwaarden"]
+      },
+      "launch": {
+        "title": "Lanceer en groei",
+        "body": "Koppel je betaalprovider en ga live. Competities, ranglijsten en beloningen helpen je groeien en je community te behouden.",
+        "tags": ["Jouw betaalprovider", "Competities", "Beloningen"]
+      }
+    },
+    "security": {
+      "eyebrow": "Onder de motorkap",
+      "title": "Gebouwd als een financieel systeem.",
+      "body": "Prop trading draait om vertrouwen. Dit zijn de ontwerpregels waarop het platform is gebouwd.",
+      "money": {
+        "title": "Exact geld",
+        "body": "Elk bedrag is een geheel getal in centen met één centrale afrondingsregel. Geen verrassingen door kommagetallen."
+      },
+      "audit": {
+        "title": "Onveranderlijke audit log",
+        "body": "Elke order, uitvoering, regelovertreding en statuswijziging wordt één keer vastgelegd en met hashes aan elkaar gekoppeld. Wijzigen wordt in de database geblokkeerd."
+      },
+      "idempotent": {
+        "title": "Idempotente orders & betalingen",
+        "body": "Herhaalde verzoeken en dubbelklikken leveren nooit dubbele orders of aankopen op."
+      },
+      "writer": {
+        "title": "Eén schrijver per account",
+        "body": "Accountwijzigingen lopen in één vergrendelde transactie, zodat saldi ook onder belasting kloppen."
+      },
+      "gdpr": {
+        "title": "AVG voorop, hosting in de EU",
+        "body": "Zo min mogelijk persoonsgegevens, versleuteld per veld; publiek alleen bijnamen in plaats van namen."
+      },
+      "auth": {
+        "title": "Veilige accounts",
+        "body": "Tweestapslogin (TOTP), herstelcodes, sessiebeheer en e-mailverificatie."
+      },
+      "a11y": {
+        "title": "Toegankelijk",
+        "body": "WCAG 2.2 AA-contrast, volledig met toetsenbord te bedienen en rekening met minder beweging — automatisch gecontroleerd."
+      },
+      "tests": {
+        "title": "Van begin tot eind getest",
+        "body": "Honderden automatische tests, van de prijsengine tot de browser, bij elke wijziging."
+      },
+      "chain": "Audit-keten",
+      "chainNote": "Elke regel bewaart de hash van de vorige — knoeien breekt de keten."
+    },
+    "roadmap": {
+      "eyebrow": "Roadmap",
+      "title": "Eerlijk over wat er live is.",
+      "body": "We laten je liever een duidelijke roadmap zien dan dat we te veel beloven.",
+      "live": {
+        "title": "Nu live",
+        "items": [
+          "Tradingterminal & cryptomarkten",
+          "Regelengine met automatische overtredingen",
+          "Instant-fundingcatalogus & checkout",
+          "Dashboards, resultatenkalender, statistieken",
+          "Ranglijsten, competities, beloningen",
+          "Trade copier, backtesting, notitieboek"
+        ]
+      },
+      "building": {
+        "title": "In ontwikkeling",
+        "items": [
+          "Koppeling met betaalprovider",
+          "Uitbetalingsaanvragen & KYC",
+          "Beheer-, risico- en auditconsole",
+          "Facturen"
+        ]
+      },
+      "next": {
+        "title": "Hierna",
+        "items": [
+          "Meer markten (forex, indices, metalen)",
+          "Meerdere merken beheren voor partners",
+          "Koppeling met brokers"
+        ]
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Vragen van oprichters.",
+      "what": {
+        "q": "Wat betekent white label hier?",
+        "a": "Je runt je eigen prop-firmmerk op onze software. Je traders zien jouw naam, logo, kleuren en domein; wij leveren en beheren het platform erachter."
+      },
+      "firm": {
+        "q": "Is Daily Funded een prop firm?",
+        "a": "Nee. Daily Funded bouwt software en geeft licenties uit. Het prop-firmaanbod, de voorwaarden en de klanten zijn van jou."
+      },
+      "money": {
+        "q": "Houden jullie geld van traders of klanten aan?",
+        "a": "Nee. Betalingen lopen via je eigen betaalprovider. Funded accounts op het platform zijn gesimuleerd."
+      },
+      "simulated": {
+        "q": "Zijn funded accounts echte tradingaccounts?",
+        "a": "Nee, het zijn gesimuleerde accounts met realistische uitvoering (spread, slippage, commissie). Het platform vermeldt dit duidelijk aan traders."
+      },
+      "markets": {
+        "q": "Welke markten zijn beschikbaar?",
+        "a": "Vandaag crypto-perpetuals, met live of gesimuleerde koersen. Meer markten staan op de roadmap."
+      },
+      "pricing": {
+        "q": "Wat kost het?",
+        "a": "De prijs hangt af van je opzet en volume. Plan een demo en we doen je een voorstel."
+      },
+      "time": {
+        "q": "Hoe snel kunnen we live?",
+        "a": "Dat hangt af van je branding, aanbod en betaalprovider. Dat plannen we samen in het demogesprek."
+      },
+      "data": {
+        "q": "Waar worden gegevens opgeslagen?",
+        "a": "In de EU. Persoonsgegevens worden geminimaliseerd, per veld versleuteld en volgens de AVG verwerkt."
+      }
+    },
+    "contact": {
+      "eyebrow": "Plan een demo",
+      "title": "Laten we jouw prop firm bouwen.",
+      "body": "Vertel ons over je plannen. We laten je het platform zien en hoe het bij jouw merk past.",
+      "points": [
+        "Een live rondleiding langs trader- en firmfuncties",
+        "Jouw branding in het platform",
+        "Een voorstel voor jouw opzet"
+      ],
+      "name": "Je naam",
+      "email": "Zakelijk e-mailadres",
+      "company": "Bedrijf",
+      "website": "Website (optioneel)",
+      "volume": "Verwachte traders per maand",
+      "volumes": {
+        "lt100": "Minder dan 100",
+        "100-1000": "100 – 1.000",
+        "1000-10000": "1.000 – 10.000",
+        "gt10000": "Meer dan 10.000",
+        "unknown": "Weet ik nog niet"
+      },
+      "message": "Wat ben je van plan? (optioneel)",
+      "consent": "Ik ga ermee akkoord dat Daily Funded contact met me opneemt over mijn aanvraag en mijn gegevens daarvoor bewaart (privacybeleid).",
+      "submit": "Demo aanvragen",
+      "thanksTitle": "Bedankt — we nemen contact op.",
+      "thanksBody": "We hebben je aanvraag ontvangen en reageren per e-mail."
+    },
+    "storefront": {
+      "banner": "Voorbeeldwinkel — dit zien jouw traders, met jouw merk.",
+      "back": "Terug naar Daily Funded"
+    },
+    "footer": {
+      "tagline": "White-label software voor prop firms: tradingplatform, regelengine, funding en tradertools onder jouw merk.",
+      "product": "Product",
+      "disclaimer": "{{brand}} levert uitsluitend software. {{brand}} is geen prop firm, broker of beleggingsonderneming, biedt geen tradingaccounts aan het publiek aan en houdt geen klantgeld aan. Accounts op het platform zijn gesimuleerd."
+    }
   }
 }

@@ -1202,5 +1202,292 @@
     "invalid": "Este certificado no existe.",
     "valid": "Este certificado es válido.",
     "verifyNote": "Las cuentas de Daily Funded son simuladas. El titular solo se muestra con su apodo."
+  },
+  "site": {
+    "seo": {
+      "title": "{{brand}} — software de marca blanca para prop firms",
+      "description": "Lanza tu propia prop firm sobre {{brand}}: plataforma de trading, motor de reglas, financiación instantánea, pagos y herramientas para traders con tu marca."
+    },
+    "example": "Ejemplo",
+    "exampleNote": "Las imágenes usan datos de ejemplo.",
+    "partlyRoadmap": "Parcialmente en hoja de ruta",
+    "nav": {
+      "product": "Producto",
+      "builder": "Tu marca",
+      "how": "Cómo funciona",
+      "security": "Seguridad",
+      "faq": "FAQ",
+      "liveDemo": "Demo en vivo",
+      "bookDemo": "Reservar una demo"
+    },
+    "hero": {
+      "eyebrow": "Software de marca blanca para prop firms",
+      "titleA": "Lanza tu prop firm.",
+      "titleB": "Nosotros movemos el motor.",
+      "body": "Daily Funded es la plataforma completa detrás de una prop firm moderna: terminal de trading, motor de reglas, financiación instantánea, pagos y herramientas para traders. Tú pones la marca y la comunidad.",
+      "seeStorefront": "Ver una tienda de ejemplo",
+      "p1": "Tu logo, colores y dominio",
+      "p2": "Hecho para la UE, RGPD primero",
+      "p3": "EN · NL · ES de serie",
+      "stageLabel": "Ilustración del panel del trader con datos de ejemplo.",
+      "stageFirm": "Tu Firma",
+      "kpiEquity": "Equity",
+      "kpiToday": "Hoy",
+      "kpiWin": "Tasa de acierto",
+      "meter": "Límite de pérdida diaria",
+      "toastTitle": "Cuenta financiada",
+      "toastBody": "Cuenta instantánea de $50K · ejemplo"
+    },
+    "marquee": [
+      "Motor de reglas",
+      "Financiación instantánea",
+      "Terminal de trading",
+      "Calendario de resultados",
+      "Clasificaciones",
+      "Competiciones",
+      "Copiador de operaciones",
+      "Backtesting",
+      "Certificados",
+      "Daily Points",
+      "Acceso en dos pasos",
+      "Registro de auditoría inmutable"
+    ],
+    "product": {
+      "eyebrow": "Producto",
+      "title": "Todo lo que necesita una prop firm. En una plataforma.",
+      "body": "No es una plantilla: es una plataforma que funciona, con control de riesgo en tiempo real, contabilidad en enteros exactos y herramientas que hacen volver a los traders.",
+      "rules": {
+        "title": "Motor de reglas en tiempo real",
+        "body": "Pérdida diaria, drawdown dinámico o estático, objetivos de beneficio y días de trading, evaluados en cada tick. Las infracciones cierran posiciones automáticamente y quedan registradas.",
+        "daily": "Pérdida diaria usada",
+        "drawdown": "Drawdown máximo usado"
+      },
+      "funding": {
+        "title": "Financiación instantánea y pago",
+        "body": "Vende tamaños de cuenta, configuraciones a medida y códigos de descuento. Las cuentas se crean automáticamente tras el pago.",
+        "c1": "Productos y presupuestos a medida",
+        "c2": "Pago idempotente",
+        "c3": "Adaptador de proveedor de pagos"
+      },
+      "community": {
+        "title": "Clasificaciones y competiciones",
+        "body": "Clasificaciones con apodos (opcionales) y competiciones mensuales en igualdad de condiciones."
+      },
+      "tools": {
+        "title": "Herramientas profesionales",
+        "body": "Terminal con gráficos en vivo, reproducción de backtesting, copiador entre cuentas, cuaderno y un calendario de resultados con tasa de acierto y factor de beneficio."
+      },
+      "payouts": {
+        "title": "Reparto de beneficios y pagos",
+        "body": "Ciclos de pago, días mínimos de trading, planes de escalado y una lista clara por cuenta. Las solicitudes de pago y el KYC están en desarrollo.",
+        "c1": "Reparto por conjunto de reglas",
+        "c2": "Comprobación de requisitos de pago",
+        "c3": "Progreso del plan de escalado"
+      },
+      "global": {
+        "title": "Hecho para Europa",
+        "body": "Tres idiomas, precios en EUR, cuentas en USD, accesible (WCAG 2.2 AA) y pensado para móvil."
+      },
+      "engagement": {
+        "title": "Fidelización integrada",
+        "body": "Premia la actividad y convierte a los traders en clientes habituales.",
+        "c1": "Daily Points y recompensas",
+        "c2": "Códigos de oferta personales",
+        "c3": "Certificados verificables"
+      }
+    },
+    "statement": {
+      "a": "Tu marca delante.",
+      "b": "Nuestro motor debajo."
+    },
+    "builder": {
+      "eyebrow": "Marca blanca",
+      "title": "Hazla tuya en segundos.",
+      "body": "Escribe el nombre de tu empresa y elige un color: así se adapta la plataforma a tu marca. Logo, colores, dominio, correos e idiomas son tuyos.",
+      "formLabel": "Prueba tu marca",
+      "name": "Nombre de la empresa",
+      "placeholder": "Tu Firma",
+      "color": "Color de marca",
+      "pick": "Usar el color {{color}}",
+      "custom": "Elegir un color propio",
+      "mode": "Tema",
+      "dark": "Oscuro",
+      "light": "Claro",
+      "note": "Solo vista previa. En producción también subes tu logo, configuras tu dominio y eliges tus fuentes.",
+      "nav": {
+        "home": "Inicio",
+        "trade": "Operar",
+        "stats": "Estadísticas",
+        "payouts": "Pagos",
+        "leaderboard": "Clasificación"
+      },
+      "buy": "Comprar",
+      "sell": "Vender",
+      "powered": "Powered by Daily Funded"
+    },
+    "how": {
+      "eyebrow": "Cómo funciona",
+      "title": "De la idea a tu propia prop firm.",
+      "body": "Nosotros configuramos y operamos la plataforma; tú te centras en tu marca, tu oferta y tus traders.",
+      "brand": {
+        "title": "Ponle tu marca",
+        "body": "Tu logo, colores, dominio e idioma. Los traders solo ven tu marca.",
+        "tags": ["Logo y colores", "Dominio propio", "EN / NL / ES"]
+      },
+      "configure": {
+        "title": "Configura tu oferta",
+        "body": "Elige tamaños y precios, conjuntos de reglas, reparto y condiciones de pago. Las reglas tienen versiones, así que las cuentas existentes nunca cambian para tus traders.",
+        "tags": ["Productos y precios", "Reglas versionadas", "Condiciones de pago"]
+      },
+      "launch": {
+        "title": "Lanza y crece",
+        "body": "Conecta tu proveedor de pagos y sal en vivo. Competiciones, clasificaciones y recompensas te ayudan a crecer y retener a tu comunidad.",
+        "tags": ["Tu proveedor de pagos", "Competiciones", "Recompensas"]
+      }
+    },
+    "security": {
+      "eyebrow": "Bajo el capó",
+      "title": "Diseñada como un sistema financiero.",
+      "body": "El trading propietario se basa en la confianza. Estas son las reglas de diseño de la plataforma.",
+      "money": {
+        "title": "Dinero exacto",
+        "body": "Cada importe es un entero en céntimos con una única regla de redondeo. Sin sorpresas de decimales."
+      },
+      "audit": {
+        "title": "Registro de auditoría inmutable",
+        "body": "Cada orden, ejecución, infracción y cambio de estado se escribe una vez y se encadena con hashes. Los cambios se bloquean en la base de datos."
+      },
+      "idempotent": {
+        "title": "Órdenes y pagos idempotentes",
+        "body": "Los reintentos y dobles clics nunca crean órdenes ni compras duplicadas."
+      },
+      "writer": {
+        "title": "Un escritor por cuenta",
+        "body": "Los cambios de cuenta se hacen en una única transacción bloqueada, así los saldos siguen siendo coherentes bajo carga."
+      },
+      "gdpr": {
+        "title": "RGPD primero, alojamiento en la UE",
+        "body": "Datos personales mínimos y cifrados por campo; en público, apodos en lugar de nombres."
+      },
+      "auth": {
+        "title": "Cuentas seguras",
+        "body": "Acceso en dos pasos (TOTP), códigos de recuperación, gestión de sesiones y verificación de correo."
+      },
+      "a11y": {
+        "title": "Accesible",
+        "body": "Contraste WCAG 2.2 AA, uso completo con teclado y soporte de movimiento reducido, comprobado automáticamente."
+      },
+      "tests": {
+        "title": "Probada de principio a fin",
+        "body": "Cientos de pruebas automáticas, del motor de precios al navegador, en cada cambio."
+      },
+      "chain": "Cadena de auditoría",
+      "chainNote": "Cada registro guarda el hash del anterior: cualquier manipulación rompe la cadena."
+    },
+    "roadmap": {
+      "eyebrow": "Hoja de ruta",
+      "title": "Transparentes sobre lo que ya funciona.",
+      "body": "Preferimos mostrarte una hoja de ruta clara a prometer de más.",
+      "live": {
+        "title": "Disponible ya",
+        "items": [
+          "Terminal de trading y mercados cripto",
+          "Motor de reglas con infracciones automáticas",
+          "Catálogo de financiación instantánea y pago",
+          "Paneles, calendario de resultados, estadísticas",
+          "Clasificaciones, competiciones, recompensas",
+          "Copiador, backtesting, cuaderno"
+        ]
+      },
+      "building": {
+        "title": "En desarrollo",
+        "items": [
+          "Integración con proveedor de pagos",
+          "Solicitudes de pago y KYC",
+          "Consola de administración, riesgo y auditoría",
+          "Facturas"
+        ]
+      },
+      "next": {
+        "title": "Después",
+        "items": [
+          "Más mercados (forex, índices, metales)",
+          "Gestión multimarca para socios",
+          "Conexión con brókeres"
+        ]
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Preguntas de fundadores.",
+      "what": {
+        "q": "¿Qué significa marca blanca aquí?",
+        "a": "Operas tu propia marca de prop firm sobre nuestro software. Tus traders ven tu nombre, logo, colores y dominio; nosotros proporcionamos y operamos la plataforma."
+      },
+      "firm": {
+        "q": "¿Daily Funded es una prop firm?",
+        "a": "No. Daily Funded desarrolla y licencia software. La oferta de prop firm, sus condiciones y sus clientes son tuyos."
+      },
+      "money": {
+        "q": "¿Custodiáis dinero de traders o clientes?",
+        "a": "No. Los pagos pasan por tu propio proveedor de pagos. Las cuentas financiadas en la plataforma son simuladas."
+      },
+      "simulated": {
+        "q": "¿Las cuentas financiadas son cuentas reales?",
+        "a": "No, son cuentas simuladas con ejecución realista (spread, deslizamiento, comisión). La plataforma lo indica claramente a los traders."
+      },
+      "markets": {
+        "q": "¿Qué mercados hay?",
+        "a": "Hoy, perpetuos de cripto con precios en vivo o simulados. Más mercados están en la hoja de ruta."
+      },
+      "pricing": {
+        "q": "¿Cuánto cuesta?",
+        "a": "Depende de tu configuración y volumen. Reserva una demo y te haremos una propuesta."
+      },
+      "time": {
+        "q": "¿Cuánto tardamos en lanzar?",
+        "a": "Depende de tu marca, tu oferta y tu proveedor de pagos. Lo planificamos juntos en la demo."
+      },
+      "data": {
+        "q": "¿Dónde se guardan los datos?",
+        "a": "En la UE. Los datos personales se minimizan, se cifran por campo y se tratan según el RGPD."
+      }
+    },
+    "contact": {
+      "eyebrow": "Reservar una demo",
+      "title": "Construyamos tu prop firm.",
+      "body": "Cuéntanos tus planes. Te mostraremos la plataforma y cómo encaja con tu marca.",
+      "points": [
+        "Un recorrido en vivo por las funciones para traders y firmas",
+        "Tu marca dentro de la plataforma",
+        "Una propuesta para tu configuración"
+      ],
+      "name": "Tu nombre",
+      "email": "Correo de empresa",
+      "company": "Empresa",
+      "website": "Sitio web (opcional)",
+      "volume": "Traders previstos al mes",
+      "volumes": {
+        "lt100": "Menos de 100",
+        "100-1000": "100 – 1.000",
+        "1000-10000": "1.000 – 10.000",
+        "gt10000": "Más de 10.000",
+        "unknown": "Aún no lo sé"
+      },
+      "message": "¿Qué tienes en mente? (opcional)",
+      "consent": "Acepto que Daily Funded me contacte sobre mi solicitud y guarde mis datos para ese fin (política de privacidad).",
+      "submit": "Solicitar una demo",
+      "thanksTitle": "Gracias, te contactaremos.",
+      "thanksBody": "Hemos recibido tu solicitud y te responderemos por correo."
+    },
+    "storefront": {
+      "banner": "Tienda de ejemplo: esto es lo que ven tus traders, con tu marca.",
+      "back": "Volver a Daily Funded"
+    },
+    "footer": {
+      "tagline": "Software de marca blanca para prop firms: plataforma de trading, motor de reglas, financiación y herramientas para traders con tu marca.",
+      "product": "Producto",
+      "disclaimer": "{{brand}} solo proporciona software. {{brand}} no es una prop firm, bróker ni empresa de inversión, no ofrece cuentas de trading al público y no custodia fondos de clientes. Las cuentas de la plataforma son simuladas."
+    }
   }
 }

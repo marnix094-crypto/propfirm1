@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router';
 import { MotionConfig } from 'motion/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@fontsource-variable/inter';
+import '@fontsource-variable/unbounded';
 import './styles/globals.css';
 import { router } from './app/router';
 import { isMockData } from './lib/api';

@@ -155,3 +155,5 @@ Catalogus (publiek): `GET /products?type=INSTANT`, `GET /products/:id`, `POST /p
 ## Platformfuncties (na fase 6)
 
 Daily Points: `GET /points`, `POST /points/redeem` (🔑). Aanbiedingen: `GET /offers`; checkout accepteert `offerCode`. Profiel: `GET|PATCH /me/profile` (bijnaam, opt-in). `GET /leaderboard`. Competities: `GET /competitions`, `POST /competitions/:id/join`. Publiek: `GET /public/transparency`, `GET /public/certificates/:id`. Trade Copier: `GET /copier`, `POST /copier/links`, `PATCH|DELETE /copier/links/:id`. `GET /certificates`. Nieuwe foutcodes: `POINTS_INSUFFICIENT`, `OFFER_INVALID|USED|EXPIRED`, `NICKNAME_TAKEN|REQUIRED`, `COMPETITION_NOT_ACTIVE`, `COPIER_SAME_ACCOUNT`, `COPIER_CONFLICT`.
+
+Website: `POST /public/leads` (publiek, 204; `{ name, email, company, website?, message?, volume?, locale, consent: true }`).

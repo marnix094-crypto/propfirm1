@@ -7,7 +7,7 @@ test.describe('instant funding checkout (real API, test payments)', () => {
   test('pricing → sign up → verify → test payment → funded account with progress', async ({
     page,
   }) => {
-    await page.goto('/en');
+    await page.goto('/en/storefront');
     const card = page.getByTestId('pricing-card-instant-25k');
     await card.scrollIntoViewIfNeeded();
     await card.getByRole('button', { name: 'More accounts' }).click();
@@ -70,7 +70,7 @@ test.describe('instant funding checkout (real API, test payments)', () => {
     await page.getByRole('button', { name: 'Verify now (dev)' }).click();
     await expect(page.getByRole('button', { name: 'Verify now (dev)' })).toBeHidden();
 
-    await page.goto('/en');
+    await page.goto('/en/storefront');
     await page
       .getByTestId('pricing-card-instant-5k')
       .getByRole('link', { name: 'Get this account' })

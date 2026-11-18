@@ -75,3 +75,8 @@
 | D71 | Backtesting in de browser met de engine (`engine/backtest`): uitvoering op slotkoers van de candle + commissie, $10K virtueel, niets opgeslagen | besloten |
 | D72 | Certificaten per gekocht funded account, openbaar verifieerbaar via `/{lang}/verify/:id` (bijnaam of anoniem label, nooit persoonsgegevens) | besloten |
 | D73 | Mobiel: getest op 320–390 px zonder horizontaal scrollen; scrollbare tabellen zijn toetsenbord-focusbaar; compact merkteken in de app-header op smalle schermen | besloten |
+| D74 | Positionering: Daily Funded is een **white-label platform** voor prop firms (B2B), geen prop firm. Website verkoopt de software; de oude prop-firmpagina blijft als voorbeeldwinkel `/storefront` met fictieve firma "Your Firm" en duidelijke banner | besloten |
+| D75 | Hele site (website, login, platform) in zwart + lime; donker standaard; display-font Unbounded; lichtblauwe stijl vervallen | besloten |
+| D76 | Website-claims alleen over wat echt werkt; niet-af onderdelen (PSP, KYC/uitbetalingen, admin, facturen) als roadmap gelabeld; geen nep-klantlogo's, -cijfers of -reviews; illustraties gelabeld als voorbeeld; prijs "op aanvraag" | besloten |
+| D77 | Demo-aanvragen (`Lead`): naam, e-mail, bedrijf, website, bericht versleuteld (AES-256-GCM), toestemming verplicht, honeypot, max. 5/uur per IP; optioneel doorgestuurd naar `SALES_EMAIL`. Bewaartermijn nog vast te stellen | besloten (bewaartermijn open) |
+| D78 | Multi-tenant branding (logo/kleuren/domein per klant in het platform zelf) is de volgende stap; het platform toont nu nog het Daily Funded-merk | open |

@@ -33,6 +33,7 @@
   --shadow-float: var(--shadow-float);
 
   --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
 }
 
 @layer base {
@@ -206,4 +207,31 @@
   .certificate {
     break-inside: avoid;
   }
+}
+
+/* ---------- Daily Funded website ---------- */
+.site-grid {
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 30%, transparent 75%);
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+.text-lime-gradient {
+  /* Lime on dark; dark olive on light (AA for large text). */
+  background: linear-gradient(100deg, var(--accent-deep) 10%, var(--chart-line) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }

@@ -11,6 +11,7 @@ import { CommerceModule } from './modules/commerce/commerce.module.js';
 import { JournalModule } from './modules/journal/journal.module.js';
 import { RewardsModule } from './modules/rewards/rewards.module.js';
 import { CommunityModule } from './modules/community/community.module.js';
+import { LeadsModule } from './modules/leads/leads.js';
 import { CopierModule } from './modules/copier/copier.module.js';
 import { CertificatesModule } from './modules/certificates/certificates.js';
 import { HealthController } from './modules/health/health.controller.js';
@@ -41,6 +42,7 @@ import { UsersModule } from './modules/users/users.module.js';
     JournalModule,
     RewardsModule,
     CommunityModule,
+    LeadsModule,
     CopierModule,
     CertificatesModule,
     RealtimeModule,

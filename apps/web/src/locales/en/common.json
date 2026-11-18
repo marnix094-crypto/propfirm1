@@ -1202,5 +1202,292 @@
     "invalid": "This certificate does not exist.",
     "valid": "This certificate is valid.",
     "verifyNote": "Daily Funded accounts are simulated. The holder is shown by nickname only."
+  },
+  "site": {
+    "seo": {
+      "title": "{{brand}} — white-label prop firm software",
+      "description": "Launch your own prop firm on {{brand}}: trading platform, rule engine, instant funding, payouts and trader tools under your brand."
+    },
+    "example": "Example",
+    "exampleNote": "Visuals use example data.",
+    "partlyRoadmap": "Partly roadmap",
+    "nav": {
+      "product": "Product",
+      "builder": "Your brand",
+      "how": "How it works",
+      "security": "Security",
+      "faq": "FAQ",
+      "liveDemo": "Live demo",
+      "bookDemo": "Book a demo"
+    },
+    "hero": {
+      "eyebrow": "White-label prop firm software",
+      "titleA": "Launch your prop firm.",
+      "titleB": "We run the engine.",
+      "body": "Daily Funded is the complete platform behind a modern prop firm — trading terminal, rule engine, instant funding, payouts and trader tools. You bring the brand and the community.",
+      "seeStorefront": "See an example storefront",
+      "p1": "Your logo, colours and domain",
+      "p2": "Built for the EU, GDPR-first",
+      "p3": "EN · NL · ES out of the box",
+      "stageLabel": "Illustration of the trader dashboard with example data.",
+      "stageFirm": "Your Firm",
+      "kpiEquity": "Equity",
+      "kpiToday": "Today",
+      "kpiWin": "Win rate",
+      "meter": "Daily loss limit",
+      "toastTitle": "Account funded",
+      "toastBody": "$50K instant account · example"
+    },
+    "marquee": [
+      "Rule engine",
+      "Instant funding",
+      "Trading terminal",
+      "P&L calendar",
+      "Leaderboards",
+      "Competitions",
+      "Trade copier",
+      "Backtesting",
+      "Certificates",
+      "Daily Points",
+      "Two-step login",
+      "Immutable audit log"
+    ],
+    "product": {
+      "eyebrow": "Product",
+      "title": "Everything a prop firm runs on. In one platform.",
+      "body": "Not a template: a working platform with real-time risk checks, accounting in exact integers and tools that keep traders coming back.",
+      "rules": {
+        "title": "Real-time rule engine",
+        "body": "Daily loss, trailing or static drawdown, profit targets and trading days — evaluated on every price tick. Breaches close positions automatically and are logged.",
+        "daily": "Daily loss used",
+        "drawdown": "Max drawdown used"
+      },
+      "funding": {
+        "title": "Instant funding & checkout",
+        "body": "Sell account sizes, custom configurations and discount codes. Accounts are created automatically after payment.",
+        "c1": "Products & custom quotes",
+        "c2": "Idempotent checkout",
+        "c3": "Payment provider adapter"
+      },
+      "community": {
+        "title": "Leaderboards & competitions",
+        "body": "Opt-in leaderboards with nicknames and monthly competitions on equal terms."
+      },
+      "tools": {
+        "title": "Pro trader tools",
+        "body": "Trading terminal with live charts, a backtesting replay, trade copier between accounts, notebook and a P&L calendar with win rate and profit factor."
+      },
+      "payouts": {
+        "title": "Profit split & payouts",
+        "body": "Payout cycles, minimum trading days, scaling plans and a clear checklist per account. Payout requests and KYC are in development.",
+        "c1": "Profit split per rule set",
+        "c2": "Payout eligibility checks",
+        "c3": "Scaling plan progress"
+      },
+      "global": {
+        "title": "Built for Europe",
+        "body": "Three languages, EUR pricing, USD accounts, accessible (WCAG 2.2 AA) and mobile-first."
+      },
+      "engagement": {
+        "title": "Retention built in",
+        "body": "Reward activity and turn traders into regulars.",
+        "c1": "Daily Points & rewards",
+        "c2": "Personal offer codes",
+        "c3": "Verifiable certificates"
+      }
+    },
+    "statement": {
+      "a": "Your brand on the front.",
+      "b": "Our engine underneath."
+    },
+    "builder": {
+      "eyebrow": "White label",
+      "title": "Make it yours in seconds.",
+      "body": "Type your firm name and pick a colour — this is how the platform re-brands for you. Logo, colours, domain, emails and languages are all yours.",
+      "formLabel": "Try your brand",
+      "name": "Firm name",
+      "placeholder": "Your Firm",
+      "color": "Brand colour",
+      "pick": "Use colour {{color}}",
+      "custom": "Choose a custom colour",
+      "mode": "Theme",
+      "dark": "Dark",
+      "light": "Light",
+      "note": "Preview only. In production you also upload your logo, set your domain and choose your fonts.",
+      "nav": {
+        "home": "Home",
+        "trade": "Trade",
+        "stats": "My stats",
+        "payouts": "Payouts",
+        "leaderboard": "Leaderboard"
+      },
+      "buy": "Buy",
+      "sell": "Sell",
+      "powered": "Powered by Daily Funded"
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "From idea to your own prop firm.",
+      "body": "We set up and run the platform; you focus on your brand, your offer and your traders.",
+      "brand": {
+        "title": "Brand it",
+        "body": "Your logo, colours, domain and language. Traders only see your brand.",
+        "tags": ["Logo & colours", "Custom domain", "EN / NL / ES"]
+      },
+      "configure": {
+        "title": "Configure your offer",
+        "body": "Choose account sizes and prices, rule sets, profit split and payout terms. Rule sets are versioned, so existing accounts never change under your traders.",
+        "tags": ["Products & pricing", "Versioned rule sets", "Payout terms"]
+      },
+      "launch": {
+        "title": "Launch and grow",
+        "body": "Connect your payment provider and go live. Competitions, leaderboards and rewards help you grow and keep your community.",
+        "tags": ["Your payment provider", "Competitions", "Rewards"]
+      }
+    },
+    "security": {
+      "eyebrow": "Under the hood",
+      "title": "Engineered like a financial system.",
+      "body": "Prop trading is about trust. These are the design rules the platform is built on.",
+      "money": {
+        "title": "Exact money",
+        "body": "Every amount is an integer in cents with one central rounding rule. No floating-point surprises."
+      },
+      "audit": {
+        "title": "Immutable audit log",
+        "body": "Every order, fill, rule breach and status change is written once and hash-chained. Changes are blocked in the database."
+      },
+      "idempotent": {
+        "title": "Idempotent orders & payments",
+        "body": "Retries and double clicks never create duplicate orders or purchases."
+      },
+      "writer": {
+        "title": "One writer per account",
+        "body": "Account changes run in a single locked transaction, so balances stay consistent under load."
+      },
+      "gdpr": {
+        "title": "GDPR-first, EU hosting",
+        "body": "Personal data is minimised and encrypted at field level; nicknames instead of names in public."
+      },
+      "auth": {
+        "title": "Secure accounts",
+        "body": "Two-step login (TOTP), recovery codes, session management and email verification."
+      },
+      "a11y": {
+        "title": "Accessible",
+        "body": "WCAG 2.2 AA contrast, full keyboard use and reduced-motion support — checked automatically."
+      },
+      "tests": {
+        "title": "Tested end to end",
+        "body": "Hundreds of automated tests from the pricing engine to the browser, on every change."
+      },
+      "chain": "Audit chain",
+      "chainNote": "Each entry stores the hash of the previous one — tampering breaks the chain."
+    },
+    "roadmap": {
+      "eyebrow": "Roadmap",
+      "title": "Honest about what's live.",
+      "body": "We'd rather show you a clear roadmap than overpromise.",
+      "live": {
+        "title": "Live now",
+        "items": [
+          "Trading terminal & crypto markets",
+          "Rule engine with automatic breaches",
+          "Instant funding catalogue & checkout",
+          "Dashboards, P&L calendar, statistics",
+          "Leaderboards, competitions, rewards",
+          "Trade copier, backtesting, notebook"
+        ]
+      },
+      "building": {
+        "title": "In development",
+        "items": [
+          "Payment provider integration",
+          "Payout requests & KYC",
+          "Admin, risk & audit console",
+          "Invoices"
+        ]
+      },
+      "next": {
+        "title": "Next",
+        "items": [
+          "More markets (forex, indices, metals)",
+          "Multi-brand management for partners",
+          "Broker connectivity"
+        ]
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions from founders.",
+      "what": {
+        "q": "What does white label mean here?",
+        "a": "You run your own prop firm brand on our software. Your traders see your name, logo, colours and domain; we provide and operate the platform behind it."
+      },
+      "firm": {
+        "q": "Is Daily Funded a prop firm?",
+        "a": "No. Daily Funded builds and licenses software. The prop firm offer, its terms and its customers belong to you."
+      },
+      "money": {
+        "q": "Do you hold trader or client money?",
+        "a": "No. Payments run through your own payment provider. Funded accounts on the platform are simulated."
+      },
+      "simulated": {
+        "q": "Are funded accounts real trading accounts?",
+        "a": "No, they are simulated accounts with realistic execution (spread, slippage, commission). The platform clearly labels this to traders."
+      },
+      "markets": {
+        "q": "Which markets are available?",
+        "a": "Crypto perpetuals today, with live or simulated price feeds. More markets are on the roadmap."
+      },
+      "pricing": {
+        "q": "What does it cost?",
+        "a": "Pricing depends on your setup and volume. Book a demo and we'll make you a proposal."
+      },
+      "time": {
+        "q": "How fast can we launch?",
+        "a": "That depends on your branding, offer and payment provider. We plan it together in the demo call."
+      },
+      "data": {
+        "q": "Where is data stored?",
+        "a": "In the EU. Personal data is minimised, encrypted at field level and handled according to the GDPR."
+      }
+    },
+    "contact": {
+      "eyebrow": "Book a demo",
+      "title": "Let's build your prop firm.",
+      "body": "Tell us about your plans. We'll show you the platform and how it fits your brand.",
+      "points": [
+        "A live walkthrough of trader and firm features",
+        "Your branding in the platform",
+        "A proposal for your setup"
+      ],
+      "name": "Your name",
+      "email": "Work email",
+      "company": "Company",
+      "website": "Website (optional)",
+      "volume": "Expected traders per month",
+      "volumes": {
+        "lt100": "Fewer than 100",
+        "100-1000": "100 – 1,000",
+        "1000-10000": "1,000 – 10,000",
+        "gt10000": "More than 10,000",
+        "unknown": "Not sure yet"
+      },
+      "message": "What are you planning? (optional)",
+      "consent": "I agree that Daily Funded contacts me about my request and stores my details for that purpose (privacy policy).",
+      "submit": "Request a demo",
+      "thanksTitle": "Thanks — we'll be in touch.",
+      "thanksBody": "We received your request and will reply by email."
+    },
+    "storefront": {
+      "banner": "Example storefront — this is what your traders see, with your brand.",
+      "back": "Back to Daily Funded"
+    },
+    "footer": {
+      "tagline": "White-label software for prop firms: trading platform, rule engine, funding and trader tools under your brand.",
+      "product": "Product",
+      "disclaimer": "{{brand}} provides software only. {{brand}} is not a prop firm, broker or investment firm, does not offer trading accounts to the public and does not hold client funds. Accounts on the platform are simulated."
+    }
   }
 }

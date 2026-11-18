@@ -18,7 +18,7 @@ import { brand } from '@/config/brand';
 import { realtime } from '@/lib/realtime';
 import { useSession } from '@/stores/session';
 import { useThemeStore } from '@/stores/theme';
-import { LEGAL_DOCS } from '@/components/layout/site-footer';
+import { LEGAL_DOCS } from '@/components/layout/storefront-footer';
 import { NAV_SECTIONS } from '@/features/app/nav';
 
 const row =

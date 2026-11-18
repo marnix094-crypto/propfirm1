@@ -15,6 +15,11 @@ const routes: RouteObject[] = [
     children: [
       {
         index: true,
+        lazy: () => import('@/features/site/site-page').then((m) => ({ Component: m.SitePage })),
+      },
+      {
+        // Example prop-firm storefront built on the platform (what a client's traders see).
+        path: 'storefront',
         lazy: () =>
           import('@/features/landing/landing-page').then((m) => ({ Component: m.LandingPage })),
       },

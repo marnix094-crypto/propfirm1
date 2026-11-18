@@ -1,18 +1,19 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-test.describe('landing page', () => {
-  test('/ redirects to the default language landing page', async ({ page }) => {
-    await page.goto('/');
-    await expect(page).toHaveURL(/\/en$/);
-    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+test.describe('example storefront', () => {
+  test('shows the example storefront banner and hero', async ({ page }) => {
+    await page.goto('/en/storefront');
+    await expect(
+      page.getByText('Example storefront — this is what your traders see'),
+    ).toBeVisible();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Trade a funded account from day one',
     );
   });
 
   test('has all sections in order', async ({ page }) => {
-    await page.goto('/en');
+    await page.goto('/en/storefront');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     const ids = await page
       .locator('main > section')
@@ -31,12 +32,12 @@ test.describe('landing page', () => {
   });
 
   test('shows the payout card as a labelled example (no real payouts yet)', async ({ page }) => {
-    await page.goto('/en');
+    await page.goto('/en/storefront');
     await expect(page.getByTestId('payout-example-badge')).toBeVisible();
   });
 
   test('pricing: products, recommended badge, quantity and buy link', async ({ page }) => {
-    await page.goto('/en#pricing');
+    await page.goto('/en/storefront#pricing');
     const cards = page.locator('[data-testid^="pricing-card-"]');
     await expect(cards).toHaveCount(5);
     await expect(page.getByText('Recommended', { exact: true })).toHaveCount(1);
@@ -51,7 +52,7 @@ test.describe('landing page', () => {
   });
 
   test('custom account configurator returns a server-calculated price', async ({ page }) => {
-    await page.goto('/en#pricing');
+    await page.goto('/en/storefront#pricing');
     await page.getByRole('button', { name: /Build a custom account/ }).click();
     const dialog = page.getByRole('dialog');
     await expect(dialog.getByTestId('custom-price')).toHaveText('€209.00');
@@ -62,7 +63,7 @@ test.describe('landing page', () => {
   });
 
   test('leverage modal opens and closes with the keyboard', async ({ page }) => {
-    await page.goto('/en#features');
+    await page.goto('/en/storefront#features');
     await page.getByRole('button', { name: 'What does leverage mean?' }).click();
     await expect(page.getByRole('dialog', { name: 'How leverage works' })).toBeVisible();
     await page.keyboard.press('Escape');
@@ -70,7 +71,7 @@ test.describe('landing page', () => {
   });
 
   test('FAQ accordion expands', async ({ page }) => {
-    await page.goto('/en#faq');
+    await page.goto('/en/storefront#faq');
     const q = page.getByRole('button', { name: 'Am I trading real money?' });
     await q.click();
     await expect(q).toHaveAttribute('aria-expanded', 'true');
@@ -80,12 +81,12 @@ test.describe('landing page', () => {
   });
 
   test('Dutch and Spanish render with translated headings', async ({ page }) => {
-    await page.goto('/nl');
+    await page.goto('/nl/storefront');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Handel vanaf dag één met een funded account',
     );
     await expect(page).toHaveTitle(/gesimuleerd/);
-    await page.goto('/es');
+    await page.goto('/es/storefront');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Opera con una cuenta financiada desde el primer día',
     );
@@ -93,7 +94,7 @@ test.describe('landing page', () => {
 
   test('no horizontal scroll', async ({ page }) => {
     for (const lang of ['en', 'nl', 'es']) {
-      await page.goto(`/${lang}`);
+      await page.goto(`/${lang}/storefront`);
       await expect(page.locator('[data-testid^="pricing-card-"]')).toHaveCount(5);
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -106,7 +107,7 @@ test.describe('landing page', () => {
     test(`no axe violations (${theme})`, async ({ page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.addInitScript((t) => localStorage.setItem('brand-theme', t), theme);
-      await page.goto('/en');
+      await page.goto('/en/storefront');
       await expect(page.locator('[data-testid^="pricing-card-"]')).toHaveCount(5);
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])

@@ -1,59 +1,88 @@
 import { useState } from 'react';
-import { SectionLink } from './section-link';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Menu, X } from 'lucide-react';
+import { motion, useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { cn } from '@/lib/cn';
 import { LanguageSwitcher } from './language-switcher';
 import { Logo } from './logo';
 
-export const NAV_ITEMS = [
-  { id: 'how-it-works', key: 'howItWorks' },
-  { id: 'features', key: 'features' },
-  { id: 'pricing', key: 'pricing' },
+/** Sections of the Daily Funded (B2B) website. */
+export const SITE_NAV = [
+  { id: 'product', key: 'product' },
+  { id: 'brand-builder', key: 'builder' },
+  { id: 'how', key: 'how' },
+  { id: 'security', key: 'security' },
   { id: 'faq', key: 'faq' },
 ] as const;
 
-/** Sticky header with blur: logo, section navigation, language, theme toggle, platform button. */
+/** Header of the Daily Funded website (white-label software for prop firms). */
 export function SiteHeader() {
   const { t } = useTranslation();
   const { lang } = useParams();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const reduce = useReducedMotion();
+  const { scrollY, scrollYProgress } = useScroll();
+  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 12));
+  const go = (id: string) => (e: React.MouseEvent) => {
+    const el = document.getElementById(id);
+    if (!el) return; // other page: follow the href to the home page
+    e.preventDefault();
+    setOpen(false);
+    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+  };
 
   return (
-    <header className="glass sticky top-0 z-40 border-b border-border/70">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:gap-4 sm:px-6">
-        <Link to={`/${lang}`} className="min-w-0 shrink rounded-sm" aria-label={t('nav.home')}>
-          <Logo className="h-3.5 max-w-full min-[380px]:h-4 sm:h-5" />
+    <header
+      className={cn(
+        'sticky top-0 z-40 transition-colors duration-300',
+        scrolled || open ? 'glass border-b border-border' : 'border-b border-transparent',
+      )}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6">
+        <Link
+          to={`/${lang}`}
+          className="min-w-0 shrink rounded-sm text-fg"
+          aria-label={t('nav.home')}
+        >
+          <Logo className="h-3.5 max-w-full min-[380px]:h-4 sm:h-[18px]" />
         </Link>
-        <nav aria-label={t('nav.main')} className="ml-6 hidden md:block">
+        <nav aria-label={t('nav.main')} className="ml-8 hidden lg:block">
           <ul className="flex items-center gap-1">
-            {NAV_ITEMS.map(({ id, key }) => (
+            {SITE_NAV.map(({ id, key }) => (
               <li key={id}>
-                <SectionLink
-                  id={id}
+                <a
+                  href={`/${lang}#${id}`}
+                  onClick={go(id)}
                   className="rounded-sm px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg"
                 >
-                  {t(`nav.${key}`)}
-                </SectionLink>
+                  {t(`site.nav.${key}`)}
+                </a>
               </li>
             ))}
           </ul>
         </nav>
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          <div className="hidden sm:block">
+          <div className="hidden md:block">
             <LanguageSwitcher />
           </div>
           <ThemeToggle />
+          <Button size="sm" variant="secondary" className="hidden sm:inline-flex" asChild>
+            <Link to={`/${lang}/storefront`}>{t('site.nav.liveDemo')}</Link>
+          </Button>
           <Button size="sm" className="hidden sm:inline-flex" asChild>
-            <Link to={`/${lang}/login`}>{t('nav.toPlatform')}</Link>
+            <a href={`/${lang}#contact`} onClick={go('contact')}>
+              {t('site.nav.bookDemo')}
+            </a>
           </Button>
           <button
             type="button"
-            className="inline-flex size-10 items-center justify-center rounded-sm border border-border bg-card md:hidden"
+            className="inline-flex size-10 items-center justify-center rounded-sm border border-border bg-card lg:hidden"
             aria-expanded={open}
-            aria-controls="mobile-nav"
+            aria-controls="site-mobile-nav"
             aria-label={open ? t('nav.closeMenu') : t('nav.openMenu')}
             onClick={() => setOpen((o) => !o)}
           >
@@ -67,31 +96,42 @@ export function SiteHeader() {
       </div>
       {open && (
         <nav
-          id="mobile-nav"
+          id="site-mobile-nav"
           aria-label={t('nav.main')}
-          className="border-t border-border px-4 pb-4 md:hidden"
+          className="border-t border-border px-4 pb-5 lg:hidden"
         >
           <ul className="flex flex-col py-2">
-            {NAV_ITEMS.map(({ id, key }) => (
+            {SITE_NAV.map(({ id, key }) => (
               <li key={id}>
-                <SectionLink
-                  id={id}
-                  onClick={() => setOpen(false)}
+                <a
+                  href={`/${lang}#${id}`}
+                  onClick={go(id)}
                   className="block rounded-sm px-2 py-3 font-medium"
                 >
-                  {t(`nav.${key}`)}
-                </SectionLink>
+                  {t(`site.nav.${key}`)}
+                </a>
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-2 border-t border-border pt-4">
             <LanguageSwitcher />
-            <Button size="sm" className="flex-1" asChild>
-              <Link to={`/${lang}/login`}>{t('nav.toPlatform')}</Link>
+            <Button variant="secondary" asChild>
+              <Link to={`/${lang}/storefront`}>{t('site.nav.liveDemo')}</Link>
+            </Button>
+            <Button asChild>
+              <a href={`/${lang}#contact`} onClick={go('contact')}>
+                {t('site.nav.bookDemo')}
+              </a>
             </Button>
           </div>
         </nav>
       )}
+      {/* Reading progress */}
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 h-px origin-left bg-primary"
+        style={{ scaleX: reduce ? 0 : scrollYProgress }}
+      />
     </header>
   );
 }

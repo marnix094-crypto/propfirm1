@@ -8,7 +8,7 @@
     <title>Daily Funded</title>
     <script>
       // Apply the stored theme before first paint (no flash).
-      // Site: light by default. Platform (/:lang/app…): own palette, dark by default.
+      // Dark by default (brand). Site and platform (/:lang/app…) remember their own choice.
       (function () {
         var d = document.documentElement;
         var platform = /^\/(en|nl|es)\/app(\/|$)/.test(location.pathname);
@@ -17,7 +17,7 @@
         try {
           t = localStorage.getItem(platform ? 'df-platform-theme' : 'brand-theme');
         } catch (e) {}
-        d.dataset.theme = t === 'dark' || t === 'light' ? t : platform ? 'dark' : 'light';
+        d.dataset.theme = t === 'light' ? 'light' : 'dark';
       })();
     </script>
   </head>

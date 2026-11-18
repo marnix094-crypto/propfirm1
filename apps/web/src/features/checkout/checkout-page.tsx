@@ -94,7 +94,7 @@ export function CheckoutPage() {
           <ErrorState
             title={t('checkout.notFound')}
             retryLabel={t('checkout.backToPricing')}
-            onRetry={() => void navigate(`/${lang}`, { state: { section: 'pricing' } })}
+            onRetry={() => void navigate(`/${lang}/app/new-account`)}
           />
         </Card>
       )}

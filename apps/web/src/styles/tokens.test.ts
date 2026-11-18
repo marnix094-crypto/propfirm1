@@ -116,7 +116,7 @@ describe.each([
 
 describe('closing CTA band', () => {
   it('white text meets AA on every gradient stop', () => {
-    for (const stop of ['#0369a1', '#1d4ed8', '#2563eb']) {
+    for (const stop of ['#0a0a0a', '#151a08', '#1f2b05']) {
       expect(contrast('#ffffff', stop)).toBeGreaterThanOrEqual(4.5);
     }
   });

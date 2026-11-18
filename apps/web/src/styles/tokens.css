@@ -1,11 +1,12 @@
 /*
- * BRAND design tokens — the ONLY place where colors, radii and shadows are defined.
- * Swap the palette here; components reference these variables via Tailwind (globals.css).
+ * Daily Funded design tokens — the ONLY place where colors, radii and shadows are defined.
+ * Brand: black + lime (#AFE604) from the logo. Dark is the default theme (stores/theme.ts).
+ * Components reference these variables via Tailwind (globals.css).
  *
  * Contrast notes (WCAG 2.2 AA, checked by src/styles/tokens.test.ts):
- *   - `--profit` (#16A34A) is for chart lines/fills; numbers use `--profit-text`.
+ *   - Lime is a fill/accent colour. On light surfaces, text accents use --accent-deep (olive).
+ *   - `--profit` is for chart lines/fills; numbers use `--profit-text`.
  *   - `--meter-warn` is a fill colour; warning text uses `--warn-text`.
- *   - Primary button uses navy text on the light-blue gradient (decision D23).
  */
 
 :root,
@@ -13,154 +14,168 @@
   color-scheme: light;
 
   /* Surfaces */
-  --bg: #f4f9fe;
-  --bg-glow: #e6f3fd;
-  --bg-image:
-    radial-gradient(1100px 620px at 50% -12%, var(--bg-glow) 0%, transparent 70%),
-    radial-gradient(700px 420px at 100% 0%, rgb(34 211 238 / 0.08) 0%, transparent 70%),
-    radial-gradient(700px 420px at 0% 10%, rgb(165 180 252 / 0.1) 0%, transparent 70%);
+  --bg: #f6f6f4;
+  --bg-glow: #eef6d6;
+  --bg-image: radial-gradient(1000px 520px at 50% -14%, rgb(175 230 4 / 0.16) 0%, transparent 70%);
   --card: #ffffff;
-  --card-glass: rgb(255 255 255 / 0.68);
-  --card-muted: #f8fbfe;
-  --border: #dcebf7;
-  --border-strong: #bae6fd;
+  --card-glass: rgb(255 255 255 / 0.82);
+  --card-muted: #f4f4f2;
+  --border: #e5e5e2;
+  --border-strong: #d4d4cf;
 
   /* Brand */
-  --primary: #0ea5e9;
-  --primary-light: #38bdf8;
-  --primary-tint: #bae6fd;
-  --accent-deep: #2563eb;
-  --glow-aqua: #22d3ee; /* gradients/glows only */
-  --glow-lavender: #a5b4fc; /* gradients/glows only */
+  --primary: #afe604;
+  --primary-light: #afe604;
+  --primary-tint: #ecf7c4;
+  --accent-deep: #3f5c00;
+  --glow-aqua: #afe604; /* gradients/glows only */
+  --glow-lavender: #d9f99d; /* gradients/glows only */
   --brand-lime: #afe604; /* logo "FUNDED" — fills/logo only, never text on light */
   --brand-ink: #0a0a0a; /* logo mark background */
-  --chart-line: #0284c7;
+  /* Brand builder preview canvas (website): a neutral mini-platform in dark / light. */
+  --builder-dark-bg: #0b0b0c;
+  --builder-dark-card: #141416;
+  --builder-dark-line: #26262a;
+  --builder-dark-text: #f4f4f5;
+  --builder-dark-muted: #a1a1aa;
+  --builder-light-bg: #f7f7f5;
+  --builder-light-card: #ffffff;
+  --builder-light-line: #e6e6e2;
+  --builder-light-text: #0a0a0a;
+  --builder-light-muted: #57534e;
+  --chart-line: #4d7c0f;
 
   /* Text */
-  --text: #0b2540;
-  --text-muted: #56718a; /* spec #5B7690 darkened slightly for AA on --bg (D24) */
-  --text-link: #2563eb;
+  --text: #0a0a0a;
+  --text-muted: #57534e;
+  --text-link: #3f5c00;
   --text-on-accent: #ffffff;
 
   /* PnL & numbers only */
-  --profit: #16a34a;
-  --profit-text: #15803d;
+  --profit: #4d7c0f;
+  --profit-text: #3f6212;
   --loss: #dc2626;
-  --loss-text: #dc2626;
+  --loss-text: #c81e1e;
 
-  /* Buy / sell actions (white text, AA in both themes) */
-  --buy-bg: #15803d;
-  --sell-bg: #dc2626;
-  --on-trade-action: #ffffff;
+  /* Buy / sell actions */
+  --buy-bg: #afe604;
+  --sell-bg: #ef4444;
+  --on-trade-action: #0a0a0a;
 
-  /* Status badges: text on a 14% tint of the status colour (AA) */
-  --badge-success-fg: #166534;
+  /* Status badges: text on a tint of the status colour (AA) */
+  --badge-success-fg: #3f6212;
   --badge-warn-fg: #854d0e;
-  --badge-danger-fg: #b91c1c;
+  --badge-danger-fg: #991b1b;
 
   /* Meters */
-  --meter-track: #e6f3fd;
-  --meter-safe: #0284c7; /* sky-600: 4.1:1 on white (UI graphics need 3:1) */
-  --meter-warn: #ca8a04; /* 2.9:1 — state is also given as icon + text */
+  --meter-track: #ececea;
+  --meter-safe: #4d7c0f;
+  --meter-warn: #ca8a04; /* state is also given as icon + text */
   --meter-breach: #dc2626;
   --warn-text: #a16207;
 
   /* Buttons */
-  --btn-primary-from: #38bdf8;
-  --btn-primary-to: #0ea5e9;
-  --btn-primary-fg: #0b2540; /* navy on light-blue gradient: AA (D23) */
-  --btn-primary-glow: 0 10px 28px -8px rgb(14 165 233 / 0.6), 0 0 0 1px rgb(14 165 233 / 0.15);
-  --btn-primary-shadow:
-    0 1px 0 rgb(255 255 255 / 0.35) inset, 0 6px 16px -10px rgb(14 165 233 / 0.6);
-  --btn-primary-shadow-hover: 0 1px 0 rgb(255 255 255 / 0.35) inset, var(--btn-primary-glow);
+  --btn-primary-from: #afe604;
+  --btn-primary-to: #afe604;
+  --btn-primary-fg: #0a0a0a;
+  --btn-primary-glow: 0 0 0 1px rgb(10 10 10 / 0.12);
+  --btn-primary-shadow: none;
+  --btn-primary-shadow-hover: 0 0 0 3px rgb(175 230 4 / 0.35);
   --btn-secondary-bg: #ffffff;
-  --btn-secondary-fg: #2563eb;
-  --btn-secondary-border: #7dd3fc;
+  --btn-secondary-fg: #0a0a0a;
+  --btn-secondary-border: #d4d4cf;
 
-  /* Closing CTA band (white text needs the deep gradient for AA) */
-  --cta-gradient: linear-gradient(120deg, #0369a1 0%, #1d4ed8 55%, #2563eb 100%);
+  /* Closing CTA band */
+  --cta-gradient: linear-gradient(120deg, #0a0a0a 0%, #151a08 60%, #1f2b05 100%);
   --cta-fg: #ffffff;
-  --cta-btn-bg: #ffffff;
-  --cta-btn-fg: #0b2540;
+  --cta-btn-bg: #afe604;
+  --cta-btn-fg: #0a0a0a;
 
   /* Headings */
-  --heading-gradient: linear-gradient(100deg, #0b2540 10%, #0e5a8a 55%, #0ea5e9 100%);
+  --heading-gradient: linear-gradient(100deg, #0a0a0a 30%, #3f5c00 100%);
 
   /* Elevation */
-  --shadow-card: 0 1px 2px rgb(11 37 64 / 0.04), 0 14px 36px -14px rgb(14 165 233 / 0.22);
-  --shadow-card-hover: 0 2px 4px rgb(11 37 64 / 0.05), 0 24px 48px -16px rgb(14 165 233 / 0.32);
-  --shadow-float: 0 20px 50px -18px rgb(37 99 235 / 0.35);
+  --shadow-card: 0 1px 2px rgb(10 10 10 / 0.04);
+  --shadow-card-hover: 0 1px 2px rgb(10 10 10 / 0.06), 0 0 0 1px #d4d4cf;
+  --shadow-float: 0 16px 40px -16px rgb(10 10 10 / 0.25);
 
   /* Focus */
-  --focus-ring: #2563eb;
+  --focus-ring: #3f5c00;
 
   /* Shape */
-  --radius-card: 28px;
-  --radius-btn: 14px;
-  --radius-tile: 14px;
-  --radius-sm: 10px;
+  --radius-card: 16px;
+  --radius-btn: 10px;
+  --radius-tile: 10px;
+  --radius-sm: 8px;
 
   /* Type */
   --font-sans:
     'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Unbounded Variable', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #07111f;
-  --bg-glow: #0c2240;
-  --bg-image:
-    radial-gradient(1100px 620px at 50% -12%, rgb(56 189 248 / 0.14) 0%, transparent 70%),
-    radial-gradient(700px 420px at 100% 0%, rgb(34 211 238 / 0.08) 0%, transparent 70%),
-    radial-gradient(700px 420px at 0% 10%, rgb(165 180 252 / 0.07) 0%, transparent 70%);
-  --card: #0d1b2e;
-  --card-glass: rgb(13 27 46 / 0.62);
-  --card-muted: #0a1728;
-  --border: #17304d;
-  --border-strong: #1f4166;
+  --bg: #070707;
+  --bg-glow: #12180a;
+  --bg-image: radial-gradient(1000px 520px at 50% -14%, rgb(175 230 4 / 0.12) 0%, transparent 70%);
+  --card: #111111;
+  --card-glass: rgb(10 10 10 / 0.78);
+  --card-muted: #181818;
+  --border: #222222;
+  --border-strong: #333333;
 
-  --primary: #38bdf8;
-  --primary-light: #38bdf8;
-  --primary-tint: #0f2f4d;
-  --accent-deep: #22d3ee;
+  --primary: #afe604;
+  --primary-light: #afe604;
+  --primary-tint: #2b3a05;
+  --accent-deep: #afe604;
+  --glow-aqua: #afe604;
+  --glow-lavender: #4d7c0f;
+  --chart-line: #afe604;
 
-  --text: #e6f1fb;
-  --text-muted: #8fa9c4;
-  --text-link: #38bdf8;
-  --text-on-accent: #07111f;
+  --text: #f4f4f5;
+  --text-muted: #a1a1aa;
+  --text-link: #c3f23a;
+  --text-on-accent: #0a0a0a;
 
-  --profit: #22c55e;
-  --profit-text: #4ade80;
-  --loss: #ef4444;
-  --loss-text: #f87171;
+  --profit: #afe604;
+  --profit-text: #b8ef1c;
+  --loss: #f04438;
+  --loss-text: #ff6b5e;
 
-  --badge-success-fg: #4ade80;
+  --buy-bg: #afe604;
+  --sell-bg: #f04438;
+  --on-trade-action: #0a0a0a;
+
+  --badge-success-fg: #c3f23a;
   --badge-warn-fg: #facc15;
-  --badge-danger-fg: #f87171;
+  --badge-danger-fg: #ff6b5e;
 
-  --meter-track: #12263f;
-  --meter-safe: #38bdf8;
+  --meter-track: #262626;
+  --meter-safe: #afe604;
   --meter-warn: #facc15;
-  --meter-breach: #f87171;
+  --meter-breach: #f04438;
   --warn-text: #facc15;
 
-  --btn-primary-from: #38bdf8;
-  --btn-primary-to: #0ea5e9;
-  --btn-primary-fg: #07111f;
-  --btn-primary-glow: 0 10px 30px -8px rgb(56 189 248 / 0.55), 0 0 0 1px rgb(56 189 248 / 0.25);
-  --btn-secondary-bg: #0d1b2e;
-  --btn-secondary-fg: #38bdf8;
-  --btn-secondary-border: #1f4166;
+  --btn-primary-from: #afe604;
+  --btn-primary-to: #afe604;
+  --btn-primary-fg: #0a0a0a;
+  --btn-primary-glow: 0 0 0 1px rgb(175 230 4 / 0.5);
+  --btn-primary-shadow: none;
+  --btn-primary-shadow-hover:
+    0 0 0 3px rgb(175 230 4 / 0.18), 0 10px 30px -10px rgb(175 230 4 / 0.45);
+  --btn-secondary-bg: #111111;
+  --btn-secondary-fg: #f4f4f5;
+  --btn-secondary-border: #333333;
 
-  --heading-gradient: linear-gradient(100deg, #e6f1fb 10%, #7dd3fc 55%, #22d3ee 100%);
+  --heading-gradient: linear-gradient(100deg, #f4f4f5 30%, #afe604 100%);
 
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -18px rgb(0 0 0 / 0.6);
-  --shadow-card-hover: 0 2px 4px rgb(0 0 0 / 0.35), 0 24px 52px -18px rgb(56 189 248 / 0.25);
-  --shadow-float: 0 20px 50px -18px rgb(0 0 0 / 0.7);
+  --shadow-card: none;
+  --shadow-card-hover: 0 0 0 1px #333333;
+  --shadow-float: 0 16px 40px -12px rgb(0 0 0 / 0.8);
 
-  --focus-ring: #38bdf8;
-  --chart-line: #38bdf8;
+  --focus-ring: #afe604;
 }
 
 /*

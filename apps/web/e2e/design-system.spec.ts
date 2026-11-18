@@ -5,11 +5,12 @@ test.describe('design system preview', () => {
   test('theme toggle switches and persists', async ({ page }) => {
     await page.goto('/en/design');
     const html = page.locator('html');
-    await expect(html).toHaveAttribute('data-theme', 'light');
+    // Dark is the brand default.
+    await expect(html).toHaveAttribute('data-theme', 'dark');
     await page.getByTestId('theme-toggle').click();
-    await expect(html).toHaveAttribute('data-theme', 'dark');
+    await expect(html).toHaveAttribute('data-theme', 'light');
     await page.reload();
-    await expect(html).toHaveAttribute('data-theme', 'dark');
+    await expect(html).toHaveAttribute('data-theme', 'light');
   });
 
   test('renders Dutch and Spanish', async ({ page }) => {

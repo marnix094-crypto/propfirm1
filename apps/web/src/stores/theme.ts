@@ -5,7 +5,7 @@ export type Theme = 'light' | 'dark';
 export type Surface = 'site' | 'platform';
 
 const STORAGE_KEY: Record<Surface, string> = { site: 'brand-theme', platform: 'df-platform-theme' };
-const DEFAULT_THEME: Record<Surface, Theme> = { site: 'light', platform: 'dark' };
+const DEFAULT_THEME: Record<Surface, Theme> = { site: 'dark', platform: 'dark' };
 
 function storedTheme(surface: Surface): Theme {
   try {

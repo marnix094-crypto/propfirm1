@@ -17,7 +17,10 @@
     "dashboard": "My dashboard",
     "login": "Log in",
     "join": "Join",
-    "logout": "Log out"
+    "logout": "Log out",
+    "arena": "Arena",
+    "myRounds": "My rounds",
+    "rules": "Rules"
   },
   "footer": {
     "disclaimer": "Trading in the competition is simulated: positions use virtual funds and live market prices; no orders are sent to a market. The entry fee and prizes are money; until the operator holds the required licence only test payments are possible.",
@@ -151,7 +154,12 @@
     "return": "Return",
     "prize": "Prize",
     "you": "you",
-    "out": "out"
+    "out": "out",
+    "top3": "Top 3",
+    "rankN": "Rank {{n}}",
+    "myRank": "Your rank",
+    "showAll": "Show all {{count}}",
+    "showLess": "Show less"
   },
   "terminal": {
     "equity": "Equity",
@@ -182,7 +190,15 @@
       "PLAYER": "by you",
       "DRAWDOWN": "loss limit",
       "ROUND_END": "end of round"
-    }
+    },
+    "rank": "Rank",
+    "ofPlayers": "of {{n}}",
+    "qtyOf": "Quantity ({{asset}})",
+    "presets": "Size presets",
+    "presetLabel": "Size: {{pct}} of the maximum",
+    "value": "Order value",
+    "margin": "Margin used",
+    "noFills": "No trades yet."
   },
   "meter": {
     "safe": "Safe",
@@ -235,5 +251,30 @@
     "OPERATOR_SUSPENDED": "This competition is temporarily unavailable.",
     "PLAYER_SUSPENDED": "Your account is suspended.",
     "QUOTE_STALE": "No current price available. Try again in a moment."
+  },
+  "arena": {
+    "minimumBar": "Players towards the minimum of {{n}}",
+    "minimumReached": "Minimum reached — the round goes ahead",
+    "minimumNeeded_one": "{{count}} more player needed",
+    "minimumNeeded_other": "{{count}} more players needed",
+    "prizes": "Prizes in this round",
+    "journey": "Your steps",
+    "stepDone": "done",
+    "stepNow": "now",
+    "stepNext": "next",
+    "steps": {
+      "account": "Account",
+      "pay": "Pay entry",
+      "start": "Round starts",
+      "trade": "Trade"
+    },
+    "oneEntry": "One entry per round · not enough players means a full refund",
+    "pendingBody": "Pay the {{fee}} entry fee before the start to secure your place.",
+    "inc": {
+      "balance": "{{balance}} virtual balance",
+      "leverage": "Leverage up to {{leverage}}, market orders",
+      "floor": "Your entry ends if equity reaches {{floor}}",
+      "prizes": "Top 3 share the prize pool"
+    }
   }
 }

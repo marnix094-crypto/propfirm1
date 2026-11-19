@@ -8,6 +8,7 @@ import { ErrorState, Skeleton } from '@/components/ui/feedback';
 import { useFormat } from '@/hooks/use-format';
 import { useEntry, useCurrentRound, useTestPayment } from './hooks';
 import { useCompeteError } from './auth-pages';
+import { Journey } from './arena-ui';
 
 /** Test payment page of the fake provider (no real money, D101). */
 export function CompetePayPage() {
@@ -32,10 +33,13 @@ export function CompetePayPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16 sm:py-24">
+    <div className="mx-auto max-w-md px-4 py-12 sm:py-20">
+      <div className="mb-8">
+        <Journey current="pay" />
+      </div>
       <h1 className="font-display text-3xl font-bold tracking-tight">{t('pay.title')}</h1>
       <p className="mt-2 text-muted">{t('pay.sub')}</p>
-      <Card className="mt-8" padding="lg">
+      <Card className="glow-card mt-8" padding="lg">
         {entry.isPending || round.isPending ? (
           <Skeleton className="h-40 w-full" />
         ) : entry.isError ? (

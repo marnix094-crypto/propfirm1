@@ -17,7 +17,10 @@
     "dashboard": "Mijn dashboard",
     "login": "Inloggen",
     "join": "Meedoen",
-    "logout": "Uitloggen"
+    "logout": "Uitloggen",
+    "arena": "Arena",
+    "myRounds": "Mijn rondes",
+    "rules": "Regels"
   },
   "footer": {
     "disclaimer": "Handelen in de competitie is gesimuleerd: posities gebruiken virtueel geld en live marktprijzen; er gaan geen orders naar een markt. De inleg en de prijzen zijn geld; zolang de organisator niet de vereiste vergunning heeft, zijn alleen testbetalingen mogelijk.",
@@ -151,7 +154,12 @@
     "return": "Rendement",
     "prize": "Prijs",
     "you": "jij",
-    "out": "uit"
+    "out": "uit",
+    "top3": "Top 3",
+    "rankN": "Plaats {{n}}",
+    "myRank": "Jouw plaats",
+    "showAll": "Toon alle {{count}}",
+    "showLess": "Toon minder"
   },
   "terminal": {
     "equity": "Equity",
@@ -182,7 +190,15 @@
       "PLAYER": "door jou",
       "DRAWDOWN": "verliesgrens",
       "ROUND_END": "einde ronde"
-    }
+    },
+    "rank": "Plaats",
+    "ofPlayers": "van {{n}}",
+    "qtyOf": "Hoeveelheid ({{asset}})",
+    "presets": "Snelle groottes",
+    "presetLabel": "Grootte: {{pct}} van het maximum",
+    "value": "Orderwaarde",
+    "margin": "Gebruikte margin",
+    "noFills": "Nog geen trades."
   },
   "meter": {
     "safe": "Veilig",
@@ -235,5 +251,30 @@
     "OPERATOR_SUSPENDED": "Deze competitie is tijdelijk niet beschikbaar.",
     "PLAYER_SUSPENDED": "Je account is geschorst.",
     "QUOTE_STALE": "Geen actuele koers beschikbaar. Probeer het zo opnieuw."
+  },
+  "arena": {
+    "minimumBar": "Spelers richting het minimum van {{n}}",
+    "minimumReached": "Minimum gehaald — de ronde gaat door",
+    "minimumNeeded_one": "Nog {{count}} speler nodig",
+    "minimumNeeded_other": "Nog {{count}} spelers nodig",
+    "prizes": "Prijzen in deze ronde",
+    "journey": "Jouw stappen",
+    "stepDone": "klaar",
+    "stepNow": "nu",
+    "stepNext": "hierna",
+    "steps": {
+      "account": "Account",
+      "pay": "Inleg betalen",
+      "start": "Ronde start",
+      "trade": "Traden"
+    },
+    "oneEntry": "Eén deelname per ronde · te weinig spelers = volledige terugbetaling",
+    "pendingBody": "Betaal de inleg van {{fee}} vóór de start om je plek vast te leggen.",
+    "inc": {
+      "balance": "{{balance}} virtueel saldo",
+      "leverage": "Hefboom tot {{leverage}}, market orders",
+      "floor": "Je deelname stopt als je equity {{floor}} bereikt",
+      "prizes": "Top 3 deelt de prijzenpot"
+    }
   }
 }

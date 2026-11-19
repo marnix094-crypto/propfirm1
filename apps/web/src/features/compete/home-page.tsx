@@ -4,40 +4,25 @@ import { motion, useReducedMotion } from 'motion/react';
 import { ArrowRight, Clock, Gauge, ShieldAlert, Trophy, Users, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { ErrorState, Skeleton } from '@/components/ui/feedback';
 import { useFormat } from '@/hooks/use-format';
 import { cn } from '@/lib/cn';
 import { Countdown } from './countdown';
-import { useCompeteOperator, useCurrentRound, useRecentRounds } from './hooks';
+import { useCompeteOperator, useCurrentRound, useLeaderboard, useRecentRounds } from './hooks';
+import { Leaderboard } from './leaderboard';
+import { PlayersProgress, PrizePodium, StatusPill } from './arena-ui';
 import { useCompeteSession } from './session';
-import type { CompeteRound } from './api';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-function RoundStatusBadge({ round }: { round: CompeteRound }) {
-  const { t } = useTranslation('compete');
-  return (
-    <Badge variant={round.status === 'LIVE' ? 'success' : 'primary'}>
-      {round.status === 'LIVE' && (
-        <span className="relative flex size-2">
-          <span className="absolute inline-flex size-full animate-ping rounded-full bg-[var(--profit)] opacity-60 motion-reduce:animate-none" />
-          <span className="relative inline-flex size-2 rounded-full bg-[var(--profit)]" />
-        </span>
-      )}
-      {t(`status.${round.status}`)}
-    </Badge>
-  );
-}
-
-/** Live round panel of the hero: countdown, pot, participants. */
+/** Live round panel of the hero: countdown, pot, players vs. minimum, prizes, join. */
 function RoundPanel() {
   const { t } = useTranslation('compete');
   const f = useFormat();
   const { lang } = useParams();
   const authed = useCompeteSession((s) => s.status === 'authenticated');
   const q = useCurrentRound();
-  if (q.isPending) return <Skeleton className="h-72 w-full rounded-card" />;
+  if (q.isPending) return <Skeleton className="h-[420px] w-full rounded-card" />;
   if (q.isError)
     return (
       <ErrorState
@@ -49,36 +34,36 @@ function RoundPanel() {
   const r = q.data;
   const live = r.status === 'LIVE';
   return (
-    <Card variant="glass" padding="lg" className="relative overflow-hidden">
+    <div className="glow-card-strong glass relative overflow-hidden rounded-[24px] border p-6 sm:p-7">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-[radial-gradient(closest-side,var(--primary),transparent)] opacity-25 blur-2xl"
       />
       <div className="relative flex items-center justify-between gap-3">
         <h2 className="text-sm font-semibold text-muted">{t('round.today')}</h2>
-        <RoundStatusBadge round={r} />
+        <StatusPill status={r.status} />
       </div>
-      <p className="relative mt-5 text-sm text-muted">
+      <p className="relative mt-5 text-xs font-medium text-muted">
         {live ? t('round.endsIn') : t('round.startsIn')}
       </p>
       <Countdown to={live ? r.endsAt : r.startsAt} className="relative mt-2" />
-      <dl className="relative mt-6 grid grid-cols-2 gap-4">
+      <div className="relative mt-6 grid grid-cols-2 gap-5">
         <div>
-          <dt className="text-xs text-muted">{t('round.pot')}</dt>
-          <dd className="font-display text-2xl font-bold tabular-nums">
+          <p className="text-xs font-medium text-muted">{t('round.pot')}</p>
+          <p className="font-display text-2xl font-bold tabular-nums">
             {f.money(r.potMinor, r.currency)}
-          </dd>
+          </p>
         </div>
-        <div>
-          <dt className="text-xs text-muted">{t('round.participants')}</dt>
-          <dd className="font-display text-2xl font-bold tabular-nums">
-            {r.participants}
-            <span className="ml-1 text-sm font-medium text-muted">
-              {t('round.minimum', { n: r.minParticipants })}
-            </span>
-          </dd>
-        </div>
-      </dl>
+        <PlayersProgress round={r} />
+      </div>
+      <div className="relative mt-6">
+        <PrizePodium
+          amounts={r.prizesMinor}
+          splitBps={r.prizeSplitBps}
+          currency={r.currency}
+          compact
+        />
+      </div>
       <Button size="lg" fullWidth className="relative mt-6" asChild>
         <Link to={authed ? `/${lang}/compete/app` : `/${lang}/compete/register`}>
           {r.myEntry
@@ -87,7 +72,28 @@ function RoundPanel() {
           <ArrowRight aria-hidden="true" />
         </Link>
       </Button>
-    </Card>
+      <p className="relative mt-3 text-center text-xs text-muted">{t('arena.oneEntry')}</p>
+    </div>
+  );
+}
+
+/** Public live ranking on the home page while a round is running. */
+function LiveNow() {
+  const { t } = useTranslation('compete');
+  const round = useCurrentRound();
+  const lb = useLeaderboard(round.data);
+  if (round.data?.status !== 'LIVE') return null;
+  return (
+    <section className="py-12" aria-label={t('leaderboard.title')}>
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        <Leaderboard
+          data={lb.data}
+          currency={round.data.currency}
+          loading={lb.isPending}
+          limit={8}
+        />
+      </div>
+    </section>
   );
 }
 
@@ -104,7 +110,7 @@ function Prizes() {
   const examplePot = fee * BigInt(op.data.minParticipants);
   const order = [1, 0, 2];
   return (
-    <section id="prizes" className="scroll-mt-20 py-20" aria-labelledby="prizes-title">
+    <section id="prizes" className="scroll-mt-24 py-20" aria-labelledby="prizes-title">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <p className="text-sm font-semibold tracking-[0.2em] text-accent uppercase">
           {t('prizes.eyebrow')}
@@ -135,8 +141,9 @@ function Prizes() {
                 <Card
                   padding="lg"
                   className={cn(
-                    'text-center',
-                    i === 0 && 'border-primary sm:pb-14 shadow-[0_30px_80px_-40px_var(--primary)]',
+                    'glow-card text-center',
+                    i === 0 && 'glow-card-strong sm:pt-10 sm:pb-16',
+                    i === 1 && 'sm:pb-10',
                   )}
                 >
                   <Trophy
@@ -195,10 +202,14 @@ function HowItWorks() {
   return (
     <section
       id="how"
-      className="scroll-mt-20 border-y border-border bg-card-muted/40 py-20"
+      className="relative scroll-mt-24 overflow-hidden border-y border-border py-20"
       aria-labelledby="how-title"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <div
+        aria-hidden="true"
+        className="dot-field pointer-events-none absolute inset-0 opacity-50"
+      />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <p className="text-sm font-semibold tracking-[0.2em] text-accent uppercase">
           {t('how.eyebrow')}
         </p>
@@ -208,10 +219,14 @@ function HowItWorks() {
         >
           {t('how.title')}
         </h2>
-        <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="relative mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <span
+            aria-hidden="true"
+            className="absolute top-[42px] right-[12%] left-[12%] hidden h-px bg-[linear-gradient(90deg,transparent,var(--primary),transparent)] opacity-60 lg:block"
+          />
           {steps.map((s, i) => (
-            <li key={s.k}>
-              <Card padding="lg" className="h-full">
+            <li key={s.k} className="relative">
+              <Card padding="lg" className="glow-card h-full">
                 <div className="flex items-center gap-3">
                   <span className="inline-flex size-10 items-center justify-center rounded-[12px] bg-primary text-[var(--btn-primary-fg)]">
                     <s.icon className="size-5" aria-hidden="true" />
@@ -250,7 +265,7 @@ function Rules() {
     { icon: Clock, text: t('rules.ranking') },
   ];
   return (
-    <section className="py-20" aria-labelledby="rules-title">
+    <section id="rules" className="scroll-mt-24 py-20" aria-labelledby="rules-title">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_1.4fr]">
         <div>
           <p className="text-sm font-semibold tracking-[0.2em] text-accent uppercase">
@@ -261,10 +276,12 @@ function Rules() {
           </h2>
           <p className="mt-4 text-muted">{t('rules.body')}</p>
         </div>
-        <ul className="grid gap-3">
+        <ul className="grid gap-3 sm:grid-cols-2">
           {rules.map((r) => (
-            <li key={r.text} className="flex gap-4 rounded-[16px] border border-border bg-card p-4">
-              <r.icon className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden="true" />
+            <li key={r.text} className="glow-card flex gap-4 rounded-[16px] p-4">
+              <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-primary-tint/50">
+                <r.icon className="size-4 text-accent" aria-hidden="true" />
+              </span>
               <span className="text-sm">{r.text}</span>
             </li>
           ))}
@@ -279,7 +296,7 @@ function Results() {
   const f = useFormat();
   const q = useRecentRounds();
   return (
-    <section id="results" className="scroll-mt-20 pb-24" aria-labelledby="results-title">
+    <section id="results" className="scroll-mt-24 pb-24" aria-labelledby="results-title">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <h2 id="results-title" className="font-display text-2xl font-bold tracking-tight">
           {t('results.title')}
@@ -354,10 +371,11 @@ export function CompeteHomePage() {
       <title>{t('seo.title', { firm: name })}</title>
       <meta name="description" content={t('seo.description', { firm: name })} />
       <section className="relative overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_20%_0%,color-mix(in_srgb,var(--primary)_22%,transparent),transparent)]"
-        />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="dot-field absolute inset-0 opacity-70" />
+          <div className="light-beams absolute -top-24 left-1/2 h-[700px] w-[1400px] -translate-x-1/2 opacity-80" />
+          <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_20%_0%,color-mix(in_srgb,var(--primary)_22%,transparent),transparent)]" />
+        </div>
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[1.15fr_1fr]">
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 24 }}
@@ -381,7 +399,7 @@ export function CompeteHomePage() {
             </p>
             <dl className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {facts.map((x) => (
-                <div key={x.k} className="rounded-[16px] border border-border bg-card/60 p-3">
+                <div key={x.k} className="glow-card glass rounded-[16px] p-3">
                   <dt className="text-xs text-muted">{t(`facts.${x.k}`)}</dt>
                   <dd className="mt-1 font-display text-lg font-bold tabular-nums">{x.v}</dd>
                 </div>
@@ -397,6 +415,7 @@ export function CompeteHomePage() {
           </motion.div>
         </div>
       </section>
+      <LiveNow />
       <HowItWorks />
       <Prizes />
       <Rules />

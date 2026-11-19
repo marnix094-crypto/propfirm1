@@ -17,7 +17,10 @@
     "dashboard": "Mi panel",
     "login": "Iniciar sesión",
     "join": "Participar",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "arena": "Arena",
+    "myRounds": "Mis rondas",
+    "rules": "Reglas"
   },
   "footer": {
     "disclaimer": "El trading en la competición es simulado: las posiciones usan fondos virtuales y precios de mercado en vivo; no se envían órdenes a ningún mercado. La inscripción y los premios son dinero; mientras el organizador no tenga la licencia necesaria solo son posibles pagos de prueba.",
@@ -151,7 +154,12 @@
     "return": "Rentabilidad",
     "prize": "Premio",
     "you": "tú",
-    "out": "fuera"
+    "out": "fuera",
+    "top3": "Top 3",
+    "rankN": "Puesto {{n}}",
+    "myRank": "Tu puesto",
+    "showAll": "Ver los {{count}}",
+    "showLess": "Ver menos"
   },
   "terminal": {
     "equity": "Equity",
@@ -182,7 +190,15 @@
       "PLAYER": "por ti",
       "DRAWDOWN": "límite de pérdida",
       "ROUND_END": "fin de la ronda"
-    }
+    },
+    "rank": "Puesto",
+    "ofPlayers": "de {{n}}",
+    "qtyOf": "Cantidad ({{asset}})",
+    "presets": "Tamaños rápidos",
+    "presetLabel": "Tamaño: {{pct}} del máximo",
+    "value": "Valor de la orden",
+    "margin": "Margen usado",
+    "noFills": "Aún no hay operaciones."
   },
   "meter": {
     "safe": "Seguro",
@@ -235,5 +251,30 @@
     "OPERATOR_SUSPENDED": "Esta competición no está disponible temporalmente.",
     "PLAYER_SUSPENDED": "Tu cuenta está suspendida.",
     "QUOTE_STALE": "No hay precio actual. Inténtalo de nuevo en un momento."
+  },
+  "arena": {
+    "minimumBar": "Jugadores hacia el mínimo de {{n}}",
+    "minimumReached": "Mínimo alcanzado: la ronda sigue adelante",
+    "minimumNeeded_one": "Falta {{count}} jugador",
+    "minimumNeeded_other": "Faltan {{count}} jugadores",
+    "prizes": "Premios de esta ronda",
+    "journey": "Tus pasos",
+    "stepDone": "hecho",
+    "stepNow": "ahora",
+    "stepNext": "siguiente",
+    "steps": {
+      "account": "Cuenta",
+      "pay": "Pagar inscripción",
+      "start": "Inicio de ronda",
+      "trade": "Operar"
+    },
+    "oneEntry": "Una inscripción por ronda · si no hay jugadores suficientes, reembolso total",
+    "pendingBody": "Paga la inscripción de {{fee}} antes del inicio para asegurar tu plaza.",
+    "inc": {
+      "balance": "{{balance}} de saldo virtual",
+      "leverage": "Apalancamiento hasta {{leverage}}, órdenes a mercado",
+      "floor": "Tu participación termina si el equity llega a {{floor}}",
+      "prizes": "El top 3 se reparte el bote"
+    }
   }
 }

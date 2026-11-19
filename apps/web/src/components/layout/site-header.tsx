@@ -36,13 +36,15 @@ export function SiteHeader() {
   };
 
   return (
-    <header
-      className={cn(
-        'sticky top-0 z-40 transition-colors duration-300',
-        scrolled || open ? 'glass border-b border-border' : 'border-b border-transparent',
-      )}
-    >
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6">
+    <header className="sticky top-0 z-40 px-2 pt-2 sm:px-4 sm:pt-3">
+      <div
+        className={cn(
+          'glass relative mx-auto flex h-16 max-w-7xl items-center gap-3 rounded-[18px] border px-4 transition-[border-color,box-shadow] duration-300 sm:px-5',
+          scrolled || open
+            ? 'border-border-strong shadow-[0_18px_50px_-24px_color-mix(in_srgb,var(--primary)_35%,transparent)]'
+            : 'border-border',
+        )}
+      >
         <Link
           to={`/${lang}`}
           className="min-w-0 shrink rounded-sm text-fg"
@@ -105,12 +107,18 @@ export function SiteHeader() {
             )}
           </button>
         </div>
+        {/* Reading progress */}
+        <motion.div
+          aria-hidden="true"
+          className="absolute inset-x-5 bottom-0 h-px origin-left bg-primary"
+          style={{ scaleX: reduce ? 0 : scrollYProgress }}
+        />
       </div>
       {open && (
         <nav
           id="site-mobile-nav"
           aria-label={t('nav.main')}
-          className="border-t border-border px-4 pb-5 xl:hidden"
+          className="glass mx-auto mt-2 max-w-7xl rounded-[18px] border border-border px-4 pb-5 xl:hidden"
         >
           <ul className="flex flex-col py-2">
             {SITE_NAV.map(({ id, key }) => (
@@ -144,12 +152,6 @@ export function SiteHeader() {
           </div>
         </nav>
       )}
-      {/* Reading progress */}
-      <motion.div
-        aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-px origin-left bg-primary"
-        style={{ scaleX: reduce ? 0 : scrollYProgress }}
-      />
     </header>
   );
 }

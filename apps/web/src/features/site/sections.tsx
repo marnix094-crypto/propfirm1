@@ -12,60 +12,130 @@ import { cn } from '@/lib/cn';
 import { EASE, SectionTitle } from './fx';
 
 /* ------------------------------------------------------------------ how it works */
+const STEPS = ['brand', 'configure', 'launch'] as const;
+/** Node positions on the curve (viewBox 1200 × 320). */
+const NODES = [
+  { x: 240, y: 250 },
+  { x: 600, y: 70 },
+  { x: 960, y: 250 },
+] as const;
+const CURVE = 'M 0 250 L 160 250 C 380 250, 420 70, 600 70 C 780 70, 820 250, 1040 250 L 1200 250';
+
 export function HowItWorks() {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
-  const ref = useRef<HTMLOListElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 75%', 'end 55%'] });
-  const steps = ['brand', 'configure', 'launch'] as const;
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 85%', 'center 55%'] });
+  const draw = useTransform(scrollYProgress, [0, 1], [0, 1]);
   return (
-    <section id="how" className="scroll-mt-20 py-24 sm:py-32" aria-labelledby="how-title">
-      <div className="mx-auto grid max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-[1fr_1.2fr]">
-        <div className="lg:sticky lg:top-28 lg:self-start">
-          <SectionTitle
-            id="how-title"
-            eyebrow={t('site.how.eyebrow')}
-            title={t('site.how.title')}
-            body={t('site.how.body')}
-          />
-        </div>
-        <ol ref={ref} className="relative flex flex-col gap-6 pl-10">
-          <span aria-hidden="true" className="absolute top-2 bottom-2 left-[11px] w-px bg-border" />
-          <motion.span
+    <section
+      id="how"
+      className="relative scroll-mt-20 overflow-hidden py-24 sm:py-32"
+      aria-labelledby="how-title"
+    >
+      <div
+        aria-hidden="true"
+        className="dot-field pointer-events-none absolute inset-0 opacity-40"
+      />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+        <SectionTitle
+          id="how-title"
+          className="mx-auto text-center [&>p]:mx-auto"
+          eyebrow={t('site.how.eyebrow')}
+          title={t('site.how.title')}
+          body={t('site.how.body')}
+        />
+
+        {/* Desktop: curved path with three nodes. */}
+        <div
+          ref={ref}
+          className="relative mx-auto mt-28 hidden aspect-[1200/420] max-w-6xl md:block"
+        >
+          <svg
+            viewBox="0 0 1200 320"
+            className="absolute inset-x-0 top-0 h-[76%] w-full"
             aria-hidden="true"
-            className="absolute top-2 bottom-2 left-[11px] w-px origin-top bg-primary"
-            style={{ scaleY: reduce ? 1 : scrollYProgress }}
-          />
-          {steps.map((s, i) => (
-            <motion.li
-              key={s}
-              className="relative rounded-card border border-border bg-card p-6"
-              initial={reduce ? false : { opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '0px 0px -15% 0px' }}
-              transition={{ duration: 0.6, ease: EASE }}
-            >
-              <span
-                aria-hidden="true"
-                className="absolute top-6 -left-10 inline-flex size-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-[var(--btn-primary-fg)]"
+          >
+            <defs>
+              <linearGradient id="curve-fade" x1="0" x2="1">
+                <stop offset="0" stopColor="var(--primary)" stopOpacity="0" />
+                <stop offset="0.15" stopColor="var(--primary)" stopOpacity="0.9" />
+                <stop offset="0.85" stopColor="var(--primary)" stopOpacity="0.9" />
+                <stop offset="1" stopColor="var(--primary)" stopOpacity="0" />
+              </linearGradient>
+              <radialGradient id="peak-glow">
+                <stop offset="0" stopColor="var(--primary)" stopOpacity="0.35" />
+                <stop offset="1" stopColor="var(--primary)" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            <ellipse cx="600" cy="170" rx="260" ry="150" fill="url(#peak-glow)" />
+            <path d={CURVE} fill="none" stroke="var(--border)" strokeWidth="2" />
+            <motion.path
+              d={CURVE}
+              fill="none"
+              stroke="url(#curve-fade)"
+              strokeWidth="2.5"
+              style={reduce ? undefined : { pathLength: draw }}
+            />
+            {NODES.map((n) => (
+              <g key={n.x}>
+                <circle cx={n.x} cy={n.y} r="16" fill="var(--primary)" opacity="0.18" />
+                <circle cx={n.x} cy={n.y} r="8" fill="var(--primary)" />
+              </g>
+            ))}
+          </svg>
+          {STEPS.map((s, i) => {
+            const n = NODES[i]!;
+            const middle = i === 1;
+            return (
+              <motion.div
+                key={s}
+                className="absolute w-[26%] -translate-x-1/2 text-center"
+                style={{
+                  left: `${(n.x / 1200) * 100}%`,
+                  top: middle ? '30%' : '64%',
+                }}
+                initial={reduce ? false : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, ease: EASE, delay: 0.2 + i * 0.15 }}
               >
-                {i + 1}
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    'text-outline absolute font-display text-7xl font-bold',
+                    middle && 'left-1/2 -top-[150%] -translate-x-1/2',
+                    i === 0 && '-top-[105%] left-0',
+                    i === 2 && 'right-0 -top-[105%]',
+                  )}
+                >
+                  0{i + 1}
+                </span>
+                <h3 className="font-display text-xl font-semibold tracking-tight">
+                  <span className="sr-only">{i + 1}. </span>
+                  {t(`site.how.${s}.title`)}
+                </h3>
+                <p className="mt-2 text-sm text-muted">{t(`site.how.${s}.body`)}</p>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Mobile: vertical steps. */}
+        <ol className="mt-12 flex flex-col gap-4 md:hidden">
+          {STEPS.map((s, i) => (
+            <li key={s} className="glow-card flex gap-4 p-5">
+              <span aria-hidden="true" className="text-outline font-display text-4xl font-bold">
+                0{i + 1}
               </span>
-              <h3 className="font-display text-xl font-semibold tracking-tight">
-                {t(`site.how.${s}.title`)}
-              </h3>
-              <p className="mt-2 text-muted">{t(`site.how.${s}.body`)}</p>
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {(t(`site.how.${s}.tags`, { returnObjects: true }) as string[]).map((tag) => (
-                  <li
-                    key={tag}
-                    className="rounded-full border border-border px-2.5 py-1 text-xs text-muted"
-                  >
-                    {tag}
-                  </li>
-                ))}
-              </ul>
-            </motion.li>
+              <div>
+                <h3 className="font-display text-lg font-semibold tracking-tight">
+                  <span className="sr-only">{i + 1}. </span>
+                  {t(`site.how.${s}.title`)}
+                </h3>
+                <p className="mt-1 text-sm text-muted">{t(`site.how.${s}.body`)}</p>
+              </div>
+            </li>
           ))}
         </ol>
       </div>
@@ -211,7 +281,12 @@ export function SiteFaq() {
         <SectionTitle id="faq-title" eyebrow={t('site.faq.eyebrow')} title={t('site.faq.title')} />
         <Accordion type="single" collapsible>
           {qs.map((q) => (
-            <AccordionItem key={q} value={q} question={t(`site.faq.${q}.q`)}>
+            <AccordionItem
+              key={q}
+              value={q}
+              question={t(`site.faq.${q}.q`)}
+              className="glow-card data-[state=open]:glow-card-strong"
+            >
               {t(`site.faq.${q}.a`)}
             </AccordionItem>
           ))}
@@ -263,6 +338,10 @@ export function Contact() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="relative overflow-hidden rounded-[28px] border border-border [background-image:var(--cta-gradient)] p-6 text-[var(--cta-fg)] sm:p-12">
           <div aria-hidden="true" className="site-grid absolute inset-0 opacity-30" />
+          <div
+            aria-hidden="true"
+            className="light-beams pointer-events-none absolute -top-40 left-1/4 h-[600px] w-[900px] -translate-x-1/2 opacity-70"
+          />
           <div className="relative grid gap-12 lg:grid-cols-[1fr_1.1fr]">
             <div>
               <p className="text-xs font-semibold tracking-[0.18em] text-[var(--brand-lime)] uppercase">

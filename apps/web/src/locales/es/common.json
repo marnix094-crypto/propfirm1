@@ -1280,7 +1280,25 @@
       "seeStorefront": "Prueba la demo en vivo",
       "p1": "Tu logo, colores y dominio",
       "p2": "Hecho para la UE, RGPD primero",
-      "p3": "EN · NL · ES de serie"
+      "p3": "EN · NL · ES de serie",
+      "stats": {
+        "setup": {
+          "value": "Minutos",
+          "label": "para crear una firma nueva automáticamente"
+        },
+        "brand": {
+          "value": "100%",
+          "label": "marca blanca: tu nombre, colores y dominio"
+        },
+        "langs": {
+          "value": "3",
+          "label": "idiomas de serie: EN · NL · ES"
+        },
+        "eu": {
+          "value": "UE",
+          "label": "alojamiento, RGPD primero"
+        }
+      }
     },
     "marquee": [
       "Motor de reglas",
@@ -1685,6 +1703,69 @@
         "title": "Lanza tu propia competición.",
         "body": "Te mostramos el lado del jugador y del administrador en una demo de 30 minutos.",
         "operatorLogin": "Acceso de operador"
+      }
+    },
+    "hub": {
+      "core": "Motor Daily Funded",
+      "traders": "Traders",
+      "paid": "Pagado",
+      "example": "Ejemplo",
+      "caption": "Firmas de ejemplo en un solo motor, cada una con su marca, traders y reglas."
+    },
+    "setups": {
+      "eyebrow": "Configuraciones",
+      "title": "Elige la configuración para tu firma",
+      "body": "Todas usan el mismo motor y el mismo panel de administración. Tú eliges cuánta separación necesita tu firma.",
+      "tabs": "Producto",
+      "tab": {
+        "firm": "Software prop firm",
+        "compete": "Compete"
+      },
+      "recommended": "La más elegida",
+      "cta": "Reserva una demo",
+      "note": "Precio a consultar: lo ajustamos a tu volumen durante la demo.",
+      "plans": {
+        "shared": {
+          "label": "Subdominio",
+          "title": "Empieza rápido",
+          "body": "Tu firma en un subdominio de nuestra plataforma, lista en minutos.",
+          "points": [
+            "Tu logo, colores y productos",
+            "Panel de administración con reglas y alertas de riesgo",
+            "Infraestructura compartida y aislada por firma"
+          ]
+        },
+        "domain": {
+          "label": "Dominio propio",
+          "title": "Tu marca de principio a fin",
+          "body": "Todo lo de Subdominio, en tu propio dominio verificado.",
+          "points": [
+            "Verificación DNS con TXT + CNAME",
+            "TLS automático para tu dominio",
+            "Tus traders nunca ven nuestro nombre"
+          ]
+        },
+        "instance": {
+          "label": "Instancia propia",
+          "title": "Totalmente separada",
+          "body": "Base de datos e instancia propias para firmas que necesitan separación total.",
+          "points": [
+            "Base de datos dedicada por firma",
+            "Instancia separada, mismas actualizaciones del motor",
+            "Todo lo de Dominio propio"
+          ]
+        }
+      },
+      "compete": {
+        "label": "Segundo producto",
+        "title": "Competiciones diarias de trading",
+        "body": "Organiza rondas de trading de pago de una hora con tu propia marca, separadas del software prop firm.",
+        "points": [
+          "$100k de saldo virtual, 1:100, drawdown del 10%",
+          "Clasificación en vivo, el top 3 se reparte el bote",
+          "Panel de operador y registro de auditoría propios"
+        ],
+        "cta": "Descubre Compete"
       }
     }
   },

@@ -1280,7 +1280,25 @@
       "seeStorefront": "Try the live demo",
       "p1": "Your logo, colours and domain",
       "p2": "Built for the EU, GDPR-first",
-      "p3": "EN · NL · ES out of the box"
+      "p3": "EN · NL · ES out of the box",
+      "stats": {
+        "setup": {
+          "value": "Minutes",
+          "label": "to set up a new firm automatically"
+        },
+        "brand": {
+          "value": "100%",
+          "label": "white label — your name, colours and domain"
+        },
+        "langs": {
+          "value": "3",
+          "label": "languages out of the box: EN · NL · ES"
+        },
+        "eu": {
+          "value": "EU",
+          "label": "hosting, GDPR-first by design"
+        }
+      }
     },
     "marquee": [
       "Rule engine",
@@ -1685,6 +1703,69 @@
         "title": "Launch your own competition.",
         "body": "We show you the player and admin side in a 30-minute demo.",
         "operatorLogin": "Operator login"
+      }
+    },
+    "hub": {
+      "core": "Daily Funded engine",
+      "traders": "Traders",
+      "paid": "Paid out",
+      "example": "Example",
+      "caption": "Example firms on one engine — each with its own brand, traders and rules."
+    },
+    "setups": {
+      "eyebrow": "Set-ups",
+      "title": "Pick the set-up that fits your firm",
+      "body": "Every set-up runs the same engine and admin panel. You choose how separate your firm is.",
+      "tabs": "Product",
+      "tab": {
+        "firm": "Prop firm software",
+        "compete": "Compete"
+      },
+      "recommended": "Most chosen",
+      "cta": "Book a demo",
+      "note": "Pricing on request — we size it to your volume during the demo.",
+      "plans": {
+        "shared": {
+          "label": "Subdomain",
+          "title": "Start fast",
+          "body": "Your firm live on a subdomain of our platform, ready in minutes.",
+          "points": [
+            "Your logo, colours and products",
+            "Admin panel with rule sets and risk alerts",
+            "Shared, tenant-isolated infrastructure"
+          ]
+        },
+        "domain": {
+          "label": "Own domain",
+          "title": "Your brand, end to end",
+          "body": "Everything from Subdomain, served on your own verified domain.",
+          "points": [
+            "DNS verification with TXT + CNAME",
+            "Automatic TLS for your domain",
+            "Traders never see our name"
+          ]
+        },
+        "instance": {
+          "label": "Own instance",
+          "title": "Fully separate",
+          "body": "Your own database and instance for firms that need full separation.",
+          "points": [
+            "Dedicated database per firm",
+            "Separate instance, same engine updates",
+            "Everything from Own domain"
+          ]
+        }
+      },
+      "compete": {
+        "label": "Second product",
+        "title": "Daily trading competitions",
+        "body": "Run paid, one-hour trading rounds under your own brand — separate from the prop firm software.",
+        "points": [
+          "$100k virtual balance, 1:100, 10% drawdown",
+          "Live leaderboard, top 3 share the prize pool",
+          "Own operator panel and audit trail"
+        ],
+        "cta": "Explore Compete"
       }
     }
   },

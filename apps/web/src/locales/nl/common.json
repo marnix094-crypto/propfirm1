@@ -1280,7 +1280,25 @@
       "seeStorefront": "Probeer de live demo",
       "p1": "Jouw logo, kleuren en domein",
       "p2": "Gebouwd voor de EU, AVG voorop",
-      "p3": "EN · NL · ES standaard"
+      "p3": "EN · NL · ES standaard",
+      "stats": {
+        "setup": {
+          "value": "Minuten",
+          "label": "om een nieuwe firma automatisch op te zetten"
+        },
+        "brand": {
+          "value": "100%",
+          "label": "white label — jouw naam, kleuren en domein"
+        },
+        "langs": {
+          "value": "3",
+          "label": "talen standaard: EN · NL · ES"
+        },
+        "eu": {
+          "value": "EU",
+          "label": "hosting, AVG voorop"
+        }
+      }
     },
     "marquee": [
       "Regelengine",
@@ -1685,6 +1703,69 @@
         "title": "Start je eigen competitie.",
         "body": "We laten je de speler- en adminkant zien in een demo van 30 minuten.",
         "operatorLogin": "Operator-login"
+      }
+    },
+    "hub": {
+      "core": "Daily Funded-engine",
+      "traders": "Traders",
+      "paid": "Uitbetaald",
+      "example": "Voorbeeld",
+      "caption": "Voorbeeldfirma’s op één engine — elk met eigen merk, traders en regels."
+    },
+    "setups": {
+      "eyebrow": "Opzet",
+      "title": "Kies de opzet die bij je firma past",
+      "body": "Elke opzet draait op dezelfde engine en hetzelfde adminpanel. Jij kiest hoe gescheiden je firma is.",
+      "tabs": "Product",
+      "tab": {
+        "firm": "Prop-firm-software",
+        "compete": "Compete"
+      },
+      "recommended": "Meest gekozen",
+      "cta": "Plan een demo",
+      "note": "Prijs op aanvraag — we stemmen die tijdens de demo af op je volume.",
+      "plans": {
+        "shared": {
+          "label": "Subdomein",
+          "title": "Snel starten",
+          "body": "Je firma live op een subdomein van ons platform, binnen minuten klaar.",
+          "points": [
+            "Jouw logo, kleuren en producten",
+            "Adminpanel met regelsets en risicomeldingen",
+            "Gedeelde infrastructuur, per firma geïsoleerd"
+          ]
+        },
+        "domain": {
+          "label": "Eigen domein",
+          "title": "Jouw merk, van begin tot eind",
+          "body": "Alles van Subdomein, op je eigen geverifieerde domein.",
+          "points": [
+            "DNS-verificatie met TXT + CNAME",
+            "Automatische TLS voor je domein",
+            "Traders zien onze naam nergens"
+          ]
+        },
+        "instance": {
+          "label": "Eigen instance",
+          "title": "Volledig gescheiden",
+          "body": "Eigen database en instance voor firma’s die volledige scheiding nodig hebben.",
+          "points": [
+            "Eigen database per firma",
+            "Aparte instance, dezelfde engine-updates",
+            "Alles van Eigen domein"
+          ]
+        }
+      },
+      "compete": {
+        "label": "Tweede product",
+        "title": "Dagelijkse tradingcompetities",
+        "body": "Organiseer betaalde trading-rondes van een uur onder je eigen merk — los van de prop-firm-software.",
+        "points": [
+          "$100k virtueel saldo, 1:100, 10% drawdown",
+          "Live ranglijst, top 3 deelt de prijzenpot",
+          "Eigen operatorpanel en audit trail"
+        ],
+        "cta": "Bekijk Compete"
       }
     }
   },

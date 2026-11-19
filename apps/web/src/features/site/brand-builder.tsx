@@ -39,7 +39,7 @@ export function BrandBuilder() {
   return (
     <section
       id="brand-builder"
-      className="scroll-mt-20 py-24 sm:py-32"
+      className="scroll-mt-20 overflow-x-clip py-24 sm:py-32"
       aria-labelledby="builder-title"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">

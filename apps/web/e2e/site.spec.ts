@@ -36,6 +36,18 @@ test.describe('Daily Funded website (white label)', () => {
     await expect(tour.getByRole('img', { name: /Trading terminal with live chart/ })).toBeVisible();
   });
 
+  test('set-ups switch between prop firm software and Compete', async ({ page }) => {
+    await page.goto('/en#setups');
+    const setups = page.locator('#setups');
+    await expect(setups.getByRole('heading', { name: 'Your brand, end to end' })).toBeVisible();
+    await setups.getByRole('tab', { name: 'Compete' }).click();
+    await expect(setups.getByRole('tab', { name: 'Compete' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await expect(setups.getByRole('link', { name: 'Explore Compete' })).toBeVisible();
+  });
+
   test('demo request form sends a lead', async ({ page }) => {
     await page.goto('/en#contact');
     const form = page.locator('#contact form');

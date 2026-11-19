@@ -13,6 +13,8 @@ import type { ClientModule } from '@brand/shared';
 export type AdminMe = Schemas['AdminMeDto'];
 export type AdminFirm = Schemas['AdminFirmDto'];
 export type AdminFirmSummary = Schemas['AdminFirmSummaryDto'];
+export type DomainSetup = Schemas['DomainSetupDto'];
+export type ProvisioningStep = Schemas['ProvisioningStepDto'];
 export type AdminOverview = Schemas['AdminOverviewDto'];
 export type AdminTrader = Schemas['AdminTraderDto'];
 export type AdminTraderDetail = Schemas['AdminTraderDetailDto'];
@@ -291,12 +293,71 @@ export function useFirms(enabled: boolean) {
   });
 }
 
+/** Firm list plus platform capabilities (own instance available, platform domain). */
+export function useFirmList(enabled: boolean) {
+  const ready = useReady();
+  return useQuery({
+    queryKey: ['admin-firms'],
+    queryFn: () => call(() => client.GET('/api/v1/admin/firms')),
+    enabled: ready && enabled,
+    // Steps waiting for DNS finish in the background: keep the list fresh.
+    refetchInterval: 20_000,
+  });
+}
+
+export function useRunProvisioning() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      call(() =>
+        client.POST('/api/v1/admin/firms/{id}/provisioning/run', { params: { path: { id } } }),
+      ),
+    onSuccess: (d) => qc.setQueryData(['admin-firms'], d),
+  });
+}
+
+export function useSetFirmDomain() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, domain }: { id: string; domain: string | null }) =>
+      call(() =>
+        client.POST('/api/v1/admin/firms/{id}/domain', {
+          params: { path: { id } },
+          body: { domain },
+        }),
+      ),
+    onSuccess: (d) => qc.setQueryData(['admin-firms'], d),
+  });
+}
+
+/** Firm admin: DNS instructions and status of the own domain (D95). */
+export function useDomainSetup() {
+  const ak = useAk();
+  return useQuery({
+    queryKey: ak('domain'),
+    queryFn: () => call(() => client.GET('/api/v1/admin/branding/domain')),
+    enabled: useReady(),
+  });
+}
+
+export function useCheckDomain() {
+  const qc = useQueryClient();
+  const ak = useAk();
+  return useMutation({
+    mutationFn: () => call(() => client.POST('/api/v1/admin/branding/domain/check')),
+    onSuccess: (d) => {
+      qc.setQueryData(ak('domain'), d);
+      void qc.invalidateQueries({ queryKey: ['admin'] });
+    },
+  });
+}
+
 export function useCreateFirm() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: Schemas['CreateFirmDto']) =>
       call(() => client.POST('/api/v1/admin/firms', { body })),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: ['admin-firms'] }),
+    onSuccess: (d) => qc.setQueryData(['admin-firms'], d),
   });
 }
 

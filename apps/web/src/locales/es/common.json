@@ -520,7 +520,10 @@
     "ACCOUNT_NOT_FOUND": "Cuenta no encontrada.",
     "STAFF_EMAIL_TAKEN": "Este correo ya es admin de una empresa.",
     "MODULE_NOT_FOUND": "Esta parte de la plataforma no está disponible.",
-    "ADMIN_NOT_FOUND": "Esta empresa aún no tiene admin."
+    "ADMIN_NOT_FOUND": "Esta empresa aún no tiene admin.",
+    "FIRM_HOSTED_ELSEWHERE": "Esta empresa funciona en su propia instancia — usa su propia dirección.",
+    "DEDICATED_UNAVAILABLE": "Las bases de datos propias no están configuradas en esta plataforma.",
+    "DOMAIN_MANAGED_BY_PLATFORM": "El dominio de esta instancia lo gestiona Daily Funded."
   },
   "app": {
     "nav": {
@@ -2029,6 +2032,82 @@
         "certificates": "Certificados verificables para cuentas financiadas.",
         "tutorial": "Breve introducción a la plataforma."
       }
+    },
+    "setup": {
+      "title": "Configuración",
+      "details": "Configuración",
+      "ownInstance": "Instancia propia",
+      "copy": "Copiar {{value}}",
+      "state": {
+        "ready": "Lista",
+        "waiting": "Esperando DNS",
+        "failed": "Requiere atención",
+        "running": "En curso"
+      },
+      "steps": {
+        "TENANT": "Datos de la plataforma (catálogo)",
+        "ADMIN": "Cuenta de administrador",
+        "DATABASE": "Base de datos",
+        "SUBDOMAIN": "Subdominio de la plataforma",
+        "CUSTOM_DOMAIN": "Dominio propio"
+      },
+      "status": {
+        "PENDING": "Pendiente",
+        "RUNNING": "En curso",
+        "WAITING": "Esperando",
+        "DONE": "Hecho",
+        "SKIPPED": "No necesario",
+        "FAILED": "Fallido"
+      },
+      "detail": {
+        "CATALOGUE_READY": "productos de ejemplo listos",
+        "ON_OWN_INSTANCE": "creado en su propia instancia",
+        "ADMIN_INVITED": "invitación enviada",
+        "NO_ADMIN": "aún sin administrador",
+        "PLATFORM_FIRM": "empresa de la plataforma",
+        "SHARED": "base de datos compartida",
+        "DEDICATED_READY": "base de datos propia creada, migrada y rellenada",
+        "PROVISIONER_UNAVAILABLE": "las bases de datos propias no están configuradas",
+        "ACTIVE": "activo",
+        "NO_BASE_DOMAIN": "sin dominio de plataforma configurado",
+        "NO_DOMAIN": "sin dominio propio",
+        "TXT_MISSING": "registro TXT aún no encontrado",
+        "CNAME_MISSING": "registro CNAME aún no encontrado",
+        "ERROR": "error inesperado — inténtalo de nuevo"
+      },
+      "domainStatus": {
+        "NONE": "Sin dominio propio",
+        "PENDING_DNS": "Esperando DNS",
+        "ACTIVE": "Activo",
+        "FAILED": "Fallido"
+      },
+      "subdomain": "Siempre accesible en",
+      "checkedAt": "Última comprobación {{time}}",
+      "dnsIntro": "Añade estos registros en el proveedor DNS del dominio. El dominio se activa en cuanto se encuentran ambos — lo comprobamos automáticamente cada minuto.",
+      "records": "Registros DNS",
+      "type": "Tipo",
+      "name": "Nombre",
+      "value": "Valor",
+      "dnsNote": "Los cambios DNS pueden tardar unas horas. El certificado (HTTPS) se emite automáticamente cuando el dominio está activo.",
+      "checkNow": "Comprobar ahora",
+      "noDomain": "Sin dominio propio.",
+      "ownDomain": "Dominio propio (opcional)",
+      "ownDomainHint": "P. ej. trade.tuempresa.com — se verifica por DNS antes de usarse.",
+      "dedicated": "Base de datos propia (instancia propia)",
+      "dedicatedHint": "La empresa tiene su propia base de datos y funciona en su propia instancia; los datos nunca están en la plataforma compartida.",
+      "dedicatedUnavailable": "No disponible: las bases de datos propias no están configuradas en esta plataforma.",
+      "newHint": "La empresa se configura automáticamente y está accesible al instante en {{domain}}. El administrador recibe una invitación por correo.",
+      "dialogTitle": "Configuración de {{name}}",
+      "dialogBody": "Cada paso se ejecuta automáticamente y se reintenta hasta que funcione.",
+      "ownInstanceBody": "Esta empresa funciona en su propia instancia con su propia base de datos. Sus traders y su panel se sirven allí, no en la plataforma compartida. La configuración de la instancia se obtiene con: pnpm --filter @brand/api firm:instance-env {{slug}}",
+      "stepsTitle": "Pasos",
+      "runNow": "Ejecutar de nuevo",
+      "legacy": "Creada antes de existir la configuración automática.",
+      "domainTitle": "Dominio",
+      "domainSaved": "Dominio guardado — verificación iniciada.",
+      "saveDomain": "Guardar dominio",
+      "removeDomain": "Eliminar dominio",
+      "brandingIntro": "Tu plataforma siempre está accesible en su subdominio. El dominio propio se usa en cuanto se verifica el DNS."
     }
   }
 }

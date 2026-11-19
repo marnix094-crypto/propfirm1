@@ -12,12 +12,15 @@ import { toast } from '@/components/ui/toaster';
 import {
   useAdminMe,
   useCreateFirm,
-  useFirms,
+  useFirmList,
   useFirmStatus,
   useResendInvite,
+  useRunProvisioning,
   useSetFirmAdmin,
+  useSetFirmDomain,
   type AdminFirmSummary,
 } from '@/hooks/use-admin';
+import { DomainSetupCard, ProvisioningSteps, SetupBadge } from './provisioning';
 import { Modal } from '@/components/ui/modal';
 import { useFormat } from '@/hooks/use-format';
 import { errorMessage } from '@/lib/errors';
@@ -40,12 +43,17 @@ export function AdminFirmsPage() {
   const navigate = useNavigate();
   const f = useFormat();
   const me = useAdminMe().data;
-  const firms = useFirms(!!me?.superadmin);
+  const list = useFirmList(!!me?.superadmin);
+  const firms = list;
+  const items = list.data?.items ?? [];
   const create = useCreateFirm();
   const status = useFirmStatus();
   const setAdminFirm = useFirmStore((s) => s.setAdminFirm);
   const resend = useResendInvite();
   const [changing, setChanging] = useState<AdminFirmSummary | null>(null);
+  const [details, setDetails] = useState<string | null>(null);
+  const [domain, setDomain] = useState('');
+  const [dedicated, setDedicated] = useState(false);
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [owner, setOwner] = useState('');
@@ -72,13 +80,23 @@ export function AdminFirmsPage() {
           onSubmit={(e) => {
             e.preventDefault();
             create.mutate(
-              { name: name.trim(), slug: finalSlug, ownerEmail: owner.trim() },
               {
-                onSuccess: () => {
+                name: name.trim(),
+                slug: finalSlug,
+                ownerEmail: owner.trim(),
+                ...(domain.trim() ? { domain: domain.trim().toLowerCase() } : {}),
+                ...(dedicated ? { dedicatedDatabase: true } : {}),
+              },
+              {
+                onSuccess: (d) => {
                   setName('');
                   setSlug('');
                   setOwner('');
+                  setDomain('');
+                  setDedicated(false);
                   setSlugTouched(false);
+                  const created = d.items.find((x) => x.slug === finalSlug);
+                  if (created) setDetails(created.id);
                   toast({ kind: 'success', title: t('admin.firms.created') });
                 },
                 onError,
@@ -113,8 +131,38 @@ export function AdminFirmsPage() {
           <Button type="submit" disabled={create.isPending || !SLUG.test(finalSlug)}>
             <Plus aria-hidden="true" /> {t('admin.firms.create')}
           </Button>
+          <Input
+            label={t('admin.setup.ownDomain')}
+            hint={t('admin.setup.ownDomainHint')}
+            placeholder="trade.acmeprop.com"
+            value={domain}
+            onChange={(e) => setDomain(e.target.value)}
+          />
+          <label className="flex items-start gap-3 text-sm md:col-span-2 md:self-center">
+            <input
+              type="checkbox"
+              className="mt-0.5 size-4 accent-[var(--primary)]"
+              checked={dedicated}
+              disabled={!list.data?.dedicatedAvailable}
+              onChange={(e) => setDedicated(e.target.checked)}
+            />
+            <span>
+              <span className="font-semibold">{t('admin.setup.dedicated')}</span>
+              <span className="block text-xs text-muted">
+                {list.data?.dedicatedAvailable
+                  ? t('admin.setup.dedicatedHint')
+                  : t('admin.setup.dedicatedUnavailable')}
+              </span>
+            </span>
+          </label>
         </form>
-        <p className="mt-3 text-xs text-muted">{t('admin.firms.newHint')}</p>
+        <p className="mt-3 text-xs text-muted">
+          {list.data?.platformDomain
+            ? t('admin.setup.newHint', {
+                domain: `${finalSlug || 'slug'}.${list.data.platformDomain}`,
+              })
+            : t('admin.firms.newHint')}
+        </p>
       </Card>
       <Panel title={t('admin.firms.list')}>
         {firms.isPending ? (
@@ -128,7 +176,7 @@ export function AdminFirmsPage() {
         ) : (
           <AdminTable
             label={t('admin.firms.list')}
-            minWidth={1040}
+            minWidth={1100}
             head={
               <>
                 <Th>{t('admin.firms.name')}</Th>
@@ -137,17 +185,19 @@ export function AdminFirmsPage() {
                 <Th>{t('admin.traders.status')}</Th>
                 <Th right>{t('admin.overview.traders')}</Th>
                 <Th right>{t('admin.overview.fundedActive')}</Th>
-                <Th>{t('admin.firms.since')}</Th>
                 <Th>
                   <span className="sr-only">{t('admin.actions')}</span>
                 </Th>
               </>
             }
           >
-            {firms.data.map((firm) => (
+            {items.map((firm) => (
               <Tr key={firm.id}>
                 <Td>
                   <p className="font-semibold whitespace-nowrap">{firm.name}</p>
+                  <p className="text-xs text-muted">
+                    {t('admin.firms.since')} {dateOnly(firm.createdAt, f.locale)}
+                  </p>
                   <p className="text-xs text-muted">
                     {firm.slug}{' '}
                     {firm.isDefault && <Badge className="ml-1">{t('admin.firms.default')}</Badge>}
@@ -171,25 +221,35 @@ export function AdminFirmsPage() {
                     </span>
                   )}
                 </Td>
-                <Td className="text-muted">{firm.domain ?? '—'}</Td>
+                <Td className="text-muted">
+                  <p className="max-w-56 truncate">{firm.domain ?? firm.subdomain ?? '—'}</p>
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {firm.provisioning.length > 0 && <SetupBadge steps={firm.provisioning} />}
+                    {firm.dedicatedDatabase && <Badge>{t('admin.setup.ownInstance')}</Badge>}
+                  </div>
+                </Td>
                 <Td>
                   <StatusBadge status={firm.status} />
                 </Td>
                 <Td right>{firm.traders}</Td>
                 <Td right>{firm.fundedActive}</Td>
-                <Td className="whitespace-nowrap">{dateOnly(firm.createdAt, f.locale)}</Td>
                 <Td className="text-right">
-                  <div className="flex flex-wrap justify-end gap-2">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => {
-                        setAdminFirm(firm.id);
-                        void navigate(`/${lang}/admin`);
-                      }}
-                    >
-                      {t('admin.firms.manage')}
+                  <div className="flex flex-col items-end gap-2 [&>*]:whitespace-nowrap">
+                    <Button variant="secondary" size="sm" onClick={() => setDetails(firm.id)}>
+                      {t('admin.setup.details')}
                     </Button>
+                    {!firm.dedicatedDatabase && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => {
+                          setAdminFirm(firm.id);
+                          void navigate(`/${lang}/admin`);
+                        }}
+                      >
+                        {t('admin.firms.manage')}
+                      </Button>
+                    )}
                     {!firm.isDefault && (
                       <Button variant="secondary" size="sm" onClick={() => setChanging(firm)}>
                         {t('admin.firms.changeAdmin')}
@@ -239,7 +299,92 @@ export function AdminFirmsPage() {
         )}
       </Panel>
       {changing && <ChangeAdminDialog firm={changing} onClose={() => setChanging(null)} />}
+      {details && items.find((x) => x.id === details) && (
+        <SetupDialog firm={items.find((x) => x.id === details)!} onClose={() => setDetails(null)} />
+      )}
     </div>
+  );
+}
+
+/** Daily Funded: the automatic set-up of one firm — steps, DNS and own domain (D93–D95). */
+function SetupDialog({ firm, onClose }: { firm: AdminFirmSummary; onClose: () => void }) {
+  const { t } = useTranslation();
+  const run = useRunProvisioning();
+  const setDomain = useSetFirmDomain();
+  const [domain, setDomainValue] = useState(firm.domain ?? '');
+  const onError = (e: unknown) => toast({ kind: 'error', title: errorMessage(t, e) });
+  return (
+    <Modal
+      open
+      onOpenChange={(o) => !o && onClose()}
+      title={t('admin.setup.dialogTitle', { name: firm.name })}
+      description={t('admin.setup.dialogBody')}
+      closeLabel={t('common.close')}
+      className="max-w-2xl"
+    >
+      <div className="flex max-h-[70vh] flex-col gap-6 overflow-y-auto pr-1">
+        {firm.dedicatedDatabase && (
+          <p className="rounded-[12px] border border-border bg-card-muted p-3 text-sm">
+            {t('admin.setup.ownInstanceBody', { slug: firm.slug })}
+          </p>
+        )}
+        <section aria-labelledby="setup-steps">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h3 id="setup-steps" className="text-sm font-semibold">
+              {t('admin.setup.stepsTitle')}
+            </h3>
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={run.isPending}
+              onClick={() => run.mutate(firm.id, { onError })}
+            >
+              {t('admin.setup.runNow')}
+            </Button>
+          </div>
+          {firm.provisioning.length > 0 ? (
+            <ProvisioningSteps steps={firm.provisioning} />
+          ) : (
+            <p className="text-sm text-muted">{t('admin.setup.legacy')}</p>
+          )}
+        </section>
+        <section aria-labelledby="setup-domain" className="flex flex-col gap-4">
+          <h3 id="setup-domain" className="text-sm font-semibold">
+            {t('admin.setup.domainTitle')}
+          </h3>
+          <DomainSetupCard
+            setup={firm.domainSetup}
+            checking={run.isPending}
+            onCheck={() => run.mutate(firm.id, { onError })}
+          />
+          <form
+            className="flex flex-wrap items-end gap-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setDomain.mutate(
+                { id: firm.id, domain: domain.trim().toLowerCase() || null },
+                {
+                  onSuccess: () => toast({ kind: 'success', title: t('admin.setup.domainSaved') }),
+                  onError,
+                },
+              );
+            }}
+          >
+            <div className="min-w-56 flex-1">
+              <Input
+                label={t('admin.setup.ownDomain')}
+                placeholder="trade.acmeprop.com"
+                value={domain}
+                onChange={(e) => setDomainValue(e.target.value)}
+              />
+            </div>
+            <Button type="submit" variant="secondary" disabled={setDomain.isPending}>
+              {domain.trim() ? t('admin.setup.saveDomain') : t('admin.setup.removeDomain')}
+            </Button>
+          </form>
+        </section>
+      </div>
+    </Modal>
   );
 }
 

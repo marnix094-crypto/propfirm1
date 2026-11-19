@@ -14,9 +14,12 @@ import {
   useUpdateBranding,
   type AdminFirm,
   type UpdateBranding,
+  useCheckDomain,
+  useDomainSetup,
 } from '@/hooks/use-admin';
 import { brandPalette, DEFAULT_BRAND_COLOR as DEFAULT_COLOR, isHexColor } from '@/lib/brand-color';
 import { errorMessage } from '@/lib/errors';
+import { DomainSetupCard } from './provisioning';
 
 const LOGO_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 const LOGO_MAX_BYTES = 200 * 1024;
@@ -220,6 +223,33 @@ function BrandingForm({ firm }: { firm: AdminFirm }) {
   );
 }
 
+/** Own domain: DNS instructions and verification status (D95). */
+function DomainPanel() {
+  const { t } = useTranslation();
+  const setup = useDomainSetup();
+  const check = useCheckDomain();
+  if (!setup.data) return null;
+  return (
+    <Card>
+      <h2 className="mb-1 text-[15px] font-semibold">{t('admin.setup.domainTitle')}</h2>
+      <p className="mb-4 text-sm text-muted">{t('admin.setup.brandingIntro')}</p>
+      <DomainSetupCard
+        setup={setup.data}
+        checking={check.isPending}
+        onCheck={() =>
+          check.mutate(undefined, {
+            onSuccess: (d) =>
+              toast({
+                kind: d.status === 'ACTIVE' ? 'success' : 'info',
+                title: t(`admin.setup.domainStatus.${d.status}`),
+              }),
+          })
+        }
+      />
+    </Card>
+  );
+}
+
 export function AdminBrandingPage() {
   const { t } = useTranslation();
   const branding = useAdminBranding();
@@ -235,7 +265,13 @@ export function AdminBrandingPage() {
           onRetry={() => void branding.refetch()}
         />
       ) : (
-        <BrandingForm key={branding.data.id + branding.data.name} firm={branding.data} />
+        <>
+          <BrandingForm
+            key={branding.data.id + branding.data.name + (branding.data.domain ?? '')}
+            firm={branding.data}
+          />
+          <DomainPanel />
+        </>
       )}
     </div>
   );

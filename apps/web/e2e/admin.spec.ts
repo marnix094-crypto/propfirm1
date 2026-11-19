@@ -121,3 +121,50 @@ test.describe('admin panel (real API)', () => {
     }
   });
 });
+
+test.describe('automatic firm set-up (D93–D95)', () => {
+  test('Daily Funded creates a firm with its own instance and own domain; steps and DNS are shown', async ({
+    page,
+    request,
+  }) => {
+    const email = unique('super');
+    const res = await request.post(`${API}/dev/staff`, {
+      data: { email, password: PASSWORD, superadmin: true },
+    });
+    expect(res.status()).toBe(201);
+    await adminLogin(page, email);
+    await page.goto('/en/admin/firms');
+    const slug = `e2e-${Date.now().toString(36)}`;
+    await page.getByLabel('Name', { exact: true }).fill('E2E Capital');
+    await page.getByLabel('Code').fill(slug);
+    await page.getByLabel('Admin email').fill(unique('owner'));
+    await page.getByLabel('Own domain (optional)').fill(`trade.${slug}.example.com`);
+    await page.getByRole('checkbox', { name: /Own database/ }).check();
+    await page.getByRole('button', { name: 'Create firm' }).click();
+
+    const dialog = page.getByRole('dialog', { name: 'Set-up of E2E Capital' });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('own database created, migrated and filled')).toBeVisible();
+    await expect(dialog.getByText('TXT record not found yet')).toBeVisible();
+    await expect(dialog.getByText(`${slug}.dailyfunded.test`)).toBeVisible();
+    await expect(dialog.getByRole('cell', { name: /_dailyfunded-verify\.trade\./ })).toBeVisible();
+    const axe = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+      .analyze();
+    expect(axe.violations.map((v) => v.id)).toEqual([]);
+    await page.keyboard.press('Escape');
+    await expect(page.getByText(`trade.${slug}.example.com`)).toBeVisible();
+  });
+
+  test('a firm admin sees DNS instructions for a new own domain', async ({ page, request }) => {
+    const { email, slug } = await newFirmAdmin(request);
+    await adminLogin(page, email);
+    await page.goto('/en/admin/branding');
+    await page.getByLabel('Custom domain').fill(`go.${slug}.example.com`);
+    await page.getByRole('button', { name: 'Save' }).click();
+    await expect(page.getByText('Waiting for DNS')).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'CNAME' })).toBeVisible();
+    await expect(page.getByText('tenants.dailyfunded.test')).toBeVisible();
+    await expect(page.getByText(`${slug}.dailyfunded.test`)).toBeVisible();
+  });
+});

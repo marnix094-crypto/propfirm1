@@ -520,7 +520,10 @@
     "ACCOUNT_NOT_FOUND": "Account niet gevonden.",
     "STAFF_EMAIL_TAKEN": "Dit e-mailadres is al admin van een firma.",
     "MODULE_NOT_FOUND": "Dit onderdeel van het platform is niet beschikbaar.",
-    "ADMIN_NOT_FOUND": "Deze firma heeft nog geen admin."
+    "ADMIN_NOT_FOUND": "Deze firma heeft nog geen admin.",
+    "FIRM_HOSTED_ELSEWHERE": "Deze firma draait op een eigen instance — gebruik het eigen adres.",
+    "DEDICATED_UNAVAILABLE": "Eigen databases zijn op dit platform niet ingesteld.",
+    "DOMAIN_MANAGED_BY_PLATFORM": "Het domein van deze instance wordt beheerd door Daily Funded."
   },
   "app": {
     "nav": {
@@ -2029,6 +2032,82 @@
         "certificates": "Verifieerbare certificaten voor funded accounts.",
         "tutorial": "Korte introductie van het platform."
       }
+    },
+    "setup": {
+      "title": "Opzet",
+      "details": "Opzet",
+      "ownInstance": "Eigen instance",
+      "copy": "{{value}} kopiëren",
+      "state": {
+        "ready": "Klaar",
+        "waiting": "Wacht op DNS",
+        "failed": "Aandacht nodig",
+        "running": "Bezig"
+      },
+      "steps": {
+        "TENANT": "Platformgegevens (catalogus)",
+        "ADMIN": "Adminaccount",
+        "DATABASE": "Database",
+        "SUBDOMAIN": "Platform-subdomein",
+        "CUSTOM_DOMAIN": "Eigen domein"
+      },
+      "status": {
+        "PENDING": "Gepland",
+        "RUNNING": "Bezig",
+        "WAITING": "Wacht",
+        "DONE": "Klaar",
+        "SKIPPED": "Niet nodig",
+        "FAILED": "Mislukt"
+      },
+      "detail": {
+        "CATALOGUE_READY": "voorbeeldproducten klaar",
+        "ON_OWN_INSTANCE": "aangemaakt op de eigen instance",
+        "ADMIN_INVITED": "uitnodiging verstuurd",
+        "NO_ADMIN": "nog geen admin",
+        "PLATFORM_FIRM": "platformfirma",
+        "SHARED": "gedeelde platformdatabase",
+        "DEDICATED_READY": "eigen database aangemaakt, gemigreerd en gevuld",
+        "PROVISIONER_UNAVAILABLE": "eigen databases zijn niet ingesteld",
+        "ACTIVE": "actief",
+        "NO_BASE_DOMAIN": "geen platformdomein ingesteld",
+        "NO_DOMAIN": "geen eigen domein",
+        "TXT_MISSING": "TXT-record nog niet gevonden",
+        "CNAME_MISSING": "CNAME-record nog niet gevonden",
+        "ERROR": "onverwachte fout — probeer opnieuw"
+      },
+      "domainStatus": {
+        "NONE": "Geen eigen domein",
+        "PENDING_DNS": "Wacht op DNS",
+        "ACTIVE": "Actief",
+        "FAILED": "Mislukt"
+      },
+      "subdomain": "Altijd bereikbaar op",
+      "checkedAt": "Laatst gecontroleerd {{time}}",
+      "dnsIntro": "Voeg deze records toe bij de DNS-provider van het domein. Het domein wordt actief zodra beide gevonden zijn — we controleren automatisch elke minuut.",
+      "records": "DNS-records",
+      "type": "Type",
+      "name": "Naam",
+      "value": "Waarde",
+      "dnsNote": "DNS-wijzigingen kunnen tot een paar uur duren. Een certificaat (HTTPS) wordt automatisch aangevraagd zodra het domein actief is.",
+      "checkNow": "Nu controleren",
+      "noDomain": "Geen eigen domein ingesteld.",
+      "ownDomain": "Eigen domein (optioneel)",
+      "ownDomainHint": "Bv. trade.jouwfirma.com — wordt via DNS gecontroleerd voordat het gebruikt wordt.",
+      "dedicated": "Eigen database (eigen instance)",
+      "dedicatedHint": "De firma krijgt een eigen database en draait op een eigen instance; data staat nooit op het gedeelde platform.",
+      "dedicatedUnavailable": "Niet beschikbaar: eigen databases zijn op dit platform niet ingesteld.",
+      "newHint": "De firma wordt automatisch opgezet en is direct bereikbaar op {{domain}}. De admin krijgt een uitnodiging per e-mail.",
+      "dialogTitle": "Opzet van {{name}}",
+      "dialogBody": "Elke stap loopt automatisch en wordt opnieuw geprobeerd tot hij lukt.",
+      "ownInstanceBody": "Deze firma draait op een eigen instance met een eigen database. Traders en het adminpanel worden daar bediend, niet op het gedeelde platform. De configuratie van de instance print je met: pnpm --filter @brand/api firm:instance-env {{slug}}",
+      "stepsTitle": "Stappen",
+      "runNow": "Nu opnieuw uitvoeren",
+      "legacy": "Aangemaakt voordat de automatische opzet bestond.",
+      "domainTitle": "Domein",
+      "domainSaved": "Domein opgeslagen — controle gestart.",
+      "saveDomain": "Domein opslaan",
+      "removeDomain": "Domein verwijderen",
+      "brandingIntro": "Je platform is altijd bereikbaar op het subdomein. Een eigen domein wordt gebruikt zodra de DNS is gecontroleerd."
     }
   }
 }

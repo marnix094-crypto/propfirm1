@@ -1768,7 +1768,68 @@ interface DemoFirm {
   logoDataUrl: string | null;
   domain: string | null;
   supportEmail: string | null;
+  /** Demo DNS: a domain becomes ACTIVE on the second check (simulated propagation). */
+  domainStatus?: 'NONE' | 'PENDING_DNS' | 'ACTIVE';
+  domainChecks?: number;
 }
+
+/** Preview: example platform domain for automatic subdomains (D95). */
+const DEMO_PLATFORM_DOMAIN = 'dailyfunded.com';
+const demoToken = (seed: string) =>
+  Array.from(seed)
+    .reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7)
+    .toString(16)
+    .padStart(8, '0')
+    .repeat(4);
+interface DemoDomainState {
+  slug: string;
+  domain: string | null;
+  domainStatus?: 'NONE' | 'PENDING_DNS' | 'ACTIVE';
+  domainChecks?: number;
+}
+const domainSetupOf = (f: DemoDomainState) => ({
+  domain: f.domain,
+  status: f.domain ? (f.domainStatus ?? 'PENDING_DNS') : 'NONE',
+  subdomain: `${f.slug}.${DEMO_PLATFORM_DOMAIN}`,
+  cnameTarget: `tenants.${DEMO_PLATFORM_DOMAIN}`,
+  txtName: f.domain ? `_dailyfunded-verify.${f.domain}` : null,
+  txtValue: f.domain ? demoToken(f.domain) : null,
+  checkedAt: f.domainChecks ? new Date().toISOString() : null,
+});
+/** One DNS check: missing → CNAME missing → active (simulated propagation in the preview). */
+const checkDomain = (f: DemoDomainState) => {
+  if (!f.domain || f.domainStatus === 'ACTIVE') return;
+  f.domainChecks = (f.domainChecks ?? 0) + 1;
+  if (f.domainChecks >= 2) f.domainStatus = 'ACTIVE';
+};
+const stepsOf = (
+  f: DemoDomainState & { dedicated?: boolean; platform?: boolean; createdAt: number },
+) => {
+  const at = new Date(f.createdAt).toISOString();
+  const step = (step: string, status: string, detail: string) => ({
+    step,
+    status,
+    detail,
+    attempts: 1,
+    updatedAt: at,
+  });
+  const dom = !f.domain
+    ? step('CUSTOM_DOMAIN', 'SKIPPED', 'NO_DOMAIN')
+    : f.domainStatus === 'ACTIVE'
+      ? step('CUSTOM_DOMAIN', 'DONE', 'ACTIVE')
+      : step(
+          'CUSTOM_DOMAIN',
+          'WAITING',
+          (f.domainChecks ?? 0) >= 1 ? 'CNAME_MISSING' : 'TXT_MISSING',
+        );
+  return [
+    step('TENANT', 'DONE', f.dedicated ? 'ON_OWN_INSTANCE' : 'CATALOGUE_READY'),
+    f.platform ? step('ADMIN', 'SKIPPED', 'PLATFORM_FIRM') : step('ADMIN', 'DONE', 'ADMIN_INVITED'),
+    step('DATABASE', 'DONE', f.dedicated ? 'DEDICATED_READY' : 'SHARED'),
+    step('SUBDOMAIN', 'DONE', 'ACTIVE'),
+    dom,
+  ];
+};
 interface ExTrader {
   id: string;
   email: string;
@@ -2019,6 +2080,9 @@ const firmDto = () => {
     name: f.name,
     status: 'ACTIVE',
     domain: f.domain,
+    domainStatus: f.domain ? (f.domainStatus ?? 'PENDING_DNS') : 'NONE',
+    subdomain: `daily-funded.${DEMO_PLATFORM_DOMAIN}`,
+    dedicatedDatabase: false,
     primaryColor: f.primaryColor,
     logoDataUrl: f.logoDataUrl,
     supportEmail: f.supportEmail,
@@ -2360,10 +2424,23 @@ on('PUT', '/admin/branding', (_m, b) => {
   if (b.primaryColor !== undefined)
     f.primaryColor = (b.primaryColor as string | null)?.toUpperCase() ?? null;
   if (b.logoDataUrl !== undefined) f.logoDataUrl = b.logoDataUrl as string | null;
-  if (b.domain !== undefined) f.domain = b.domain as string | null;
+  if (b.domain !== undefined && b.domain !== f.domain) {
+    f.domain = b.domain as string | null;
+    f.domainStatus = f.domain ? 'PENDING_DNS' : 'NONE';
+    f.domainChecks = 0;
+  }
   if (b.supportEmail !== undefined) f.supportEmail = b.supportEmail as string | null;
   logAdmin('admin.branding_updated', 'Firm', 'demo-firm', { fields: Object.keys(b).sort() });
   return json(200, firmDto());
+});
+const ownDomainState = () => {
+  const f = adm().firm;
+  return Object.assign(f, { slug: 'daily-funded' }) as DemoFirm & DemoDomainState;
+};
+on('GET', '/admin/branding/domain', () => json(200, domainSetupOf(ownDomainState())));
+on('POST', '/admin/branding/domain/check', () => {
+  checkDomain(ownDomainState());
+  return json(200, domainSetupOf(ownDomainState()));
 });
 on('GET', '/admin/alerts', (_m, _b, url) => {
   const open = (url.searchParams.get('state') ?? 'open') === 'open';
@@ -2439,6 +2516,10 @@ interface DemoFirmRow {
   status: 'ACTIVE' | 'SUSPENDED';
   admin: { email: string; activated: boolean; twoFactorEnabled: boolean } | null;
   createdAt: number;
+  domain: string | null;
+  domainStatus?: 'NONE' | 'PENDING_DNS' | 'ACTIVE';
+  domainChecks?: number;
+  dedicated?: boolean;
 }
 const firms = (): DemoFirmRow[] =>
   ((adm() as AdminState & { firms?: DemoFirmRow[] }).firms ??= [
@@ -2449,19 +2530,38 @@ const firms = (): DemoFirmRow[] =>
       status: 'ACTIVE',
       admin: { email: 'owner@acme.example', activated: true, twoFactorEnabled: true },
       createdAt: Date.now() - 20 * DAY,
+      domain: 'trade.acme.example',
+      domainStatus: 'ACTIVE',
+      domainChecks: 2,
     },
   ]);
 const firmRows = () => {
   const own = firmDto();
   return {
     items: [
-      { ...own, traders: allTraders().length, fundedActive: 4, admin: null },
+      {
+        ...own,
+        traders: allTraders().length,
+        fundedActive: 4,
+        admin: null,
+        provisioning: stepsOf({
+          ...ownDomainState(),
+          platform: true,
+          createdAt: Date.now() - 90 * DAY,
+        }),
+        domainSetup: domainSetupOf(ownDomainState()),
+      },
       ...firms().map((f) => ({
         id: f.id,
         slug: f.slug,
         name: f.name,
         status: f.status,
-        domain: null,
+        domain: f.domain ?? null,
+        domainStatus: f.domain ? (f.domainStatus ?? 'PENDING_DNS') : 'NONE',
+        subdomain: `${f.slug}.${DEMO_PLATFORM_DOMAIN}`,
+        dedicatedDatabase: !!f.dedicated,
+        provisioning: stepsOf({ ...f, domain: f.domain ?? null }),
+        domainSetup: domainSetupOf({ ...f, domain: f.domain ?? null }),
         primaryColor: null,
         logoDataUrl: null,
         supportEmail: null,
@@ -2473,6 +2573,8 @@ const firmRows = () => {
         admin: f.admin,
       })),
     ],
+    dedicatedAvailable: true,
+    platformDomain: DEMO_PLATFORM_DOMAIN,
   };
 };
 on('GET', '/admin/firms', () => (staffMe(), json(200, firmRows())));
@@ -2486,8 +2588,26 @@ on('POST', '/admin/firms', (_m, b) => {
     status: 'ACTIVE',
     admin: { email: String(b.ownerEmail).toLowerCase(), activated: false, twoFactorEnabled: false },
     createdAt: Date.now(),
+    domain: typeof b.domain === 'string' ? b.domain.toLowerCase() : null,
+    domainStatus: typeof b.domain === 'string' ? 'PENDING_DNS' : 'NONE',
+    dedicated: b.dedicatedDatabase === true,
   });
   return json(201, firmRows());
+});
+on('POST', '/admin/firms/{id}/provisioning/run', (m) => {
+  const f = m[1] === 'demo-firm' ? ownDomainState() : demoFirm(m[1]!);
+  checkDomain(f);
+  return json(200, firmRows());
+});
+on('POST', '/admin/firms/{id}/domain', (m, b) => {
+  const f = m[1] === 'demo-firm' ? ownDomainState() : demoFirm(m[1]!);
+  const domain = typeof b.domain === 'string' && b.domain ? b.domain.toLowerCase() : null;
+  if (domain !== f.domain) {
+    f.domain = domain;
+    f.domainStatus = domain ? 'PENDING_DNS' : 'NONE';
+    f.domainChecks = 0;
+  }
+  return json(200, firmRows());
 });
 const demoFirm = (id: string) => {
   const f = firms().find((x) => x.id === id);

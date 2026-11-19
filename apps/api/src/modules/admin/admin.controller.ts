@@ -241,14 +241,14 @@ export class AdminController {
   @Get('firms')
   @ApiOkResponse({ type: AdminFirmListDto })
   async firms(): Promise<AdminFirmListDto> {
-    return { items: await this.firm.listFirms() };
+    return this.firm.list(await this.firm.listFirms());
   }
 
   @SuperadminOnly()
   @Post('firms')
   @ApiCreatedResponse({ type: AdminFirmListDto })
   async createFirm(@Admin() ctx: AdminContext, @Body() dto: CreateFirmDto) {
-    return { items: await this.firm.createFirm(ctx, dto) };
+    return this.firm.list(await this.firm.createFirm(ctx, dto));
   }
 
   @SuperadminOnly()
@@ -260,7 +260,7 @@ export class AdminController {
     @Param('id', UUID) id: string,
     @Body() dto: FirmStatusDto,
   ) {
-    return { items: await this.firm.setFirmStatus(ctx, id, dto.status) };
+    return this.firm.list(await this.firm.setFirmStatus(ctx, id, dto.status));
   }
 
   /** Daily Funded: give the firm a (new) admin. The previous admin is deactivated. */
@@ -273,7 +273,7 @@ export class AdminController {
     @Param('id', UUID) id: string,
     @Body() dto: FirmAdminDto,
   ) {
-    return { items: await this.firm.setFirmAdmin(ctx, id, dto.email) };
+    return this.firm.list(await this.firm.setFirmAdmin(ctx, id, dto.email));
   }
 
   /** Daily Funded: run the unfinished automatic set-up steps of a firm now. */
@@ -282,7 +282,7 @@ export class AdminController {
   @HttpCode(200)
   @ApiOkResponse({ type: AdminFirmListDto })
   async runProvisioning(@Admin() ctx: AdminContext, @Param('id', UUID) id: string) {
-    return { items: await this.firm.runProvisioning(ctx, id) };
+    return this.firm.list(await this.firm.runProvisioning(ctx, id));
   }
 
   /** Daily Funded: set or remove a firm's own domain (verified via DNS before it routes). */
@@ -295,7 +295,7 @@ export class AdminController {
     @Param('id', UUID) id: string,
     @Body() dto: FirmDomainDto,
   ) {
-    return { items: await this.firm.setFirmDomain(ctx, id, dto.domain ?? null) };
+    return this.firm.list(await this.firm.setFirmDomain(ctx, id, dto.domain ?? null));
   }
 
   /** Daily Funded: send the firm admin a new link to set a password. */

@@ -34,6 +34,10 @@ export default defineConfig({
         DEV_TOOLS_ENABLED: 'true',
         // e2e only: the admin panel's 2FA requirement is covered by the API tests.
         ADMIN_REQUIRE_2FA: 'false',
+        // Automatic firm set-up (D93–D95) without real DNS or database servers.
+        PLATFORM_BASE_DOMAIN: 'dailyfunded.test',
+        DNS_RESOLVER: 'fake',
+        DATABASE_PROVISIONER: 'fake',
       },
     },
     {

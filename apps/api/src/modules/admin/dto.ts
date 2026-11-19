@@ -522,6 +522,10 @@ export class FirmDomainDto {
 
 export class AdminFirmListDto {
   @ApiProperty({ type: [AdminFirmSummaryDto] }) items!: AdminFirmSummaryDto[];
+  @ApiProperty({ description: 'Whether firms can get their own database/instance (D94)' })
+  dedicatedAvailable!: boolean;
+  @ApiProperty({ type: String, nullable: true, description: 'Platform domain for subdomains' })
+  platformDomain!: string | null;
 }
 
 export class CreateFirmDto {

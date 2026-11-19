@@ -2527,6 +2527,10 @@ export interface components {
     };
     AdminFirmListDto: {
       items: components['schemas']['AdminFirmSummaryDto'][];
+      /** @description Whether firms can get their own database/instance (D94) */
+      dedicatedAvailable: boolean;
+      /** @description Platform domain for subdomains */
+      platformDomain: string | null;
     };
     CreateFirmDto: {
       name: string;

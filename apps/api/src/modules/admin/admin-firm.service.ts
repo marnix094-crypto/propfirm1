@@ -311,6 +311,14 @@ export class AdminFirmService {
   }
 
   // ---------------------------------------------------------------- firms (superadmin)
+  list(items: AdminFirmSummaryDto[]) {
+    return {
+      items,
+      dedicatedAvailable: this.provisioning.dedicatedAvailable,
+      platformDomain: this.config.platformBaseDomain,
+    };
+  }
+
   async listFirms(): Promise<AdminFirmSummaryDto[]> {
     const firms = await this.prisma.firm.findMany({ orderBy: { createdAt: 'asc' } });
     const [traders, funded] = await Promise.all([

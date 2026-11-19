@@ -6394,10 +6394,21 @@
             "items": {
               "$ref": "#/components/schemas/AdminFirmSummaryDto"
             }
+          },
+          "dedicatedAvailable": {
+            "type": "boolean",
+            "description": "Whether firms can get their own database/instance (D94)"
+          },
+          "platformDomain": {
+            "type": "string",
+            "nullable": true,
+            "description": "Platform domain for subdomains"
           }
         },
         "required": [
-          "items"
+          "items",
+          "dedicatedAvailable",
+          "platformDomain"
         ]
       },
       "CreateFirmDto": {

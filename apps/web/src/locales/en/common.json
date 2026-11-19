@@ -520,7 +520,10 @@
     "ACCOUNT_NOT_FOUND": "Account not found.",
     "STAFF_EMAIL_TAKEN": "This email is already the admin of a firm.",
     "MODULE_NOT_FOUND": "This part of the platform is not available.",
-    "ADMIN_NOT_FOUND": "This firm has no admin yet."
+    "ADMIN_NOT_FOUND": "This firm has no admin yet.",
+    "FIRM_HOSTED_ELSEWHERE": "This firm runs on its own instance — use its own address.",
+    "DEDICATED_UNAVAILABLE": "Own databases are not configured on this platform.",
+    "DOMAIN_MANAGED_BY_PLATFORM": "The domain of this instance is managed by Daily Funded."
   },
   "app": {
     "nav": {
@@ -2029,6 +2032,82 @@
         "certificates": "Verifiable certificates for funded accounts.",
         "tutorial": "Short introduction to the platform."
       }
+    },
+    "setup": {
+      "title": "Set-up",
+      "details": "Set-up",
+      "ownInstance": "Own instance",
+      "copy": "Copy {{value}}",
+      "state": {
+        "ready": "Ready",
+        "waiting": "Waiting for DNS",
+        "failed": "Needs attention",
+        "running": "In progress"
+      },
+      "steps": {
+        "TENANT": "Platform data (catalogue)",
+        "ADMIN": "Admin account",
+        "DATABASE": "Database",
+        "SUBDOMAIN": "Platform subdomain",
+        "CUSTOM_DOMAIN": "Own domain"
+      },
+      "status": {
+        "PENDING": "Pending",
+        "RUNNING": "Running",
+        "WAITING": "Waiting",
+        "DONE": "Done",
+        "SKIPPED": "Not needed",
+        "FAILED": "Failed"
+      },
+      "detail": {
+        "CATALOGUE_READY": "example products ready",
+        "ON_OWN_INSTANCE": "created on its own instance",
+        "ADMIN_INVITED": "invitation sent",
+        "NO_ADMIN": "no admin yet",
+        "PLATFORM_FIRM": "platform firm",
+        "SHARED": "shared platform database",
+        "DEDICATED_READY": "own database created, migrated and filled",
+        "PROVISIONER_UNAVAILABLE": "own databases are not configured",
+        "ACTIVE": "active",
+        "NO_BASE_DOMAIN": "no platform domain configured",
+        "NO_DOMAIN": "no own domain",
+        "TXT_MISSING": "TXT record not found yet",
+        "CNAME_MISSING": "CNAME record not found yet",
+        "ERROR": "unexpected error — try again"
+      },
+      "domainStatus": {
+        "NONE": "No own domain",
+        "PENDING_DNS": "Waiting for DNS",
+        "ACTIVE": "Active",
+        "FAILED": "Failed"
+      },
+      "subdomain": "Always reachable at",
+      "checkedAt": "Last checked {{time}}",
+      "dnsIntro": "Add these records at the domain's DNS provider. The domain becomes active as soon as both are found — we check automatically every minute.",
+      "records": "DNS records",
+      "type": "Type",
+      "name": "Name",
+      "value": "Value",
+      "dnsNote": "DNS changes can take up to a few hours. A certificate (HTTPS) is issued automatically once the domain is active.",
+      "checkNow": "Check now",
+      "noDomain": "No own domain set.",
+      "ownDomain": "Own domain (optional)",
+      "ownDomainHint": "E.g. trade.yourfirm.com — verified via DNS before it is used.",
+      "dedicated": "Own database (own instance)",
+      "dedicatedHint": "The firm gets its own database and runs on its own instance; data is never on the shared platform.",
+      "dedicatedUnavailable": "Not available: own databases are not configured on this platform.",
+      "newHint": "The firm is set up automatically and is immediately reachable at {{domain}}. The admin receives an invitation by e-mail.",
+      "dialogTitle": "Set-up of {{name}}",
+      "dialogBody": "Every step runs automatically and is retried until it succeeds.",
+      "ownInstanceBody": "This firm runs on its own instance with its own database. Its traders and admin panel are served there, not on the shared platform. The instance configuration is printed with: pnpm --filter @brand/api firm:instance-env {{slug}}",
+      "stepsTitle": "Steps",
+      "runNow": "Run again now",
+      "legacy": "Created before automatic set-up existed.",
+      "domainTitle": "Domain",
+      "domainSaved": "Domain saved — verification started.",
+      "saveDomain": "Save domain",
+      "removeDomain": "Remove domain",
+      "brandingIntro": "Your platform is always reachable on its subdomain. An own domain is used once DNS is verified."
     }
   }
 }

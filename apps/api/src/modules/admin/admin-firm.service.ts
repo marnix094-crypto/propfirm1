@@ -15,9 +15,11 @@ import { MAILER, type Mailer } from '../mail/mailer.js';
 import { renderMail } from '../mail/templates.js';
 import type { AdminContext } from './admin.guard.js';
 import { toAdminFirmDto } from './admin.service.js';
+import { ProvisioningService } from '../provisioning/provisioning.service.js';
 import type {
   AdminFirmDto,
   AdminFirmSummaryDto,
+  DomainSetupDto,
   CreateFirmDto,
   ModulesDto,
   UpdateBrandingDto,
@@ -34,12 +36,13 @@ export class AdminFirmService {
     private readonly products: ProductsService,
     private readonly emailTokens: EmailTokensService,
     @Inject(MAILER) private readonly mailer: Mailer,
+    private readonly provisioning: ProvisioningService,
   ) {}
 
   // ---------------------------------------------------------------- branding
   async branding(ctx: AdminContext): Promise<AdminFirmDto> {
     const f = await this.prisma.firm.findUniqueOrThrow({ where: { id: ctx.firmId } });
-    return toAdminFirmDto(f, this.config.defaultFirmSlug);
+    return toAdminFirmDto(f, this.config);
   }
 
   async updateBranding(ctx: AdminContext, dto: UpdateBrandingDto): Promise<AdminFirmDto> {
@@ -47,7 +50,24 @@ export class AdminFirmService {
     if (dto.name !== undefined) data.name = dto.name.trim();
     if (dto.primaryColor !== undefined) data.primaryColor = dto.primaryColor?.toUpperCase() ?? null;
     if (dto.logoDataUrl !== undefined) data.logoDataUrl = dto.logoDataUrl;
-    if (dto.domain !== undefined) data.domain = dto.domain?.toLowerCase() ?? null;
+    const firm = await this.prisma.firm.findUniqueOrThrow({ where: { id: ctx.firmId } });
+    const newDomain = dto.domain === undefined ? undefined : (dto.domain?.toLowerCase() ?? null);
+    const domainChanged = newDomain !== undefined && newDomain !== firm.domain;
+    // A dedicated instance's own domain is routed by the platform edge, so Daily Funded manages it.
+    if (domainChanged && this.config.instanceMode === 'dedicated')
+      throw Errors.unprocessable(
+        'DOMAIN_MANAGED_BY_PLATFORM',
+        'Ask Daily Funded to change the domain',
+      );
+    if (domainChanged) {
+      const taken = newDomain
+        ? await this.prisma.firm.findFirst({
+            where: { domain: newDomain, NOT: { id: ctx.firmId } },
+          })
+        : null;
+      if (taken)
+        throw Errors.conflict('DOMAIN_TAKEN', 'This domain is already used by another firm');
+    }
     if (dto.supportEmail !== undefined) data.supportEmail = dto.supportEmail;
     try {
       const f = await this.prisma.$transaction(async (tx) => {
@@ -65,12 +85,73 @@ export class AdminFirmService {
         return updated;
       });
       this.firms.invalidate();
-      return toAdminFirmDto(f, this.config.defaultFirmSlug);
+      if (domainChanged) {
+        // New domain = new verification token; it routes no traffic until DNS checks out (D95).
+        await this.provisioning.setDomain(ctx.firmId, newDomain);
+        await this.auditDomain(ctx, ctx.firmId, newDomain);
+        return this.branding(ctx);
+      }
+      return toAdminFirmDto(f, this.config);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002')
         throw Errors.conflict('DOMAIN_TAKEN', 'This domain is already used by another firm');
       throw e;
     }
+  }
+
+  private auditDomain(ctx: AdminContext, firmId: string, domain: string | null) {
+    return this.prisma.$transaction((tx) =>
+      this.audit.append(tx, {
+        actorType: 'ADMIN',
+        actorId: ctx.userId,
+        firmId,
+        action: 'admin.domain_changed',
+        entityType: 'Firm',
+        entityId: firmId,
+        data: { domain },
+      }),
+    );
+  }
+
+  /** DNS instructions + status of the firm's own domain (D95). */
+  async domainSetup(firmId: string): Promise<DomainSetupDto> {
+    const f = await this.prisma.firm.findUniqueOrThrow({ where: { id: firmId } });
+    return this.provisioning.domainSetup(f);
+  }
+
+  /** Check DNS now instead of waiting for the background retry. */
+  async checkDomain(firmId: string): Promise<DomainSetupDto> {
+    await this.provisioning.run(firmId);
+    return this.domainSetup(firmId);
+  }
+
+  /** Daily Funded: set or remove a firm's own domain (also for firms on their own instance). */
+  async setFirmDomain(ctx: AdminContext, firmId: string, domain: string | null) {
+    const f = await this.prisma.firm.findUnique({ where: { id: firmId } });
+    if (!f) throw Errors.notFound('Firm');
+    if (domain !== f.domain) {
+      const taken = domain
+        ? await this.prisma.firm.findFirst({ where: { domain, NOT: { id: firmId } } })
+        : null;
+      if (taken)
+        throw Errors.conflict('DOMAIN_TAKEN', 'This domain is already used by another firm');
+      await this.provisioning.setDomain(firmId, domain);
+      await this.auditDomain(ctx, firmId, domain);
+    }
+    return this.listFirms();
+  }
+
+  /** Daily Funded: run the unfinished set-up steps of a firm now. */
+  async runProvisioning(ctx: AdminContext, firmId: string) {
+    const f = await this.prisma.firm.findUnique({ where: { id: firmId } });
+    if (!f) throw Errors.notFound('Firm');
+    // Manual retry also resets the attempt counter of failed steps.
+    await this.prisma.provisioningStep.updateMany({
+      where: { firmId, status: 'FAILED' },
+      data: { status: 'PENDING', attempts: 0 },
+    });
+    await this.provisioning.run(firmId);
+    return this.listFirms();
   }
 
   // ---------------------------------------------------------------- client dashboard
@@ -256,8 +337,21 @@ export class AdminFirmService {
     const adminBy = new Map(admins.map((a) => [a.firmId, a]));
     const t = new Map(traders.map((r) => [r.firmId, r._count._all]));
     const fa = new Map(funded.map((r) => [r.firmId, Number(r.n)]));
+    const steps = await this.prisma.provisioningStep.findMany();
+    const order = ['TENANT', 'ADMIN', 'DATABASE', 'SUBDOMAIN', 'CUSTOM_DOMAIN'];
     return firms.map((f) => ({
-      ...toAdminFirmDto(f, this.config.defaultFirmSlug),
+      ...toAdminFirmDto(f, this.config),
+      provisioning: steps
+        .filter((st) => st.firmId === f.id)
+        .sort((a, b) => order.indexOf(a.step) - order.indexOf(b.step))
+        .map((st) => ({
+          step: st.step,
+          status: st.status,
+          detail: st.detail,
+          attempts: st.attempts,
+          updatedAt: st.updatedAt.toISOString(),
+        })),
+      domainSetup: this.provisioning.domainSetup(f),
       traders: t.get(f.id) ?? 0,
       fundedActive: fa.get(f.id) ?? 0,
       admin: adminBy.has(f.id)
@@ -270,12 +364,29 @@ export class AdminFirmService {
     }));
   }
 
-  /** New tenant with the example catalogue; its admin is invited by email (D91). */
+  /**
+   * New tenant, set up automatically (D93): catalogue, admin invite, database (shared or its
+   * own), subdomain and optionally an own domain. Steps that wait for DNS finish by themselves.
+   */
   async createFirm(ctx: AdminContext, dto: CreateFirmDto): Promise<AdminFirmSummaryDto[]> {
+    if (dto.dedicatedDatabase && !this.provisioning.dedicatedAvailable)
+      throw Errors.unprocessable(
+        'DEDICATED_UNAVAILABLE',
+        'Dedicated databases are not configured on this platform',
+      );
+    const domain = dto.domain?.toLowerCase() ?? null;
+    if (domain && (await this.prisma.firm.findFirst({ where: { domain } })))
+      throw Errors.conflict('DOMAIN_TAKEN', 'This domain is already used by another firm');
     let admin;
     try {
       admin = await this.prisma.$transaction(async (tx) => {
-        const f = await tx.firm.create({ data: { name: dto.name.trim(), slug: dto.slug } });
+        const f = await tx.firm.create({
+          data: {
+            name: dto.name.trim(),
+            slug: dto.slug,
+            dedicatedDatabase: !!dto.dedicatedDatabase,
+          },
+        });
         await this.audit.append(tx, {
           actorType: 'ADMIN',
           actorId: ctx.userId,
@@ -283,7 +394,7 @@ export class AdminFirmService {
           action: 'platform.firm_created',
           entityType: 'Firm',
           entityId: f.id,
-          data: { slug: f.slug },
+          data: { slug: f.slug, dedicatedDatabase: f.dedicatedDatabase, domain },
         });
         return this.createAdmin(tx, f.id, dto.ownerEmail.toLowerCase(), ctx.userId);
       });
@@ -292,8 +403,15 @@ export class AdminFirmService {
         throw Errors.conflict('SLUG_TAKEN', 'A firm with this slug already exists');
       throw e;
     }
-    await this.products.seedCatalog(admin.firmId);
-    await this.sendInvite(admin);
+    // Firms on their own instance get their invite from the DATABASE step (link to that instance).
+    if (!dto.dedicatedDatabase) await this.sendInvite(admin);
+    if (domain)
+      await this.prisma.firm.update({
+        where: { id: admin.firmId },
+        data: { domain, domainStatus: 'PENDING_DNS' },
+      });
+    await this.provisioning.start(admin.firmId);
+    if (domain) await this.provisioning.setDomain(admin.firmId, domain);
     this.firms.invalidate();
     return this.listFirms();
   }

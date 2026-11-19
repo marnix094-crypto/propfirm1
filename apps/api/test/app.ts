@@ -39,6 +39,9 @@ export async function createTestApp(): Promise<TestApp> {
     DEV_TOOLS_ENABLED: 'true',
     // Compete rounds are driven explicitly by the tests (POST /compete/dev/tick).
     COMPETE_LOOP_ENABLED: 'false',
+    DNS_RESOLVER: 'fake',
+    DATABASE_PROVISIONER: 'fake',
+    PLATFORM_BASE_DOMAIN: 'dailyfunded.test',
     FIELD_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString('base64'),
     APP_BASE_URL: 'http://localhost:5173',
     REDIS_URL: process.env.REDIS_URL ?? 'redis://localhost:6379',

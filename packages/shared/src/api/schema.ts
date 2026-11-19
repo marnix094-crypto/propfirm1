@@ -228,6 +228,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/branding/domain': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['AdminController_domain'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/branding/domain/check': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AdminController_checkDomain'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/alerts': {
     parameters: {
       query?: never;
@@ -350,6 +382,38 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations['AdminController_setFirmAdmin'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/firms/{id}/provisioning/run': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AdminController_runProvisioning'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/firms/{id}/domain': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['AdminController_setFirmDomain'];
     delete?: never;
     options?: never;
     head?: never;
@@ -2074,6 +2138,11 @@ export interface components {
       /** @enum {string} */
       status: 'ACTIVE' | 'SUSPENDED';
       domain: string | null;
+      /** @enum {string} */
+      domainStatus: 'NONE' | 'PENDING_DNS' | 'ACTIVE' | 'FAILED';
+      /** @description Automatic <slug>.<platform> host */
+      subdomain: string | null;
+      dedicatedDatabase: boolean;
       primaryColor: string | null;
       logoDataUrl: string | null;
       supportEmail: string | null;
@@ -2303,6 +2372,19 @@ export interface components {
       domain?: string | null;
       supportEmail?: string | null;
     };
+    DomainSetupDto: {
+      domain: string | null;
+      /** @enum {string} */
+      status: 'NONE' | 'PENDING_DNS' | 'ACTIVE' | 'FAILED';
+      subdomain: string | null;
+      /** @description CNAME the domain to this host */
+      cnameTarget: string | null;
+      /** @description TXT record name */
+      txtName: string | null;
+      /** @description TXT record value */
+      txtValue: string | null;
+      checkedAt: string | null;
+    };
     AdminAlertDto: {
       id: string;
       /** @enum {string} */
@@ -2397,6 +2479,16 @@ export interface components {
       activated: boolean;
       twoFactorEnabled: boolean;
     };
+    ProvisioningStepDto: {
+      /** @enum {string} */
+      step: 'TENANT' | 'ADMIN' | 'DATABASE' | 'SUBDOMAIN' | 'CUSTOM_DOMAIN';
+      /** @enum {string} */
+      status: 'PENDING' | 'RUNNING' | 'WAITING' | 'DONE' | 'SKIPPED' | 'FAILED';
+      /** @description Outcome code */
+      detail: string | null;
+      attempts: number;
+      updatedAt: string;
+    };
     AdminFirmSummaryDto: {
       id: string;
       slug: string;
@@ -2404,6 +2496,11 @@ export interface components {
       /** @enum {string} */
       status: 'ACTIVE' | 'SUSPENDED';
       domain: string | null;
+      /** @enum {string} */
+      domainStatus: 'NONE' | 'PENDING_DNS' | 'ACTIVE' | 'FAILED';
+      /** @description Automatic <slug>.<platform> host */
+      subdomain: string | null;
+      dedicatedDatabase: boolean;
       primaryColor: string | null;
       logoDataUrl: string | null;
       supportEmail: string | null;
@@ -2425,6 +2522,8 @@ export interface components {
       traders: number;
       fundedActive: number;
       admin: components['schemas']['FirmAdminInfoDto'] | null;
+      provisioning: components['schemas']['ProvisioningStepDto'][];
+      domainSetup: components['schemas']['DomainSetupDto'];
     };
     AdminFirmListDto: {
       items: components['schemas']['AdminFirmSummaryDto'][];
@@ -2435,6 +2534,13 @@ export interface components {
       slug: string;
       /** @description The firm admin; receives an email to set a password */
       ownerEmail: string;
+      /** @description Create a dedicated database for this firm (D94) */
+      dedicatedDatabase?: boolean;
+      /**
+       * @description Own domain (verified via DNS)
+       * @example trade.acmeprop.com
+       */
+      domain?: string;
     };
     FirmStatusDto: {
       /** @enum {string} */
@@ -2443,6 +2549,10 @@ export interface components {
     FirmAdminDto: {
       /** @description New admin of the firm (replaces the current one) */
       email: string;
+    };
+    FirmDomainDto: {
+      /** @example trade.acmeprop.com */
+      domain: string | null;
     };
     DevStaffRequestDto: {
       email: string;
@@ -4001,6 +4111,50 @@ export interface operations {
       };
     };
   };
+  AdminController_domain: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DomainSetupDto'];
+        };
+      };
+    };
+  };
+  AdminController_checkDomain: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DomainSetupDto'];
+        };
+      };
+    };
+  };
   AdminController_alerts: {
     parameters: {
       query?: {
@@ -4237,6 +4391,58 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['FirmAdminDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminFirmListDto'];
+        };
+      };
+    };
+  };
+  AdminController_runProvisioning: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AdminFirmListDto'];
+        };
+      };
+    };
+  };
+  AdminController_setFirmDomain: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: id of the firm to administer */
+        'x-admin-firm'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FirmDomainDto'];
       };
     };
     responses: {

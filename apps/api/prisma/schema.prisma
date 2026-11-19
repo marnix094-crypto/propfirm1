@@ -29,6 +29,30 @@ enum FirmStatus {
   SUSPENDED
 }
 
+enum DomainStatus {
+  NONE
+  PENDING_DNS
+  ACTIVE
+  FAILED
+}
+
+enum ProvisioningStepKey {
+  TENANT
+  ADMIN
+  DATABASE
+  SUBDOMAIN
+  CUSTOM_DOMAIN
+}
+
+enum ProvisioningStatus {
+  PENDING
+  RUNNING
+  WAITING
+  DONE
+  SKIPPED
+  FAILED
+}
+
 enum RiskAlertType {
   BREACH
   NEAR_BREACH
@@ -163,26 +187,35 @@ enum ActorType {
 
 /// A prop firm running its own brand on the platform (tenant, D83).
 model Firm {
-  id              String        @id @default(uuid(7)) @db.Uuid
-  slug            String        @unique @db.VarChar(40)
-  name            String        @db.VarChar(80)
-  status          FirmStatus    @default(ACTIVE)
+  id                String             @id @default(uuid(7)) @db.Uuid
+  slug              String             @unique @db.VarChar(40)
+  name              String             @db.VarChar(80)
+  status            FirmStatus         @default(ACTIVE)
   /// Custom domain (hostname only), resolves traders to this firm.
-  domain          String?       @unique @db.VarChar(253)
+  domain            String?            @unique @db.VarChar(253)
   /// Brand colour as #RRGGBB; null = Daily Funded lime.
-  primaryColor    String?       @db.Char(7)
+  primaryColor      String?            @db.Char(7)
   /// PNG/JPEG/WebP as data URL (max ~200 KB); null = default logo.
-  logoDataUrl     String?
-  supportEmail    String?       @db.VarChar(254)
+  logoDataUrl       String?
+  supportEmail      String?            @db.VarChar(254)
   /// Client-dashboard modules switched off by the firm admin (keys from @brand/shared CLIENT_MODULES).
-  disabledModules String[]      @default([])
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @default(now()) @updatedAt
-  users           User[]
-  products        Product[]
-  ruleSets        RuleSet[]
-  competitions    Competition[]
-  riskAlerts      RiskAlert[]
+  disabledModules   String[]           @default([])
+  /// Own-domain verification (D95): only ACTIVE domains route traffic to this firm.
+  domainStatus      DomainStatus       @default(NONE)
+  /// Random value the firm publishes as TXT record to prove it controls the domain.
+  domainToken       String?            @db.VarChar(64)
+  domainCheckedAt   DateTime?
+  /// Dedicated database (D94): connection string encrypted with FIELD_ENCRYPTION_KEY.
+  dedicatedDatabase Boolean            @default(false)
+  databaseUrlEnc    String?
+  provisioning      ProvisioningStep[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @default(now()) @updatedAt
+  users             User[]
+  products          Product[]
+  ruleSets          RuleSet[]
+  competitions      Competition[]
+  riskAlerts        RiskAlert[]
 }
 
 model User {
@@ -316,10 +349,10 @@ model RefreshToken {
 }
 
 model Instrument {
-  id                       String     @id @default(uuid(7)) @db.Uuid
-  symbol                   String     @unique
+  id                       String            @id @default(uuid(7)) @db.Uuid
+  symbol                   String            @unique
   displayName              String
-  assetClass               String     @default("CRYPTO")
+  assetClass               String            @default("CRYPTO")
   baseAsset                String
   quoteAsset               String
   priceDecimals            Int
@@ -333,11 +366,11 @@ model Instrument {
   slippageBaseBps          Int
   slippageImpactBpsPer100k Int
   slippageMaxBps           Int
-  fundingIntervalHours     Int        @default(8)
-  marketDataSource         String     @default("binance-usdm")
+  fundingIntervalHours     Int               @default(8)
+  marketDataSource         String            @default("binance-usdm")
   externalSymbol           String
-  isActive                 Boolean    @default(true)
-  sortOrder                Int        @default(0)
+  isActive                 Boolean           @default(true)
+  sortOrder                Int               @default(0)
   orders                   Order[]
   positions                Position[]
   fills                    Fill[]
@@ -896,22 +929,22 @@ enum CompeteStaffRole {
 
 /// Admin accounts of the compete product (D104) — separate from prop-firm staff and from players.
 model CompeteStaff {
-  id                 String           @id @default(uuid(7)) @db.Uuid
-  operatorId         String?          @db.Uuid
-  operator           CompeteOperator? @relation(fields: [operatorId], references: [id])
-  email              String           @unique
-  passwordHash       String
-  role               CompeteStaffRole
-  active             Boolean          @default(true)
+  id                String           @id @default(uuid(7)) @db.Uuid
+  operatorId        String?          @db.Uuid
+  operator          CompeteOperator? @relation(fields: [operatorId], references: [id])
+  email             String           @unique
+  passwordHash      String
+  role              CompeteStaffRole
+  active            Boolean          @default(true)
   /// TOTP secret (AES-256-GCM via FieldCrypto); 2FA is required unless ADMIN_REQUIRE_2FA=false.
-  totpSecretEnc      String?
-  totpEnabledAt      DateTime?
-  totpLastStep       BigInt?
+  totpSecretEnc     String?
+  totpEnabledAt     DateTime?
+  totpLastStep      BigInt?
   /// One-time invite / reset link to set the password (sha256 of the token).
-  setupTokenHash     String?          @unique
-  setupTokenExpires  DateTime?
-  lastLoginAt        DateTime?
-  createdAt          DateTime         @default(now())
+  setupTokenHash    String?          @unique
+  setupTokenExpires DateTime?
+  lastLoginAt       DateTime?
+  createdAt         DateTime         @default(now())
 
   sessions CompeteStaffSession[]
 
@@ -933,20 +966,20 @@ model CompeteStaffSession {
 
 /// Player account of one operator. Separate from prop-firm users (D98).
 model CompetePlayer {
-  id            String              @id @default(uuid(7)) @db.Uuid
-  operatorId    String              @db.Uuid
-  operator      CompeteOperator     @relation(fields: [operatorId], references: [id])
-  email         String
-  passwordHash  String
+  id               String              @id @default(uuid(7)) @db.Uuid
+  operatorId       String              @db.Uuid
+  operator         CompeteOperator     @relation(fields: [operatorId], references: [id])
+  email            String
+  passwordHash     String
   /// Public name on leaderboards (no real names).
-  nickname      String
-  country       String              @db.Char(2)
-  locale        String              @default("en")
+  nickname         String
+  country          String              @db.Char(2)
+  locale           String              @default("en")
   adultConfirmedAt DateTime
-  status        CompetePlayerStatus @default(ACTIVE)
+  status           CompetePlayerStatus @default(ACTIVE)
   /// Reason of the last suspension by the operator (no PII).
-  statusReason  String?
-  createdAt     DateTime            @default(now())
+  statusReason     String?
+  createdAt        DateTime            @default(now())
 
   sessions CompeteSession[]
   entries  CompeteEntry[]
@@ -957,15 +990,15 @@ model CompetePlayer {
 
 /// Rotating refresh tokens of players (own cookie + own JWT purpose; never valid for the prop-firm API).
 model CompeteSession {
-  id           String        @id @default(uuid(7)) @db.Uuid
-  playerId     String        @db.Uuid
-  player       CompetePlayer @relation(fields: [playerId], references: [id])
-  familyId     String        @db.Uuid
-  tokenHash    String        @unique
-  userAgent    String?
-  expiresAt    DateTime
-  revokedAt    DateTime?
-  createdAt    DateTime      @default(now())
+  id        String        @id @default(uuid(7)) @db.Uuid
+  playerId  String        @db.Uuid
+  player    CompetePlayer @relation(fields: [playerId], references: [id])
+  familyId  String        @db.Uuid
+  tokenHash String        @unique
+  userAgent String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime      @default(now())
 
   @@index([playerId])
   @@index([familyId])
@@ -973,25 +1006,25 @@ model CompeteSession {
 
 /// One daily round. Parameters are snapshotted at creation, so operator changes never affect it.
 model CompeteRound {
-  id                String             @id @default(uuid(7)) @db.Uuid
-  operatorId        String             @db.Uuid
-  operator          CompeteOperator    @relation(fields: [operatorId], references: [id])
-  startsAt          DateTime
-  endsAt            DateTime
-  status            CompeteRoundStatus @default(OPEN)
-  entryFeeMinor     BigInt
-  currency          String
-  startBalanceMinor BigInt
-  leverage          Int
-  maxDrawdownBps    Int
-  minParticipants   Int
-  prizePoolBps      Int
-  prizeSplitBps     Int[]
-  potMinor          BigInt?
+  id                 String             @id @default(uuid(7)) @db.Uuid
+  operatorId         String             @db.Uuid
+  operator           CompeteOperator    @relation(fields: [operatorId], references: [id])
+  startsAt           DateTime
+  endsAt             DateTime
+  status             CompeteRoundStatus @default(OPEN)
+  entryFeeMinor      BigInt
+  currency           String
+  startBalanceMinor  BigInt
+  leverage           Int
+  maxDrawdownBps     Int
+  minParticipants    Int
+  prizePoolBps       Int
+  prizeSplitBps      Int[]
+  potMinor           BigInt?
   operatorShareMinor BigInt?
-  startedAt         DateTime?
-  settledAt         DateTime?
-  createdAt         DateTime           @default(now())
+  startedAt          DateTime?
+  settledAt          DateTime?
+  createdAt          DateTime           @default(now())
 
   entries CompeteEntry[]
 
@@ -1041,20 +1074,20 @@ model CompetePosition {
 
 /// Market order = immediate fill (the competition only uses market orders).
 model CompeteOrder {
-  id                String       @id @default(uuid(7)) @db.Uuid
-  entryId           String       @db.Uuid
-  entry             CompeteEntry @relation(fields: [entryId], references: [id])
-  clientOrderId     String
-  instrumentId      String       @db.Uuid
-  instrument        Instrument   @relation(fields: [instrumentId], references: [id])
-  side              Side
-  qty               BigInt
-  price             BigInt
-  feeMinor          BigInt
-  realizedPnlMinor  BigInt
+  id               String       @id @default(uuid(7)) @db.Uuid
+  entryId          String       @db.Uuid
+  entry            CompeteEntry @relation(fields: [entryId], references: [id])
+  clientOrderId    String
+  instrumentId     String       @db.Uuid
+  instrument       Instrument   @relation(fields: [instrumentId], references: [id])
+  side             Side
+  qty              BigInt
+  price            BigInt
+  feeMinor         BigInt
+  realizedPnlMinor BigInt
   /// PLAYER, DRAWDOWN (forced close), ROUND_END (forced close).
-  reason            String       @default("PLAYER")
-  createdAt         DateTime     @default(now())
+  reason           String       @default("PLAYER")
+  createdAt        DateTime     @default(now())
 
   @@unique([entryId, clientOrderId])
   @@index([entryId, createdAt])
@@ -1093,4 +1126,20 @@ model CompeteAuditLog {
 
   @@index([operatorId, id])
   @@index([entityType, entityId])
+}
+
+/// One step of the automatic set-up of a firm (D93). Retried until DONE/SKIPPED.
+model ProvisioningStep {
+  id        String              @id @default(uuid(7)) @db.Uuid
+  firmId    String              @db.Uuid
+  firm      Firm                @relation(fields: [firmId], references: [id])
+  step      ProvisioningStepKey
+  status    ProvisioningStatus  @default(PENDING)
+  /// Machine-readable outcome code (translated in the client), no secrets.
+  detail    String?             @db.VarChar(200)
+  attempts  Int                 @default(0)
+  updatedAt DateTime            @default(now()) @updatedAt
+
+  @@unique([firmId, step])
+  @@index([status])
 }

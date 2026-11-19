@@ -2,7 +2,7 @@ import { Inject, Injectable, type OnModuleInit } from '@nestjs/common';
 import type { Request } from 'express';
 import { APP_CONFIG, type AppConfig } from '../../config/env.js';
 import { PrismaService } from '../../infra/prisma.service.js';
-import { Errors } from '../../common/errors.js';
+import { AppError, Errors } from '../../common/errors.js';
 import type { Firm } from '../../generated/prisma/client.js';
 
 const CACHE_MS = 30_000;
@@ -20,7 +20,7 @@ export function requestHost(req: Pick<Request, 'headers'>): string | null {
  * it only decides where a trader registers / logs in and whose catalogue is shown. After login
  * the firm always comes from the user row.
  *
- * Order: `X-Firm` header (slug) → request host matched to a firm domain → DEFAULT_FIRM_SLUG.
+ * Order: `X-Firm` header (slug) → firm subdomain → verified own domain → DEFAULT_FIRM_SLUG.
  */
 @Injectable()
 export class FirmsService implements OnModuleInit {
@@ -61,13 +61,15 @@ export class FirmsService implements OnModuleInit {
   private async findByDomain(host: string): Promise<Firm | null> {
     const hit = this.byDomain.get(host);
     if (hit && Date.now() - hit.at < CACHE_MS) return hit.firm;
-    const firm = await this.prisma.firm.findUnique({ where: { domain: host } });
+    // Only a verified own domain routes traffic to a firm (D95).
+    const found = await this.prisma.firm.findUnique({ where: { domain: host } });
+    const firm = found?.domainStatus === 'ACTIVE' ? found : null;
     this.byDomain.set(host, { firm, at: Date.now() });
     return firm;
   }
 
   /** Firm for a public request. Unknown `X-Firm` slugs are rejected rather than defaulted. */
-  async fromRequest(req: Pick<Request, 'headers'>): Promise<Firm> {
+  private async resolve(req: Pick<Request, 'headers'>): Promise<Firm> {
     const header = req.headers['x-firm'];
     const slug = (Array.isArray(header) ? header[0] : header)?.trim().toLowerCase();
     if (slug) {
@@ -77,10 +79,26 @@ export class FirmsService implements OnModuleInit {
     }
     const host = requestHost(req);
     if (host) {
+      // Automatic subdomain: <slug>.<PLATFORM_BASE_DOMAIN> (D95).
+      const base = this.config.platformBaseDomain;
+      if (base && host.endsWith(`.${base}`)) {
+        const firm = await this.findBySlug(host.slice(0, -(base.length + 1)));
+        if (firm) return firm;
+      }
       const firm = await this.findByDomain(host);
       if (firm) return firm;
     }
     return this.defaultFirm();
+  }
+  /**
+   * Firm for a public request. On the shared platform a firm with its own instance (D94) is
+   * refused: its traders are served by that instance only (the edge routes its hosts there).
+   */
+  async fromRequest(req: Pick<Request, 'headers'>): Promise<Firm> {
+    const firm = await this.resolve(req);
+    if (this.config.instanceMode === 'shared' && firm.dedicatedDatabase)
+      throw new AppError('FIRM_HOSTED_ELSEWHERE', 421, 'This firm runs on its own instance');
+    return firm;
   }
 
   /** Same as fromRequest, but refuses suspended firms (registration, login, checkout). */

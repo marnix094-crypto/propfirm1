@@ -49,6 +49,8 @@ import {
   AuditQuery,
   AuditVerifyDto,
   CreateFirmDto,
+  DomainSetupDto,
+  FirmDomainDto,
   CreateProductDto,
   CreateRuleSetDto,
   FirmAdminDto,
@@ -181,6 +183,20 @@ export class AdminController {
     return this.firm.updateBranding(ctx, dto);
   }
 
+  /** DNS instructions and status of the firm's own domain (D95). */
+  @Get('branding/domain')
+  @ApiOkResponse({ type: DomainSetupDto })
+  domain(@Admin() ctx: AdminContext) {
+    return this.firm.domainSetup(ctx.firmId);
+  }
+
+  @Post('branding/domain/check')
+  @HttpCode(200)
+  @ApiOkResponse({ type: DomainSetupDto })
+  checkDomain(@Admin() ctx: AdminContext) {
+    return this.firm.checkDomain(ctx.firmId);
+  }
+
   // -------------------------------------------------------------- risk & audit
   @Get('alerts')
   @ApiOkResponse({ type: AdminAlertPageDto })
@@ -258,6 +274,28 @@ export class AdminController {
     @Body() dto: FirmAdminDto,
   ) {
     return { items: await this.firm.setFirmAdmin(ctx, id, dto.email) };
+  }
+
+  /** Daily Funded: run the unfinished automatic set-up steps of a firm now. */
+  @SuperadminOnly()
+  @Post('firms/:id/provisioning/run')
+  @HttpCode(200)
+  @ApiOkResponse({ type: AdminFirmListDto })
+  async runProvisioning(@Admin() ctx: AdminContext, @Param('id', UUID) id: string) {
+    return { items: await this.firm.runProvisioning(ctx, id) };
+  }
+
+  /** Daily Funded: set or remove a firm's own domain (verified via DNS before it routes). */
+  @SuperadminOnly()
+  @Post('firms/:id/domain')
+  @HttpCode(200)
+  @ApiOkResponse({ type: AdminFirmListDto })
+  async setFirmDomain(
+    @Admin() ctx: AdminContext,
+    @Param('id', UUID) id: string,
+    @Body() dto: FirmDomainDto,
+  ) {
+    return { items: await this.firm.setFirmDomain(ctx, id, dto.domain ?? null) };
   }
 
   /** Daily Funded: send the firm admin a new link to set a password. */

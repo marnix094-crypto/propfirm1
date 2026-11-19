@@ -65,7 +65,7 @@ export class AdminGuard implements CanActivate {
         firmRole: true,
         roles: true,
         status: true,
-        firm: { select: { status: true } },
+        firm: { select: { status: true, dedicatedDatabase: true } },
         twoFactor: { select: { enabledAt: true } },
       },
     });
@@ -74,6 +74,10 @@ export class AdminGuard implements CanActivate {
     // Only the firm's own admin (OWNER) or Daily Funded staff — never other roles (D91).
     if (!superadmin && (user.firmRole !== 'OWNER' || user.firm.status !== 'ACTIVE'))
       throw Errors.forbidden('ADMIN_FORBIDDEN');
+    // A firm with its own instance is administered there, not on the shared platform (D94).
+    const sharedMode = this.config.instanceMode === 'shared';
+    if (!superadmin && sharedMode && user.firm.dedicatedDatabase)
+      throw Errors.conflict('FIRM_HOSTED_ELSEWHERE', 'This firm runs on its own instance');
 
     const twoFactorEnabled = !!user.twoFactor?.enabledAt;
     const skip2fa = this.reflector.getAllAndOverride<boolean>(SKIP_2FA, targets);
@@ -90,9 +94,11 @@ export class AdminGuard implements CanActivate {
       if (!superadmin || !UUID_RE.test(selected)) throw Errors.forbidden('ADMIN_FORBIDDEN');
       const exists = await this.prisma.firm.findUnique({
         where: { id: selected },
-        select: { id: true },
+        select: { id: true, dedicatedDatabase: true },
       });
       if (!exists) throw Errors.notFound('Firm');
+      if (sharedMode && exists.dedicatedDatabase)
+        throw Errors.conflict('FIRM_HOSTED_ELSEWHERE', 'This firm runs on its own instance');
       firmId = selected;
     }
     const role: FirmRole = superadmin ? 'OWNER' : user.firmRole!;

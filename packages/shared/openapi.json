@@ -696,6 +696,68 @@
         ]
       }
     },
+    "/api/v1/admin/branding/domain": {
+      "get": {
+        "operationId": "AdminController_domain",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainSetupDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/branding/domain/check": {
+      "post": {
+        "operationId": "AdminController_checkDomain",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainSetupDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/alerts": {
       "get": {
         "operationId": "AdminController_alerts",
@@ -1098,6 +1160,94 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/FirmAdminDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminFirmListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/firms/{id}/provisioning/run": {
+      "post": {
+        "operationId": "AdminController_runProvisioning",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminFirmListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/firms/{id}/domain": {
+      "post": {
+        "operationId": "AdminController_setFirmDomain",
+        "parameters": [
+          {
+            "name": "x-admin-firm",
+            "in": "header",
+            "description": "Superadmins only: id of the firm to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FirmDomainDto"
               }
             }
           }
@@ -4896,6 +5046,23 @@
             "type": "string",
             "nullable": true
           },
+          "domainStatus": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "PENDING_DNS",
+              "ACTIVE",
+              "FAILED"
+            ]
+          },
+          "subdomain": {
+            "type": "string",
+            "nullable": true,
+            "description": "Automatic <slug>.<platform> host"
+          },
+          "dedicatedDatabase": {
+            "type": "boolean"
+          },
           "primaryColor": {
             "type": "string",
             "nullable": true
@@ -4940,6 +5107,9 @@
           "name",
           "status",
           "domain",
+          "domainStatus",
+          "subdomain",
+          "dedicatedDatabase",
           "primaryColor",
           "logoDataUrl",
           "supportEmail",
@@ -5734,6 +5904,56 @@
           }
         }
       },
+      "DomainSetupDto": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "PENDING_DNS",
+              "ACTIVE",
+              "FAILED"
+            ]
+          },
+          "subdomain": {
+            "type": "string",
+            "nullable": true
+          },
+          "cnameTarget": {
+            "type": "string",
+            "nullable": true,
+            "description": "CNAME the domain to this host"
+          },
+          "txtName": {
+            "type": "string",
+            "nullable": true,
+            "description": "TXT record name"
+          },
+          "txtValue": {
+            "type": "string",
+            "nullable": true,
+            "description": "TXT record value"
+          },
+          "checkedAt": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "domain",
+          "status",
+          "subdomain",
+          "cnameTarget",
+          "txtName",
+          "txtValue",
+          "checkedAt"
+        ]
+      },
       "AdminAlertDto": {
         "type": "object",
         "properties": {
@@ -5998,6 +6218,50 @@
           "twoFactorEnabled"
         ]
       },
+      "ProvisioningStepDto": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "string",
+            "enum": [
+              "TENANT",
+              "ADMIN",
+              "DATABASE",
+              "SUBDOMAIN",
+              "CUSTOM_DOMAIN"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "RUNNING",
+              "WAITING",
+              "DONE",
+              "SKIPPED",
+              "FAILED"
+            ]
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true,
+            "description": "Outcome code"
+          },
+          "attempts": {
+            "type": "number"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "step",
+          "status",
+          "detail",
+          "attempts",
+          "updatedAt"
+        ]
+      },
       "AdminFirmSummaryDto": {
         "type": "object",
         "properties": {
@@ -6020,6 +6284,23 @@
           "domain": {
             "type": "string",
             "nullable": true
+          },
+          "domainStatus": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "PENDING_DNS",
+              "ACTIVE",
+              "FAILED"
+            ]
+          },
+          "subdomain": {
+            "type": "string",
+            "nullable": true,
+            "description": "Automatic <slug>.<platform> host"
+          },
+          "dedicatedDatabase": {
+            "type": "boolean"
           },
           "primaryColor": {
             "type": "string",
@@ -6072,6 +6353,15 @@
                 "$ref": "#/components/schemas/FirmAdminInfoDto"
               }
             ]
+          },
+          "provisioning": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProvisioningStepDto"
+            }
+          },
+          "domainSetup": {
+            "$ref": "#/components/schemas/DomainSetupDto"
           }
         },
         "required": [
@@ -6080,6 +6370,9 @@
           "name",
           "status",
           "domain",
+          "domainStatus",
+          "subdomain",
+          "dedicatedDatabase",
           "primaryColor",
           "logoDataUrl",
           "supportEmail",
@@ -6088,7 +6381,9 @@
           "createdAt",
           "traders",
           "fundedActive",
-          "admin"
+          "admin",
+          "provisioning",
+          "domainSetup"
         ]
       },
       "AdminFirmListDto": {
@@ -6120,6 +6415,15 @@
           "ownerEmail": {
             "type": "string",
             "description": "The firm admin; receives an email to set a password"
+          },
+          "dedicatedDatabase": {
+            "type": "boolean",
+            "description": "Create a dedicated database for this firm (D94)"
+          },
+          "domain": {
+            "type": "string",
+            "example": "trade.acmeprop.com",
+            "description": "Own domain (verified via DNS)"
           }
         },
         "required": [
@@ -6153,6 +6457,19 @@
         },
         "required": [
           "email"
+        ]
+      },
+      "FirmDomainDto": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "example": "trade.acmeprop.com"
+          }
+        },
+        "required": [
+          "domain"
         ]
       },
       "DevStaffRequestDto": {

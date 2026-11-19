@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { PrismaService } from '../src/infra/prisma.service.js';
 import { totp } from '../src/modules/security/totp.js';
 import { createTestApp, uniqueEmail, type TestApp } from './app.js';
+import { DNS_RESOLVER, type FakeDnsResolver } from '../src/modules/provisioning/dns-resolver.js';
 
 let t: TestApp;
 let prisma: PrismaService;
@@ -387,7 +388,32 @@ describe('branding', () => {
       .put('/api/v1/admin/branding')
       .set(bearer(adminB.token))
       .send({ name: 'Acme Prop', primaryColor: '#ff5a1f', domain });
-    expect(res.body).toMatchObject({ name: 'Acme Prop', primaryColor: '#FF5A1F', domain });
+    expect(res.body).toMatchObject({
+      name: 'Acme Prop',
+      primaryColor: '#FF5A1F',
+      domain,
+      domainStatus: 'PENDING_DNS',
+    });
+    // An unverified domain routes nothing (D95) …
+    expect((await t.http().get('/api/v1/public/firm').set('Host', domain)).body.isDefault).toBe(
+      true,
+    );
+    const setup = await t.http().get('/api/v1/admin/branding/domain').set(bearer(adminB.token));
+    expect(setup.body).toMatchObject({
+      domain,
+      status: 'PENDING_DNS',
+      cnameTarget: 'tenants.dailyfunded.test',
+      txtName: `_dailyfunded-verify.${domain}`,
+    });
+    // … until the TXT token and the CNAME are in DNS.
+    const dns = t.app.get<FakeDnsResolver>(DNS_RESOLVER);
+    dns.set('TXT', setup.body.txtName, [setup.body.txtValue]);
+    dns.set('CNAME', domain, ['tenants.dailyfunded.test']);
+    const checked = await t
+      .http()
+      .post('/api/v1/admin/branding/domain/check')
+      .set(bearer(adminB.token));
+    expect(checked.body.status).toBe('ACTIVE');
     const pub = await t.http().get('/api/v1/public/firm').set('Host', domain);
     expect(pub.body).toMatchObject({ slug: adminB.slug, name: 'Acme Prop', isDefault: false });
     expect((await t.http().get('/api/v1/public/firm')).body.isDefault).toBe(true);

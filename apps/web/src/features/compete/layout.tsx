@@ -21,11 +21,37 @@ function useBootSession() {
   }, [status]);
 }
 
-/** Wordmark of the operator (white label: name from the operator config). */
-export function ArenaMark({ name }: { name: string }) {
+/** Wordmark of the operator (white label: name + logo from the operator config). */
+export function ArenaMark({
+  name,
+  logo,
+  small = false,
+}: {
+  name: string;
+  logo?: string | null;
+  small?: boolean;
+}) {
+  if (logo)
+    return (
+      <img
+        src={logo}
+        alt={name}
+        className={cn('w-auto max-w-[200px] object-contain object-left', small ? 'h-7' : 'h-8')}
+      />
+    );
   return (
-    <span className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
-      <span className="inline-flex size-8 items-center justify-center rounded-[10px] bg-primary text-[var(--btn-primary-fg)]">
+    <span
+      className={cn(
+        'flex items-center gap-2 font-display font-bold tracking-tight',
+        small ? 'text-base' : 'text-lg',
+      )}
+    >
+      <span
+        className={cn(
+          'inline-flex items-center justify-center rounded-[10px] bg-primary text-[var(--btn-primary-fg)]',
+          small ? 'size-7' : 'size-8',
+        )}
+      >
         <Trophy className="size-4" aria-hidden="true" />
       </span>
       {name}
@@ -121,16 +147,18 @@ export function CompeteLayout() {
   return (
     <div className="flex min-h-dvh flex-col">
       <SkipLink />
-      <div className="border-b border-border bg-card-muted px-4 py-1.5 text-center text-xs text-muted">
-        <FlaskConical className="mr-1.5 inline size-3.5 text-accent" aria-hidden="true" />
-        {t('banner', { firm: name })}{' '}
-        <Link
-          to={`/${lang}`}
-          className="font-semibold text-link underline-offset-2 hover:underline"
-        >
-          {t('bannerLink')}
-        </Link>
-      </div>
+      {op.data?.isExample && (
+        <div className="border-b border-border bg-card-muted px-4 py-1.5 text-center text-xs text-muted">
+          <FlaskConical className="mr-1.5 inline size-3.5 text-accent" aria-hidden="true" />
+          {t('banner', { firm: name })}{' '}
+          <Link
+            to={`/${lang}`}
+            className="font-semibold text-link underline-offset-2 hover:underline"
+          >
+            {t('bannerLink')}
+          </Link>
+        </div>
+      )}
       <header className="sticky top-0 z-40 px-2 pt-2 sm:px-4">
         <div className="glass mx-auto flex h-14 max-w-[1400px] items-center gap-3 rounded-[18px] border border-border px-3 sm:h-16 sm:px-5">
           <Link
@@ -138,7 +166,7 @@ export function CompeteLayout() {
             className="min-w-0 rounded-sm"
             aria-label={t('nav.home', { firm: name })}
           >
-            <ArenaMark name={name} />
+            <ArenaMark name={name} logo={op.data?.logoDataUrl} />
           </Link>
           <nav aria-label={t('nav.label')} className="ml-4 hidden md:block">
             <ul className="flex items-center gap-1 text-sm font-medium">
@@ -210,13 +238,15 @@ export function CompeteLayout() {
       <footer className="mt-10 border-t border-border py-10 text-sm text-muted">
         <div className="mx-auto grid max-w-[1400px] gap-6 px-4 sm:px-6 md:grid-cols-[auto_1fr] md:gap-12">
           <div className="flex flex-col gap-3">
-            <ArenaMark name={name} />
-            <p>
-              {t('footer.poweredBy')}{' '}
-              <Link to={`/${lang}`} className="font-semibold text-link hover:underline">
-                Daily Funded
-              </Link>
-            </p>
+            <ArenaMark name={name} logo={op.data?.logoDataUrl} />
+            {op.data?.isExample && (
+              <p>
+                {t('footer.poweredBy')}{' '}
+                <Link to={`/${lang}`} className="font-semibold text-link hover:underline">
+                  Daily Funded
+                </Link>
+              </p>
+            )}
           </div>
           <div className="flex max-w-3xl flex-col gap-3">
             <p>{t('footer.disclaimer')}</p>

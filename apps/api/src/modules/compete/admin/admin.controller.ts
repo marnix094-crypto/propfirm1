@@ -62,7 +62,12 @@ import {
   CompeteTwoFactorSetupDto,
   CreateCompeteOperatorDto,
   UpdateCompeteSettingsDto,
+  CompeteAdminIntegrationDto,
+  CompeteAdminSsoSecretDto,
+  UpdateCompeteIntegrationDto,
 } from './dto.js';
+
+import { CompeteIntegrationService } from '../integration.service.js';
 
 const COOKIE = 'compete_admin_rt';
 const COOKIE_PATH = '/api/v1/compete/admin/auth';
@@ -91,6 +96,7 @@ export class CompeteAdminController {
     private readonly admin: CompeteAdminService,
     private readonly tokens: CompeteStaffTokens,
     private readonly prisma: PrismaService,
+    private readonly integration: CompeteIntegrationService,
   ) {}
 
   private setCookie(res: Response, t: StaffTokens) {
@@ -305,6 +311,45 @@ export class CompeteAdminController {
     @OperatorChoice() op?: string,
   ) {
     return this.admin.updateSettings(s, await this.admin.scope(s, op), dto);
+  }
+
+  // ---------------------------------------------------------------- integration (D108/D109)
+
+  @UseGuards(CompeteAdminGuard)
+  @ApiBearerAuth()
+  @Get('integration')
+  @ApiOkResponse({ type: CompeteAdminIntegrationDto })
+  async integrationGet(@Staff() s: StaffCtx, @OperatorChoice() op?: string) {
+    return this.integration.get(await this.admin.scope(s, op));
+  }
+
+  @UseGuards(CompeteAdminGuard)
+  @ApiBearerAuth()
+  @Put('integration')
+  @ApiOkResponse({ type: CompeteAdminIntegrationDto })
+  async integrationUpdate(
+    @Staff() s: StaffCtx,
+    @Body() dto: UpdateCompeteIntegrationDto,
+    @OperatorChoice() op?: string,
+  ) {
+    return this.integration.update(s, await this.admin.scope(s, op), dto);
+  }
+
+  @UseGuards(CompeteAdminGuard)
+  @ApiBearerAuth()
+  @Post('integration/domain/verify')
+  @HttpCode(200)
+  @ApiOkResponse({ type: CompeteAdminIntegrationDto })
+  async integrationVerify(@Staff() s: StaffCtx, @OperatorChoice() op?: string) {
+    return this.integration.verifyDomain(await this.admin.scope(s, op));
+  }
+
+  @UseGuards(CompeteAdminGuard)
+  @ApiBearerAuth()
+  @Post('integration/sso/secret')
+  @ApiCreatedResponse({ type: CompeteAdminSsoSecretDto })
+  async integrationSsoSecret(@Staff() s: StaffCtx, @OperatorChoice() op?: string) {
+    return this.integration.rotateSsoSecret(s, await this.admin.scope(s, op));
   }
 
   @UseGuards(CompeteAdminGuard)

@@ -38,6 +38,8 @@ async function clientLogin(page) {
     .getByRole('link', { name: /live demo/i })
     .first()
     .click();
+  await page.getByLabel('Email').waitFor();
+  await sleep(400); // let the lazy route settle before typing
   await page.getByLabel('Email').fill(CLIENT.email);
   await page.getByLabel('Password').fill(CLIENT.password);
   await page.getByRole('button', { name: 'Log in' }).click();
@@ -47,6 +49,8 @@ async function clientLogin(page) {
 async function adminLogin(page) {
   await page.goto(BASE);
   await page.getByRole('link', { name: 'Partner login' }).first().click();
+  await page.getByLabel('Email').waitFor();
+  await sleep(400); // let the lazy route settle before typing
   await page.getByLabel('Email').fill(ADMIN.email);
   await page.getByLabel('Password').fill(ADMIN.password);
   await page.getByRole('button', { name: 'Log in' }).click();

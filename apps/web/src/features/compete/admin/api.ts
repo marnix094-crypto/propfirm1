@@ -17,6 +17,7 @@ export type AdminPlayer = S['CompeteAdminPlayerDto'];
 export type AdminPayout = S['CompeteAdminPayoutDto'];
 export type AdminSettings = S['CompeteAdminSettingsDto'];
 export type AdminOperator = S['CompeteAdminOperatorDto'];
+export type AdminIntegration = S['CompeteAdminIntegrationDto'];
 
 const BASE = `${import.meta.env.VITE_API_URL ?? ''}/api/v1/compete/admin`;
 const OP_KEY = 'compete-admin-operator';
@@ -235,6 +236,16 @@ export function useAdminSettings() {
   return useQuery({
     queryKey: ak.settings(),
     queryFn: () => adminCall(() => adminClient.GET('/api/v1/compete/admin/settings')),
+    enabled: ready,
+  });
+}
+
+export function useAdminIntegration() {
+  const ready = useScopeReady();
+  useCompeteAdmin((s) => s.operator);
+  return useQuery({
+    queryKey: ['compete-admin', op(), 'integration'] as const,
+    queryFn: () => adminCall(() => adminClient.GET('/api/v1/compete/admin/integration')),
     enabled: ready,
   });
 }

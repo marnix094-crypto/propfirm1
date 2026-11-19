@@ -326,6 +326,7 @@ export class CompeteAdminService {
         id: p.id,
         nickname: p.nickname,
         email: p.email,
+        sso: p.externalId !== null,
         country: p.country,
         status: p.status,
         statusReason: p.statusReason,
@@ -470,7 +471,6 @@ export class CompeteAdminService {
           data: {
             name: dto.name,
             primaryColor: dto.primaryColor.toUpperCase(),
-            domain: dto.domain || null,
             timeZone: dto.timeZone,
             startMinuteOfDay: dto.startMinuteOfDay,
             durationMinutes: dto.durationMinutes,

@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 import { createBrowserRouter, createMemoryRouter, Navigate, type RouteObject } from 'react-router';
 import { LangLayout } from './lang-layout';
-import { RootRedirect } from './root-redirect';
+import { OperatorHostGate, RootRedirect } from './root-redirect';
 
 const placeholder = (kind: 'legal') => () =>
   import('@/features/placeholder/placeholder-page').then((m) => ({
@@ -15,8 +15,16 @@ const routes: RouteObject[] = [
     element: <LangLayout />,
     children: [
       {
+        // On a Compete operator's own (sub)domain the home is that operator's competition (D108).
         index: true,
-        lazy: () => import('@/features/site/site-page').then((m) => ({ Component: m.SitePage })),
+        lazy: () =>
+          import('@/features/site/site-page').then((m) => ({
+            Component: () => (
+              <OperatorHostGate>
+                <m.SitePage />
+              </OperatorHostGate>
+            ),
+          })),
       },
       {
         // Example prop-firm storefront built on the platform (what a client's traders see).
@@ -56,6 +64,7 @@ const routes: RouteObject[] = [
           ['players', 'CompeteAdminPlayersPage'],
           ['payouts', 'CompeteAdminPayoutsPage'],
           ['settings', 'CompeteAdminSettingsPage'],
+          ['integration', 'CompeteAdminIntegrationPage'],
           ['audit', 'CompeteAdminAuditPage'],
           ['operators', 'CompeteAdminOperatorsPage'],
           ['security', 'CompeteAdminSecurityPage'],
@@ -64,7 +73,9 @@ const routes: RouteObject[] = [
           lazy: () =>
             (name === 'CompeteAdminSecurityPage'
               ? import('@/features/compete/admin/auth-pages')
-              : import('@/features/compete/admin/pages')
+              : name === 'CompeteAdminIntegrationPage'
+                ? import('@/features/compete/admin/integration-page')
+                : import('@/features/compete/admin/pages')
             ).then((m) => ({ Component: (m as unknown as Record<string, ComponentType>)[name!]! })),
         })) as RouteObject[],
       },
@@ -74,6 +85,14 @@ const routes: RouteObject[] = [
         lazy: () =>
           import('@/features/site/compete-product-page').then((m) => ({
             Component: m.CompeteProductPage,
+          })),
+      },
+      {
+        // Embeddable Compete widgets for operator websites (D108): no shell, iframe only.
+        path: 'compete/widget/:kind',
+        lazy: () =>
+          import('@/features/compete/widget-page').then((m) => ({
+            Component: m.CompeteWidgetPage,
           })),
       },
       {
@@ -101,6 +120,14 @@ const routes: RouteObject[] = [
             lazy: () =>
               import('@/features/compete/auth-pages').then((m) => ({
                 Component: m.CompeteRegisterPage,
+              })),
+          },
+          {
+            // Single sign-on from the operator's own website (D109).
+            path: 'sso',
+            lazy: () =>
+              import('@/features/compete/auth-pages').then((m) => ({
+                Component: m.CompeteSsoPage,
               })),
           },
           {
@@ -452,7 +479,13 @@ const routes: RouteObject[] = [
  * The shareable demo preview runs inside a sandboxed frame where the URL path cannot change,
  * so it routes in memory. The real app uses normal URLs.
  */
+/** Demo preview: `?demo-path=/en/compete/widget/…` opens a page directly (widget previews). */
+function demoStartPath(): string {
+  const p = new URLSearchParams(window.location.search).get('demo-path');
+  return p && /^\/[a-z]{2}\/compete\/widget\/[a-z]+(\?[\w=&-]*)?$/.test(p) ? p : '/';
+}
+
 export const router =
   import.meta.env.VITE_DEMO_MODE === 'true'
-    ? createMemoryRouter(routes, { initialEntries: ['/'] })
+    ? createMemoryRouter(routes, { initialEntries: [demoStartPath()] })
     : createBrowserRouter(routes);

@@ -95,7 +95,7 @@ interface Round {
 interface Settings {
   name: string;
   primaryColor: string;
-  domain: string | null;
+  domain?: string | null;
   timeZone: string;
   startMinuteOfDay: number;
   durationMinutes: number;
@@ -125,7 +125,27 @@ interface State {
   suspended?: Record<string, string>;
   paid?: string[];
   audit?: AuditRow[];
+  integration?: Integration;
 }
+/** Preview of the operator integration (D108/D109): DNS is simulated, SSO secret is fake. */
+interface Integration {
+  domain: string | null;
+  domainStatus: 'NONE' | 'PENDING_DNS' | 'ACTIVE';
+  domainChecks: number;
+  logoDataUrl: string | null;
+  widgetOrigins: string[];
+  ssoEnabled: boolean;
+  ssoConfigured: boolean;
+}
+const DEFAULT_INTEGRATION: Integration = {
+  domain: null,
+  domainStatus: 'NONE',
+  domainChecks: 0,
+  logoDataUrl: null,
+  widgetOrigins: [],
+  ssoEnabled: false,
+  ssoConfigured: false,
+};
 
 /** Preview-only operator admin (never exists outside the demo build). */
 export const DEMO_OPERATOR_ADMIN = {
@@ -563,6 +583,7 @@ export function createCompeteDemo(market: DemoMarket) {
   const playerDto = (p: Player) => ({
     id: p.id,
     email: p.email,
+    sso: false,
     nickname: p.nickname,
     country: p.country,
     locale: p.locale,
@@ -593,6 +614,10 @@ export function createCompeteDemo(market: DemoMarket) {
     json(200, {
       slug: 'your-arena',
       name: (st.settings ?? DEFAULT_SETTINGS).name,
+      onOwnHost: false,
+      isExample: true,
+      logoDataUrl: (st.integration ?? DEFAULT_INTEGRATION).logoDataUrl,
+      ssoEnabled: (st.integration ?? DEFAULT_INTEGRATION).ssoEnabled,
       primaryColor: (st.settings ?? DEFAULT_SETTINGS).primaryColor,
       timeZone: 'Europe/Amsterdam',
       startMinuteOfDay: 1200,
@@ -977,6 +1002,7 @@ export function createCompeteDemo(market: DemoMarket) {
       id: p.id,
       nickname: p.nickname,
       email: p.email,
+      sso: false,
       country: p.country,
       createdAt: new Date().toISOString(),
     }));
@@ -984,6 +1010,7 @@ export function createCompeteDemo(market: DemoMarket) {
       id: `ex-${n}`,
       nickname: `example_${n}`,
       email: `${n}@example.invalid`,
+      sso: false,
       country: ['NL', 'DE', 'ES', 'BE', 'FR'][i % 5]!,
       createdAt: new Date(Date.now() - (i + 2) * 86_400_000).toISOString(),
     }));
@@ -1045,9 +1072,88 @@ export function createCompeteDemo(market: DemoMarket) {
       split.some((x, i) => i > 0 && x > split[i - 1]!)
     )
       throw new Fail(422, 'SETTINGS_INVALID');
-    st.settings = { ...DEFAULT_SETTINGS, ...(b as unknown as Settings) };
+    st.settings = {
+      ...DEFAULT_SETTINGS,
+      ...(b as unknown as Settings),
+      domain: (st.integration ?? DEFAULT_INTEGRATION).domain,
+    };
     audit('compete.operator.settings_updated', 'CompeteOperator', 'demo-operator');
     return json(200, { ...st.settings, currency: 'USD' });
+  });
+  const integrationDto = () => {
+    const i = st.integration ?? DEFAULT_INTEGRATION;
+    const sub = 'your-arena.play.dailyfunded.com';
+    return {
+      slug: 'your-arena',
+      subdomain: sub,
+      domain: i.domain,
+      domainStatus: i.domainStatus,
+      domainCheckedAt: i.domainChecks > 0 ? new Date().toISOString() : null,
+      dnsRecords: i.domain
+        ? [
+            {
+              type: 'TXT',
+              name: `_dailyfunded-verify.${i.domain}`,
+              value: 'demo-3f9a1c7e5b2d4a60',
+            },
+            { type: 'CNAME', name: i.domain, value: 'tenants.dailyfunded.com' },
+          ]
+        : [],
+      playUrl: `https://${i.domain && i.domainStatus === 'ACTIVE' ? i.domain : sub}`,
+      logoDataUrl: i.logoDataUrl,
+      widgetOrigins: i.widgetOrigins,
+      ssoEnabled: i.ssoEnabled,
+      ssoConfigured: i.ssoConfigured,
+    };
+  };
+  on('GET', '/admin/integration', () => (needAdmin(), json(200, integrationDto())));
+  on('PUT', '/admin/integration', (_m, b) => {
+    needAdmin();
+    const cur = st.integration ?? DEFAULT_INTEGRATION;
+    const domain = (b.domain as string | null) || null;
+    if (b.ssoEnabled && !cur.ssoConfigured) throw new Fail(422, 'SSO_SECRET_MISSING');
+    const origins = ((b.widgetOrigins as string[]) ?? []).map((o) => o.replace(/\/$/, ''));
+    if (origins.some((o) => !/^https:\/\/([a-z0-9-]+\.)+[a-z]{2,}$/i.test(o)))
+      throw new Fail(400, 'VALIDATION_ERROR');
+    const logo = (b.logoDataUrl as string | null) || null;
+    if (logo && !/^data:image\/(png|svg\+xml|webp|jpeg);base64,/.test(logo))
+      throw new Fail(422, 'LOGO_INVALID');
+    st.integration = {
+      ...cur,
+      logoDataUrl: logo,
+      widgetOrigins: [...new Set(origins)],
+      ssoEnabled: !!b.ssoEnabled,
+      ...(domain !== cur.domain
+        ? { domain, domainStatus: domain ? 'PENDING_DNS' : 'NONE', domainChecks: 0 }
+        : {}),
+    };
+    audit('compete.operator.integration_updated', 'CompeteOperator', 'demo-operator');
+    return json(200, integrationDto());
+  });
+  // Simulated DNS: the second check succeeds (as if the records were just added).
+  on('POST', '/admin/integration/domain/verify', () => {
+    needAdmin();
+    const cur = st.integration ?? DEFAULT_INTEGRATION;
+    if (!cur.domain) throw new Fail(422, 'NO_DOMAIN');
+    const checks = cur.domainChecks + 1;
+    st.integration = {
+      ...cur,
+      domainChecks: checks,
+      domainStatus: checks >= 2 ? 'ACTIVE' : cur.domainStatus,
+    };
+    return json(200, integrationDto());
+  });
+  on('POST', '/admin/integration/sso/secret', () => {
+    needAdmin();
+    st.integration = { ...(st.integration ?? DEFAULT_INTEGRATION), ssoConfigured: true };
+    audit('compete.operator.sso_secret_rotated', 'CompeteOperator', 'demo-operator');
+    const bytes = crypto.getRandomValues(new Uint8Array(24));
+    return json(201, {
+      secret: `demo_${Array.from(bytes, (x) => x.toString(16).padStart(2, '0')).join('')}`,
+    });
+  });
+  on('POST', '/auth/sso', () => {
+    throw new Fail(403, 'SSO_DISABLED');
   });
   on('GET', '/admin/audit', () => {
     needAdmin();

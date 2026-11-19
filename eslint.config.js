@@ -12,6 +12,7 @@ export default tseslint.config(
       '**/playwright-report/**',
       '**/test-results/**',
       '**/src/generated/**',
+      '**/public/mockServiceWorker.js',
     ],
   },
   js.configs.recommended,
@@ -21,6 +22,11 @@ export default tseslint.config(
     languageOptions: { globals: globals.browser },
     plugins: { 'react-hooks': reactHooks },
     rules: { ...reactHooks.configs.recommended.rules },
+  },
+  {
+    // Static scripts served as-is (e.g. compete-embed.js on operator websites).
+    files: ['apps/web/public/**/*.js'],
+    languageOptions: { sourceType: 'script', globals: globals.browser },
   },
   {
     files: ['apps/api/**/*.ts', '**/*.config.{js,ts}'],

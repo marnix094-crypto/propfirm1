@@ -20,6 +20,10 @@ import { PrismaService } from '../../infra/prisma.service.js';
 import { Public } from '../auth/public.decorator.js';
 import { CompeteService } from './compete.service.js';
 import { CompeteOperatorsService } from './operators.service.js';
+import { CompeteIntegrationService } from './integration.service.js';
+import { SSO_AUDIENCE } from './sso.service.js';
+import { SignJWT } from 'jose';
+import { randomUUID } from 'node:crypto';
 
 class DevRoundDto {
   @Type(() => Number) @IsInt() @Min(1) @Max(86_400) startsInSec!: number;
@@ -38,6 +42,13 @@ class DevStaffDto {
 class DevTickDto {
   @IsOptional() @IsISO8601() at?: string;
 }
+class DevSsoTokenDto {
+  @IsOptional() @Matches(/^[a-z0-9-]{1,40}$/) operatorSlug?: string;
+  @IsString() @MaxLength(128) sub!: string;
+  @IsOptional() @IsString() @MaxLength(20) nickname?: string;
+  @IsOptional() @IsString() @MaxLength(254) email?: string;
+  @IsOptional() @Matches(/^[A-Z]{2}$/) country?: string;
+}
 class DevBotsDto {
   @IsUUID() roundId!: string;
   @Type(() => Number) @IsInt() @Min(1) @Max(200) count!: number;
@@ -53,7 +64,37 @@ export class CompeteDevController {
     private readonly prisma: PrismaService,
     private readonly compete: CompeteService,
     private readonly operators: CompeteOperatorsService,
+    private readonly integration: CompeteIntegrationService,
   ) {}
+
+  /**
+   * Signs an SSO token the way an operator's backend would (D109) — for tests and local
+   * development only. Real operators sign on their own server; the secret never leaves it.
+   */
+  @Post('sso-token')
+  async ssoToken(@Body() dto: DevSsoTokenDto, @Req() req: Request) {
+    this.guard();
+    const op = dto.operatorSlug
+      ? await this.prisma.competeOperator.findUniqueOrThrow({ where: { slug: dto.operatorSlug } })
+      : await this.operators.fromRequest(req);
+    const secret = this.integration.ssoSecret(op);
+    if (!secret) throw Errors.forbidden('SSO_DISABLED');
+    const token = await new SignJWT({
+      nickname: dto.nickname,
+      email: dto.email,
+      country: dto.country ?? 'NL',
+      adult: true,
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuer(op.slug)
+      .setAudience(SSO_AUDIENCE)
+      .setSubject(dto.sub)
+      .setJti(randomUUID())
+      .setIssuedAt()
+      .setExpirationTime('2m')
+      .sign(secret);
+    return { token };
+  }
 
   private guard() {
     if (!this.config.devToolsEnabled) throw Errors.notFound('Route');

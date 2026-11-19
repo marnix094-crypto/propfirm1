@@ -19,7 +19,8 @@
     "settings": "Settings",
     "audit": "Audit log",
     "security": "Security",
-    "operators": "Operators"
+    "operators": "Operators",
+    "integration": "Integration"
   },
   "status": {
     "OPEN": "Registration open",
@@ -33,7 +34,9 @@
     "SUCCEEDED": "Paid",
     "BREACHED": "Loss limit",
     "FINISHED": "Finished",
-    "REFUNDED": "Refunded"
+    "REFUNDED": "Refunded",
+    "NONE": "None",
+    "PENDING_DNS": "Waiting for DNS"
   },
   "login": {
     "title": "Operator login",
@@ -122,7 +125,8 @@
     "suspendTitle": "Suspend {{name}}",
     "reactivateTitle": "Reactivate {{name}}",
     "reason": "Reason",
-    "reasonHint": "Required; stored in the audit log."
+    "reasonHint": "Required; stored in the audit log.",
+    "ssoOnly": "Via SSO"
   },
   "payouts": {
     "title": "Payouts",
@@ -144,8 +148,6 @@
     "brand": "Brand",
     "name": "Name",
     "color": "Brand colour",
-    "domain": "Own domain",
-    "domainHint": "Point the domain to us; we handle SSL.",
     "tz": "Time zone",
     "rules": "Rules",
     "start": "Daily start time",
@@ -160,7 +162,8 @@
     "splitHint": "Per place, e.g. 50 / 30 / 20 — adds up to 100.",
     "note": "Changes apply to rounds created after saving. An open round keeps its rules.",
     "save": "Save settings",
-    "saved": "Saved."
+    "saved": "Saved.",
+    "integrationHint": "Own domain, logo, website widgets and single sign-on:"
   },
   "audit": {
     "title": "Audit log",
@@ -214,6 +217,75 @@
     "VALIDATION_ERROR": "Please check the fields.",
     "NETWORK_ERROR": "No connection. Try again.",
     "FORBIDDEN": "You don't have access to this.",
-    "TOO_MANY_REQUESTS": "Too many attempts. Wait a minute."
+    "TOO_MANY_REQUESTS": "Too many attempts. Wait a minute.",
+    "LOGO_INVALID": "Logo must be a PNG, SVG, WebP or JPEG of at most 200 kB.",
+    "DOMAIN_INVALID": "Use your own domain, not the platform domain.",
+    "SSO_SECRET_MISSING": "Generate an SSO secret first.",
+    "NO_DOMAIN": "Set a domain first."
+  },
+  "integration": {
+    "title": "Integration",
+    "sub": "Connect the competition to your own website: domain, logo, widgets and single sign-on.",
+    "save": "Save integration",
+    "saved": "Saved.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "close": "Close",
+    "where": {
+      "title": "Where your players play",
+      "sub": "Your competition is always on your own subdomain; with a verified domain it runs fully under your brand.",
+      "subdomain": "Your subdomain",
+      "noSubdomain": "Not configured on this platform",
+      "playUrl": "Live address"
+    },
+    "domain": {
+      "label": "Own domain",
+      "hint": "For example competition.your-firm.com. It only goes live after DNS verification.",
+      "check": "Check DNS",
+      "records": "Add these DNS records at your domain provider, then check DNS:",
+      "type": "Type",
+      "name": "Name",
+      "value": "Value"
+    },
+    "logo": {
+      "title": "Logo",
+      "sub": "Shown in the header, footer and widgets instead of the trophy mark.",
+      "preview": "Logo preview",
+      "none": "No logo",
+      "upload": "Upload logo",
+      "remove": "Remove"
+    },
+    "widgets": {
+      "title": "Widgets for your website",
+      "sub": "Show the countdown, live leaderboard or a join button on your own site with two lines of code.",
+      "origins": "Websites allowed to show widgets",
+      "originsHint": "One https:// address per line, e.g. https://www.your-firm.com. Other sites cannot embed them.",
+      "kind": "Widget",
+      "theme": "Theme",
+      "dark": "Dark",
+      "light": "Light",
+      "snippet": "Embed code",
+      "preview": "Preview",
+      "previewTitle": "Preview of the {{kind}} widget",
+      "kinds": {
+        "countdown": "Countdown + prizes",
+        "leaderboard": "Live leaderboard",
+        "join": "Join button"
+      }
+    },
+    "sso": {
+      "title": "Single sign-on",
+      "sub": "Your traders open the competition from your website without a second account or password.",
+      "enable": "Allow sign-in from my website",
+      "enableHint": "Your server signs a short-lived token per click (HS256). New players are created automatically.",
+      "generate": "Generate secret",
+      "rotate": "New secret",
+      "configured": "A secret is set. A new one stops old tokens working.",
+      "notConfigured": "No secret yet.",
+      "example": "Example for your server",
+      "secretTitle": "Your SSO secret",
+      "secretBody": "Store it only on your server (e.g. as COMPETE_SSO_SECRET). It is shown once and never again.",
+      "stored": "I have stored it"
+    }
   }
 }

@@ -250,7 +250,13 @@
     "NETWORK_ERROR": "Geen verbinding. Controleer je internet en probeer het opnieuw.",
     "OPERATOR_SUSPENDED": "Deze competitie is tijdelijk niet beschikbaar.",
     "PLAYER_SUSPENDED": "Je account is geschorst.",
-    "QUOTE_STALE": "Geen actuele koers beschikbaar. Probeer het zo opnieuw."
+    "QUOTE_STALE": "Geen actuele koers beschikbaar. Probeer het zo opnieuw.",
+    "SSO_INVALID": "Deze inloglink is niet geldig. Open de competitie opnieuw vanuit je account.",
+    "SSO_EXPIRED": "Deze inloglink is verlopen. Open de competitie opnieuw vanuit je account.",
+    "SSO_REPLAYED": "Deze inloglink is al gebruikt. Open de competitie opnieuw vanuit je account.",
+    "SSO_DISABLED": "Inloggen via de website staat niet aan.",
+    "ADULT_REQUIRED": "Je moet 18 jaar of ouder zijn om mee te doen.",
+    "SSO_COUNTRY_MISSING": "Je land ontbreekt in de inloglink."
   },
   "arena": {
     "minimumBar": "Spelers richting het minimum van {{n}}",
@@ -276,5 +282,17 @@
       "floor": "Je deelname stopt als je equity {{floor}} bereikt",
       "prizes": "Top 3 deelt de prijzenpot"
     }
+  },
+  "widget": {
+    "docTitle": "Competitie van {{firm}}",
+    "watch": "Kijk live mee",
+    "noLeaderboardYet": "De ranglijst start met de ronde."
+  },
+  "sso": {
+    "title": "Je wordt ingelogd…",
+    "sub": "Een moment — we koppelen je account.",
+    "failedSub": "De inloglink werkte niet.",
+    "working": "Inloglink wordt gecontroleerd…",
+    "loginHint": "Al klant bij {{firm}}? Open de competitie vanuit je {{firm}}-account — geen apart wachtwoord nodig."
   }
 }

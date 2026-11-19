@@ -344,7 +344,7 @@ export function CompeteAdminPlayersPage() {
             {players.data.items.map((p) => (
               <Tr key={p.id}>
                 <Td className="font-medium">{p.nickname}</Td>
-                <Td className="text-muted">{p.email}</Td>
+                <Td className="text-muted">{p.email ?? (p.sso ? t('players.ssoOnly') : '—')}</Td>
                 <Td>{p.country}</Td>
                 <Td>
                   <StatusBadge status={p.status} />
@@ -562,7 +562,6 @@ function SettingsForm({ s }: { s: AdminSettings }) {
       await save.mutateAsync({
         name: String(f.get('name')),
         primaryColor: String(f.get('color')),
-        domain: String(f.get('domain') ?? '').trim() || null,
         timeZone: String(f.get('tz')),
         startMinuteOfDay: (h ?? 0) * 60 + (m ?? 0),
         durationMinutes: Number(f.get('duration')),
@@ -598,14 +597,17 @@ function SettingsForm({ s }: { s: AdminSettings }) {
           defaultValue={s.primaryColor}
           className="h-11 p-1"
         />
-        <Input
-          label={t('settings.domain')}
-          name="domain"
-          defaultValue={s.domain ?? ''}
-          placeholder="play.example.com"
-          hint={t('settings.domainHint')}
-        />
         <Input label={t('settings.tz')} name="tz" defaultValue={s.timeZone} required />
+        <p className="text-sm text-muted sm:col-span-2">
+          {t('settings.integrationHint')}{' '}
+          <Link
+            to="../integration"
+            relative="path"
+            className="font-semibold text-link hover:underline"
+          >
+            {t('nav.integration')}
+          </Link>
+        </p>
       </Card>
       <Card padding="lg" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <h2 className="font-semibold sm:col-span-2 lg:col-span-3">{t('settings.rules')}</h2>

@@ -42,6 +42,7 @@ export async function createTestApp(): Promise<TestApp> {
     DNS_RESOLVER: 'fake',
     DATABASE_PROVISIONER: 'fake',
     PLATFORM_BASE_DOMAIN: 'dailyfunded.test',
+    COMPETE_BASE_DOMAIN: 'play.dailyfunded.test',
     FIELD_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString('base64'),
     APP_BASE_URL: 'http://localhost:5173',
     REDIS_URL: process.env.REDIS_URL ?? 'redis://localhost:6379',

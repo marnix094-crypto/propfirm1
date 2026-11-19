@@ -1588,6 +1588,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/compete/auth/sso': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteController_ssoSignIn'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/compete/auth/refresh': {
     parameters: {
       query?: never;
@@ -2030,6 +2046,54 @@ export interface paths {
     get: operations['CompeteAdminController_settings'];
     put: operations['CompeteAdminController_updateSettings'];
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/integration': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['CompeteAdminController_integrationGet'];
+    put: operations['CompeteAdminController_integrationUpdate'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/integration/domain/verify': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_integrationVerify'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/compete/admin/integration/sso/secret': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['CompeteAdminController_integrationSsoSecret'];
     delete?: never;
     options?: never;
     head?: never;
@@ -3316,7 +3380,14 @@ export interface components {
     CompeteOperatorDto: {
       slug: string;
       name: string;
+      /** @description The request's host is this operator's (sub)domain (D108) */
+      onOwnHost: boolean;
+      /** @description Daily Funded example operator (shows the example banner) */
+      isExample: boolean;
       primaryColor: string;
+      logoDataUrl: string | null;
+      /** @description Players can sign in from the operator website (D109) */
+      ssoEnabled: boolean;
       timeZone: string;
       /** @description Local start time, minutes after midnight */
       startMinuteOfDay: number;
@@ -3429,7 +3500,10 @@ export interface components {
     };
     CompetePlayerDto: {
       id: string;
-      email: string;
+      /** @description Null for SSO-only players */
+      email: string | null;
+      /** @description Signed in via the operator website (SSO, D109) */
+      sso: boolean;
       nickname: string;
       country: string;
       locale: string;
@@ -3443,6 +3517,10 @@ export interface components {
     CompeteLoginDto: {
       email: string;
       password: string;
+    };
+    CompeteSsoDto: {
+      /** @description HS256 JWT signed by the operator backend (D109) */
+      token: string;
     };
     CompeteTokenDto: {
       accessToken: string;
@@ -3578,7 +3656,10 @@ export interface components {
     CompeteAdminPlayerDto: {
       id: string;
       nickname: string;
-      email: string;
+      /** @description Null for SSO-only players */
+      email: string | null;
+      /** @description Signs in via the operator website (SSO, D109) */
+      sso: boolean;
       country: string;
       /** @enum {string} */
       status: 'ACTIVE' | 'SUSPENDED' | 'SELF_EXCLUDED';
@@ -3630,7 +3711,6 @@ export interface components {
     UpdateCompeteSettingsDto: {
       name: string;
       primaryColor: string;
-      domain: string | null;
       timeZone: string;
       startMinuteOfDay: number;
       durationMinutes: number;
@@ -3642,6 +3722,41 @@ export interface components {
       minParticipants: number;
       prizePoolBps: number;
       prizeSplitBps: number[];
+    };
+    CompeteDnsRecordDto: {
+      /** @enum {string} */
+      type: 'TXT' | 'CNAME';
+      name: string;
+      value: string;
+    };
+    CompeteAdminIntegrationDto: {
+      slug: string;
+      /** @description <slug>.<COMPETE_BASE_DOMAIN> */
+      subdomain: string | null;
+      domain: string | null;
+      /** @enum {string} */
+      domainStatus: 'NONE' | 'PENDING_DNS' | 'ACTIVE';
+      domainCheckedAt: string | null;
+      dnsRecords: components['schemas']['CompeteDnsRecordDto'][];
+      /** @description Where players play */
+      playUrl: string | null;
+      logoDataUrl: string | null;
+      widgetOrigins: string[];
+      ssoEnabled: boolean;
+      /** @description An SSO secret exists (never returned again) */
+      ssoConfigured: boolean;
+    };
+    UpdateCompeteIntegrationDto: {
+      domain: string | null;
+      /** @description data:image/...;base64, ≤ 200 kB */
+      logoDataUrl: string | null;
+      /** @description Origins allowed to embed widgets */
+      widgetOrigins: string[];
+      ssoEnabled: boolean;
+    };
+    CompeteAdminSsoSecretDto: {
+      /** @description Shown once; store it on your server only */
+      secret: string;
     };
     CompeteAdminAuditDto: {
       id: string;
@@ -6147,6 +6262,29 @@ export interface operations {
       };
     };
   };
+  CompeteController_ssoSignIn: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompeteSsoDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAuthResponseDto'];
+        };
+      };
+    };
+  };
   CompeteController_refresh: {
     parameters: {
       query?: never;
@@ -6829,6 +6967,98 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['CompeteAdminSettingsDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_integrationGet: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminIntegrationDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_integrationUpdate: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateCompeteIntegrationDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminIntegrationDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_integrationVerify: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminIntegrationDto'];
+        };
+      };
+    };
+  };
+  CompeteAdminController_integrationSsoSecret: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Superadmins only: slug of the operator to administer */
+        'X-Compete-Admin-Operator'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompeteAdminSsoSecretDto'];
         };
       };
     };

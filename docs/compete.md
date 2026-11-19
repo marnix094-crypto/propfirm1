@@ -79,6 +79,30 @@ Op de Daily Funded-website, strikt gescheiden in `apps/web/src/features/compete/
 - Website: `/{lang}/products/compete` (`features/site/compete-product-page.tsx`), screenshots via `pnpm --filter @brand/web screens`.
 - Tests: `apps/api/test/compete-admin.e2e.test.ts`, `apps/web/e2e/compete.spec.ts`.
 
+## Koppelen aan de website van een klant (fase C4, D107–D110)
+
+Een prop firm (operator) zet Compete onder het eigen merk naast de eigen website:
+
+1. **Eigen (sub)domein** — automatisch `<slug>.<COMPETE_BASE_DOMAIN>` (wildcard-DNS + TLS via de edge). Eigen domein (bv. `competitie.firma.nl`) in het operatorpanel → *Integratie*: TXT `_dailyfunded-verify.<domein>` met het getoonde token + CNAME naar `PLATFORM_CNAME_TARGET`, daarna "DNS controleren". Pas dan routeert het domein (`/internal/route` → `{ product: 'compete', operator, frameAncestors }`, `/internal/tls/allow`). Op dat domein opent `/` direct de competitie.
+2. **Widgets op de eigen site** — twee regels HTML:
+
+   ```html
+   <script src="https://<competitiedomein>/compete-embed.js" async></script>
+   <div data-compete-widget="countdown|leaderboard|join" data-lang="nl" data-theme="dark"></div>
+   ```
+
+   Het script maakt een iframe naar `/{lang}/compete/widget/:kind` en past de hoogte aan (postMessage, alleen van het eigen origin). Alleen websites uit *Widgetwebsites* mogen insluiten: de edge zet `Content-Security-Policy: frame-ancestors <lijst>` voor widgetpaden; nginx zet `frame-ancestors 'self'` op alle andere pagina's.
+3. **Single sign-on** — bestaande klanten van de firma hoeven geen tweede account: de server van de firma ondertekent per klik een kortlevend HS256-token en stuurt de trader naar `/{lang}/compete/sso#token=…`. Claims: `iss` = operator-slug, `aud` = `dailyfunded-compete-sso`, `sub` = eigen user-id, `jti`, `iat`, `exp` (≤ 5 min), `country` (ISO-2), `adult: true`, optioneel `nickname`, `email`, `locale`. Codevoorbeeld staat in het operatorpanel. Tokens zijn eenmalig (Redis), het geheim wordt één keer getoond.
+4. **Logo + kleur** — logo (PNG/SVG/WebP/JPEG ≤ 200 kB) en huisstijlkleur kleuren het hele Compete-oppervlak en de widgets.
+
+Bestaande prop-firm-klant ook Compete-operator maken (alleen huisstijl wordt gekopieerd):
+
+```bash
+pnpm --filter @brand/api build && pnpm --filter @brand/api compete:operator:from-firm <firma-slug> <eigenaar-email>
+```
+
+Lokaal testen van SSO: `POST /api/v1/compete/dev/sso-token` (alleen `DEV_TOOLS_ENABLED`) ondertekent een token zoals de server van een operator zou doen. Tests: `apps/api/test/compete-integration.e2e.test.ts`, `apps/web/e2e/compete.spec.ts`.
+
 ## Volgende fases
 
 - **Later** — echte betaal- en uitbetaalprovider (na vergunning), KYC voor winnaars,

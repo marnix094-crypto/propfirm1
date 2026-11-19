@@ -229,4 +229,81 @@ test.describe('Compete product page and operator admin (D104, D105)', () => {
     await expect(page.getByText(slug, { exact: true })).toBeVisible();
     await axe(page, 'admin operators');
   });
+
+  test('operator connects Compete to its website: domain, widgets, SSO (D108/D109)', async ({
+    page,
+    request,
+  }) => {
+    const slug = await operator(request);
+    const email = `int-${slug}@example.com`;
+    const password = 'operator-password-123';
+    expect(
+      (
+        await request.post(`${API}/dev/staff`, { data: { email, password, operatorSlug: slug } })
+      ).ok(),
+    ).toBe(true);
+    await page.goto('/en/compete/admin/login');
+    await page.getByLabel('E-mail').fill(email);
+    await page.getByLabel('Password').fill(password);
+    await page.getByRole('button', { name: 'Log in' }).click();
+    await page
+      .getByRole('navigation', { name: 'Admin menu' })
+      .getByRole('link', { name: 'Integration' })
+      .click();
+    await expect(page.getByRole('heading', { name: 'Integration', level: 1 })).toBeVisible();
+
+    await page.getByLabel('Own domain').fill(`arena.${slug}.example.com`);
+    await page.getByLabel('Websites allowed to show widgets').fill('https://www.example.com');
+    await page.getByLabel('Widget', { exact: true }).selectOption('leaderboard');
+    await page.getByRole('button', { name: 'Save integration' }).click();
+    await expect(page.getByText('Saved.')).toBeVisible();
+    await expect(page.getByText('Waiting for DNS')).toBeVisible();
+    await expect(page.getByText(`_dailyfunded-verify.arena.${slug}.example.com`)).toBeVisible();
+    await expect(page.getByLabel('Embed code', { exact: true })).toContainText(
+      'data-compete-widget="leaderboard"',
+    );
+    await expect(
+      page
+        .frameLocator('[data-testid="widget-preview"]')
+        .getByText(/Registration open|Live/)
+        .first(),
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Generate secret' }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toContainText('Your SSO secret');
+    await dialog.getByRole('button', { name: 'I have stored it' }).click();
+    await page.getByLabel('Allow sign-in from my website').check();
+    await page.getByRole('button', { name: 'Save integration' }).click();
+    await expect(page.getByText('Saved.')).toBeVisible();
+    await axe(page, 'admin integration');
+
+    // A trader of the operator arrives from its website with a signed token.
+    const { token } = await (
+      await request.post(`${API}/dev/sso-token`, {
+        data: { operatorSlug: slug, sub: `user-${slug}`, nickname: 'sso_e2e' },
+      })
+    ).json();
+    const player = await page.context().newPage();
+    await player.goto(`/en/compete/sso?operator=${slug}#token=${token}`);
+    await expect(player).toHaveURL(/\/en\/compete\/app$/);
+    await expect(player.getByText('Hi sso_e2e')).toBeVisible();
+    // The token is single use.
+    const again = await page.context().newPage();
+    await again.goto(`/en/compete/sso?operator=${slug}#token=${token}`);
+    await expect(again.getByRole('alert')).toContainText('already used');
+  });
+
+  test('widgets render standalone for embedding', async ({ page, request }) => {
+    const slug = await operator(request);
+    for (const kind of ['countdown', 'leaderboard', 'join']) {
+      await page.goto(`/en/compete/widget/${kind}?operator=${slug}&theme=light`);
+      await expect(page.getByTestId(`compete-widget-${kind}`)).toBeVisible();
+      await expect(page.getByRole('link', { name: /Join for \$10/ })).toHaveAttribute(
+        'target',
+        '_top',
+      );
+      await axe(page, `widget ${kind}`);
+    }
+  });
 });

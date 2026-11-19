@@ -71,7 +71,9 @@ export class CompeteLoginDto {
 
 export class CompetePlayerDto {
   @ApiProperty() id!: string;
-  @ApiProperty() email!: string;
+  @ApiProperty({ type: String, nullable: true, description: 'Null for SSO-only players' })
+  email!: string | null;
+  @ApiProperty({ description: 'Signed in via the operator website (SSO, D109)' }) sso!: boolean;
   @ApiProperty() nickname!: string;
   @ApiProperty() country!: string;
   @ApiProperty() locale!: string;
@@ -94,7 +96,14 @@ export class CompeteTokenDto {
 export class CompeteOperatorDto {
   @ApiProperty() slug!: string;
   @ApiProperty() name!: string;
+  @ApiProperty({ description: "The request's host is this operator's (sub)domain (D108)" })
+  onOwnHost!: boolean;
+  @ApiProperty({ description: 'Daily Funded example operator (shows the example banner)' })
+  isExample!: boolean;
   @ApiProperty() primaryColor!: string;
+  @ApiProperty({ type: String, nullable: true }) logoDataUrl!: string | null;
+  @ApiProperty({ description: 'Players can sign in from the operator website (D109)' })
+  ssoEnabled!: boolean;
   @ApiProperty() timeZone!: string;
   @ApiProperty({ description: 'Local start time, minutes after midnight' })
   startMinuteOfDay!: number;
@@ -244,4 +253,11 @@ export class CompeteLeaderboardDto {
 export class CompeteHistoryItemDto {
   @ApiProperty({ type: CompeteRoundDto }) round!: Omit<CompeteRoundDto, 'myEntry'>;
   @ApiProperty({ type: CompeteEntryDto }) entry!: CompeteEntryDto;
+}
+
+export class CompeteSsoDto {
+  @ApiProperty({ description: 'HS256 JWT signed by the operator backend (D109)' })
+  @IsString()
+  @MaxLength(4096)
+  token!: string;
 }

@@ -7,7 +7,6 @@ import {
   NoDatabaseProvisioner,
   PostgresDatabaseProvisioner,
 } from './database-provisioner.js';
-import { DNS_RESOLVER, FakeDnsResolver, SystemDnsResolver } from './dns-resolver.js';
 import { TlsAllowController } from './provisioning.controller.js';
 import { ProvisioningService } from './provisioning.service.js';
 
@@ -16,12 +15,6 @@ import { ProvisioningService } from './provisioning.service.js';
   controllers: [TlsAllowController],
   providers: [
     ProvisioningService,
-    {
-      provide: DNS_RESOLVER,
-      inject: [APP_CONFIG],
-      useFactory: (c: AppConfig) =>
-        c.dnsResolver === 'fake' ? new FakeDnsResolver() : new SystemDnsResolver(),
-    },
     {
       provide: DATABASE_PROVISIONER,
       inject: [APP_CONFIG],
@@ -33,6 +26,6 @@ import { ProvisioningService } from './provisioning.service.js';
             : new NoDatabaseProvisioner(),
     },
   ],
-  exports: [ProvisioningService, DNS_RESOLVER, DATABASE_PROVISIONER],
+  exports: [ProvisioningService, DATABASE_PROVISIONER],
 })
 export class ProvisioningModule {}

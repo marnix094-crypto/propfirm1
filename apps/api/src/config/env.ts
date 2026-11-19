@@ -72,6 +72,11 @@ const schema = z.object({
     .string()
     .regex(/^[a-z0-9-]{1,40}$/)
     .default('your-arena'),
+  /** Domain for automatic Compete operator subdomains, e.g. play.dailyfunded.com → acme.play.dailyfunded.com (D108). */
+  COMPETE_BASE_DOMAIN: z
+    .string()
+    .regex(/^(?=.{4,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/)
+    .optional(),
   /** Compete scheduler + drawdown loop (rounds open, start, settle). */
   COMPETE_LOOP_ENABLED: z
     .enum(['true', 'false'])
@@ -106,7 +111,7 @@ export type AppConfig = Readonly<{
   salesEmail: string | null;
   defaultFirmSlug: string;
   adminRequire2fa: boolean;
-  compete: { defaultOperatorSlug: string; loopEnabled: boolean };
+  compete: { defaultOperatorSlug: string; loopEnabled: boolean; baseDomain: string | null };
   platformBaseDomain: string | null;
   platformCnameTarget: string | null;
   dnsResolver: 'system' | 'fake';
@@ -177,6 +182,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     compete: {
       defaultOperatorSlug: e.COMPETE_DEFAULT_OPERATOR_SLUG,
       loopEnabled: e.COMPETE_LOOP_ENABLED,
+      baseDomain: e.COMPETE_BASE_DOMAIN ?? null,
     },
     platformBaseDomain: e.PLATFORM_BASE_DOMAIN ?? null,
     platformCnameTarget:

@@ -14,6 +14,7 @@ const DUMMY_HASH = await hash('dummy-password-for-timing', ARGON);
 export const toPlayerDto = (p: CompetePlayer): CompetePlayerDto => ({
   id: p.id,
   email: p.email,
+  sso: p.externalId !== null,
   nickname: p.nickname,
   country: p.country,
   locale: p.locale,
@@ -89,7 +90,8 @@ export class CompetePlayersService {
       where: { operatorId_email: { operatorId, email: dto.email } },
     });
     const ok = await verify(player?.passwordHash ?? DUMMY_HASH, dto.password);
-    if (!player || !ok) throw Errors.unauthorized('INVALID_CREDENTIALS');
+    // SSO-only players have no password: they always sign in from the operator site.
+    if (!player?.passwordHash || !ok) throw Errors.unauthorized('INVALID_CREDENTIALS');
     if (player.status === 'SUSPENDED') throw Errors.forbidden('PLAYER_SUSPENDED');
     const tokens = await this.tokens.issue({ id: player.id, operatorId }, userAgent);
     return { player, tokens };

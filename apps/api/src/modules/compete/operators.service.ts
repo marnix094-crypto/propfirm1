@@ -63,9 +63,15 @@ export class CompeteOperatorsService {
   }
 
   async fromRequest(req: Pick<Request, 'headers'>): Promise<CompeteOperator> {
+    return (await this.resolve(req)).op;
+  }
+
+  /** Like fromRequest, plus whether the request's host itself belongs to the operator. */
+  async resolve(req: Pick<Request, 'headers'>): Promise<{ op: CompeteOperator; byHost: boolean }> {
     const header = req.headers['x-compete-operator'];
     const slug = (Array.isArray(header) ? header[0] : header)?.trim().toLowerCase();
     let op: CompeteOperator | null = null;
+    let byHost = false;
     if (slug) {
       op = await this.cached(`slug:${slug}`, () =>
         this.prisma.competeOperator.findUnique({ where: { slug } }),
@@ -73,14 +79,29 @@ export class CompeteOperatorsService {
       if (!op) throw Errors.notFound('Operator');
     } else {
       const host = requestHost(req);
-      if (host)
-        op = await this.cached(`host:${host}`, () =>
-          this.prisma.competeOperator.findUnique({ where: { domain: host } }),
-        );
+      if (host) op = await this.cached(`host:${host}`, () => this.byHost(host));
+      byHost = op !== null;
       op ??= await this.defaultOperator();
     }
     if (op.status !== 'ACTIVE') throw Errors.forbidden('OPERATOR_SUSPENDED');
-    return op;
+    return { op, byHost };
+  }
+
+  /**
+   * Operator of a hostname (D108): `<slug>.<COMPETE_BASE_DOMAIN>` or a verified own domain.
+   * An own domain that has not passed DNS verification never resolves.
+   */
+  async byHost(host: string): Promise<CompeteOperator | null> {
+    const h = host.toLowerCase().replace(/\.$/, '');
+    const base = this.config.compete.baseDomain;
+    if (base && h.endsWith(`.${base}`)) {
+      const slug = h.slice(0, -(base.length + 1));
+      return /^[a-z0-9-]{1,40}$/.test(slug)
+        ? this.prisma.competeOperator.findUnique({ where: { slug } })
+        : null;
+    }
+    const op = await this.prisma.competeOperator.findUnique({ where: { domain: h } });
+    return op?.domainStatus === 'ACTIVE' ? op : null;
   }
 
   async byId(id: string): Promise<CompeteOperator> {

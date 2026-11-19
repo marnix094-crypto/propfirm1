@@ -112,7 +112,7 @@ export const Textarea = forwardRef<
         id={inputId}
         aria-invalid={error ? true : undefined}
         aria-describedby={hint ? `${inputId}-hint` : undefined}
-        className={cn(control, 'h-auto min-h-48 py-3 leading-relaxed')}
+        className={cn(control, 'h-auto py-3 leading-relaxed', !props.rows && 'min-h-48')}
         {...props}
       />
       {hint && (

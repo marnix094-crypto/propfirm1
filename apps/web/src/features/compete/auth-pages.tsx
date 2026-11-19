@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -7,8 +7,9 @@ import { Input, Select } from '@/components/ui/field';
 import { countryOptions } from '@/lib/countries';
 import { ApiError } from '@/lib/api';
 import { nextQuery, safeNext } from '@/lib/safe-next';
-import { competeCall, competeClient } from './api';
+import { competeCall, competeClient, operatorSlug } from './api';
 import { useCompeteSession } from './session';
+import { useCompeteOperator } from './hooks';
 
 export function useCompeteError() {
   const { t } = useTranslation('compete');
@@ -31,7 +32,7 @@ function AuthCard({
     <div className="mx-auto flex max-w-md flex-col px-4 py-16 sm:py-24">
       <h1 className="font-display text-3xl font-bold tracking-tight">{title}</h1>
       <p className="mt-2 text-muted">{sub}</p>
-      <Card className="mt-8" padding="lg">
+      <Card className="glow-card mt-8" padding="lg">
         {children}
       </Card>
     </div>
@@ -69,8 +70,14 @@ export function CompeteLoginPage() {
     }
   }
 
+  const op = useCompeteOperator();
   return (
     <AuthCard title={t('auth.loginTitle')} sub={t('auth.loginSub')}>
+      {op.data?.ssoEnabled && (
+        <p className="mb-5 rounded-[12px] border border-border bg-card-muted/60 p-3 text-sm text-muted">
+          {t('sso.loginHint', { firm: op.data.name })}
+        </p>
+      )}
       <form onSubmit={submit} className="flex flex-col gap-4" noValidate={false}>
         <Input label={t('auth.email')} name="email" type="email" autoComplete="email" required />
         <Input
@@ -205,6 +212,72 @@ export function CompeteRegisterPage() {
           </Link>
         </p>
       </form>
+    </AuthCard>
+  );
+}
+
+/**
+ * Landing page of the single sign-on link from the operator's website (D109):
+ * `/{lang}/compete/sso#token=…` (fragment, so the token never reaches server logs).
+ */
+export function CompeteSsoPage() {
+  const { t } = useTranslation('compete');
+  const { lang } = useParams();
+  const navigate = useNavigate();
+  const toMessage = useCompeteError();
+  // Read the token once and remove it from the address bar and history straight away.
+  const [link] = useState(() => {
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const query = new URLSearchParams(window.location.search);
+    const v = {
+      token: hash.get('token') ?? query.get('token'),
+      next: hash.get('next') ?? query.get('next'),
+    };
+    operatorSlug(); // keeps a `?operator=` preview override before the query is removed
+    window.history.replaceState(null, '', window.location.pathname);
+    return v;
+  });
+  const [error, setError] = useState<string | null>(link.token ? null : t('errors.SSO_INVALID'));
+  const started = useRef(false);
+
+  useEffect(() => {
+    const { token, next } = link;
+    if (started.current || !token) return;
+    started.current = true;
+    void (async () => {
+      try {
+        const r = await competeCall(() =>
+          competeClient.POST('/api/v1/compete/auth/sso', { body: { token } }),
+        );
+        useCompeteSession.getState().setSession(r);
+        const dest = safeNext(next, lang, 'compete');
+        navigate(dest === `/${lang}/compete` ? `/${lang}/compete/app` : dest, { replace: true });
+      } catch (err) {
+        setError(toMessage(err));
+      }
+    })();
+  }, [lang, link, navigate, toMessage]);
+
+  return (
+    <AuthCard title={t('sso.title')} sub={error ? t('sso.failedSub') : t('sso.sub')}>
+      {error ? (
+        <div className="flex flex-col gap-4">
+          <p role="alert" className="text-sm text-loss">
+            {error}
+          </p>
+          <Button asChild fullWidth>
+            <Link to={`/${lang}/compete/login`}>{t('auth.login')}</Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 text-sm text-muted" role="status">
+          <span
+            className="size-5 animate-spin rounded-full border-2 border-border border-t-primary motion-reduce:animate-none"
+            aria-hidden="true"
+          />
+          {t('sso.working')}
+        </div>
+      )}
     </AuthCard>
   );
 }

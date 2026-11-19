@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { APP_CONFIG, type AppConfig } from '../../config/env.js';
 import { PrismaService } from '../../infra/prisma.service.js';
+import { EdgeRegistry, type EdgeResolver, type EdgeRoute } from '../../infra/edge-registry.js';
 import type {
   Firm,
   ProvisioningStatus,
@@ -54,7 +55,7 @@ export interface DomainSetup {
  * are retried in the background, so a firm completes on its own once DNS is in place.
  */
 @Injectable()
-export class ProvisioningService implements OnModuleInit, OnModuleDestroy {
+export class ProvisioningService implements OnModuleInit, OnModuleDestroy, EdgeResolver {
   private readonly logger = new Logger(ProvisioningService.name);
   private timer?: NodeJS.Timeout;
   private readonly running = new Set<string>();
@@ -69,7 +70,10 @@ export class ProvisioningService implements OnModuleInit, OnModuleDestroy {
     @Inject(DATABASE_PROVISIONER) private readonly databases: DatabaseProvisioner,
     @Inject(FIELD_CRYPTO) private readonly crypto: FieldCrypto,
     @Inject(MAILER) private readonly mailer: Mailer,
-  ) {}
+    edge: EdgeRegistry,
+  ) {
+    edge.register(this);
+  }
 
   onModuleInit() {
     // Only the shared platform (control plane) provisions firms.
@@ -265,7 +269,7 @@ export class ProvisioningService implements OnModuleInit, OnModuleDestroy {
    * Edge routing (D95): which firm a hostname belongs to and which instance serves it.
    * Unknown hosts → null (the edge serves the platform website / 404).
    */
-  async route(host: string): Promise<{ firm: string; instance: 'shared' | 'dedicated' } | null> {
+  async route(host: string): Promise<EdgeRoute | null> {
     const h = host.toLowerCase().replace(/\.$/, '');
     const base = this.config.platformBaseDomain;
     let firm: Pick<Firm, 'slug' | 'status' | 'dedicatedDatabase' | 'databaseUrlEnc'> | null = null;
@@ -278,6 +282,7 @@ export class ProvisioningService implements OnModuleInit, OnModuleDestroy {
     }
     if (!firm || firm.status !== 'ACTIVE') return null;
     return {
+      product: 'platform',
       firm: firm.slug,
       instance: firm.dedicatedDatabase && firm.databaseUrlEnc ? 'dedicated' : 'shared',
     };

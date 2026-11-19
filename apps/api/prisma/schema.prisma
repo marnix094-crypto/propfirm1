@@ -898,7 +898,21 @@ model CompeteOperator {
   name              String
   /// Brand colour (hex, validated); the client derives an AA palette.
   primaryColor      String                @default("#AFE604")
+  /// Logo as data URL (PNG/SVG/WebP, ≤ 200 kB), shown instead of the trophy mark (D107).
+  logoDataUrl       String?               @db.Text
+  /// Own domain (hostname only). Routes players to this operator only once ACTIVE (D108).
   domain            String?               @unique
+  domainStatus      CompeteDomainStatus   @default(NONE)
+  /// Random value the operator publishes as TXT record to prove it controls the domain.
+  domainToken       String?               @db.VarChar(64)
+  domainCheckedAt   DateTime?
+  /// Websites (origins) allowed to embed this operator's widgets (CSP frame-ancestors, D108).
+  widgetOrigins     String[]              @default([])
+  /// Single sign-on from the operator's own site (D109): HS256 secret, AES-GCM encrypted.
+  ssoSecretEnc      String?
+  ssoEnabled        Boolean               @default(false)
+  /// Informational: the prop firm this operator was created from (no data is shared, D110).
+  sourceFirmSlug    String?
   status            CompeteOperatorStatus @default(ACTIVE)
   timeZone          String                @default("Europe/Amsterdam")
   /// Local start time of the daily round, minutes after midnight (1200 = 20:00).
@@ -918,6 +932,12 @@ model CompeteOperator {
   players CompetePlayer[]
   rounds  CompeteRound[]
   staff   CompeteStaff[]
+}
+
+enum CompeteDomainStatus {
+  NONE
+  PENDING_DNS
+  ACTIVE
 }
 
 enum CompeteStaffRole {
@@ -969,8 +989,11 @@ model CompetePlayer {
   id               String              @id @default(uuid(7)) @db.Uuid
   operatorId       String              @db.Uuid
   operator         CompeteOperator     @relation(fields: [operatorId], references: [id])
-  email            String
-  passwordHash     String
+  /// Null for players that only sign in via the operator's SSO (D109).
+  email            String?
+  passwordHash     String?
+  /// The operator's own user id for SSO players (D109); unique per operator.
+  externalId       String?             @db.VarChar(128)
   /// Public name on leaderboards (no real names).
   nickname         String
   country          String              @db.Char(2)
@@ -986,6 +1009,7 @@ model CompetePlayer {
 
   @@unique([operatorId, email])
   @@unique([operatorId, nickname])
+  @@unique([operatorId, externalId])
 }
 
 /// Rotating refresh tokens of players (own cookie + own JWT purpose; never valid for the prop-firm API).

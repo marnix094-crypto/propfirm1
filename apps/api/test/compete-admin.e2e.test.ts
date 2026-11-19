@@ -192,9 +192,11 @@ describe('compete admin: operating the product', () => {
     const slug = `set-${Date.now() % 1e6}`;
     const a = await admin(slug);
     const before = (await t.http().get(`${API}/admin/overview`).set(bearer(a.token))).body.current;
-    const { currency: _c, ...s } = (
-      await t.http().get(`${API}/admin/settings`).set(bearer(a.token))
-    ).body;
+    const {
+      currency: _c,
+      domain: _d,
+      ...s
+    } = (await t.http().get(`${API}/admin/settings`).set(bearer(a.token))).body;
     const bad = await t
       .http()
       .put(`${API}/admin/settings`)

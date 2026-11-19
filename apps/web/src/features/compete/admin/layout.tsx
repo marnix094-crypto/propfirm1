@@ -7,6 +7,7 @@ import {
   ClipboardList,
   Gauge,
   KeyRound,
+  Plug,
   LogOut,
   Settings,
   Trophy,
@@ -25,6 +26,7 @@ export const ADMIN_NAV = [
   { to: 'players', key: 'players', icon: Users },
   { to: 'payouts', key: 'payouts', icon: Wallet },
   { to: 'settings', key: 'settings', icon: Settings },
+  { to: 'integration', key: 'integration', icon: Plug },
   { to: 'audit', key: 'audit', icon: ClipboardList },
   { to: 'security', key: 'security', icon: KeyRound },
 ] as const;

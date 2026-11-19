@@ -3565,6 +3565,37 @@
         ]
       }
     },
+    "/api/v1/compete/auth/sso": {
+      "post": {
+        "operationId": "CompeteController_ssoSignIn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompeteSsoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAuthResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "compete"
+        ]
+      }
+    },
     "/api/v1/compete/auth/refresh": {
       "post": {
         "operationId": "CompeteController_refresh",
@@ -4699,6 +4730,158 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CompeteAdminSettingsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/integration": {
+      "get": {
+        "operationId": "CompeteAdminController_integrationGet",
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminIntegrationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      },
+      "put": {
+        "operationId": "CompeteAdminController_integrationUpdate",
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompeteIntegrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminIntegrationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/integration/domain/verify": {
+      "post": {
+        "operationId": "CompeteAdminController_integrationVerify",
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminIntegrationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "compete-admin"
+        ]
+      }
+    },
+    "/api/v1/compete/admin/integration/sso/secret": {
+      "post": {
+        "operationId": "CompeteAdminController_integrationSsoSecret",
+        "parameters": [
+          {
+            "name": "X-Compete-Admin-Operator",
+            "in": "header",
+            "description": "Superadmins only: slug of the operator to administer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompeteAdminSsoSecretDto"
                 }
               }
             }
@@ -9236,8 +9419,24 @@
           "name": {
             "type": "string"
           },
+          "onOwnHost": {
+            "type": "boolean",
+            "description": "The request's host is this operator's (sub)domain (D108)"
+          },
+          "isExample": {
+            "type": "boolean",
+            "description": "Daily Funded example operator (shows the example banner)"
+          },
           "primaryColor": {
             "type": "string"
+          },
+          "logoDataUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "ssoEnabled": {
+            "type": "boolean",
+            "description": "Players can sign in from the operator website (D109)"
           },
           "timeZone": {
             "type": "string"
@@ -9284,7 +9483,11 @@
         "required": [
           "slug",
           "name",
+          "onOwnHost",
+          "isExample",
           "primaryColor",
+          "logoDataUrl",
+          "ssoEnabled",
           "timeZone",
           "startMinuteOfDay",
           "durationMinutes",
@@ -9663,7 +9866,13 @@
             "type": "string"
           },
           "email": {
-            "type": "string"
+            "type": "string",
+            "nullable": true,
+            "description": "Null for SSO-only players"
+          },
+          "sso": {
+            "type": "boolean",
+            "description": "Signed in via the operator website (SSO, D109)"
           },
           "nickname": {
             "type": "string"
@@ -9681,6 +9890,7 @@
         "required": [
           "id",
           "email",
+          "sso",
           "nickname",
           "country",
           "locale",
@@ -9719,6 +9929,18 @@
         "required": [
           "email",
           "password"
+        ]
+      },
+      "CompeteSsoDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "HS256 JWT signed by the operator backend (D109)"
+          }
+        },
+        "required": [
+          "token"
         ]
       },
       "CompeteTokenDto": {
@@ -10209,7 +10431,13 @@
             "type": "string"
           },
           "email": {
-            "type": "string"
+            "type": "string",
+            "nullable": true,
+            "description": "Null for SSO-only players"
+          },
+          "sso": {
+            "type": "boolean",
+            "description": "Signs in via the operator website (SSO, D109)"
           },
           "country": {
             "type": "string"
@@ -10240,6 +10468,7 @@
           "id",
           "nickname",
           "email",
+          "sso",
           "country",
           "status",
           "statusReason",
@@ -10418,10 +10647,6 @@
           "primaryColor": {
             "type": "string"
           },
-          "domain": {
-            "type": "string",
-            "nullable": true
-          },
           "timeZone": {
             "type": "string"
           },
@@ -10460,7 +10685,6 @@
         "required": [
           "name",
           "primaryColor",
-          "domain",
           "timeZone",
           "startMinuteOfDay",
           "durationMinutes",
@@ -10471,6 +10695,141 @@
           "minParticipants",
           "prizePoolBps",
           "prizeSplitBps"
+        ]
+      },
+      "CompeteDnsRecordDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "TXT",
+              "CNAME"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "name",
+          "value"
+        ]
+      },
+      "CompeteAdminIntegrationDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "subdomain": {
+            "type": "string",
+            "nullable": true,
+            "description": "<slug>.<COMPETE_BASE_DOMAIN>"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true
+          },
+          "domainStatus": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "PENDING_DNS",
+              "ACTIVE"
+            ]
+          },
+          "domainCheckedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "dnsRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompeteDnsRecordDto"
+            }
+          },
+          "playUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Where players play"
+          },
+          "logoDataUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "widgetOrigins": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ssoEnabled": {
+            "type": "boolean"
+          },
+          "ssoConfigured": {
+            "type": "boolean",
+            "description": "An SSO secret exists (never returned again)"
+          }
+        },
+        "required": [
+          "slug",
+          "subdomain",
+          "domain",
+          "domainStatus",
+          "domainCheckedAt",
+          "dnsRecords",
+          "playUrl",
+          "logoDataUrl",
+          "widgetOrigins",
+          "ssoEnabled",
+          "ssoConfigured"
+        ]
+      },
+      "UpdateCompeteIntegrationDto": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "nullable": true
+          },
+          "logoDataUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "data:image/...;base64, ≤ 200 kB"
+          },
+          "widgetOrigins": {
+            "description": "Origins allowed to embed widgets",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ssoEnabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "domain",
+          "logoDataUrl",
+          "widgetOrigins",
+          "ssoEnabled"
+        ]
+      },
+      "CompeteAdminSsoSecretDto": {
+        "type": "object",
+        "properties": {
+          "secret": {
+            "type": "string",
+            "description": "Shown once; store it on your server only"
+          }
+        },
+        "required": [
+          "secret"
         ]
       },
       "CompeteAdminAuditDto": {

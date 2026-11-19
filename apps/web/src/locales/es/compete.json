@@ -250,7 +250,13 @@
     "NETWORK_ERROR": "Sin conexión. Revisa tu internet e inténtalo de nuevo.",
     "OPERATOR_SUSPENDED": "Esta competición no está disponible temporalmente.",
     "PLAYER_SUSPENDED": "Tu cuenta está suspendida.",
-    "QUOTE_STALE": "No hay precio actual. Inténtalo de nuevo en un momento."
+    "QUOTE_STALE": "No hay precio actual. Inténtalo de nuevo en un momento.",
+    "SSO_INVALID": "Este enlace de acceso no es válido. Abre la competición de nuevo desde tu cuenta.",
+    "SSO_EXPIRED": "Este enlace de acceso ha caducado. Abre la competición de nuevo desde tu cuenta.",
+    "SSO_REPLAYED": "Este enlace de acceso ya se ha usado. Abre la competición de nuevo desde tu cuenta.",
+    "SSO_DISABLED": "El acceso desde la web no está activado.",
+    "ADULT_REQUIRED": "Debes tener 18 años o más para participar.",
+    "SSO_COUNTRY_MISSING": "Falta tu país en el enlace de acceso."
   },
   "arena": {
     "minimumBar": "Jugadores hacia el mínimo de {{n}}",
@@ -276,5 +282,17 @@
       "floor": "Tu participación termina si el equity llega a {{floor}}",
       "prizes": "El top 3 se reparte el bote"
     }
+  },
+  "widget": {
+    "docTitle": "Competición de {{firm}}",
+    "watch": "Ver en directo",
+    "noLeaderboardYet": "La clasificación empieza con la ronda."
+  },
+  "sso": {
+    "title": "Iniciando sesión…",
+    "sub": "Un momento: estamos conectando tu cuenta.",
+    "failedSub": "El enlace de acceso no ha funcionado.",
+    "working": "Comprobando tu enlace de acceso…",
+    "loginHint": "¿Ya eres cliente de {{firm}}? Abre la competición desde tu cuenta de {{firm}}: no necesitas otra contraseña."
   }
 }

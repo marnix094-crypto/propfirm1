@@ -35,6 +35,7 @@ import {
 import { CompeteService } from './compete.service.js';
 import { CompeteOperatorsService } from './operators.service.js';
 import { CompetePlayersService, toPlayerDto } from './players.service.js';
+import { CompeteSsoService } from './sso.service.js';
 import { COMPETE_PAYMENTS, type CompetePaymentProvider } from './payments.js';
 import {
   CompeteAuthResponseDto,
@@ -47,6 +48,7 @@ import {
   CompeteOrderDto,
   CompetePlayerDto,
   CompeteRegisterDto,
+  CompeteSsoDto,
   CompeteRoundDto,
   CompeteTestPaymentDto,
   CompeteTokenDto,
@@ -78,6 +80,7 @@ export class CompeteController {
     private readonly operators: CompeteOperatorsService,
     private readonly players: CompetePlayersService,
     private readonly tokens: CompeteTokensService,
+    private readonly sso: CompeteSsoService,
   ) {}
 
   private setCookie(res: Response, t: CompeteTokens) {
@@ -95,11 +98,15 @@ export class CompeteController {
   @Get('operator')
   @ApiOkResponse({ type: CompeteOperatorDto })
   async operator(@Req() req: Request): Promise<CompeteOperatorDto> {
-    const op = await this.operators.fromRequest(req);
+    const { op, byHost } = await this.operators.resolve(req);
     return {
       slug: op.slug,
       name: op.name,
+      onOwnHost: byHost,
+      isExample: op.slug === this.config.compete.defaultOperatorSlug && !byHost,
       primaryColor: op.primaryColor,
+      logoDataUrl: op.logoDataUrl,
+      ssoEnabled: op.ssoEnabled && !!op.ssoSecretEnc,
       timeZone: op.timeZone,
       startMinuteOfDay: op.startMinuteOfDay,
       durationMinutes: op.durationMinutes,
@@ -167,6 +174,26 @@ export class CompeteController {
   ): Promise<CompeteAuthResponseDto> {
     const op = await this.operators.fromRequest(req);
     const { player, tokens } = await this.players.login(dto, op.id, req.headers['user-agent']);
+    this.setCookie(res, tokens);
+    return {
+      accessToken: tokens.accessToken,
+      expiresIn: tokens.expiresIn,
+      player: toPlayerDto(player),
+    };
+  }
+
+  /** Single sign-on from the operator's website (D109): exchanges its signed token for a session. */
+  @Throttle({ default: { limit: 20, ttl: 60_000 } })
+  @Post('auth/sso')
+  @HttpCode(200)
+  @ApiOkResponse({ type: CompeteAuthResponseDto })
+  async ssoSignIn(
+    @Body() dto: CompeteSsoDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<CompeteAuthResponseDto> {
+    const op = await this.operators.fromRequest(req);
+    const { player, tokens } = await this.sso.signIn(op, dto.token, req.headers['user-agent']);
     this.setCookie(res, tokens);
     return {
       accessToken: tokens.accessToken,

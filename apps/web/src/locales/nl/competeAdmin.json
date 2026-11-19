@@ -19,7 +19,8 @@
     "settings": "Instellingen",
     "audit": "Audit log",
     "security": "Beveiliging",
-    "operators": "Operators"
+    "operators": "Operators",
+    "integration": "Integratie"
   },
   "status": {
     "OPEN": "Inschrijving open",
@@ -33,7 +34,9 @@
     "SUCCEEDED": "Betaald",
     "BREACHED": "Verliesgrens",
     "FINISHED": "Afgelopen",
-    "REFUNDED": "Terugbetaald"
+    "REFUNDED": "Terugbetaald",
+    "NONE": "Geen",
+    "PENDING_DNS": "Wacht op DNS"
   },
   "login": {
     "title": "Operator-login",
@@ -122,7 +125,8 @@
     "suspendTitle": "{{name}} schorsen",
     "reactivateTitle": "{{name}} heractiveren",
     "reason": "Reden",
-    "reasonHint": "Verplicht; wordt opgeslagen in de audit log."
+    "reasonHint": "Verplicht; wordt opgeslagen in de audit log.",
+    "ssoOnly": "Via SSO"
   },
   "payouts": {
     "title": "Uitbetalingen",
@@ -144,8 +148,6 @@
     "brand": "Huisstijl",
     "name": "Naam",
     "color": "Merkkleur",
-    "domain": "Eigen domein",
-    "domainHint": "Laat het domein naar ons wijzen; wij regelen SSL.",
     "tz": "Tijdzone",
     "rules": "Regels",
     "start": "Dagelijkse starttijd",
@@ -160,7 +162,8 @@
     "splitHint": "Per plaats, bv. 50 / 30 / 20 — samen 100.",
     "note": "Wijzigingen gelden voor rondes die na het opslaan worden aangemaakt. Een open ronde houdt haar regels.",
     "save": "Instellingen opslaan",
-    "saved": "Opgeslagen."
+    "saved": "Opgeslagen.",
+    "integrationHint": "Eigen domein, logo, websitewidgets en single sign-on:"
   },
   "audit": {
     "title": "Audit log",
@@ -214,6 +217,75 @@
     "VALIDATION_ERROR": "Controleer de velden.",
     "NETWORK_ERROR": "Geen verbinding. Probeer het opnieuw.",
     "FORBIDDEN": "Je hebt hier geen toegang toe.",
-    "TOO_MANY_REQUESTS": "Te veel pogingen. Wacht een minuut."
+    "TOO_MANY_REQUESTS": "Te veel pogingen. Wacht een minuut.",
+    "LOGO_INVALID": "Logo moet een PNG, SVG, WebP of JPEG van maximaal 200 kB zijn.",
+    "DOMAIN_INVALID": "Gebruik je eigen domein, niet het platformdomein.",
+    "SSO_SECRET_MISSING": "Maak eerst een SSO-sleutel aan.",
+    "NO_DOMAIN": "Stel eerst een domein in."
+  },
+  "integration": {
+    "title": "Integratie",
+    "sub": "Koppel de competitie aan je eigen website: domein, logo, widgets en single sign-on.",
+    "save": "Integratie opslaan",
+    "saved": "Opgeslagen.",
+    "copy": "Kopiëren",
+    "copied": "Gekopieerd",
+    "close": "Sluiten",
+    "where": {
+      "title": "Waar je spelers spelen",
+      "sub": "Je competitie staat altijd op je eigen subdomein; met een geverifieerd domein draait hij volledig onder jouw merk.",
+      "subdomain": "Jouw subdomein",
+      "noSubdomain": "Niet ingesteld op dit platform",
+      "playUrl": "Live adres"
+    },
+    "domain": {
+      "label": "Eigen domein",
+      "hint": "Bijvoorbeeld competitie.jouw-firma.nl. Gaat pas live na DNS-verificatie.",
+      "check": "DNS controleren",
+      "records": "Voeg deze DNS-records toe bij je domeinprovider en controleer daarna de DNS:",
+      "type": "Type",
+      "name": "Naam",
+      "value": "Waarde"
+    },
+    "logo": {
+      "title": "Logo",
+      "sub": "Wordt in de header, footer en widgets getoond in plaats van het bekericoon.",
+      "preview": "Voorbeeld logo",
+      "none": "Geen logo",
+      "upload": "Logo uploaden",
+      "remove": "Verwijderen"
+    },
+    "widgets": {
+      "title": "Widgets voor je website",
+      "sub": "Toon de aftelklok, live ranglijst of een deelnameknop op je eigen site met twee regels code.",
+      "origins": "Websites die widgets mogen tonen",
+      "originsHint": "Eén https://-adres per regel, bv. https://www.jouw-firma.nl. Andere sites kunnen ze niet insluiten.",
+      "kind": "Widget",
+      "theme": "Thema",
+      "dark": "Donker",
+      "light": "Licht",
+      "snippet": "Insluitcode",
+      "preview": "Voorbeeld",
+      "previewTitle": "Voorbeeld van de widget {{kind}}",
+      "kinds": {
+        "countdown": "Aftelklok + prijzen",
+        "leaderboard": "Live ranglijst",
+        "join": "Deelnameknop"
+      }
+    },
+    "sso": {
+      "title": "Single sign-on",
+      "sub": "Je traders openen de competitie vanaf je website, zonder tweede account of wachtwoord.",
+      "enable": "Inloggen vanaf mijn website toestaan",
+      "enableHint": "Je server ondertekent per klik een kortlevend token (HS256). Nieuwe spelers worden automatisch aangemaakt.",
+      "generate": "Sleutel aanmaken",
+      "rotate": "Nieuwe sleutel",
+      "configured": "Er is een sleutel ingesteld. Een nieuwe maakt oude tokens ongeldig.",
+      "notConfigured": "Nog geen sleutel.",
+      "example": "Voorbeeld voor je server",
+      "secretTitle": "Je SSO-sleutel",
+      "secretBody": "Bewaar hem alleen op je server (bv. als COMPETE_SSO_SECRET). Hij wordt één keer getoond en daarna nooit meer.",
+      "stored": "Ik heb hem bewaard"
+    }
   }
 }

@@ -12,6 +12,8 @@ import { CompeteEvents } from './events.js';
 import { CompeteOperatorsService } from './operators.service.js';
 import { COMPETE_PAYMENTS, FakeCompetePaymentProvider } from './payments.js';
 import { CompetePlayersService } from './players.service.js';
+import { CompeteIntegrationService } from './integration.service.js';
+import { CompeteSsoService } from './sso.service.js';
 import { CompeteAdminController } from './admin/admin.controller.js';
 import { CompeteAdminService } from './admin/admin.service.js';
 import { CompeteAdminGuard, CompeteStaffTokens } from './admin/staff-auth.js';
@@ -30,6 +32,8 @@ import { CompeteAdminGuard, CompeteStaffTokens } from './admin/staff-auth.js';
     CompeteAuthGuard,
     CompeteOperatorsService,
     CompetePlayersService,
+    CompeteIntegrationService,
+    CompeteSsoService,
     CompeteService,
     CompeteEvents,
     CompeteScheduler,

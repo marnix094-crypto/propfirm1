@@ -10,7 +10,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { Errors } from '../../common/errors.js';
 import { Public } from '../auth/public.decorator.js';
-import { ProvisioningService } from './provisioning.service.js';
+import { EdgeRegistry } from '../../infra/edge-registry.js';
 
 /** Constant-time comparison of the X-Internal-Token header (when a token is configured). */
 function tokenOk(expected: string | null, given: string | undefined): boolean {
@@ -28,7 +28,7 @@ function tokenOk(expected: string | null, given: string | undefined): boolean {
 export class TlsAllowController {
   constructor(
     @Inject(APP_CONFIG) private readonly config: AppConfig,
-    private readonly provisioning: ProvisioningService,
+    private readonly edge: EdgeRegistry,
   ) {}
 
   /**
@@ -46,17 +46,17 @@ export class TlsAllowController {
     @Headers('x-internal-token') token?: string,
   ): Promise<void> {
     if (!tokenOk(this.config.internalApiToken, token)) throw Errors.unauthorized();
-    if (!domain || domain.length > 253 || !(await this.provisioning.allowCertificate(domain)))
+    if (!domain || domain.length > 253 || !(await this.edge.allowCertificate(domain)))
       throw Errors.notFound('Domain');
   }
 
-  /** Which instance serves a hostname: `{ firm, instance: shared | dedicated }`, else 404. */
+  /** Which product/instance serves a hostname (`EdgeRoute`), else 404. */
   @Public()
   @Throttle({ default: { limit: 600, ttl: 60_000 } })
   @Get('internal/route')
   async route(@Query('host') host?: string, @Headers('x-internal-token') token?: string) {
     if (!tokenOk(this.config.internalApiToken, token)) throw Errors.unauthorized();
-    const r = host && host.length <= 253 ? await this.provisioning.route(host) : null;
+    const r = host && host.length <= 253 ? await this.edge.route(host) : null;
     if (!r) throw Errors.notFound('Host');
     return r;
   }

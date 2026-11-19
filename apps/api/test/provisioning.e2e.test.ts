@@ -5,7 +5,7 @@ import {
   DATABASE_PROVISIONER,
   type FakeDatabaseProvisioner,
 } from '../src/modules/provisioning/database-provisioner.js';
-import { DNS_RESOLVER, type FakeDnsResolver } from '../src/modules/provisioning/dns-resolver.js';
+import { DNS_RESOLVER, type FakeDnsResolver } from '../src/infra/dns.js';
 import { createTestApp, uniqueEmail, type TestApp } from './app.js';
 
 let t: TestApp;
@@ -65,7 +65,7 @@ describe('automatic firm set-up (D93)', () => {
       .http()
       .get('/api/v1/internal/route')
       .query({ host: `${s}.${BASE}` });
-    expect(route.body).toEqual({ firm: s, instance: 'shared' });
+    expect(route.body).toEqual({ product: 'platform', firm: s, instance: 'shared' });
     expect(
       (
         await t
@@ -175,7 +175,7 @@ describe('automatic firm set-up (D93)', () => {
       .http()
       .get('/api/v1/internal/route')
       .query({ host: `${s}.${BASE}` });
-    expect(route.body).toEqual({ firm: s, instance: 'dedicated' });
+    expect(route.body).toEqual({ product: 'platform', firm: s, instance: 'dedicated' });
   });
 
   it('refuses unknown or suspended hosts at the edge and logs every step', async () => {

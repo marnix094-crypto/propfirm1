@@ -4,6 +4,7 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
+  IsBoolean,
   IsEmail,
   IsIn,
   IsInt,
@@ -117,7 +118,9 @@ export class CompeteAdminRoundDetailDto {
 export class CompeteAdminPlayerDto {
   @ApiProperty() id!: string;
   @ApiProperty() nickname!: string;
-  @ApiProperty() email!: string;
+  @ApiProperty({ type: String, nullable: true, description: 'Null for SSO-only players' })
+  email!: string | null;
+  @ApiProperty({ description: 'Signs in via the operator website (SSO, D109)' }) sso!: boolean;
   @ApiProperty() country!: string;
   @ApiProperty({ enum: ['ACTIVE', 'SUSPENDED', 'SELF_EXCLUDED'] }) status!: string;
   @ApiProperty({ type: String, nullable: true }) statusReason!: string | null;
@@ -178,10 +181,6 @@ export class CompeteAdminSettingsDto {
 export class UpdateCompeteSettingsDto {
   @ApiProperty() @IsString() @MinLength(2) @MaxLength(60) name!: string;
   @ApiProperty() @Matches(/^#[0-9a-fA-F]{6}$/) primaryColor!: string;
-  @ApiProperty({ type: String, nullable: true })
-  @IsOptional()
-  @Matches(/^(?=.{3,253}$)([a-z0-9-]+\.)+[a-z]{2,}$/)
-  domain!: string | null;
   @ApiProperty() @IsString() @MaxLength(64) timeZone!: string;
   @ApiProperty() @Type(() => Number) @IsInt() @Min(0) @Max(1439) startMinuteOfDay!: number;
   @ApiProperty() @Type(() => Number) @IsInt() @Min(5) @Max(720) durationMinutes!: number;
@@ -247,4 +246,51 @@ export class CompeteAdminInviteDto {
 export class CompeteOperatorStatusDto {
   @ApiProperty({ enum: ['ACTIVE', 'SUSPENDED'] }) @IsIn(['ACTIVE', 'SUSPENDED']) status!:
     'ACTIVE' | 'SUSPENDED';
+}
+
+// ---------------------------------------------------------------- integration (D108/D109)
+
+export class CompeteDnsRecordDto {
+  @ApiProperty({ enum: ['TXT', 'CNAME'] }) type!: string;
+  @ApiProperty() name!: string;
+  @ApiProperty() value!: string;
+}
+
+export class CompeteAdminIntegrationDto {
+  @ApiProperty() slug!: string;
+  @ApiProperty({ type: String, nullable: true, description: '<slug>.<COMPETE_BASE_DOMAIN>' })
+  subdomain!: string | null;
+  @ApiProperty({ type: String, nullable: true }) domain!: string | null;
+  @ApiProperty({ enum: ['NONE', 'PENDING_DNS', 'ACTIVE'] }) domainStatus!: string;
+  @ApiProperty({ type: String, nullable: true }) domainCheckedAt!: string | null;
+  @ApiProperty({ type: [CompeteDnsRecordDto] }) dnsRecords!: CompeteDnsRecordDto[];
+  @ApiProperty({ type: String, nullable: true, description: 'Where players play' })
+  playUrl!: string | null;
+  @ApiProperty({ type: String, nullable: true }) logoDataUrl!: string | null;
+  @ApiProperty({ type: [String] }) widgetOrigins!: string[];
+  @ApiProperty() ssoEnabled!: boolean;
+  @ApiProperty({ description: 'An SSO secret exists (never returned again)' })
+  ssoConfigured!: boolean;
+}
+
+export class UpdateCompeteIntegrationDto {
+  @ApiProperty({ type: String, nullable: true })
+  @IsOptional()
+  @Matches(/^(?=.{3,253}$)([a-z0-9-]+\.)+[a-z]{2,}$/)
+  domain!: string | null;
+  @ApiProperty({ type: String, nullable: true, description: 'data:image/...;base64, ≤ 200 kB' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200_000)
+  logoDataUrl!: string | null;
+  @ApiProperty({ type: [String], description: 'Origins allowed to embed widgets' })
+  @IsArray()
+  @ArrayMaxSize(20)
+  @Matches(/^https:\/\/([a-z0-9-]+\.)+[a-z]{2,}(:\d{1,5})?\/?$/i, { each: true })
+  widgetOrigins!: string[];
+  @ApiProperty() @IsBoolean() ssoEnabled!: boolean;
+}
+
+export class CompeteAdminSsoSecretDto {
+  @ApiProperty({ description: 'Shown once; store it on your server only' }) secret!: string;
 }

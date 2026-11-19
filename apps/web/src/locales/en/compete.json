@@ -250,7 +250,13 @@
     "NETWORK_ERROR": "No connection. Check your internet and try again.",
     "OPERATOR_SUSPENDED": "This competition is temporarily unavailable.",
     "PLAYER_SUSPENDED": "Your account is suspended.",
-    "QUOTE_STALE": "No current price available. Try again in a moment."
+    "QUOTE_STALE": "No current price available. Try again in a moment.",
+    "SSO_INVALID": "This sign-in link is not valid. Open the competition again from your account.",
+    "SSO_EXPIRED": "This sign-in link has expired. Open the competition again from your account.",
+    "SSO_REPLAYED": "This sign-in link was already used. Open the competition again from your account.",
+    "SSO_DISABLED": "Signing in from the website is not enabled.",
+    "ADULT_REQUIRED": "You must be 18 or older to take part.",
+    "SSO_COUNTRY_MISSING": "Your country is missing from the sign-in link."
   },
   "arena": {
     "minimumBar": "Players towards the minimum of {{n}}",
@@ -276,5 +282,17 @@
       "floor": "Your entry ends if equity reaches {{floor}}",
       "prizes": "Top 3 share the prize pool"
     }
+  },
+  "widget": {
+    "docTitle": "{{firm}} competition",
+    "watch": "Watch live",
+    "noLeaderboardYet": "The leaderboard starts with the round."
+  },
+  "sso": {
+    "title": "Signing you in…",
+    "sub": "One moment — we are connecting your account.",
+    "failedSub": "The sign-in link did not work.",
+    "working": "Checking your sign-in link…",
+    "loginHint": "Already a {{firm}} client? Open the competition from your {{firm}} account — no separate password needed."
   }
 }

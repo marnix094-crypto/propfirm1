@@ -19,7 +19,8 @@
     "settings": "Configuración",
     "audit": "Registro de auditoría",
     "security": "Seguridad",
-    "operators": "Operadores"
+    "operators": "Operadores",
+    "integration": "Integración"
   },
   "status": {
     "OPEN": "Inscripción abierta",
@@ -33,7 +34,9 @@
     "SUCCEEDED": "Pagado",
     "BREACHED": "Límite de pérdida",
     "FINISHED": "Finalizada",
-    "REFUNDED": "Reembolsada"
+    "REFUNDED": "Reembolsada",
+    "NONE": "Ninguno",
+    "PENDING_DNS": "Esperando DNS"
   },
   "login": {
     "title": "Acceso de operador",
@@ -122,7 +125,8 @@
     "suspendTitle": "Suspender a {{name}}",
     "reactivateTitle": "Reactivar a {{name}}",
     "reason": "Motivo",
-    "reasonHint": "Obligatorio; se guarda en el registro de auditoría."
+    "reasonHint": "Obligatorio; se guarda en el registro de auditoría.",
+    "ssoOnly": "Vía SSO"
   },
   "payouts": {
     "title": "Pagos",
@@ -144,8 +148,6 @@
     "brand": "Marca",
     "name": "Nombre",
     "color": "Color de marca",
-    "domain": "Dominio propio",
-    "domainHint": "Apunta el dominio hacia nosotros; nos ocupamos del SSL.",
     "tz": "Zona horaria",
     "rules": "Reglas",
     "start": "Hora de inicio diaria",
@@ -160,7 +162,8 @@
     "splitHint": "Por puesto, p. ej. 50 / 30 / 20 — suma 100.",
     "note": "Los cambios se aplican a las rondas creadas después de guardar. Una ronda abierta mantiene sus reglas.",
     "save": "Guardar configuración",
-    "saved": "Guardado."
+    "saved": "Guardado.",
+    "integrationHint": "Dominio propio, logo, widgets web e inicio de sesión único:"
   },
   "audit": {
     "title": "Registro de auditoría",
@@ -214,6 +217,75 @@
     "VALIDATION_ERROR": "Revisa los campos.",
     "NETWORK_ERROR": "Sin conexión. Inténtalo de nuevo.",
     "FORBIDDEN": "No tienes acceso.",
-    "TOO_MANY_REQUESTS": "Demasiados intentos. Espera un minuto."
+    "TOO_MANY_REQUESTS": "Demasiados intentos. Espera un minuto.",
+    "LOGO_INVALID": "El logo debe ser PNG, SVG, WebP o JPEG de 200 kB como máximo.",
+    "DOMAIN_INVALID": "Usa tu propio dominio, no el de la plataforma.",
+    "SSO_SECRET_MISSING": "Genera primero una clave SSO.",
+    "NO_DOMAIN": "Configura primero un dominio."
+  },
+  "integration": {
+    "title": "Integración",
+    "sub": "Conecta la competición con tu web: dominio, logo, widgets e inicio de sesión único.",
+    "save": "Guardar integración",
+    "saved": "Guardado.",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "close": "Cerrar",
+    "where": {
+      "title": "Dónde juegan tus jugadores",
+      "sub": "Tu competición está siempre en tu subdominio; con un dominio verificado funciona totalmente con tu marca.",
+      "subdomain": "Tu subdominio",
+      "noSubdomain": "No configurado en esta plataforma",
+      "playUrl": "Dirección activa"
+    },
+    "domain": {
+      "label": "Dominio propio",
+      "hint": "Por ejemplo competicion.tu-firma.com. Solo se activa tras la verificación DNS.",
+      "check": "Comprobar DNS",
+      "records": "Añade estos registros DNS en tu proveedor de dominio y luego comprueba el DNS:",
+      "type": "Tipo",
+      "name": "Nombre",
+      "value": "Valor"
+    },
+    "logo": {
+      "title": "Logo",
+      "sub": "Se muestra en la cabecera, el pie y los widgets en lugar del trofeo.",
+      "preview": "Vista previa del logo",
+      "none": "Sin logo",
+      "upload": "Subir logo",
+      "remove": "Quitar"
+    },
+    "widgets": {
+      "title": "Widgets para tu web",
+      "sub": "Muestra la cuenta atrás, la clasificación en vivo o un botón de inscripción en tu web con dos líneas de código.",
+      "origins": "Webs que pueden mostrar widgets",
+      "originsHint": "Una dirección https:// por línea, p. ej. https://www.tu-firma.com. Otras webs no pueden insertarlos.",
+      "kind": "Widget",
+      "theme": "Tema",
+      "dark": "Oscuro",
+      "light": "Claro",
+      "snippet": "Código para insertar",
+      "preview": "Vista previa",
+      "previewTitle": "Vista previa del widget {{kind}}",
+      "kinds": {
+        "countdown": "Cuenta atrás + premios",
+        "leaderboard": "Clasificación en vivo",
+        "join": "Botón de inscripción"
+      }
+    },
+    "sso": {
+      "title": "Inicio de sesión único",
+      "sub": "Tus traders abren la competición desde tu web sin otra cuenta ni contraseña.",
+      "enable": "Permitir acceso desde mi web",
+      "enableHint": "Tu servidor firma un token de corta duración por clic (HS256). Los jugadores nuevos se crean automáticamente.",
+      "generate": "Generar clave",
+      "rotate": "Nueva clave",
+      "configured": "Hay una clave configurada. Una nueva invalida los tokens antiguos.",
+      "notConfigured": "Aún no hay clave.",
+      "example": "Ejemplo para tu servidor",
+      "secretTitle": "Tu clave SSO",
+      "secretBody": "Guárdala solo en tu servidor (p. ej. como COMPETE_SSO_SECRET). Se muestra una vez y nunca más.",
+      "stored": "Ya la he guardado"
+    }
   }
 }

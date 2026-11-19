@@ -157,17 +157,13 @@ describe('automatic firm set-up (D93)', () => {
     const pub = await t.http().get('/api/v1/public/firm').set('X-Firm', s);
     expect(pub.status).toBe(421);
     expect(pub.body.code).toBe('FIRM_HOSTED_ELSEWHERE');
-    const reg = await t
-      .http()
-      .post('/api/v1/auth/register')
-      .set('X-Firm', s)
-      .send({
-        email: uniqueEmail(),
-        password: PASSWORD,
-        country: 'NL',
-        locale: 'en',
-        acceptTerms: true,
-      });
+    const reg = await t.http().post('/api/v1/auth/register').set('X-Firm', s).send({
+      email: uniqueEmail(),
+      password: PASSWORD,
+      country: 'NL',
+      locale: 'en',
+      acceptTerms: true,
+    });
     expect(reg.body.code).toBe('FIRM_HOSTED_ELSEWHERE');
     const scoped = await t
       .http()
